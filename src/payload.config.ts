@@ -14,6 +14,9 @@ import { Products } from './collections/Products'
 import { Carts } from './collections/Carts'
 import { Coupons } from './collections/Coupons'
 import { Wishlists } from './collections/Wishlists'
+import { Reviews } from './collections/Reviews'
+import { Orders } from './collections/Orders'
+import { ShippingZones } from './collections/ShippingZones'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -25,7 +28,19 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Addresses, Categories, Products, Carts, Wishlists, Coupons],
+  collections: [
+    Users,
+    Media,
+    Addresses,
+    Categories,
+    Products,
+    Carts,
+    Wishlists,
+    Coupons,
+    Orders,
+    Reviews,
+    ShippingZones,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

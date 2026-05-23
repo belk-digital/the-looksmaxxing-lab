@@ -2,6 +2,7 @@ import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 export const up = async ({ db }: MigrateUpArgs) => {
   await db.execute(sql`
+    DROP TABLE IF EXISTS "carts" CASCADE;
     CREATE TABLE IF NOT EXISTS "carts" (
       "id" serial PRIMARY KEY NOT NULL,
       "user" integer NOT NULL,

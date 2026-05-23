@@ -75,6 +75,9 @@ export interface Config {
     carts: Cart
     wishlists: Wishlist
     coupons: Coupon
+    orders: Order
+    reviews: Review
+    shippingzones: Shippingzone
     'payload-kv': PayloadKv
     'payload-locked-documents': PayloadLockedDocument
     'payload-preferences': PayloadPreference
@@ -90,6 +93,9 @@ export interface Config {
     carts: CartsSelect<false> | CartsSelect<true>
     wishlists: WishlistsSelect<false> | WishlistsSelect<true>
     coupons: CouponsSelect<false> | CouponsSelect<true>
+    orders: OrdersSelect<false> | OrdersSelect<true>
+    reviews: ReviewsSelect<false> | ReviewsSelect<true>
+    shippingzones: ShippingzonesSelect<false> | ShippingzonesSelect<true>
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>
     'payload-locked-documents':
       | PayloadLockedDocumentsSelect<false>
@@ -413,6 +419,115 @@ export interface Coupon {
   createdAt: string
 }
 /**
+ * Customer orders – generated server‑side only.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number
+  /**
+   * Auto‑generated order identifier (PEP‑YYYY‑NNNNN).
+   */
+  orderNumber?: string | null
+  /**
+   * User who placed the order.
+   */
+  owner: number | User
+  items?:
+    | {
+        product: number | Product
+        quantity: number
+        /**
+         * Snapshot of product data at order time.
+         */
+        productSnapshot?:
+          | {
+              [k: string]: unknown
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null
+        id?: string | null
+      }[]
+    | null
+  shippingAddress?: {
+    line1?: string | null
+    line2?: string | null
+    city?: string | null
+    state?: string | null
+    postalCode?: string | null
+    country?: string | null
+  }
+  billingAddress?: {
+    line1?: string | null
+    line2?: string | null
+    city?: string | null
+    state?: string | null
+    postalCode?: string | null
+    country?: string | null
+  }
+  status: 'pending' | 'paid' | 'fulfilled' | 'shipped' | 'completed' | 'refunded' | 'cancelled'
+  paymentStatus: 'unpaid' | 'authorized' | 'captured' | 'refunded'
+  fulfillmentStatus: 'unfulfilled' | 'partial' | 'fulfilled'
+  refunds?:
+    | {
+        amount?: number | null
+        reason?: string | null
+        createdAt?: string | null
+        id?: string | null
+      }[]
+    | null
+  createdAt: string
+  updatedAt: string
+}
+/**
+ * Customer reviews – verification ties to delivered orders.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: number
+  product: number | Product
+  user: number | User
+  order?: (number | null) | Order
+  rating: number
+  comment?: string | null
+  /**
+   * Auto‑set to true when linked order is delivered
+   */
+  verifiedPurchase?: boolean | null
+  status?: ('pending' | 'approved' | 'rejected') | null
+  createdAt: string
+  updatedAt: string
+}
+/**
+ * Geographic shipping zones with sample shipping methods.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shippingzones".
+ */
+export interface Shippingzone {
+  id: number
+  name: string
+  /**
+   * Sample shipping methods for this zone.
+   */
+  methods?:
+    | {
+        method: string
+        price: number
+        estimatedDays?: number | null
+        id?: string | null
+      }[]
+    | null
+  updatedAt: string
+  createdAt: string
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -467,6 +582,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'coupons'
         value: number | Coupon
+      } | null)
+    | ({
+        relationTo: 'orders'
+        value: number | Order
+      } | null)
+    | ({
+        relationTo: 'reviews'
+        value: number | Review
+      } | null)
+    | ({
+        relationTo: 'shippingzones'
+        value: number | Shippingzone
       } | null)
   globalSlug?: string | null
   user: {
@@ -754,6 +881,87 @@ export interface CouponsSelect<T extends boolean = true> {
     | T
     | {
         category?: T
+        id?: T
+      }
+  updatedAt?: T
+  createdAt?: T
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  orderNumber?: T
+  owner?: T
+  items?:
+    | T
+    | {
+        product?: T
+        quantity?: T
+        productSnapshot?: T
+        id?: T
+      }
+  shippingAddress?:
+    | T
+    | {
+        line1?: T
+        line2?: T
+        city?: T
+        state?: T
+        postalCode?: T
+        country?: T
+      }
+  billingAddress?:
+    | T
+    | {
+        line1?: T
+        line2?: T
+        city?: T
+        state?: T
+        postalCode?: T
+        country?: T
+      }
+  status?: T
+  paymentStatus?: T
+  fulfillmentStatus?: T
+  refunds?:
+    | T
+    | {
+        amount?: T
+        reason?: T
+        createdAt?: T
+        id?: T
+      }
+  createdAt?: T
+  updatedAt?: T
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews_select".
+ */
+export interface ReviewsSelect<T extends boolean = true> {
+  product?: T
+  user?: T
+  order?: T
+  rating?: T
+  comment?: T
+  verifiedPurchase?: T
+  status?: T
+  createdAt?: T
+  updatedAt?: T
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shippingzones_select".
+ */
+export interface ShippingzonesSelect<T extends boolean = true> {
+  name?: T
+  methods?:
+    | T
+    | {
+        method?: T
+        price?: T
+        estimatedDays?: T
         id?: T
       }
   updatedAt?: T
