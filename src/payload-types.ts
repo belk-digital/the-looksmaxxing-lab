@@ -72,6 +72,8 @@ export interface Config {
     addresses: Address
     categories: Category
     products: Product
+    carts: Cart
+    wishlists: Wishlist
     'payload-kv': PayloadKv
     'payload-locked-documents': PayloadLockedDocument
     'payload-preferences': PayloadPreference
@@ -84,6 +86,8 @@ export interface Config {
     addresses: AddressesSelect<false> | AddressesSelect<true>
     categories: CategoriesSelect<false> | CategoriesSelect<true>
     products: ProductsSelect<false> | ProductsSelect<true>
+    carts: CartsSelect<false> | CartsSelect<true>
+    wishlists: WishlistsSelect<false> | WishlistsSelect<true>
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>
     'payload-locked-documents':
       | PayloadLockedDocumentsSelect<false>
@@ -303,6 +307,46 @@ export interface Product {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carts".
+ */
+export interface Cart {
+  id: number
+  user: number | User
+  items?:
+    | {
+        product: number | Product
+        variantSku: string
+        quantity: number
+        addedAt: string
+        priceSnapshot: number
+        id?: string | null
+      }[]
+    | null
+  updatedAt: string
+  createdAt: string
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wishlists".
+ */
+export interface Wishlist {
+  id: number
+  user: number | User
+  items?:
+    | {
+        product: number | Product
+        variantSku: string
+        quantity: number
+        addedAt: string
+        priceSnapshot: number
+        id?: string | null
+      }[]
+    | null
+  updatedAt: string
+  createdAt: string
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -344,6 +388,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'products'
         value: number | Product
+      } | null)
+    | ({
+        relationTo: 'carts'
+        value: number | Cart
+      } | null)
+    | ({
+        relationTo: 'wishlists'
+        value: number | Wishlist
       } | null)
   globalSlug?: string | null
   user: {
@@ -555,6 +607,44 @@ export interface ProductsSelect<T extends boolean = true> {
   reviewCount?: T
   status?: T
   isVisible?: T
+  updatedAt?: T
+  createdAt?: T
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carts_select".
+ */
+export interface CartsSelect<T extends boolean = true> {
+  user?: T
+  items?:
+    | T
+    | {
+        product?: T
+        variantSku?: T
+        quantity?: T
+        addedAt?: T
+        priceSnapshot?: T
+        id?: T
+      }
+  updatedAt?: T
+  createdAt?: T
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wishlists_select".
+ */
+export interface WishlistsSelect<T extends boolean = true> {
+  user?: T
+  items?:
+    | T
+    | {
+        product?: T
+        variantSku?: T
+        quantity?: T
+        addedAt?: T
+        priceSnapshot?: T
+        id?: T
+      }
   updatedAt?: T
   createdAt?: T
 }
