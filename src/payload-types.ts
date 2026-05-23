@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User
     media: Media
+    addresses: Address
     'payload-kv': PayloadKv
     'payload-locked-documents': PayloadLockedDocument
     'payload-preferences': PayloadPreference
@@ -78,6 +79,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>
     media: MediaSelect<false> | MediaSelect<true>
+    addresses: AddressesSelect<false> | AddressesSelect<true>
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>
     'payload-locked-documents':
       | PayloadLockedDocumentsSelect<false>
@@ -125,6 +127,27 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number
+  firstName: string
+  lastName: string
+  phone?: string | null
+  role?: ('customer' | 'admin' | 'staff') | null
+  emailVerified?: boolean | null
+  acceptsMarketing?: boolean | null
+  preferredLocale?: ('en' | 'es') | null
+  dateOfBirth?: string | null
+  stripeCustomerId?: string | null
+  defaultShippingAddress?: (number | null) | Address
+  defaultBillingAddress?: (number | null) | Address
+  lastLoginAt?: string | null
+  metadata?:
+    | {
+        [k: string]: unknown
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null
   updatedAt: string
   createdAt: string
   email: string
@@ -143,6 +166,29 @@ export interface User {
     | null
   password?: string | null
   collection: 'users'
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "addresses".
+ */
+export interface Address {
+  id: number
+  user: number | User
+  label: string
+  firstName: string
+  lastName: string
+  company?: string | null
+  line1: string
+  line2?: string | null
+  city: string
+  state: string
+  postalCode: string
+  country: string
+  phone: string
+  isDefaultShipping?: boolean | null
+  isDefaultBilling?: boolean | null
+  updatedAt: string
+  createdAt: string
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -230,6 +276,10 @@ export interface PayloadLockedDocument {
         relationTo: 'media'
         value: number | Media
       } | null)
+    | ({
+        relationTo: 'addresses'
+        value: number | Address
+      } | null)
   globalSlug?: string | null
   user: {
     relationTo: 'users'
@@ -277,6 +327,19 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  firstName?: T
+  lastName?: T
+  phone?: T
+  role?: T
+  emailVerified?: T
+  acceptsMarketing?: T
+  preferredLocale?: T
+  dateOfBirth?: T
+  stripeCustomerId?: T
+  defaultShippingAddress?: T
+  defaultBillingAddress?: T
+  lastLoginAt?: T
+  metadata?: T
   updatedAt?: T
   createdAt?: T
   email?: T
@@ -356,6 +419,28 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T
             }
       }
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "addresses_select".
+ */
+export interface AddressesSelect<T extends boolean = true> {
+  user?: T
+  label?: T
+  firstName?: T
+  lastName?: T
+  company?: T
+  line1?: T
+  line2?: T
+  city?: T
+  state?: T
+  postalCode?: T
+  country?: T
+  phone?: T
+  isDefaultShipping?: T
+  isDefaultBilling?: T
+  updatedAt?: T
+  createdAt?: T
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,13 +1,108 @@
 import type { CollectionConfig } from 'payload'
+import { beforeChangeEmailLowercase, afterCreateUserTodo } from '@/hooks/users'
+import { accessUsers } from '@/access/users'
 
 export const Users: CollectionConfig = {
   slug: 'users',
   admin: {
     useAsTitle: 'email',
   },
-  auth: true,
+  auth: {
+    tokenStrategy: 'httpOnly', // use httpOnly cookies for auth tokens
+    verifyEmail: true, // enable built‑in email verification flow
+    resetPassword: true, // enable password reset flow
+  },
+  access: accessUsers,
   fields: [
-    // Email added by default
-    // Add more fields as needed
+    // default fields added by Payload: email, password
+    {
+      name: 'firstName',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'lastName',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'phone',
+      type: 'text',
+      validate: (val) => {
+        const regex = /^\+?[1-9]\d{1,14}$/
+        return regex.test(val) || 'Phone must be in E.164 format'
+      },
+    },
+    {
+      name: 'role',
+      type: 'select',
+      defaultValue: 'customer',
+      options: [
+        { label: 'Customer', value: 'customer' },
+        { label: 'Admin', value: 'admin' },
+        { label: 'Staff', value: 'staff' },
+      ],
+    },
+    {
+      name: 'emailVerified',
+      type: 'checkbox',
+      defaultValue: false,
+    },
+    {
+      name: 'acceptsMarketing',
+      type: 'checkbox',
+      defaultValue: false,
+    },
+    {
+      name: 'preferredLocale',
+      type: 'select',
+      defaultValue: 'en',
+      options: [
+        { label: 'English', value: 'en' },
+        { label: 'Español', value: 'es' },
+      ],
+    },
+    {
+      name: 'dateOfBirth',
+      type: 'date',
+    },
+    {
+      name: 'stripeCustomerId',
+      type: 'text',
+      admin: {
+        readOnly: true,
+        condition: ({ user }) => !!user?.role && ['admin', 'staff'].includes(user.role),
+      },
+    },
+    {
+      name: 'defaultShippingAddress',
+      type: 'relationship',
+      relationTo: 'addresses',
+      hasMany: false,
+      // TODO: implement lazy loading / null handling once Addresses collection is ready
+    },
+    {
+      name: 'defaultBillingAddress',
+      type: 'relationship',
+      relationTo: 'addresses',
+      hasMany: false,
+      // TODO: implement lazy loading / null handling once Addresses collection is ready
+    },
+    {
+      name: 'lastLoginAt',
+      type: 'date',
+      admin: {
+        readOnly: true,
+        condition: ({ user }) => !!user?.role && ['admin', 'staff'].includes(user.role),
+      },
+    },
+    {
+      name: 'metadata',
+      type: 'json',
+    },
   ],
+  hooks: {
+    beforeChange: [beforeChangeEmailLowercase],
+    afterChange: [afterCreateUserTodo],
+  },
 }
