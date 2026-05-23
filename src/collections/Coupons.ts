@@ -5,7 +5,7 @@ import { couponsHook } from '../hooks/coupons'
 export const Coupons: CollectionConfig = {
   slug: 'coupons',
   admin: {
-    defaultColumns: ['code', 'type', 'value', 'usageCount'],
+    defaultColumns: ['code', 'type', 'value', 'freeShipping', 'usageCount'],
     useAsTitle: 'code',
   },
   access: couponsAccess,
@@ -20,6 +20,18 @@ export const Coupons: CollectionConfig = {
       unique: true,
     },
     {
+      name: 'usageCount',
+      type: 'number',
+      defaultValue: 0,
+      admin: { readOnly: true },
+    },
+    {
+      name: 'freeShipping',
+      type: 'checkbox',
+      label: 'Free Shipping',
+      defaultValue: false,
+    },
+    {
       name: 'type',
       type: 'select',
       required: true,
@@ -27,7 +39,105 @@ export const Coupons: CollectionConfig = {
         { label: 'Percentage', value: 'percentage' },
         { label: 'Fixed Amount', value: 'fixed_amount' },
         { label: 'Free Shipping', value: 'free_shipping' },
+        { label: 'Buy One Get One', value: 'buy_one_get_one' },
+        { label: 'Store Credit', value: 'store_credit' },
       ],
+    },
+    // Advanced features
+    {
+      name: 'minSpend',
+      type: 'number',
+      required: false,
+      admin: {
+        description: 'Minimum order amount (in cents) required to apply this coupon.',
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'usageLimit',
+      type: 'number',
+      required: false,
+      admin: {
+        description: 'Maximum number of times this coupon can be used globally.',
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'stackable',
+      type: 'checkbox',
+      label: 'Stackable with other coupons',
+      defaultValue: false,
+      admin: {
+        description: 'Allow this coupon to be combined with other coupons on the same order.',
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'expiresAt',
+      type: 'date',
+      required: false,
+      admin: {
+        description: 'Expiration date after which the coupon is no longer valid.',
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'excludeSaleItems',
+      type: 'checkbox',
+      label: 'Exclude Sale Items',
+      defaultValue: false,
+      admin: {
+        description: 'If enabled, the coupon will not apply to items on sale.',
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'autoApply',
+      type: 'checkbox',
+      label: 'Auto‑apply',
+      defaultValue: false,
+      admin: {
+        description:
+          'When true, the coupon is automatically applied at checkout if conditions are met.',
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'lockedEmails',
+      type: 'array',
+      admin: {
+        description:
+          'Restrict coupon usage to specific email addresses (leave empty for unrestricted).',
+        position: 'sidebar',
+      },
+      fields: [
+        {
+          name: 'email',
+          type: 'email',
+          required: true,
+        },
+      ],
+    },
+    {
+      name: 'storeCreditAmount',
+      type: 'number',
+      required: false,
+      admin: {
+        description: (args) =>
+          args?.data?.type === 'store_credit' ? 'Total store credit value in cents.' : undefined,
+        condition: (_, siblingData) => siblingData.type === 'store_credit',
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'remainingBalance',
+      type: 'number',
+      required: false,
+      admin: {
+        description: 'Remaining credit balance. Managed by the system.',
+        readOnly: true,
+        position: 'sidebar',
+      },
     },
     {
       name: 'value',
@@ -42,12 +152,7 @@ export const Coupons: CollectionConfig = {
         },
       },
     },
-    {
-      name: 'usageCount',
-      type: 'number',
-      defaultValue: 0,
-      admin: { readOnly: true },
-    },
+
     {
       name: 'appliesTo',
       type: 'select',

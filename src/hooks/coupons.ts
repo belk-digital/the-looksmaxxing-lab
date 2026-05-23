@@ -28,6 +28,40 @@ export const couponsHook: BeforeChangeHook = async ({ data, originalDoc, operati
     }
   }
 
+  // Advanced validations
+  // minSpend must be non-negative
+  if (typeof data?.minSpend !== 'undefined' && data.minSpend < 0) {
+    throw new Error('minSpend must be a non-negative number')
+  }
+  // usageLimit must be positive if set
+  if (typeof data?.usageLimit !== 'undefined' && data.usageLimit <= 0) {
+    throw new Error('usageLimit must be greater than zero')
+  }
+  // expiresAt must be a future date if provided
+  if (data?.expiresAt) {
+    const expires = new Date(data.expiresAt)
+    if (isNaN(expires.getTime())) {
+      throw new Error('expiresAt must be a valid date')
+    }
+    if (expires <= new Date()) {
+      throw new Error('expiresAt must be a future date')
+    }
+  }
+  // Store credit handling
+  if (data?.type === 'store_credit') {
+    if (typeof data?.storeCreditAmount !== 'number') {
+      throw new Error('storeCreditAmount is required for store credit coupons')
+    }
+    // Initialize remainingBalance on create
+    if (operation === 'create') {
+      data.remainingBalance = data.storeCreditAmount
+    }
+  }
+  // Prevent manual modification of remainingBalance on update
+  if (operation === 'update' && typeof data?.remainingBalance !== 'undefined') {
+    delete data.remainingBalance
+  }
+
   // usageCount should not be manually set on create/update
   if (operation === 'create' && data?.usageCount && data.usageCount !== 0) {
     data.usageCount = 0

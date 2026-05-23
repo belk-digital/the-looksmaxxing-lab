@@ -11,6 +11,15 @@ export const up = async ({ db }: MigrateUpArgs) => {
       "appliesTo" varchar NOT NULL,
       "products" jsonb,
       "categories" jsonb,
+      "minSpend" integer,
+      "usageLimit" integer,
+      "stackable" boolean DEFAULT false,
+      "expiresAt" timestamp with time zone,
+      "excludeSaleItems" boolean DEFAULT false,
+      "autoApply" boolean DEFAULT false,
+      "lockedEmails" jsonb,
+      "storeCreditAmount" integer,
+      "remainingBalance" integer,
       "created_at" timestamp with time zone DEFAULT now() NOT NULL,
       "updated_at" timestamp with time zone DEFAULT now() NOT NULL
     );

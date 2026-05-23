@@ -2,14 +2,14 @@ import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 export const up = async ({ db }: MigrateUpArgs) => {
   await db.execute(sql`
-    CREATE TABLE "carts" (
+    CREATE TABLE IF NOT EXISTS "carts" (
       "id" serial PRIMARY KEY NOT NULL,
       "user" integer NOT NULL,
       "items" jsonb NOT NULL,
       "created_at" timestamp with time zone DEFAULT now() NOT NULL,
       "updated_at" timestamp with time zone DEFAULT now() NOT NULL
     );
-    CREATE UNIQUE INDEX "carts_user_unique" ON "carts" ("user");
+    CREATE UNIQUE INDEX IF NOT EXISTS "carts_user_unique" ON "carts" ("user");
   `)
 }
 

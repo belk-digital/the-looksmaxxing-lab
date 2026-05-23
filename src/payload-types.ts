@@ -354,9 +354,48 @@ export interface Wishlist {
 export interface Coupon {
   id: number
   code: string
-  type: 'percentage' | 'fixed_amount' | 'free_shipping'
-  value?: number | null
   usageCount?: number | null
+  freeShipping?: boolean | null
+  type: 'percentage' | 'fixed_amount' | 'free_shipping' | 'buy_one_get_one' | 'store_credit'
+  /**
+   * Minimum order amount (in cents) required to apply this coupon.
+   */
+  minSpend?: number | null
+  /**
+   * Maximum number of times this coupon can be used globally.
+   */
+  usageLimit?: number | null
+  /**
+   * Allow this coupon to be combined with other coupons on the same order.
+   */
+  stackable?: boolean | null
+  /**
+   * Expiration date after which the coupon is no longer valid.
+   */
+  expiresAt?: string | null
+  /**
+   * If enabled, the coupon will not apply to items on sale.
+   */
+  excludeSaleItems?: boolean | null
+  /**
+   * When true, the coupon is automatically applied at checkout if conditions are met.
+   */
+  autoApply?: boolean | null
+  /**
+   * Restrict coupon usage to specific email addresses (leave empty for unrestricted).
+   */
+  lockedEmails?:
+    | {
+        email: string
+        id?: string | null
+      }[]
+    | null
+  storeCreditAmount?: number | null
+  /**
+   * Remaining credit balance. Managed by the system.
+   */
+  remainingBalance?: number | null
+  value?: number | null
   appliesTo: 'all' | 'specific_products' | 'specific_categories'
   products?:
     | {
@@ -686,9 +725,24 @@ export interface WishlistsSelect<T extends boolean = true> {
  */
 export interface CouponsSelect<T extends boolean = true> {
   code?: T
-  type?: T
-  value?: T
   usageCount?: T
+  freeShipping?: T
+  type?: T
+  minSpend?: T
+  usageLimit?: T
+  stackable?: T
+  expiresAt?: T
+  excludeSaleItems?: T
+  autoApply?: T
+  lockedEmails?:
+    | T
+    | {
+        email?: T
+        id?: T
+      }
+  storeCreditAmount?: T
+  remainingBalance?: T
+  value?: T
   appliesTo?: T
   products?:
     | T
