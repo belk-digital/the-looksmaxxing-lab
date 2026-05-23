@@ -2,7 +2,7 @@ import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 export const up = async ({ db }: MigrateUpArgs) => {
   await db.execute(sql`
-    CREATE TABLE "products" (
+    CREATE TABLE IF NOT EXISTS "products" (
       "id" serial PRIMARY KEY NOT NULL,
       "name" jsonb,
       "description" jsonb,
@@ -21,8 +21,8 @@ export const up = async ({ db }: MigrateUpArgs) => {
       "created_at" timestamp with time zone DEFAULT now() NOT NULL,
       "updated_at" timestamp with time zone DEFAULT now() NOT NULL
     );
-    CREATE UNIQUE INDEX "products_slug_idx" ON "products" ("slug");
-    CREATE INDEX "products_status_idx" ON "products" ("status");
+    CREATE UNIQUE INDEX IF NOT EXISTS "products_slug_idx" ON "products" ("slug");
+    CREATE INDEX IF NOT EXISTS "products_status_idx" ON "products" ("status");
   `)
 }
 

@@ -74,6 +74,7 @@ export interface Config {
     products: Product
     carts: Cart
     wishlists: Wishlist
+    coupons: Coupon
     'payload-kv': PayloadKv
     'payload-locked-documents': PayloadLockedDocument
     'payload-preferences': PayloadPreference
@@ -88,6 +89,7 @@ export interface Config {
     products: ProductsSelect<false> | ProductsSelect<true>
     carts: CartsSelect<false> | CartsSelect<true>
     wishlists: WishlistsSelect<false> | WishlistsSelect<true>
+    coupons: CouponsSelect<false> | CouponsSelect<true>
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>
     'payload-locked-documents':
       | PayloadLockedDocumentsSelect<false>
@@ -347,6 +349,32 @@ export interface Wishlist {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "coupons".
+ */
+export interface Coupon {
+  id: number
+  code: string
+  type: 'percentage' | 'fixed_amount' | 'free_shipping'
+  value?: number | null
+  usageCount?: number | null
+  appliesTo: 'all' | 'specific_products' | 'specific_categories'
+  products?:
+    | {
+        product: number | Product
+        id?: string | null
+      }[]
+    | null
+  categories?:
+    | {
+        category: number | Category
+        id?: string | null
+      }[]
+    | null
+  updatedAt: string
+  createdAt: string
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -396,6 +424,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'wishlists'
         value: number | Wishlist
+      } | null)
+    | ({
+        relationTo: 'coupons'
+        value: number | Coupon
       } | null)
   globalSlug?: string | null
   user: {
@@ -643,6 +675,31 @@ export interface WishlistsSelect<T extends boolean = true> {
         quantity?: T
         addedAt?: T
         priceSnapshot?: T
+        id?: T
+      }
+  updatedAt?: T
+  createdAt?: T
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "coupons_select".
+ */
+export interface CouponsSelect<T extends boolean = true> {
+  code?: T
+  type?: T
+  value?: T
+  usageCount?: T
+  appliesTo?: T
+  products?:
+    | T
+    | {
+        product?: T
+        id?: T
+      }
+  categories?:
+    | T
+    | {
+        category?: T
         id?: T
       }
   updatedAt?: T

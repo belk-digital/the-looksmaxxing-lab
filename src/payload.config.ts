@@ -12,6 +12,7 @@ import { Addresses } from './collections/Addresses'
 import { Categories } from './collections/Categories'
 import { Products } from './collections/Products'
 import { Carts } from './collections/Carts'
+import { Coupons } from './collections/Coupons'
 import { Wishlists } from './collections/Wishlists'
 
 const filename = fileURLToPath(import.meta.url)
@@ -24,7 +25,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Addresses, Categories, Products, Carts, Wishlists],
+  collections: [Users, Media, Addresses, Categories, Products, Carts, Wishlists, Coupons],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
