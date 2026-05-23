@@ -13,6 +13,10 @@ import { Categories } from './collections/Categories'
 import { Products } from './collections/Products'
 import { Carts } from './collections/Carts'
 import { Coupons } from './collections/Coupons'
+import { BlogPosts } from './collections/BlogPosts'
+import { Pages } from './collections/Pages'
+import { ContactMessages } from './collections/ContactMessages'
+import { EmailLogs } from './collections/EmailLogs'
 import { Wishlists } from './collections/Wishlists'
 import { Reviews } from './collections/Reviews'
 import { Orders } from './collections/Orders'
@@ -40,6 +44,10 @@ export default buildConfig({
     Orders,
     Reviews,
     ShippingZones,
+    BlogPosts,
+    Pages,
+    ContactMessages,
+    EmailLogs,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
