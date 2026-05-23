@@ -43,6 +43,7 @@ For copy-paste prompts to feed your AI IDE, see `PROMPTS.md`. Each prompt is num
     - Stripe CLI (for local webhook testing)
 
 ## Verification
+
 - [ ] Business formed, EIN issued
 - [ ] Bank account active
 - [ ] Domain owned, WHOIS private
@@ -75,6 +76,7 @@ For copy-paste prompts to feed your AI IDE, see `PROMPTS.md`. Each prompt is num
 **Run this prompt:** `PROMPTS.md` → **P-1.1**
 
 ## Verification
+
 - [ ] `npm run dev` works
 - [ ] `/admin` loads, you can log in
 - [ ] Postgres connection works (check Neon dashboard for activity)
@@ -104,6 +106,7 @@ For copy-paste prompts to feed your AI IDE, see `PROMPTS.md`. Each prompt is num
 **Run this prompt:** `PROMPTS.md` → **P-2.1**
 
 ## Verification
+
 - [ ] `npm run lint` passes
 - [ ] `npm run typecheck` passes
 - [ ] `npm run format` works
@@ -141,6 +144,7 @@ Do collections in this order to satisfy relationships:
 ## Globals
 
 After collections:
+
 - SiteSettings
 - Header
 - Footer
@@ -153,6 +157,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-3.1 through P-3.15** (one per collection)
 
 ## Verification
+
 - [ ] All collections visible in `/admin` sidebar
 - [ ] Can create 1 sample of each in admin
 - [ ] `src/payload-types.ts` includes all types
@@ -187,6 +192,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-4.1 through P-4.7**
 
 ## Verification
+
 - [ ] Can register at `/register` — receives welcome + verification email
 - [ ] Verification link works
 - [ ] Can log in
@@ -218,6 +224,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-5.1 through P-5.4**
 
 ## Verification
+
 - [ ] `/en/...` and `/es/...` both render
 - [ ] Switching language preserves current page
 - [ ] Product entered in admin shows EN and ES tabs, both save
@@ -255,6 +262,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-6.1 through P-6.6**
 
 ## Verification
+
 - [ ] PLP loads, shows products
 - [ ] Filters and sort work, URL reflects state
 - [ ] Pagination/infinite scroll works
@@ -285,6 +293,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-7.1 through P-7.5**
 
 ## Verification
+
 - [ ] Guest can add items, persists across reloads
 - [ ] Cart drawer opens on add, shows correct items
 - [ ] Cart page shows all lines correctly
@@ -312,6 +321,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-8.1 through P-8.3**
 
 ## Verification
+
 - [ ] Heart toggles in real-time
 - [ ] Guest wishlist persists
 - [ ] Login merges wishlists
@@ -354,6 +364,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-9.1 through P-9.8**
 
 ## Verification
+
 - [ ] Can complete checkout with test card `4242 4242 4242 4242`
 - [ ] Failed payment shows error and lets user retry (test card `4000 0000 0000 0002`)
 - [ ] 3DS challenge works (test card `4000 0027 6000 3184`)
@@ -384,6 +395,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-10.1 through P-10.5**
 
 ## Verification
+
 - [ ] Customer sees only their own orders
 - [ ] Order detail shows all info
 - [ ] Admin can filter orders by status
@@ -407,6 +419,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-11.1, P-11.2**
 
 ## Verification
+
 - [ ] Valid code applies discount
 - [ ] Expired code rejected
 - [ ] Per-customer limit enforced
@@ -434,6 +447,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-12.1, P-12.2**
 
 ## Verification
+
 - [ ] Rates show at checkout based on address
 - [ ] Free shipping triggers above threshold
 - [ ] Admin can buy a test label (Shippo test mode)
@@ -457,6 +471,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-13.1**
 
 ## Verification
+
 - [ ] All pages reachable from account nav
 - [ ] Address CRUD works
 - [ ] Default address logic correct (only one true at a time)
@@ -488,6 +503,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-14.1 through P-14.4**
 
 ## Verification
+
 - [ ] All 9 email types render correctly
 - [ ] Spanish versions render correctly
 - [ ] EmailLogs collection has entries after each send
@@ -513,6 +529,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-15.1, P-15.2**
 
 ## Verification
+
 - [ ] Can submit review only with delivered order
 - [ ] Pending reviews don't show on PDP
 - [ ] After approval, review appears, rating averages update
@@ -536,6 +553,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-16.1, P-16.2**
 
 ## Verification
+
 - [ ] Type in search → instant results
 - [ ] Typo tolerance works ("collagn" finds "collagen")
 - [ ] Filters work on search page
@@ -559,6 +577,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-17.1 through P-17.4**
 
 ## Verification
+
 - [ ] Blog index + post pages work
 - [ ] All policy pages live
 - [ ] Contact form submits, admin gets email, customer gets auto-reply
@@ -583,6 +602,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-18.1 through P-18.4**
 
 ## Verification
+
 - [ ] Events fire to PostHog and GA4 in real time
 - [ ] Sentry receives a test error
 - [ ] UptimeRobot pings successful
@@ -614,6 +634,7 @@ After each collection: `npm run payload migrate:create <name>` then `npm run pay
 **Run prompts:** `PROMPTS.md` → **P-19.1 through P-19.6**
 
 ## Verification
+
 - [ ] Sitemap.xml valid and includes all routes
 - [ ] PSI score ≥ 90 on homepage and PDP (mobile)
 - [ ] Rate limits trigger as expected

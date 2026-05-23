@@ -37,6 +37,7 @@ npm install @clerk/nextjs
 ```
 
 Env vars to add (see ENV-VARIABLES.md):
+
 ```bash
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
@@ -85,7 +86,9 @@ export default clerkMiddleware(async (auth, req) => {
 })
 
 export const config = {
-  matcher: ['/((?!_next|api/webhooks|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)'],
+  matcher: [
+    '/((?!_next|api/webhooks|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+  ],
 }
 ```
 
@@ -108,6 +111,7 @@ Add `clerkUserId` as the bridge between Clerk and Payload:
 ```
 
 **Disable Payload auth for customers** — keep auth enabled only for admins:
+
 ```ts
 // payload.config.ts
 export default buildConfig({
@@ -120,6 +124,7 @@ export default buildConfig({
 ```
 
 In Users collection auth config:
+
 ```ts
 auth: {
   // Keep auth enabled so admins can still use /admin
@@ -242,6 +247,7 @@ export async function POST(req: Request) {
 ```
 
 **Register this webhook in Clerk dashboard:**
+
 - URL: `https://yoursite.com/api/webhooks/clerk`
 - Events: `user.created`, `user.updated`, `user.deleted`
 
@@ -273,6 +279,7 @@ export async function getPayloadUser(): Promise<User | null> {
 ```
 
 Use in any server component or server action:
+
 ```ts
 // In a server component
 const user = await getPayloadUser()
@@ -310,6 +317,7 @@ export default function RegisterPage() {
 Clerk handles: email verification, password strength, marketing opt-in (add as custom field in Clerk → metadata), OAuth buttons, error states, loading states — everything. You build zero auth UI from scratch.
 
 **Customize Clerk appearance** to match your brand:
+
 ```ts
 // In ClerkProvider (root layout)
 <ClerkProvider
@@ -330,6 +338,7 @@ Clerk handles: email verification, password strength, marketing opt-in (add as c
 ## User button (header)
 
 Replace custom user menu with Clerk's `<UserButton>`:
+
 ```ts
 import { UserButton, SignedIn, SignedOut } from '@clerk/nextjs'
 
@@ -369,9 +378,11 @@ export async function someProtectedAction(data: FormData) {
 ## Marketing opt-in (Clerk custom metadata)
 
 In Clerk dashboard → Configure → User metadata:
+
 - Add public metadata field: `acceptsMarketing: boolean`
 
 On sign-up, add a custom Clerk field or capture post-registration:
+
 - After first login, show a one-time "marketing preferences" modal
 - Server action updates Clerk public metadata via Clerk Backend API
 - Clerk webhook updates Payload User record with acceptsMarketing

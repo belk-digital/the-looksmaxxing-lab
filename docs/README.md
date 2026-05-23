@@ -17,24 +17,25 @@ This `/docs` folder is your **project bible**. Drop it into the root of your pro
 **Windsurf:** Copy `CLAUDE.md` content into `.windsurfrules` at root.
 
 **Any IDE:** At the start of every new chat/session, paste this line:
+
 > "Read /docs/PROJECT-CONTEXT.md, /docs/SCHEMAS.md, and /docs/FEATURES.md before doing anything. We are in phase [X] of /docs/BUILD-GUIDE.md."
 
 ---
 
 ## File index
 
-| File | Purpose | When to read |
-|---|---|---|
-| `README.md` | This file. Navigation. | First |
-| `CLAUDE.md` | Rules the AI must follow on this project | Auto-loaded by AI |
-| `PROJECT-CONTEXT.md` | Project overview, tech stack, conventions | Every AI session |
-| `LEGAL-USA.md` | Peptides legal/compliance for USA market | Before payments + content |
-| `SCHEMAS.md` | All Payload collections (data models) | When building schemas |
-| `FEATURES.md` | Every feature with user stories | When building features |
-| `BUILD-GUIDE.md` | Phase-by-phase step-by-step build | Your roadmap |
-| `PROMPTS.md` | Copy-paste prompts library, in order | Daily use |
-| `ENV-VARIABLES.md` | All environment variables | When deploying |
-| `LAUNCH-CHECKLIST.md` | Pre-launch verification | Before going live |
+| File                  | Purpose                                   | When to read              |
+| --------------------- | ----------------------------------------- | ------------------------- |
+| `README.md`           | This file. Navigation.                    | First                     |
+| `CLAUDE.md`           | Rules the AI must follow on this project  | Auto-loaded by AI         |
+| `PROJECT-CONTEXT.md`  | Project overview, tech stack, conventions | Every AI session          |
+| `LEGAL-USA.md`        | Peptides legal/compliance for USA market  | Before payments + content |
+| `SCHEMAS.md`          | All Payload collections (data models)     | When building schemas     |
+| `FEATURES.md`         | Every feature with user stories           | When building features    |
+| `BUILD-GUIDE.md`      | Phase-by-phase step-by-step build         | Your roadmap              |
+| `PROMPTS.md`          | Copy-paste prompts library, in order      | Daily use                 |
+| `ENV-VARIABLES.md`    | All environment variables                 | When deploying            |
+| `LAUNCH-CHECKLIST.md` | Pre-launch verification                   | Before going live         |
 
 ---
 

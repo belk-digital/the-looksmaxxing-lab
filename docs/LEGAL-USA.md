@@ -7,7 +7,9 @@
 In the USA, "peptides" e-commerce splits into three legal categories. The category determines your payment processor options, your labeling, your liability, and your business viability.
 
 ### Category A: Cosmetic peptides (LOWEST RISK)
+
 Topical creams, serums, skincare with peptides like copper peptides, Matrixyl, Argireline.
+
 - Regulated as cosmetics by FDA (much lighter touch than drugs)
 - Cannot claim to treat/cure/prevent any disease (that makes it a drug)
 - Stripe, PayPal, Square: all accept
@@ -15,7 +17,9 @@ Topical creams, serums, skincare with peptides like copper peptides, Matrixyl, A
 - Standard hosting works
 
 ### Category B: Dietary supplement peptides (MEDIUM RISK)
+
 Ingestible products like collagen peptides, whey peptides, creatine.
+
 - Regulated under DSHEA (Dietary Supplement Health and Education Act)
 - Must carry FDA "Supplement Facts" panel
 - Cannot claim disease treatment ("structure/function claims" only)
@@ -24,7 +28,9 @@ Ingestible products like collagen peptides, whey peptides, creatine.
 - May trigger additional underwriting
 
 ### Category C: "Research peptides" (HIGH RISK / GRAY MARKET)
+
 BPC-157, TB-500, semaglutide, tirzepatide, GHK-Cu, MOTS-C, ipamorelin, sermorelin, etc.
+
 - Not FDA-approved for human use
 - Sold under "for research use only, not for human consumption" labeling
 - FDA has issued warning letters to many vendors
@@ -38,6 +44,7 @@ BPC-157, TB-500, semaglutide, tirzepatide, GHK-Cu, MOTS-C, ipamorelin, sermoreli
 - Federal investigations have hit large vendors
 
 **You must decide which category before Phase 0.** If A or B, this guide works as-is. If C, you need:
+
 - A US attorney consultation BEFORE launch
 - LLC formed in a friendly state (Wyoming/Delaware common)
 - High-risk merchant account application (4–8 week approval)

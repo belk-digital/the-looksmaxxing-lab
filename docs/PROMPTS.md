@@ -3,6 +3,7 @@
 > Use these prompts in order with your AI IDE. Each prompt is scoped, specific, and references the docs so the AI stays focused.
 >
 > **Always start each session with this:**
+>
 > ```
 > Read /docs/CLAUDE.md, /docs/PROJECT-CONTEXT.md, /docs/SCHEMAS.md, and /docs/FEATURES.md before doing anything else. Confirm you've read them by listing the tech stack version numbers from PROJECT-CONTEXT.md. We are currently in Phase [X].
 > ```
@@ -464,7 +465,7 @@ Commit: `feat(email): welcome, verify, password-reset templates (EN/ES)`
 
 ## P-5.1 — Install and configure next-intl
 
-```
+````
 Task: Set up next-intl for UI i18n.
 
 Steps:
@@ -479,7 +480,8 @@ Steps:
      localePrefix: 'always'
    });
    export const { Link, redirect, usePathname, useRouter, getPathname } = createNavigation(routing);
-   ```
+````
+
 3. Create `src/i18n/request.ts` to load messages per locale.
 4. Update `next.config.ts` with `createNextIntlPlugin`.
 5. Restructure `src/app/(frontend)/` to use `[locale]` segment.
@@ -491,14 +493,17 @@ Steps:
 7. Update root layout to wrap with `NextIntlClientProvider`.
 
 After: visit /en/ and /es/, confirm switch works. Commit `feat(i18n): set up next-intl with EN and ES`.
+
 ```
 
 ## P-5.2 — Payload localization
 
 ```
+
 Task: Enable Payload's built-in localization.
 
 Steps:
+
 1. In `payload.config.ts`, add:
    ```ts
    localization: {
@@ -513,11 +518,13 @@ Steps:
 5. Test: edit one product, see EN/ES tabs in admin, save Spanish version, confirm both load correctly via API.
 
 Commit: `feat(i18n): enable Payload localization for all [L] fields`.
+
 ```
 
 ## P-5.3 — Language switcher
 
 ```
+
 Task: Create `src/components/shared/LanguageSwitcher.tsx`.
 
 - Dropdown (shadcn DropdownMenu) showing English / Español
@@ -528,14 +535,17 @@ Task: Create `src/components/shared/LanguageSwitcher.tsx`.
 - Visible in header desktop and mobile menu
 
 Commit: `feat(i18n): language switcher with persistence`.
+
 ```
 
 ## P-5.4 — Hreflang and metadata
 
 ```
+
 Task: Add hreflang tags to all localized pages.
 
 In root layout, generateMetadata:
+
 - Include `alternates.languages` with en and es URLs for current path
 - Canonical = current locale URL
 - og:locale = current locale
@@ -544,6 +554,7 @@ In root layout, generateMetadata:
 Test with Google Rich Results / view source.
 
 Commit: `feat(seo): hreflang and localized metadata`.
+
 ```
 
 ---
@@ -553,7 +564,9 @@ Commit: `feat(seo): hreflang and localized metadata`.
 ## P-6.1 — Seed sample products
 
 ```
+
 Task: Create `scripts/seed.ts` that uses Payload's local API to create:
+
 - 5 categories: Skincare, Supplements, Research Use Only (if applicable), Beauty, Wellness
 - 8 products with realistic peptide data, in both EN and ES
 - 2 products with variants
@@ -563,16 +576,19 @@ Make it idempotent: skip if slug exists.
 Add npm script: `"seed": "tsx scripts/seed.ts"`.
 
 Commit: `chore: seed script with sample products and categories`.
+
 ```
 
 ## P-6.2 — ProductCard component
 
 ```
+
 Task: Create `src/components/shop/ProductCard.tsx` (server component).
 
 Props: `{ product: Product }`
 
 Render:
+
 - Square image (use Next/Image with proper sizes prop)
 - Name, short description (truncated)
 - Price (and compareAtPrice strikethrough if present)
@@ -588,20 +604,24 @@ Create `<ProductCardSkeleton>` for loading states.
 Storybook-style: also create `src/app/(dev)/components/product-card/page.tsx` (only in dev) to preview variations.
 
 Commit: `feat(shop): ProductCard and skeleton`.
+
 ```
 
 ## P-6.3 — Product Listing Page (PLP)
 
 ```
+
 Task: Build `/[locale]/products/page.tsx`.
 
 Server component:
+
 - Read search params: category, minPrice, maxPrice, sort, page (or cursor for infinite scroll)
 - Query Payload products: filter by status=active, apply filters
 - Render grid of ProductCard
 - Pass to client component for filters sidebar
 
 Client filter sidebar (`<ProductFilters>`):
+
 - Category checkboxes (from /api/categories or pre-fetched)
 - Price range slider
 - In-stock toggle
@@ -610,6 +630,7 @@ Client filter sidebar (`<ProductFilters>`):
 - Mobile: open in shadcn Sheet
 
 Sort dropdown:
+
 - Featured (default), Newest, Price: Low to High, Price: High to Low, Top Rated
 
 Infinite scroll: use intersection observer + server-side cursor pagination.
@@ -619,21 +640,25 @@ Empty state with CTA to clear filters.
 JSON-LD CollectionPage.
 
 Commit: `feat(shop): PLP with filters, sort, infinite scroll`.
+
 ```
 
 ## P-6.4 — Product Detail Page (PDP)
 
 ```
+
 Task: Build `/[locale]/products/[slug]/page.tsx`.
 
 Server component:
+
 - Fetch product by slug + locale
 - 404 if not found or status != active
 - generateMetadata: title, description, OG image, JSON-LD Product schema with offers, aggregateRating
 
 Layout:
+
 - Left: image gallery (client component with thumbnails, swipe on mobile, zoom on desktop). Use embla-carousel or build with shadcn.
-- Right: 
+- Right:
   - Breadcrumbs (Categories trail)
   - Product name
   - Rating + review count (anchor link to reviews section)
@@ -649,6 +674,7 @@ Layout:
   - Research Use Only banner if applicable
 
 Tabs below:
+
 - Description (richtext)
 - Ingredients
 - COA (button to download if present, else "Not available")
@@ -662,11 +688,13 @@ Recently viewed (client component, localStorage).
 Mobile: sticky bottom bar with price + add to cart.
 
 Commit: `feat(shop): PDP with gallery, variants, tabs, JSON-LD`.
+
 ```
 
 ## P-6.5 — Category pages
 
 ```
+
 Task: Build `/[locale]/categories/[slug]/page.tsx`.
 
 - Server component
@@ -678,11 +706,13 @@ Task: Build `/[locale]/categories/[slug]/page.tsx`.
 - JSON-LD BreadcrumbList
 
 Commit: `feat(shop): category landing pages`.
+
 ```
 
 ## P-6.6 — Recently viewed hook
 
 ```
+
 Task: Create `src/hooks/useRecentlyViewed.ts`.
 
 - Stores last 10 product IDs in localStorage with timestamps
@@ -694,6 +724,7 @@ Task: Create `src/hooks/useRecentlyViewed.ts`.
 Create `<RecentlyViewed>` client component using this hook.
 
 Commit: `feat(shop): recently viewed products`.
+
 ```
 
 ---
@@ -703,17 +734,20 @@ Commit: `feat(shop): recently viewed products`.
 ## P-7.1 — Cart store (Zustand)
 
 ```
+
 Task: Build cart state management.
 
 Install: `npm install zustand`.
 
 Create `src/lib/cart/store.ts`:
+
 - Zustand store with persist middleware (localStorage)
 - State: items array, couponCode, isOpen (drawer state)
 - Actions: addItem(product, variantSku, qty), removeItem(lineId), updateQuantity(lineId, qty), clear(), setCoupon(code), toggleDrawer()
 - Derived: subtotal, itemCount
 
 Each cart line:
+
 - lineId (uuid generated on add)
 - productId
 - variantSku (or null)
@@ -722,11 +756,13 @@ Each cart line:
 - minimal product info for display (name, image url) — cached, refreshed on view
 
 Commit: `feat(cart): Zustand cart store with persistence`.
+
 ```
 
 ## P-7.2 — Add to cart wiring
 
 ```
+
 Task: Wire up the "Add to Cart" button on PDP and ProductCard.
 
 - On click:
@@ -738,11 +774,13 @@ Task: Wire up the "Add to Cart" button on PDP and ProductCard.
 - Optimistic UI: show button loading state during server call
 
 Commit: `feat(cart): add-to-cart server validation and toast`.
+
 ```
 
 ## P-7.3 — Cart drawer
 
 ```
+
 Task: Create `src/components/cart/CartDrawer.tsx`.
 
 - Uses shadcn Sheet (right-side)
@@ -754,11 +792,13 @@ Task: Create `src/components/cart/CartDrawer.tsx`.
 - Close on outside click
 
 Commit: `feat(cart): cart drawer with quick edit`.
+
 ```
 
 ## P-7.4 — Cart page
 
 ```
+
 Task: Build `/[locale]/cart/page.tsx`.
 
 - Lists cart lines with full details
@@ -772,11 +812,13 @@ Task: Build `/[locale]/cart/page.tsx`.
 If any line is out of stock: show warning banner + disable checkout button.
 
 Commit: `feat(cart): cart page with stock validation`.
+
 ```
 
 ## P-7.5 — Server-side cart sync (logged-in users)
 
 ```
+
 Task: Sync client cart to Carts collection for logged-in users.
 
 - On login: server action `mergeCarts(guestCart, userId)` — combines guest cart from client with existing server cart, dedupes by SKU + product, sums quantities, returns merged cart to replace client state
@@ -784,11 +826,13 @@ Task: Sync client cart to Carts collection for logged-in users.
 - On cart load (logged-in): fetch from server, merge with local (server wins on conflict)
 
 Edge cases:
+
 - User has server cart, logs in from new device: server wins
 - User has guest cart, logs in: merge
 - User logs out: clear server-cached state but keep localStorage (next login will merge again)
 
 Commit: `feat(cart): server-side cart sync for logged-in users`.
+
 ```
 
 ---
@@ -798,16 +842,19 @@ Commit: `feat(cart): server-side cart sync for logged-in users`.
 ## P-8.1 — Wishlist store
 
 ```
+
 Task: Mirror P-7.1 but for wishlist.
 
 `src/lib/wishlist/store.ts` — Zustand + localStorage. Actions: add, remove, toggle, clear, has(productId, variantSku).
 
 Commit: `feat(wishlist): Zustand store`.
+
 ```
 
 ## P-8.2 — Wishlist button + server sync
 
 ```
+
 Task: Heart button component + server sync (per P-7.5 pattern).
 
 - Heart icon button: filled if in wishlist, outline if not
@@ -815,11 +862,13 @@ Task: Heart button component + server sync (per P-7.5 pattern).
 - Login: merge guest + server wishlists
 
 Commit: `feat(wishlist): heart button with server sync`.
+
 ```
 
 ## P-8.3 — Wishlist page
 
 ```
+
 Task: Build `/[locale]/wishlist/page.tsx` (and `/[locale]/account/wishlist` for logged-in users — same component).
 
 - Grid of saved items (reuse ProductCard with extra "Remove from wishlist" + "Add to cart" actions)
@@ -828,6 +877,7 @@ Task: Build `/[locale]/wishlist/page.tsx` (and `/[locale]/account/wishlist` for 
 - Empty state
 
 Commit: `feat(wishlist): wishlist page with bulk actions`.
+
 ```
 
 ---
@@ -837,6 +887,7 @@ Commit: `feat(wishlist): wishlist page with bulk actions`.
 ## P-9.1 — Stripe setup
 
 ```
+
 Task: Install and configure Stripe.
 
 1. `npm install stripe @stripe/stripe-js @stripe/react-stripe-js`
@@ -846,18 +897,22 @@ Task: Install and configure Stripe.
 5. Enable Stripe Tax in Stripe dashboard (manual step — give me instructions)
 
 Commit: `chore(stripe): install and configure SDK`.
+
 ```
 
 ## P-9.2 — Checkout page UI
 
 ```
+
 Task: Build `/[locale]/checkout/page.tsx` — single-page checkout.
 
 Layout:
+
 - Left column (2/3): form sections
 - Right column (1/3, sticky on desktop, collapsible on mobile): order summary
 
 Sections (single page, accordion or all-visible):
+
 1. Contact: email (autofilled if logged in), marketing opt-in checkbox (guest only)
 2. Shipping Address: form (with optional "Use saved address" select if logged in)
 3. Shipping Method: radio cards (placeholder: empty until P-12 — show "Calculating...")
@@ -871,14 +926,17 @@ Use React Hook Form for the shipping address. Zod schema.
 Show errors per field. Disable Place Order until valid + payment element complete.
 
 Commit: `feat(checkout): single-page checkout layout`.
+
 ```
 
 ## P-9.3 — PaymentIntent server action
 
 ```
+
 Task: Server action `createPaymentIntent` in `src/app/(frontend)/[locale]/checkout/actions.ts`.
 
 Logic:
+
 1. Read cart server-side (don't trust client total)
 2. Re-validate every line: product exists, status=active, stock available, current price
 3. Compute totals server-side: subtotal, discount (validate coupon again), shipping (use rate from method ID), tax (call Stripe Tax)
@@ -895,19 +953,23 @@ Logic:
 Client uses clientSecret to mount Payment Element.
 
 Errors:
+
 - Out of stock: refuse, return line details so client can show "Sorry, X is no longer available"
 - Coupon invalid: return error, reload summary without coupon
 - Tax fail: log to Sentry, fall back to no tax (or refuse — your call, default refuse for safety)
 
 Commit: `feat(checkout): createPaymentIntent server action`.
+
 ```
 
 ## P-9.4 — Payment confirmation flow
 
 ```
+
 Task: Wire up client-side payment confirmation.
 
 In checkout client component:
+
 1. On "Place Order" click: call createPaymentIntent if not already
 2. Mount Stripe Payment Element with returned clientSecret
 3. On Place Order: call `stripe.confirmPayment({ elements, confirmParams: { return_url: 'https://.../order-pending?pi={PAYMENT_INTENT_ID}' } })`
@@ -915,6 +977,7 @@ In checkout client component:
 5. After confirmation, user lands on /order-pending which polls or waits for webhook to create order
 
 Order page `/[locale]/order-pending?pi=...`:
+
 - Server component
 - Reads PaymentIntent status from Stripe
 - If succeeded but no order yet: poll every 2s for max 30s — webhook should arrive quickly
@@ -922,23 +985,26 @@ Order page `/[locale]/order-pending?pi=...`:
 - If still no order after 30s: show "Payment received but processing — we'll email you" + log to Sentry
 
 Commit: `feat(checkout): payment confirmation flow with order pending page`.
+
 ```
 
 ## P-9.5 — Stripe webhook handler
 
 ```
+
 Task: Critical security code. Read every line. Test exhaustively.
 
 Create `src/app/api/webhooks/stripe/route.ts`.
 
 Logic:
+
 1. Read raw body (NOT parsed JSON — Next.js App Router: use `await req.text()`)
 2. Get `stripe-signature` header
 3. Verify with `stripe.webhooks.constructEvent(body, sig, STRIPE_WEBHOOK_SECRET)`
 4. If verification fails: return 400 immediately, log to Sentry
 5. Check event ID against an idempotency table (create `StripeEvents` collection or store in Redis): if seen, return 200 (already processed)
 6. Switch on event.type:
-   - `payment_intent.succeeded`: 
+   - `payment_intent.succeeded`:
      - Read metadata for cartId/userId
      - Re-read cart from DB (or use saved order draft if you go that route)
      - Re-validate stock atomically; if fails: refund immediately, alert
@@ -955,6 +1021,7 @@ Logic:
 8. Return 200
 
 Important:
+
 - All DB writes in a transaction
 - Function must complete in < 25s (Stripe retries on timeout)
 - Send email after DB commit
@@ -963,11 +1030,13 @@ Important:
 Local testing: `stripe listen --forward-to localhost:3000/api/webhooks/stripe`.
 
 Commit: `feat(webhooks): Stripe webhook handler with idempotency and atomic stock decrement`.
+
 ```
 
 ## P-9.6 — Order confirmation page
 
 ```
+
 Task: Build `/[locale]/order-confirmation/[orderNumber]/page.tsx`.
 
 - Server component
@@ -978,11 +1047,13 @@ Task: Build `/[locale]/order-confirmation/[orderNumber]/page.tsx`.
 - Client child: fire GA4 + PostHog purchase event ONCE (use sessionStorage flag to avoid double-fire on refresh)
 
 Commit: `feat(checkout): order confirmation page with analytics`.
+
 ```
 
 ## P-9.7 — Local testing checklist
 
 ```
+
 Task: Set up local Stripe webhook listener and test:
 
 1. Run `stripe listen --forward-to localhost:3000/api/webhooks/stripe` — copy the signing secret to .env.local
@@ -999,20 +1070,24 @@ Task: Set up local Stripe webhook listener and test:
 Document any failures and fix.
 
 No commit — this is a verification step.
+
 ```
 
 ## P-9.8 — Guest checkout finalization
 
 ```
+
 Task: Ensure guest checkout works end-to-end.
 
 Specifics:
+
 - Guest email captured at top of checkout, stored on order as guestEmail
 - Order accessible via signed token in confirmation URL (so they can refresh and still see it)
 - Tracking link in email always works without login
 - If guest later registers with same email: link past orders (optional, Phase 13)
 
 Commit: `feat(checkout): guest checkout finalized`.
+
 ```
 
 ---
@@ -1094,7 +1169,9 @@ Commit: `feat(checkout): guest checkout finalized`.
 # When something goes wrong
 
 ```
+
 The AI broke X. Here's the error: [paste]. Here's the file it changed: [paste]. Without making other changes, explain what likely went wrong and propose 2 fixes with tradeoffs. Do not write code yet.
+
 ```
 
 ---
@@ -1104,6 +1181,7 @@ The AI broke X. Here's the error: [paste]. Here's the file it changed: [paste]. 
 ## P-CLERK-1 — Install and configure Clerk
 
 ```
+
 Task: Replace Phase 4 custom auth with Clerk. Read /docs/CLERK-AUTH.md fully before starting.
 
 Steps (one at a time, confirm between each):
@@ -1121,7 +1199,7 @@ Steps (one at a time, confirm between each):
 
 3. Wrap root layout with ClerkProvider. Add appearance config matching brand colors (use CSS variables from tailwind.config.ts). Show me the exact layout change.
 
-4. Create the Clerk + i18n combined middleware at src/middleware.ts exactly per /docs/CLERK-AUTH.md. Protect: /[locale]/account/*, /[locale]/checkout/*, /[locale]/affiliates/dashboard/*.
+4. Create the Clerk + i18n combined middleware at src/middleware.ts exactly per /docs/CLERK-AUTH.md. Protect: /[locale]/account/_, /[locale]/checkout/_, /[locale]/affiliates/dashboard/\*.
 
 5. Create src/lib/auth/getPayloadUser.ts exactly per /docs/CLERK-AUTH.md.
 
@@ -1136,26 +1214,31 @@ Steps (one at a time, confirm between each):
 Test: Register a new user via Clerk → confirm user appears in Payload admin Users collection.
 
 Commit: `feat(auth): replace custom auth with Clerk, add webhook sync`
+
 ```
 
 ## P-CLERK-2 — Clerk webhook → Payload sync
 
 ```
+
 Task: Create the webhook handler that syncs Clerk users to Payload Users collection.
 
 Create: src/app/api/webhooks/clerk/route.ts
 
 Full implementation per /docs/CLERK-AUTH.md — copy the code exactly, then:
+
 1. Replace the password with: `crypto.randomUUID() + crypto.randomUUID()` (completely random, unusable as login)
 2. Add Sentry error capture in the catch block
 3. Add EmailLogs entry after user.created for the welcome email trigger
 
 After creating the route:
+
 1. Tell me how to register it in Clerk dashboard (Events, URL, signing secret)
 2. Tell me how to test it locally using the Clerk CLI or by triggering a test event from dashboard
 3. Show me how to verify a new Clerk signup creates a Payload User
 
 Commit: `feat(auth): Clerk webhook handler with Payload user sync`
+
 ```
 
 ---
@@ -1167,11 +1250,13 @@ Commit: `feat(auth): Clerk webhook handler with Payload user sync`
 ## P-AFF-1 — Affiliate collections (all 5)
 
 ```
+
 Task: Create all 5 affiliate collections per /docs/AFFILIATE-SYSTEM.md. Build in this order — each depends on the previous.
 
 Read AFFILIATE-SYSTEM.md sections: Collection: Affiliates, AffiliateApplications, AffiliateClicks, AffiliateConversions, AffiliatePayouts.
 
 For each collection:
+
 1. Create the file in src/collections/
 2. Register in payload.config.ts
 3. Run migration
@@ -1180,20 +1265,24 @@ For each collection:
 6. Move to next — do NOT bundle
 
 Special requirements:
+
 - AffiliateConversions: add unique index on the `order` field — one conversion per order, enforced at DB level
 - AffiliateClicks: index on (affiliate + clickedAt) AND (ipHash + clickedAt)
 - All money fields: integer cents
 - All date fields: proper Date types with index where specified
 
 After all 5 created:
+
 - Run `npm run generate:types`
 - Confirm all 5 types exist in payload-types.ts
 - Commit: `feat(affiliates): all 5 affiliate collections with migrations`
+
 ```
 
 ## P-AFF-2 — AffiliateSettings global + coupon auto-creation hook
 
 ```
+
 Task: Two things in this prompt.
 
 1. Create AffiliateSettings global at src/globals/AffiliateSettings.ts with fields:
@@ -1204,7 +1293,6 @@ Task: Two things in this prompt.
    - minimumPayoutDefault: number (cents, default 5000)
    - payoutScheduleDescription: text (e.g., "Processed every Monday")
    - affiliateTerms: richText [L] (the affiliate program T&C)
-   
 2. Add beforeChange hook on Affiliates collection:
    - Auto-generate referralSlug from displayName: slugify(displayName), ensure unique (append -2, -3 if collision)
    - Auto-generate couponCode: uppercase(displayName_first_part) + commissionRate (e.g., "JOHN15")
@@ -1216,16 +1304,19 @@ Task: Two things in this prompt.
    - Send approval email (TODO — wire in P-AFF-8)
 
 Commit: `feat(affiliates): settings global, auto-slug, auto-coupon on approval`
+
 ```
 
 ## P-AFF-3 — Fraud engine
 
 ```
+
 Task: Build the affiliate fraud detection engine at src/lib/affiliates/fraud.ts
 
 Implement ALL 9 rules from /docs/AFFILIATE-SYSTEM.md "Fraud detection rules engine":
 
 Export the main function:
+
 ```ts
 export async function runFraudChecks(
   order: Order,
@@ -1234,16 +1325,17 @@ export async function runFraudChecks(
   customerEmail: string,
   orderIpHash: string,
 ): Promise<{
-  void: boolean        // true = do not create commission
-  flag: boolean        // true = needs admin review
+  void: boolean // true = do not create commission
+  flag: boolean // true = needs admin review
   selfReferral: boolean
   ipMatch: boolean
-  score: number        // 0-100 risk score
-  notes: string        // comma-separated reasons
+  score: number // 0-100 risk score
+  notes: string // comma-separated reasons
 }>
 ```
 
 Score weights:
+
 - Self-referral: +100 (void immediately)
 - Instant conversion (< 30s): +40
 - IP match with affiliate: +30
@@ -1252,7 +1344,8 @@ Score weights:
 - Guest checkout with affiliate email match: +100 (void)
 
 Score → action:
-- >= 100: void = true (no commission)
+
+- > = 100: void = true (no commission)
 - 61-99: flag = true (hold for manual review)
 - 31-60: flag = true (auto-approve still allowed, but admin sees flag)
 - 0-30: clean
@@ -1260,72 +1353,85 @@ Score → action:
 Create a helper for IP hashing: `hashIp(ip: string): string` using Node's built-in crypto SHA-256.
 
 Add unit tests in src/lib/affiliates/fraud.test.ts covering:
+
 - Self-referral email match → void
 - Instant conversion → flagged
 - Low risk scenario → passes clean
 
 Commit: `feat(affiliates): fraud detection engine with 9 rules and unit tests`
+
 ```
 
 ## P-AFF-4 — Commission engine + order attribution
 
 ```
+
 Task: Build the commission computation and order attribution system.
 
 Create src/lib/affiliates/commission.ts with:
+
 1. `computeCommission(order, affiliate)` → cents — per /docs/AFFILIATE-SYSTEM.md
 2. `attributeOrder(order, cookieAffiliateId, couponCode)` → void — per /docs/AFFILIATE-SYSTEM.md
 
-Create src/lib/affiliates/stats.ts:
-3. `updateAffiliateStats(affiliateId)` — recomputes ALL cached stats fields on the Affiliate record from scratch (counts, totals, conversion rate). Call this after any conversion status change.
+Create src/lib/affiliates/stats.ts: 3. `updateAffiliateStats(affiliateId)` — recomputes ALL cached stats fields on the Affiliate record from scratch (counts, totals, conversion rate). Call this after any conversion status change.
 
 Wire attribution into the Stripe webhook handler (src/app/api/webhooks/stripe/route.ts):
+
 - After order is created (in payment_intent.succeeded handler):
   - Read affiliate_ref cookie from stored checkout session (you'll need to pass it through the PaymentIntent metadata: add affiliateId and affiliateCouponCode to metadata when creating PaymentIntent)
   - Call attributeOrder()
   - Clear the affiliate cookies from response (set maxAge=0)
 
 Wire reversal into the Stripe webhook handler:
+
 - In charge.refunded handler: find AffiliateConversion by orderId, reverse it
 - Add similar logic for order cancellation in the Orders afterChange hook
 
 Commit: `feat(affiliates): commission engine and order attribution wired into checkout`
+
 ```
 
 ## P-AFF-5 — Referral link redirect route
 
 ```
+
 Task: Create the referral link redirect at src/app/ref/[slug]/route.ts
 
 Behavior:
+
 1. Look up Affiliate by referralSlug. If not found or status != 'approved': redirect to / with no cookie
 2. Log AffiliateClick: ipHash (SHA-256 of X-Forwarded-For or CF-Connecting-IP), userAgent, referrer, landingPage='/', clickedAt=now, source='referral_link', deviceType (parse UA — use `ua-parser-js` npm package)
 3. Run velocity check: if clicks from same ipHash in last 1 hour > 10 → mark isSuspicious=true on the click
 4. Set cookies on redirect response:
-   - affiliate_ref: affiliateId, httpOnly, secure, sameSite=lax, maxAge=cookieDurationDays*86400
+   - affiliate_ref: affiliateId, httpOnly, secure, sameSite=lax, maxAge=cookieDurationDays\*86400
    - affiliate_click_id: clickId, same settings
 5. Redirect 302 to / (homepage)
 
 Also: in checkout PaymentIntent creation, read both cookies and add to metadata:
+
 - metadata.affiliateId = cookie value
 - metadata.affiliateClickId = cookie value
-These are already passed to attributeOrder() in the webhook.
+  These are already passed to attributeOrder() in the webhook.
 
 Test: visit /ref/test-slug (create a test approved affiliate first), confirm:
+
 - Redirected to /
 - Cookies set (check devtools Application → Cookies)
 - AffiliateClick record created in /admin
 - Visiting /ref/nonexistent → redirects to / with no cookie
 
 Commit: `feat(affiliates): referral redirect route with click logging and cookie setting`
+
 ```
 
 ## P-AFF-6 — Auto-approval cron job
 
 ```
+
 Task: Build the daily commission auto-approval cron job.
 
 Create src/app/api/cron/affiliate-approve/route.ts:
+
 - Verify request has Authorization: Bearer ${CRON_SECRET} header
 - Find all AffiliateConversions where:
   - status === 'pending'
@@ -1338,12 +1444,15 @@ Create src/app/api/cron/affiliate-approve/route.ts:
 - Return count of approved conversions
 
 Add to vercel.json:
+
 ```json
 {
-  "crons": [{
-    "path": "/api/cron/affiliate-approve",
-    "schedule": "0 8 * * *"
-  }]
+  "crons": [
+    {
+      "path": "/api/cron/affiliate-approve",
+      "schedule": "0 8 * * *"
+    }
+  ]
 }
 ```
 
@@ -1352,11 +1461,13 @@ Add CRON_SECRET to .env.local.
 Test: manually create a conversion with pendingUntil set to yesterday, call the route, confirm it approves.
 
 Commit: `feat(affiliates): daily auto-approval cron job`
+
 ```
 
 ## P-AFF-7 — Affiliate application page + dashboard
 
 ```
+
 Task: Build customer-facing affiliate pages. These are the biggest frontend task in the affiliate system.
 
 Files to create (one sub-task at a time):
@@ -1404,7 +1515,6 @@ Files to create (one sub-task at a time):
 
 8. Payouts page: /affiliates/dashboard/payouts/page.tsx
    - Table: Date | Amount | Method | Transaction ID | Status
-   
 9. Settings page: /affiliates/dashboard/settings/page.tsx
    - Add payout method form (renders different fields based on method type)
    - Edit existing payout methods
@@ -1414,11 +1524,13 @@ Files to create (one sub-task at a time):
 Build one sub-task at a time, confirm, then proceed.
 
 Commit: `feat(affiliates): complete affiliate frontend (apply, dashboard all pages)`
+
 ```
 
 ## P-AFF-8 — Affiliate admin views + payout workflow
 
 ```
+
 Task: Build admin capabilities for managing affiliates and processing payouts.
 
 1. Customize Affiliates collection in Payload admin:
@@ -1446,14 +1558,17 @@ Task: Build admin capabilities for managing affiliates and processing payouts.
    - Download via Response with Content-Disposition header
 
 Commit: `feat(affiliates): admin payout workflow, fraud queue, custom admin views`
+
 ```
 
 ## P-AFF-9 — Affiliate email templates
 
 ```
+
 Task: Create all affiliate-related email templates in src/emails/affiliate/.
 
 Templates needed (each in EN + ES):
+
 1. AffiliateApplicationReceived.tsx — "We received your application"
 2. AffiliateApproved.tsx — "You're approved!" with dashboard link, referral link, coupon code
 3. AffiliateRejected.tsx — props: rejectedReason
@@ -1464,6 +1579,7 @@ Templates needed (each in EN + ES):
 8. AffiliatePayoutThreshold.tsx — "You're $X away from minimum payout"
 
 Each template:
+
 - Uses @react-email/components
 - Matches site brand colors
 - Has physical business address in footer (CAN-SPAM)
@@ -1473,4 +1589,7 @@ Each template:
 Wire all 8 templates into their respective trigger points (webhook hooks, status change hooks).
 
 Commit: `feat(affiliates): all 8 affiliate email templates wired to triggers`
+
+```
+
 ```

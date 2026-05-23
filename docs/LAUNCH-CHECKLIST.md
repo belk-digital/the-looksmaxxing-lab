@@ -41,6 +41,7 @@
 - [ ] MX records if you receive email at the domain
 
 Verify with:
+
 - mxtoolbox.com SPF/DKIM/DMARC checker
 - ssllabs.com → A or A+ grade
 

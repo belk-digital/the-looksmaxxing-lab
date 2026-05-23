@@ -52,66 +52,67 @@ Affiliate sees payout in their dashboard
 
 The core affiliate profile. One per user. Created when admin approves an application.
 
-| Field | Type | Notes |
-|---|---|---|
-| **Identity** | | |
-| user | relationship → Users | Required, unique (one affiliate per user) |
-| status | select | `pending` \| `approved` \| `rejected` \| `suspended`. Default `pending` |
-| applicationDate | date | Auto-set on create |
-| approvedAt | date | Set by admin on approval |
-| approvedBy | relationship → Users | Admin who approved |
-| rejectedAt | date | |
-| rejectedReason | textarea | Shown to applicant on rejection |
-| suspendedAt | date | |
-| suspensionReason | textarea | |
-| **Application info** | | |
-| displayName | text | Their public/brand name |
-| websiteUrl | text | Their site or social profile |
-| promotionMethods | textarea | How they plan to promote (SEO, social, email, etc.) |
-| socialLinks | array: { platform: select, url: text } | Instagram, YouTube, TikTok, Twitter, Reddit |
-| estimatedMonthlyReach | select | `<1k` \| `1k-10k` \| `10k-100k` \| `100k+` |
-| **Referral** | | |
-| referralSlug | text | Unique slug for link: yoursite.com/ref/[slug]. Auto-generated from displayName, editable by admin |
-| couponCode | text | Unique code (e.g., JOHNDOE15). Auto-generated, editable by admin |
-| coupon | relationship → Coupons | Auto-created coupon, linked here. Admin should not manually delete |
-| cookieDurationDays | number | Days referral cookie lasts. Default 30 |
-| **Commission** | | |
-| commissionRate | number | Percentage of eligible order value. Default 10 |
-| commissionType | select | `percentage` only for now (fixed_amount Phase 2) |
-| customerDiscount | number | % discount the customer gets using their coupon. Default 10 |
-| pendingPeriodDays | number | Days before commission auto-approves. Default 30 |
-| commissionOn | select | `subtotal_after_coupon` \| `subtotal_before_coupon`. Default `subtotal_after_coupon` |
-| **Tier** | | |
-| tier | select | `standard` \| `silver` \| `gold` \| `vip`. Default `standard` |
-| tierUpdatedAt | date | |
-| tierNote | textarea | Why they're in this tier (internal) |
-| **Cached stats** (updated by hooks) | | |
-| totalClicks | number | All-time clicks |
-| uniqueClicks | number | Deduplicated by IP |
-| totalConversions | number | Orders attributed |
-| totalRevenue | number | Cents, total order value attributed |
-| totalCommissionEarned | number | Cents, all-time commissions (pending + approved + paid) |
-| totalCommissionPending | number | Cents, awaiting approval |
-| totalCommissionApproved | number | Cents, approved but not yet paid |
-| totalCommissionPaid | number | Cents, paid out |
-| conversionRate | number | % (totalConversions / uniqueClicks * 100) |
-| lastClickAt | date | |
-| lastConversionAt | date | |
-| **Payout info** | | |
-| payoutMethods | array | See subfield below |
-| minimumPayoutThreshold | number | Cents. Default 5000 ($50.00) |
-| payoutCurrency | select | `USD` \| `BTC` \| `ETH` \| `USDT_ERC20` \| `USDT_TRC20` |
-| **Fraud** | | |
-| flaggedForReview | checkbox | Set by fraud engine. Stops auto-approval. |
-| fraudScore | number | 0–100. Internal risk score |
-| fraudNotes | textarea | Admin notes on suspicious activity |
-| ipHistory | array: { ip: text (hashed), firstSeen: date, clickCount: number } | Rolling 90-day window |
-| **Internal** | | |
-| adminNotes | textarea | Private notes from admin |
-| agreedToTermsAt | date | When they ticked "I agree to affiliate terms" |
-| termsVersion | text | e.g., "v1.2" — track which terms they agreed to |
+| Field                               | Type                                                              | Notes                                                                                             |
+| ----------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Identity**                        |                                                                   |                                                                                                   |
+| user                                | relationship → Users                                              | Required, unique (one affiliate per user)                                                         |
+| status                              | select                                                            | `pending` \| `approved` \| `rejected` \| `suspended`. Default `pending`                           |
+| applicationDate                     | date                                                              | Auto-set on create                                                                                |
+| approvedAt                          | date                                                              | Set by admin on approval                                                                          |
+| approvedBy                          | relationship → Users                                              | Admin who approved                                                                                |
+| rejectedAt                          | date                                                              |                                                                                                   |
+| rejectedReason                      | textarea                                                          | Shown to applicant on rejection                                                                   |
+| suspendedAt                         | date                                                              |                                                                                                   |
+| suspensionReason                    | textarea                                                          |                                                                                                   |
+| **Application info**                |                                                                   |                                                                                                   |
+| displayName                         | text                                                              | Their public/brand name                                                                           |
+| websiteUrl                          | text                                                              | Their site or social profile                                                                      |
+| promotionMethods                    | textarea                                                          | How they plan to promote (SEO, social, email, etc.)                                               |
+| socialLinks                         | array: { platform: select, url: text }                            | Instagram, YouTube, TikTok, Twitter, Reddit                                                       |
+| estimatedMonthlyReach               | select                                                            | `<1k` \| `1k-10k` \| `10k-100k` \| `100k+`                                                        |
+| **Referral**                        |                                                                   |                                                                                                   |
+| referralSlug                        | text                                                              | Unique slug for link: yoursite.com/ref/[slug]. Auto-generated from displayName, editable by admin |
+| couponCode                          | text                                                              | Unique code (e.g., JOHNDOE15). Auto-generated, editable by admin                                  |
+| coupon                              | relationship → Coupons                                            | Auto-created coupon, linked here. Admin should not manually delete                                |
+| cookieDurationDays                  | number                                                            | Days referral cookie lasts. Default 30                                                            |
+| **Commission**                      |                                                                   |                                                                                                   |
+| commissionRate                      | number                                                            | Percentage of eligible order value. Default 10                                                    |
+| commissionType                      | select                                                            | `percentage` only for now (fixed_amount Phase 2)                                                  |
+| customerDiscount                    | number                                                            | % discount the customer gets using their coupon. Default 10                                       |
+| pendingPeriodDays                   | number                                                            | Days before commission auto-approves. Default 30                                                  |
+| commissionOn                        | select                                                            | `subtotal_after_coupon` \| `subtotal_before_coupon`. Default `subtotal_after_coupon`              |
+| **Tier**                            |                                                                   |                                                                                                   |
+| tier                                | select                                                            | `standard` \| `silver` \| `gold` \| `vip`. Default `standard`                                     |
+| tierUpdatedAt                       | date                                                              |                                                                                                   |
+| tierNote                            | textarea                                                          | Why they're in this tier (internal)                                                               |
+| **Cached stats** (updated by hooks) |                                                                   |                                                                                                   |
+| totalClicks                         | number                                                            | All-time clicks                                                                                   |
+| uniqueClicks                        | number                                                            | Deduplicated by IP                                                                                |
+| totalConversions                    | number                                                            | Orders attributed                                                                                 |
+| totalRevenue                        | number                                                            | Cents, total order value attributed                                                               |
+| totalCommissionEarned               | number                                                            | Cents, all-time commissions (pending + approved + paid)                                           |
+| totalCommissionPending              | number                                                            | Cents, awaiting approval                                                                          |
+| totalCommissionApproved             | number                                                            | Cents, approved but not yet paid                                                                  |
+| totalCommissionPaid                 | number                                                            | Cents, paid out                                                                                   |
+| conversionRate                      | number                                                            | % (totalConversions / uniqueClicks \* 100)                                                        |
+| lastClickAt                         | date                                                              |                                                                                                   |
+| lastConversionAt                    | date                                                              |                                                                                                   |
+| **Payout info**                     |                                                                   |                                                                                                   |
+| payoutMethods                       | array                                                             | See subfield below                                                                                |
+| minimumPayoutThreshold              | number                                                            | Cents. Default 5000 ($50.00)                                                                      |
+| payoutCurrency                      | select                                                            | `USD` \| `BTC` \| `ETH` \| `USDT_ERC20` \| `USDT_TRC20`                                           |
+| **Fraud**                           |                                                                   |                                                                                                   |
+| flaggedForReview                    | checkbox                                                          | Set by fraud engine. Stops auto-approval.                                                         |
+| fraudScore                          | number                                                            | 0–100. Internal risk score                                                                        |
+| fraudNotes                          | textarea                                                          | Admin notes on suspicious activity                                                                |
+| ipHistory                           | array: { ip: text (hashed), firstSeen: date, clickCount: number } | Rolling 90-day window                                                                             |
+| **Internal**                        |                                                                   |                                                                                                   |
+| adminNotes                          | textarea                                                          | Private notes from admin                                                                          |
+| agreedToTermsAt                     | date                                                              | When they ticked "I agree to affiliate terms"                                                     |
+| termsVersion                        | text                                                              | e.g., "v1.2" — track which terms they agreed to                                                   |
 
 **Payout method subfield:**
+
 ```ts
 {
   type: select ('paypal' | 'wise' | 'bank_wire' | 'crypto_btc' | 'crypto_eth' | 'crypto_usdt_erc20' | 'crypto_usdt_trc20'),
@@ -136,12 +137,14 @@ The core affiliate profile. One per user. Created when admin approves an applica
 ```
 
 **Access control:**
+
 - Read: own affiliate record OR admin
 - Create: admin only (created after approving application)
 - Update: own affiliate (limited fields: payoutMethods, socialLinks) OR admin (all)
 - Delete: never
 
 **Hooks:**
+
 - `beforeChange` (create): auto-generate `referralSlug` from displayName (slugified, unique), auto-generate `couponCode` from displayName + commissionRate
 - `afterChange` (create + status→approved): create corresponding Coupon record automatically
 - `afterChange` (status→rejected): send rejection email
@@ -153,26 +156,27 @@ The core affiliate profile. One per user. Created when admin approves an applica
 
 Separate from Affiliates — the pre-approval application. Keeps things clean.
 
-| Field | Type | Notes |
-|---|---|---|
-| user | relationship → Users | Required, unique (one application per user) |
-| status | select | `pending` \| `approved` \| `rejected`. Default `pending` |
-| **Application form fields** | | |
-| displayName | text | Required |
-| websiteUrl | text | |
-| socialLinks | array: { platform, url } | |
-| promotionMethods | textarea | Required — how will you promote us? |
-| estimatedMonthlyReach | select | |
-| niche | textarea | Your audience niche (fitness, biohacking, etc.) |
-| whyJoin | textarea | Why do you want to partner with us? |
-| agreedToTerms | checkbox | Required, links to affiliate terms page |
-| **Admin** | | |
-| reviewedBy | relationship → Users | Admin |
-| reviewedAt | date | |
-| reviewNotes | textarea | Internal notes |
-| linkedAffiliate | relationship → Affiliates | Set when approved, creates the Affiliate record |
+| Field                       | Type                      | Notes                                                    |
+| --------------------------- | ------------------------- | -------------------------------------------------------- |
+| user                        | relationship → Users      | Required, unique (one application per user)              |
+| status                      | select                    | `pending` \| `approved` \| `rejected`. Default `pending` |
+| **Application form fields** |                           |                                                          |
+| displayName                 | text                      | Required                                                 |
+| websiteUrl                  | text                      |                                                          |
+| socialLinks                 | array: { platform, url }  |                                                          |
+| promotionMethods            | textarea                  | Required — how will you promote us?                      |
+| estimatedMonthlyReach       | select                    |                                                          |
+| niche                       | textarea                  | Your audience niche (fitness, biohacking, etc.)          |
+| whyJoin                     | textarea                  | Why do you want to partner with us?                      |
+| agreedToTerms               | checkbox                  | Required, links to affiliate terms page                  |
+| **Admin**                   |                           |                                                          |
+| reviewedBy                  | relationship → Users      | Admin                                                    |
+| reviewedAt                  | date                      |                                                          |
+| reviewNotes                 | textarea                  | Internal notes                                           |
+| linkedAffiliate             | relationship → Affiliates | Set when approved, creates the Affiliate record          |
 
 **Hooks:**
+
 - `afterChange` (status→approved): create Affiliates record using application data, send approval email with dashboard link
 - `afterChange` (status→rejected): send rejection email with reason
 
@@ -182,27 +186,27 @@ Separate from Affiliates — the pre-approval application. Keeps things clean.
 
 Every click on a referral link or coupon use attempt. High-volume — index heavily.
 
-| Field | Type | Notes |
-|---|---|---|
-| affiliate | relationship → Affiliates | Required |
-| source | select | `referral_link` \| `coupon_code_attempt` |
-| **Request info** | | |
-| ipHash | text | SHA-256 of IP (privacy-safe, still useful for dedup) |
-| ipCountry | text | Country from IP geolookup (use geoip-lite npm package, no external API) |
-| userAgent | text | Raw UA string |
-| deviceType | select | `desktop` \| `mobile` \| `tablet` (parsed from UA) |
-| referrer | text | HTTP Referer header (where they came from) |
-| landingPage | text | Full URL they landed on |
-| sessionId | text | Anonymous session UUID (stored in cookie alongside affiliate cookie) |
-| **Conversion** | | |
-| convertedToOrder | checkbox | Default false. Set true by checkout flow |
-| conversion | relationship → AffiliateConversions | Nullable, set when order created |
-| conversionValue | number | Cents, set when converted |
-| **Fraud flags** | | |
-| isSuspicious | checkbox | Set by fraud engine |
-| suspicionReason | text | e.g., "velocity_exceeded", "known_bad_ip", "bot_ua" |
-| **Timestamp** | | |
-| clickedAt | date | Required, indexed |
+| Field            | Type                                | Notes                                                                   |
+| ---------------- | ----------------------------------- | ----------------------------------------------------------------------- |
+| affiliate        | relationship → Affiliates           | Required                                                                |
+| source           | select                              | `referral_link` \| `coupon_code_attempt`                                |
+| **Request info** |                                     |                                                                         |
+| ipHash           | text                                | SHA-256 of IP (privacy-safe, still useful for dedup)                    |
+| ipCountry        | text                                | Country from IP geolookup (use geoip-lite npm package, no external API) |
+| userAgent        | text                                | Raw UA string                                                           |
+| deviceType       | select                              | `desktop` \| `mobile` \| `tablet` (parsed from UA)                      |
+| referrer         | text                                | HTTP Referer header (where they came from)                              |
+| landingPage      | text                                | Full URL they landed on                                                 |
+| sessionId        | text                                | Anonymous session UUID (stored in cookie alongside affiliate cookie)    |
+| **Conversion**   |                                     |                                                                         |
+| convertedToOrder | checkbox                            | Default false. Set true by checkout flow                                |
+| conversion       | relationship → AffiliateConversions | Nullable, set when order created                                        |
+| conversionValue  | number                              | Cents, set when converted                                               |
+| **Fraud flags**  |                                     |                                                                         |
+| isSuspicious     | checkbox                            | Set by fraud engine                                                     |
+| suspicionReason  | text                                | e.g., "velocity_exceeded", "known_bad_ip", "bot_ua"                     |
+| **Timestamp**    |                                     |                                                                         |
+| clickedAt        | date                                | Required, indexed                                                       |
 
 **Indexes:** `affiliate` + `clickedAt`, `ipHash` + `clickedAt`, `sessionId`
 
@@ -212,41 +216,41 @@ Every click on a referral link or coupon use attempt. High-volume — index heav
 
 One record per order attributed to an affiliate.
 
-| Field | Type | Notes |
-|---|---|---|
-| affiliate | relationship → Affiliates | Required |
-| order | relationship → Orders | Required, **unique** (one conversion per order, enforced) |
-| customer | relationship → Users | Nullable (guest checkout) |
-| customerEmail | email | Snapshot at time of attribution |
-| **Attribution** | | |
-| attributionSource | select | `referral_link` \| `coupon_code` \| `both` |
-| attributionClick | relationship → AffiliateClicks | The click that led here, if referral link |
-| cookieAgeDays | number | How old the cookie was when order placed |
-| couponCodeUsed | text | Snapshot of coupon code if used |
-| **Financial** | | |
-| orderSubtotal | number | Cents — products only (no shipping, no tax) |
-| orderDiscount | number | Cents — affiliate coupon discount applied |
-| eligibleSubtotal | number | Cents — what commission is computed on (subtotal minus discount if commissionOn=after_coupon) |
-| commissionRate | number | Percentage at time of conversion (snapshot) |
-| commissionAmount | number | Cents — floor(eligibleSubtotal * commissionRate / 100) |
-| **Status** | | |
-| status | select | `pending` \| `approved` \| `paid` \| `reversed` \| `voided` |
-| pendingUntil | date | createdAt + pendingPeriodDays — when it CAN be auto-approved |
-| approvedAt | date | |
-| payout | relationship → AffiliatePayouts | Set when included in a payout |
-| paidAt | date | |
-| **Reversal** | | |
-| reversedAt | date | |
-| reversedReason | select | `order_refunded` \| `order_cancelled` \| `fraud_detected` \| `self_referral` \| `admin_manual` |
-| reversedBy | relationship → Users | Admin (if manual) |
-| **Fraud checks** | | |
-| selfReferralDetected | checkbox | affiliate.user.email == customer email |
-| ipMatchesAffiliate | checkbox | Customer IP matches known affiliate IP |
-| fraudScore | number | 0–100. Inherits from affiliate + order signals |
-| flaggedForReview | checkbox | |
-| fraudNotes | text | |
-| **Metadata** | | |
-| createdAt | date | Required, indexed |
+| Field                | Type                            | Notes                                                                                          |
+| -------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------- |
+| affiliate            | relationship → Affiliates       | Required                                                                                       |
+| order                | relationship → Orders           | Required, **unique** (one conversion per order, enforced)                                      |
+| customer             | relationship → Users            | Nullable (guest checkout)                                                                      |
+| customerEmail        | email                           | Snapshot at time of attribution                                                                |
+| **Attribution**      |                                 |                                                                                                |
+| attributionSource    | select                          | `referral_link` \| `coupon_code` \| `both`                                                     |
+| attributionClick     | relationship → AffiliateClicks  | The click that led here, if referral link                                                      |
+| cookieAgeDays        | number                          | How old the cookie was when order placed                                                       |
+| couponCodeUsed       | text                            | Snapshot of coupon code if used                                                                |
+| **Financial**        |                                 |                                                                                                |
+| orderSubtotal        | number                          | Cents — products only (no shipping, no tax)                                                    |
+| orderDiscount        | number                          | Cents — affiliate coupon discount applied                                                      |
+| eligibleSubtotal     | number                          | Cents — what commission is computed on (subtotal minus discount if commissionOn=after_coupon)  |
+| commissionRate       | number                          | Percentage at time of conversion (snapshot)                                                    |
+| commissionAmount     | number                          | Cents — floor(eligibleSubtotal \* commissionRate / 100)                                        |
+| **Status**           |                                 |                                                                                                |
+| status               | select                          | `pending` \| `approved` \| `paid` \| `reversed` \| `voided`                                    |
+| pendingUntil         | date                            | createdAt + pendingPeriodDays — when it CAN be auto-approved                                   |
+| approvedAt           | date                            |                                                                                                |
+| payout               | relationship → AffiliatePayouts | Set when included in a payout                                                                  |
+| paidAt               | date                            |                                                                                                |
+| **Reversal**         |                                 |                                                                                                |
+| reversedAt           | date                            |                                                                                                |
+| reversedReason       | select                          | `order_refunded` \| `order_cancelled` \| `fraud_detected` \| `self_referral` \| `admin_manual` |
+| reversedBy           | relationship → Users            | Admin (if manual)                                                                              |
+| **Fraud checks**     |                                 |                                                                                                |
+| selfReferralDetected | checkbox                        | affiliate.user.email == customer email                                                         |
+| ipMatchesAffiliate   | checkbox                        | Customer IP matches known affiliate IP                                                         |
+| fraudScore           | number                          | 0–100. Inherits from affiliate + order signals                                                 |
+| flaggedForReview     | checkbox                        |                                                                                                |
+| fraudNotes           | text                            |                                                                                                |
+| **Metadata**         |                                 |                                                                                                |
+| createdAt            | date                            | Required, indexed                                                                              |
 
 **Indexes:** `affiliate` + `status`, `order` (unique), `payout`, `pendingUntil` + `status`
 
@@ -256,38 +260,39 @@ One record per order attributed to an affiliate.
 
 A payout batch — one or more conversions paid in a single transaction.
 
-| Field | Type | Notes |
-|---|---|---|
-| affiliate | relationship → Affiliates | Required |
-| **Conversions included** | | |
-| conversions | relationship → AffiliateConversions (many) | Required, all must be status=approved |
-| conversionCount | number | Cached count |
-| **Amount** | | |
-| totalAmountCents | number | Sum of all conversion commissionAmounts |
-| currency | select | `USD` \| `BTC` \| `ETH` \| `USDT` |
-| cryptoAmountRaw | text | Exact crypto amount with full precision (e.g., "0.00012847") |
-| exchangeRateUsed | number | USD/crypto rate at time of payment (for records) |
-| **Payment method used** | | |
-| paymentMethod | select | `paypal` \| `wise` \| `bank_wire` \| `crypto_btc` \| `crypto_eth` \| `crypto_usdt_erc20` \| `crypto_usdt_trc20` |
-| paymentDestination | json | Snapshot of payout method details at time of payment |
-| **Status** | | |
-| status | select | `draft` \| `processing` \| `paid` \| `failed` |
-| **Admin** | | |
-| createdBy | relationship → Users | Admin who created the payout |
-| processedBy | relationship → Users | Admin who marked it paid |
-| adminNotes | textarea | |
-| **Payment proof** | | |
-| transactionId | text | PayPal tx ID, bank ref, crypto tx hash |
-| receiptFile | upload → Media | Screenshot or PDF of payment confirmation |
-| receiptUrl | text | Alternative to file upload |
-| **Dates** | | |
-| createdAt | date | |
-| exportedAt | date | When admin exported this to CSV for processing |
-| paidAt | date | When marked as paid |
-| failedAt | date | |
-| failureReason | text | |
+| Field                    | Type                                       | Notes                                                                                                           |
+| ------------------------ | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| affiliate                | relationship → Affiliates                  | Required                                                                                                        |
+| **Conversions included** |                                            |                                                                                                                 |
+| conversions              | relationship → AffiliateConversions (many) | Required, all must be status=approved                                                                           |
+| conversionCount          | number                                     | Cached count                                                                                                    |
+| **Amount**               |                                            |                                                                                                                 |
+| totalAmountCents         | number                                     | Sum of all conversion commissionAmounts                                                                         |
+| currency                 | select                                     | `USD` \| `BTC` \| `ETH` \| `USDT`                                                                               |
+| cryptoAmountRaw          | text                                       | Exact crypto amount with full precision (e.g., "0.00012847")                                                    |
+| exchangeRateUsed         | number                                     | USD/crypto rate at time of payment (for records)                                                                |
+| **Payment method used**  |                                            |                                                                                                                 |
+| paymentMethod            | select                                     | `paypal` \| `wise` \| `bank_wire` \| `crypto_btc` \| `crypto_eth` \| `crypto_usdt_erc20` \| `crypto_usdt_trc20` |
+| paymentDestination       | json                                       | Snapshot of payout method details at time of payment                                                            |
+| **Status**               |                                            |                                                                                                                 |
+| status                   | select                                     | `draft` \| `processing` \| `paid` \| `failed`                                                                   |
+| **Admin**                |                                            |                                                                                                                 |
+| createdBy                | relationship → Users                       | Admin who created the payout                                                                                    |
+| processedBy              | relationship → Users                       | Admin who marked it paid                                                                                        |
+| adminNotes               | textarea                                   |                                                                                                                 |
+| **Payment proof**        |                                            |                                                                                                                 |
+| transactionId            | text                                       | PayPal tx ID, bank ref, crypto tx hash                                                                          |
+| receiptFile              | upload → Media                             | Screenshot or PDF of payment confirmation                                                                       |
+| receiptUrl               | text                                       | Alternative to file upload                                                                                      |
+| **Dates**                |                                            |                                                                                                                 |
+| createdAt                | date                                       |                                                                                                                 |
+| exportedAt               | date                                       | When admin exported this to CSV for processing                                                                  |
+| paidAt                   | date                                       | When marked as paid                                                                                             |
+| failedAt                 | date                                       |                                                                                                                 |
+| failureReason            | text                                       |                                                                                                                 |
 
 **Hooks:**
+
 - `afterChange` (status→paid): mark all included conversions as status=`paid`, update affiliate cached stats, send payout notification email to affiliate
 
 ---
@@ -295,46 +300,55 @@ A payout batch — one or more conversions paid in a single transaction.
 ## Fraud detection rules engine
 
 ### Rule 1: Self-referral (HARD BLOCK)
+
 **When:** Order placed  
 **Check:** affiliate.user.email === order.customerEmail (case-insensitive)  
 Also: affiliate.user.clerkUserId === order.user.clerkUserId (if logged in)  
 **Action:** voided immediately. fraudNotes = "self_referral". No commission. Log.
 
 ### Rule 2: Cookie velocity (AUTO-FLAG)
+
 **When:** AffiliateClick created  
 **Check:** Count of clicks from same ipHash in last 1 hour > 10  
 **Action:** isSuspicious = true, suspicionReason = "velocity_exceeded". Downstream conversions flagged.
 
 ### Rule 3: Click-to-order velocity (AUTO-FLAG)
+
 **When:** AffiliateConversion created  
 **Check:** Time between attributionClick.clickedAt and order.createdAt < 30 seconds  
 **Action:** flaggedForReview = true, fraudNotes = "instant_conversion". Requires admin approval.
 
 ### Rule 4: IP match (AUTO-FLAG)
+
 **When:** AffiliateConversion created  
 **Check:** order.ipAddress (hashed) in affiliate.ipHistory  
 **Action:** ipMatchesAffiliate = true. Auto-flag if match within last 7 days.
 
 ### Rule 5: Refund exploitation (AUTO-REVERSE)
+
 **When:** Order status → refunded or cancelled (webhook)  
 **Check:** Find AffiliateConversion where order = this order  
 **Action:** If status is pending or approved → set status = reversed, reversedReason = order_refunded/order_cancelled. Subtract from affiliate cached stats.
 
 ### Rule 6: Coupon abuse (AUTO-FLAG)
+
 **When:** Coupon applied at checkout  
 **Check:** Same ipHash has used this coupon code more than 3 times in 30 days  
 **Action:** Flag conversion. Block coupon if > 5 uses from same IP.
 
 ### Rule 7: Fraud score threshold (AUTO-HOLD)
+
 **When:** Any conversion created  
 **Check:** fraudScore > 60  
 **Action:** flaggedForReview = true. Commission stays pending and blocked from auto-approval regardless of time.
 
 ### Rule 8: High-value anomaly (AUTO-FLAG)
+
 **When:** Commission amount > $500 on a single order  
 **Action:** Always flag for manual admin review before approval, regardless of other scores.
 
 ### Rule 9: Guest checkout with affiliate coupon — same email as affiliate (HARD BLOCK)
+
 **When:** Guest checkout, coupon applied  
 **Check:** Checkout contact email === affiliate email  
 **Action:** Void commission. Allow order to proceed (customer gets discount still, affiliate gets nothing).
@@ -346,12 +360,9 @@ Also: affiliate.user.clerkUserId === order.user.clerkUserId (if logged in)
 ### `computeCommission(order, affiliateId)` → cents
 
 ```ts
-src/lib/affiliates/commission.ts
+src / lib / affiliates / commission.ts
 
-export async function computeCommission(
-  order: Order,
-  affiliateId: string,
-): Promise<number> {
+export async function computeCommission(order: Order, affiliateId: string): Promise<number> {
   const affiliate = await getAffiliate(affiliateId)
 
   // Base: sum of product line totals only (not shipping, not tax)
@@ -374,6 +385,7 @@ export async function computeCommission(
 ### `attributeOrder(order, cookieAffiliateId, couponAffiliateId)` → AffiliateConversion | null
 
 Attribution priority:
+
 1. If coupon used → coupon affiliate wins
 2. If cookie present (different affiliate, or no coupon) → cookie affiliate
 3. Both same → one conversion, source = 'both'
@@ -457,10 +469,7 @@ export async function attributeOrder(
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 
-export async function GET(
-  request: Request,
-  { params }: { params: { slug: string } },
-) {
+export async function GET(request: Request, { params }: { params: { slug: string } }) {
   // Look up affiliate by slug
   const affiliate = await getAffiliateBySlug(params.slug)
   if (!affiliate || affiliate.status !== 'approved') {
@@ -476,7 +485,7 @@ export async function GET(
 
   response.cookies.set('affiliate_ref', affiliate.id, {
     maxAge,
-    httpOnly: true,   // Not readable by JS (prevents easy manipulation)
+    httpOnly: true, // Not readable by JS (prevents easy manipulation)
     secure: true,
     sameSite: 'lax',
     path: '/',
@@ -527,12 +536,14 @@ All under `/[locale]/affiliates/dashboard/` — protected by Clerk auth + affili
 ### Per-page spec
 
 **Overview (`/dashboard`):**
+
 - Cards: Total clicks, Unique clicks, Conversions, Conversion rate, Pending earnings, Approved earnings, Total paid
 - Mini chart: clicks + conversions over last 30 days
 - Quick link to referral link + copy button
 - Recent conversions table (last 5)
 
 **Links (`/dashboard/links`):**
+
 - Referral link with copy button and QR code (use `qrcode` npm package)
 - Coupon code with copy button
 - Custom UTM builder: append utm_source, utm_medium, utm_campaign to referral link
@@ -540,22 +551,26 @@ All under `/[locale]/affiliates/dashboard/` — protected by Clerk auth + affili
 - Banner assets download (if uploaded by admin to Media collection)
 
 **Conversions (`/dashboard/conversions`):**
+
 - Table: Order #, Date, Order value, Commission, Status badge, Pending until
 - Status colors: pending=yellow, approved=green, paid=blue, reversed=red, voided=gray
 - Filter by status, date range
 - Pagination
 
 **Earnings (`/dashboard/earnings`):**
+
 - Summary: Pending (locked), Approved (ready to request), Total paid out
 - Request payout button (if approved earnings ≥ minimumPayoutThreshold)
 - Payout request form: select payout method (from their saved methods), confirm amount
 - Note: "Payout requests are processed weekly by our team"
 
 **Payouts (`/dashboard/payouts`):**
+
 - Table: Date, Amount, Method, Transaction ID, Status
 - Status: processing, paid, failed
 
 **Settings (`/dashboard/settings`):**
+
 - Add / edit payout methods (form per type)
 - Notification preferences: email on new conversion, email on payout
 - Tax info upload (W-9 for US affiliates earning > $600/year — required by IRS)
@@ -567,11 +582,13 @@ All under `/[locale]/affiliates/dashboard/` — protected by Clerk auth + affili
 ### Custom views in Payload admin
 
 **Affiliate list** (`/admin/collections/affiliates`):
+
 - Default columns: displayName, user email, status, tier, commissionRate, totalCommissionPaid, lastConversionAt
 - Filters: status, tier, date range
 - Bulk actions: approve selected, suspend selected, export CSV
 
 **Affiliate detail** (`/admin/collections/affiliates/[id]`):
+
 - Custom sidebar widgets:
   - Quick stats: clicks, conversions, earned, paid
   - Fraud score indicator (color-coded)
@@ -580,6 +597,7 @@ All under `/[locale]/affiliates/dashboard/` — protected by Clerk auth + affili
   - "View all conversions" link
 
 **Conversions queue** (custom admin view):
+
 - Separate view for fraud-flagged conversions
 - Per row: affiliate name, order #, commission, fraud notes, fraud score
 - Actions: approve manually, void, add notes
@@ -608,16 +626,16 @@ This is the most important admin workflow:
 
 ## Automated emails
 
-| Trigger | Email |
-|---|---|
-| Application submitted | "We received your application — review in 2–5 days" |
-| Application approved | "You're approved! Here's your dashboard link, referral link, and coupon code" |
-| Application rejected | "Unfortunately..." + rejectedReason |
-| First conversion | "You made your first sale! $X pending" |
-| Commission approved | "Good news — $X commission approved, ready for payout" |
-| Payout processed | "Your $X payout has been sent" with transaction ID |
-| Account suspended | "Your affiliate account has been suspended" |
-| Approaching payout threshold | "You're $X away from your minimum payout threshold" |
+| Trigger                      | Email                                                                         |
+| ---------------------------- | ----------------------------------------------------------------------------- |
+| Application submitted        | "We received your application — review in 2–5 days"                           |
+| Application approved         | "You're approved! Here's your dashboard link, referral link, and coupon code" |
+| Application rejected         | "Unfortunately..." + rejectedReason                                           |
+| First conversion             | "You made your first sale! $X pending"                                        |
+| Commission approved          | "Good news — $X commission approved, ready for payout"                        |
+| Payout processed             | "Your $X payout has been sent" with transaction ID                            |
+| Account suspended            | "Your affiliate account has been suspended"                                   |
+| Approaching payout threshold | "You're $X away from your minimum payout threshold"                           |
 
 All templates in `src/emails/affiliate/` — bilingual (EN/ES).
 
@@ -626,6 +644,7 @@ All templates in `src/emails/affiliate/` — bilingual (EN/ES).
 ## Payload config additions
 
 Add to `payload.config.ts` collections array:
+
 ```ts
 import AffiliateApplications from './collections/AffiliateApplications'
 import Affiliates from './collections/Affiliates'
@@ -635,6 +654,7 @@ import AffiliatePayouts from './collections/AffiliatePayouts'
 ```
 
 Add to globals (optional — for admin dashboard widget config):
+
 ```ts
 import AffiliateSettings from './globals/AffiliateSettings'
 // Fields: defaultCommissionRate, defaultCustomerDiscount, defaultPendingDays,

@@ -24,30 +24,30 @@ A direct-to-consumer e-commerce store selling peptides in the United States, ava
 
 ## Tech stack (locked)
 
-| Layer | Tool | Why |
-|---|---|---|
-| Framework | Next.js 15 App Router | SEO, performance, server components |
-| Language | TypeScript strict | Catch errors before runtime |
-| CMS / Backend | Payload CMS 3 | TypeScript-native, admin UI included, lives inside Next.js |
-| Database | PostgreSQL via Neon | Serverless, branching, free tier |
-| ORM | Drizzle (used by Payload) | Type-safe, fast |
-| Styling | Tailwind CSS | Utility-first, fast to build |
-| Components | shadcn/ui | Copy-paste, fully owned, accessible |
-| Auth | Payload built-in | One system, customers + admins |
-| Payments | Stripe Checkout + Webhooks | Best DX, mature |
-| Storage | Cloudflare R2 (S3-compatible) | Zero egress fees |
-| Email | Resend | Developer-friendly, React Email templates |
-| i18n | next-intl + Payload localization | UI + content both translated |
-| Search | Meilisearch (self-hosted later) | Fast, free, typo-tolerant |
-| Analytics | PostHog + GA4 + Microsoft Clarity | Product + traffic + UX |
-| Errors | Sentry | Production debugging |
-| Uptime | UptimeRobot | Free alerts |
-| Hosting | Vercel | Native Next.js |
-| CDN/Security | Cloudflare | DDoS, WAF, caching |
-| Bot Protection | Cloudflare Turnstile | Free, no CAPTCHA friction |
-| Cache/Rate Limit | Upstash Redis | Serverless Redis |
-| Reviews | Custom (Payload collection) | Owned data |
-| Shipping Labels | Shippo | API-first |
+| Layer            | Tool                              | Why                                                        |
+| ---------------- | --------------------------------- | ---------------------------------------------------------- |
+| Framework        | Next.js 15 App Router             | SEO, performance, server components                        |
+| Language         | TypeScript strict                 | Catch errors before runtime                                |
+| CMS / Backend    | Payload CMS 3                     | TypeScript-native, admin UI included, lives inside Next.js |
+| Database         | PostgreSQL via Neon               | Serverless, branching, free tier                           |
+| ORM              | Drizzle (used by Payload)         | Type-safe, fast                                            |
+| Styling          | Tailwind CSS                      | Utility-first, fast to build                               |
+| Components       | shadcn/ui                         | Copy-paste, fully owned, accessible                        |
+| Auth             | Payload built-in                  | One system, customers + admins                             |
+| Payments         | Stripe Checkout + Webhooks        | Best DX, mature                                            |
+| Storage          | Cloudflare R2 (S3-compatible)     | Zero egress fees                                           |
+| Email            | Resend                            | Developer-friendly, React Email templates                  |
+| i18n             | next-intl + Payload localization  | UI + content both translated                               |
+| Search           | Meilisearch (self-hosted later)   | Fast, free, typo-tolerant                                  |
+| Analytics        | PostHog + GA4 + Microsoft Clarity | Product + traffic + UX                                     |
+| Errors           | Sentry                            | Production debugging                                       |
+| Uptime           | UptimeRobot                       | Free alerts                                                |
+| Hosting          | Vercel                            | Native Next.js                                             |
+| CDN/Security     | Cloudflare                        | DDoS, WAF, caching                                         |
+| Bot Protection   | Cloudflare Turnstile              | Free, no CAPTCHA friction                                  |
+| Cache/Rate Limit | Upstash Redis                     | Serverless Redis                                           |
+| Reviews          | Custom (Payload collection)       | Owned data                                                 |
+| Shipping Labels  | Shippo                            | API-first                                                  |
 
 ## Folder structure (final)
 
@@ -147,6 +147,7 @@ peptides-store/
 ## Coding conventions
 
 ### Naming
+
 - Components: `PascalCase`
 - Functions/variables: `camelCase`
 - Constants: `SCREAMING_SNAKE_CASE`
@@ -154,27 +155,32 @@ peptides-store/
 - Files: match the primary export
 
 ### Imports
+
 - Absolute imports via `@/` prefix (configured in tsconfig)
 - Order: external → internal → relative → type imports
 - One blank line between groups
 
 ### Server vs Client
+
 - Default: server components
 - Add `'use client'` only when needed (state, effects, event handlers)
 - Push `'use client'` as deep as possible — keep leaf components client, parents server
 
 ### Data fetching
+
 - Server components: direct Payload calls via `getPayload({ config })`
 - Mutations: server actions (`'use server'`)
 - Never use `fetch('/api/...')` from your own server components to your own API
 
 ### Error handling
+
 - Throw early, catch at boundaries
 - User-facing errors must be translated
 - Log errors to Sentry with context
 - Never expose stack traces to users
 
 ### Forms
+
 - React Hook Form + Zod for validation
 - Server action as the submit handler
 - Show loading state, success state, error state — all three
