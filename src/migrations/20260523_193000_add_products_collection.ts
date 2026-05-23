@@ -1,8 +1,7 @@
-import { sql } from 'drizzle-orm';
-import { pgTable, serial, varchar, integer, boolean, numeric, jsonb, timestamp } from 'drizzle-orm/pg-core';
+import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
-export const up = async (db) => {
-  await db.run(sql`
+export const up = async ({ db }: MigrateUpArgs) => {
+  await db.execute(sql`
     CREATE TABLE "products" (
       "id" serial PRIMARY KEY NOT NULL,
       "name" jsonb,
@@ -24,9 +23,9 @@ export const up = async (db) => {
     );
     CREATE UNIQUE INDEX "products_slug_idx" ON "products" ("slug");
     CREATE INDEX "products_status_idx" ON "products" ("status");
-  `);
-};
+  `)
+}
 
-export const down = async (db) => {
-  await db.run(sql`DROP TABLE IF EXISTS "products";`);
-};
+export const down = async ({ db }: MigrateDownArgs) => {
+  await db.execute(sql`DROP TABLE IF EXISTS "products";`)
+}
