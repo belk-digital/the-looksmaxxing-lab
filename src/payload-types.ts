@@ -70,6 +70,7 @@ export interface Config {
     users: User
     media: Media
     addresses: Address
+    categories: Category
     'payload-kv': PayloadKv
     'payload-locked-documents': PayloadLockedDocument
     'payload-preferences': PayloadPreference
@@ -80,6 +81,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>
     media: MediaSelect<false> | MediaSelect<true>
     addresses: AddressesSelect<false> | AddressesSelect<true>
+    categories: CategoriesSelect<false> | CategoriesSelect<true>
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>
     'payload-locked-documents':
       | PayloadLockedDocumentsSelect<false>
@@ -246,6 +248,23 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number
+  name: string
+  description?: string | null
+  seoTitle?: string | null
+  seoDescription?: string | null
+  slug?: string | null
+  parent?: (number | null) | Category
+  isVisible?: boolean | null
+  sortOrder?: number | null
+  updatedAt: string
+  createdAt: string
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -279,6 +298,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'addresses'
         value: number | Address
+      } | null)
+    | ({
+        relationTo: 'categories'
+        value: number | Category
       } | null)
   globalSlug?: string | null
   user: {
@@ -439,6 +462,22 @@ export interface AddressesSelect<T extends boolean = true> {
   phone?: T
   isDefaultShipping?: T
   isDefaultBilling?: T
+  updatedAt?: T
+  createdAt?: T
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T
+  description?: T
+  seoTitle?: T
+  seoDescription?: T
+  slug?: T
+  parent?: T
+  isVisible?: T
+  sortOrder?: T
   updatedAt?: T
   createdAt?: T
 }
