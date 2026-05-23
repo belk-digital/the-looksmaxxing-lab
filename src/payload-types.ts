@@ -71,6 +71,7 @@ export interface Config {
     media: Media
     addresses: Address
     categories: Category
+    products: Product
     'payload-kv': PayloadKv
     'payload-locked-documents': PayloadLockedDocument
     'payload-preferences': PayloadPreference
@@ -82,6 +83,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>
     addresses: AddressesSelect<false> | AddressesSelect<true>
     categories: CategoriesSelect<false> | CategoriesSelect<true>
+    products: ProductsSelect<false> | ProductsSelect<true>
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>
     'payload-locked-documents':
       | PayloadLockedDocumentsSelect<false>
@@ -265,6 +267,42 @@ export interface Category {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number
+  name: string
+  description?: string | null
+  seoTitle?: string | null
+  seoDescription?: string | null
+  slug?: string | null
+  price: number
+  stock: number
+  hasVariants?: boolean | null
+  variants?:
+    | {
+        sku: string
+        price: number
+        stock: number
+        options?:
+          | {
+              key?: string | null
+              value?: string | null
+              id?: string | null
+            }[]
+          | null
+        id?: string | null
+      }[]
+    | null
+  averageRating?: number | null
+  reviewCount?: number | null
+  status?: ('draft' | 'active' | 'archived') | null
+  isVisible?: boolean | null
+  updatedAt: string
+  createdAt: string
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -302,6 +340,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'categories'
         value: number | Category
+      } | null)
+    | ({
+        relationTo: 'products'
+        value: number | Product
       } | null)
   globalSlug?: string | null
   user: {
@@ -478,6 +520,41 @@ export interface CategoriesSelect<T extends boolean = true> {
   parent?: T
   isVisible?: T
   sortOrder?: T
+  updatedAt?: T
+  createdAt?: T
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  name?: T
+  description?: T
+  seoTitle?: T
+  seoDescription?: T
+  slug?: T
+  price?: T
+  stock?: T
+  hasVariants?: T
+  variants?:
+    | T
+    | {
+        sku?: T
+        price?: T
+        stock?: T
+        options?:
+          | T
+          | {
+              key?: T
+              value?: T
+              id?: T
+            }
+        id?: T
+      }
+  averageRating?: T
+  reviewCount?: T
+  status?: T
+  isVisible?: T
   updatedAt?: T
   createdAt?: T
 }
