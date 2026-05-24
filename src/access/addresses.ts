@@ -1,5 +1,5 @@
 // src/access/addresses.ts
-import type { Access } from 'payload/types'
+import type { Access } from 'payload'
 
 /** Simple access control for Addresses collection */
 export const access: Access = {

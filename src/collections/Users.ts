@@ -29,6 +29,7 @@ export const Users: CollectionConfig = {
       name: 'phone',
       type: 'text',
       validate: (val) => {
+        if (!val) return true
         const regex = /^\+?[1-9]\d{1,14}$/
         return regex.test(val) || 'Phone must be in E.164 format'
       },
@@ -42,6 +43,18 @@ export const Users: CollectionConfig = {
         { label: 'Admin', value: 'admin' },
         { label: 'Staff', value: 'staff' },
       ],
+    },
+    {
+      name: 'provider',
+      type: 'text',
+      // 'email' for native login, 'google' for OAuth users
+      defaultValue: 'email',
+    },
+    {
+      name: 'googleId',
+      type: 'text',
+      // Store Google sub (unique identifier) when user signs up via Google OAuth
+      required: false,
     },
     {
       name: 'emailVerified',

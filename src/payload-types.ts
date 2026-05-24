@@ -78,6 +78,10 @@ export interface Config {
     orders: Order
     reviews: Review
     shippingzones: Shippingzone
+    'blog-posts': BlogPost
+    pages: Page
+    'contact-messages': ContactMessage
+    'email-logs': EmailLog
     'payload-kv': PayloadKv
     'payload-locked-documents': PayloadLockedDocument
     'payload-preferences': PayloadPreference
@@ -96,6 +100,10 @@ export interface Config {
     orders: OrdersSelect<false> | OrdersSelect<true>
     reviews: ReviewsSelect<false> | ReviewsSelect<true>
     shippingzones: ShippingzonesSelect<false> | ShippingzonesSelect<true>
+    'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>
+    pages: PagesSelect<false> | PagesSelect<true>
+    'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>
+    'email-logs': EmailLogsSelect<false> | EmailLogsSelect<true>
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>
     'payload-locked-documents':
       | PayloadLockedDocumentsSelect<false>
@@ -147,6 +155,8 @@ export interface User {
   lastName: string
   phone?: string | null
   role?: ('customer' | 'admin' | 'staff') | null
+  provider?: string | null
+  googleId?: string | null
   emailVerified?: boolean | null
   acceptsMarketing?: boolean | null
   preferredLocale?: ('en' | 'es') | null
@@ -529,6 +539,97 @@ export interface Shippingzone {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts".
+ */
+export interface BlogPost {
+  id: number
+  title: string
+  slug?: string | null
+  author: number | User
+  content?: {
+    root: {
+      type: string
+      children: {
+        type: any
+        version: number
+        [k: string]: unknown
+      }[]
+      direction: ('ltr' | 'rtl') | null
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''
+      indent: number
+      version: number
+    }
+    [k: string]: unknown
+  } | null
+  publishedAt?: string | null
+  status?: ('draft' | 'published') | null
+  updatedAt: string
+  createdAt: string
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number
+  title: string
+  slug?: string | null
+  content?: {
+    root: {
+      type: string
+      children: {
+        type: any
+        version: number
+        [k: string]: unknown
+      }[]
+      direction: ('ltr' | 'rtl') | null
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''
+      indent: number
+      version: number
+    }
+    [k: string]: unknown
+  } | null
+  status?: ('draft' | 'published') | null
+  updatedAt: string
+  createdAt: string
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-messages".
+ */
+export interface ContactMessage {
+  id: number
+  name: string
+  email: string
+  subject?: string | null
+  message: string
+  createdAt: string
+  updatedAt: string
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-logs".
+ */
+export interface EmailLog {
+  id: number
+  to: string
+  subject: string
+  body:
+    | {
+        [k: string]: unknown
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null
+  sentAt: string
+  status?: ('sent' | 'failed') | null
+  updatedAt: string
+  createdAt: string
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -595,6 +696,22 @@ export interface PayloadLockedDocument {
         relationTo: 'shippingzones'
         value: number | Shippingzone
       } | null)
+    | ({
+        relationTo: 'blog-posts'
+        value: number | BlogPost
+      } | null)
+    | ({
+        relationTo: 'pages'
+        value: number | Page
+      } | null)
+    | ({
+        relationTo: 'contact-messages'
+        value: number | ContactMessage
+      } | null)
+    | ({
+        relationTo: 'email-logs'
+        value: number | EmailLog
+      } | null)
   globalSlug?: string | null
   user: {
     relationTo: 'users'
@@ -646,6 +763,8 @@ export interface UsersSelect<T extends boolean = true> {
   lastName?: T
   phone?: T
   role?: T
+  provider?: T
+  googleId?: T
   emailVerified?: T
   acceptsMarketing?: T
   preferredLocale?: T
@@ -964,6 +1083,57 @@ export interface ShippingzonesSelect<T extends boolean = true> {
         estimatedDays?: T
         id?: T
       }
+  updatedAt?: T
+  createdAt?: T
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts_select".
+ */
+export interface BlogPostsSelect<T extends boolean = true> {
+  title?: T
+  slug?: T
+  author?: T
+  content?: T
+  publishedAt?: T
+  status?: T
+  updatedAt?: T
+  createdAt?: T
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T
+  slug?: T
+  content?: T
+  status?: T
+  updatedAt?: T
+  createdAt?: T
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-messages_select".
+ */
+export interface ContactMessagesSelect<T extends boolean = true> {
+  name?: T
+  email?: T
+  subject?: T
+  message?: T
+  createdAt?: T
+  updatedAt?: T
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-logs_select".
+ */
+export interface EmailLogsSelect<T extends boolean = true> {
+  to?: T
+  subject?: T
+  body?: T
+  sentAt?: T
+  status?: T
   updatedAt?: T
   createdAt?: T
 }

@@ -5,23 +5,22 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import { s3Storage } from '@payloadcms/storage-s3'
-import { resendAdapter } from '@payloadcms/email-resend'
 
-import { Users } from './collections/Users'
-import { Media } from './collections/Media'
-import { Addresses } from './collections/Addresses'
-import { Categories } from './collections/Categories'
-import { Products } from './collections/Products'
-import { Carts } from './collections/Carts'
-import { Coupons } from './collections/Coupons'
-import { BlogPosts } from './collections/BlogPosts'
-import { Pages } from './collections/Pages'
-import { ContactMessages } from './collections/ContactMessages'
-import { EmailLogs } from './collections/EmailLogs'
-import { Wishlists } from './collections/Wishlists'
-import { Reviews } from './collections/Reviews'
-import { Orders } from './collections/Orders'
-import { ShippingZones } from './collections/ShippingZones'
+import { Users } from './src/collections/Users'
+import { Media } from './src/collections/Media'
+import { Addresses } from './src/collections/Addresses'
+import { Categories } from './src/collections/Categories'
+import { Products } from './src/collections/Products'
+import { Carts } from './src/collections/Carts'
+import { Coupons } from './src/collections/Coupons'
+import { BlogPosts } from './src/collections/BlogPosts'
+import { Pages } from './src/collections/Pages'
+import { ContactMessages } from './src/collections/ContactMessages'
+import { EmailLogs } from './src/collections/EmailLogs'
+import { Wishlists } from './src/collections/Wishlists'
+import { Reviews } from './src/collections/Reviews'
+import { Orders } from './src/collections/Orders'
+import { ShippingZones } from './src/collections/ShippingZones'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -70,7 +69,7 @@ export default buildConfig({
         media: {
           generateFileURL: ({ filename, prefix }) => {
             const publicUrl = process.env.R2_PUBLIC_URL || ''
-            const base = publicUrl.replace(/\/$/, '')
+            const base = publicUrl.replace(/\\\/$/, '')
             return prefix ? `${base}/${prefix}/${filename}` : `${base}/${filename}`
           },
         },
@@ -88,9 +87,4 @@ export default buildConfig({
       enabled: !!process.env.R2_BUCKET,
     }),
   ],
-  email: resendAdapter({
-    defaultFromAddress: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
-    defaultFromName: 'The Looksmaxxing Lab',
-    apiKey: process.env.RESEND_API_KEY || '',
-  }),
 })
