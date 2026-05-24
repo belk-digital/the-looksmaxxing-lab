@@ -1,4 +1,4 @@
-import { HookArgs } from 'payload'
+import type { CollectionBeforeChangeHook } from "payload"
 import { Payload } from 'payload'
 
 export const beforeValidateReview = async ({ data, req }: HookArgs) => {

@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-
+import { afterAffiliatePayoutChange } from '@/hooks/affiliatePayouts'
 export const AffiliatePayouts: CollectionConfig = {
   slug: 'affiliate-payouts',
   admin: {
@@ -32,5 +32,8 @@ export const AffiliatePayouts: CollectionConfig = {
     { name: 'paidAt', type: 'date' },
     { name: 'failedAt', type: 'date' },
     { name: 'failureReason', type: 'text' },
-  ]
+  ],
+  hooks: {
+    afterChange: [afterAffiliatePayoutChange],
+  }
 }

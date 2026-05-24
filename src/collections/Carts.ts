@@ -6,7 +6,6 @@ export const Carts: CollectionConfig = {
   admin: {
     defaultColumns: ['user', 'items'],
     useAsTitle: 'user',
-    hideCreate: true, // carts are created via hooks or API, not manually
   },
   access: cartsAccess,
   fields: [

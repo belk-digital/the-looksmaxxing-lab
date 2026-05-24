@@ -1,5 +1,4 @@
 import type { CollectionConfig } from 'payload'
-import { accessUsers } from '@/access/users'
 
 export const Affiliates: CollectionConfig = {
   slug: 'affiliates',
@@ -8,9 +7,17 @@ export const Affiliates: CollectionConfig = {
     group: 'Affiliate System',
   },
   access: {
-    read: accessUsers,
+    read: ({ req: { user } }) => {
+      if (!user) return false
+      if (['admin', 'staff'].includes(user.role)) return true
+      return { user: { equals: user.id } }
+    },
     create: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role),
-    update: accessUsers,
+    update: ({ req: { user } }) => {
+      if (!user) return false
+      if (['admin', 'staff'].includes(user.role)) return true
+      return { user: { equals: user.id } }
+    },
     delete: () => false, // Never delete
   },
   fields: [

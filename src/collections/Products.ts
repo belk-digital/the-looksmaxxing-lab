@@ -54,6 +54,13 @@ export const Products: CollectionConfig = {
       defaultValue: 0,
     },
     {
+      name: 'categories',
+      type: 'relationship',
+      relationTo: 'categories',
+      hasMany: true,
+      admin: { position: 'sidebar' },
+    },
+    {
       name: 'hasVariants',
       type: 'checkbox',
       defaultValue: false,

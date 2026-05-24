@@ -1,6 +1,6 @@
-import { Access } from 'payload'
+import type { CollectionAccess } from 'payload'
 
-export const accessContent: Access = {
+export const accessContent: CollectionAccess = {
   create: ({ req }) => req.user?.role === 'admin',
   read: ({ req, data }) => {
     if (req.user?.role === 'admin') return true

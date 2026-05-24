@@ -1,4 +1,4 @@
-import { Access } from 'payload'
+import type { CollectionAccess } from 'payload'
 
 export const wishlistsAccess = {
   read: ({ req }) => {

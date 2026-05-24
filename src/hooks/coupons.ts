@@ -1,6 +1,6 @@
-import { BeforeChangeHook } from 'payload'
+import { CollectionBeforeChangeHook } from 'payload'
 
-export const couponsHook: BeforeChangeHook = async ({ data, originalDoc, operation }) => {
+export const couponsHook: CollectionBeforeChangeHook = async ({ data, originalDoc, operation }) => {
   // Ensure code is uppercase
   if (data?.code && typeof data.code === 'string') {
     data.code = data.code.toUpperCase()

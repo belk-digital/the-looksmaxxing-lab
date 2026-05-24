@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-
+import { afterAffiliateClickChange } from '@/hooks/affiliateClicks'
 export const AffiliateClicks: CollectionConfig = {
   slug: 'affiliate-clicks',
   admin: {
@@ -27,5 +27,8 @@ export const AffiliateClicks: CollectionConfig = {
     { name: 'isSuspicious', type: 'checkbox', defaultValue: false },
     { name: 'suspicionReason', type: 'text' },
     { name: 'clickedAt', type: 'date', required: true, index: true },
-  ]
+  ],
+  hooks: {
+    afterChange: [afterAffiliateClickChange],
+  }
 }

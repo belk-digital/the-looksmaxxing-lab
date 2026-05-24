@@ -1,4 +1,4 @@
-import { Access } from 'payload'
+import type { CollectionAccess } from 'payload'
 
 export const couponsAccess = {
   read: () => true, // public read for validation lookups

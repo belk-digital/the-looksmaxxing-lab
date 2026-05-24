@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { accessUsers } from '@/access/users'
+import { afterAffiliateApplicationChange } from '@/hooks/affiliateApplications'
 
 export const AffiliateApplications: CollectionConfig = {
   slug: 'affiliate-applications',
@@ -8,7 +8,11 @@ export const AffiliateApplications: CollectionConfig = {
     group: 'Affiliate System',
   },
   access: {
-    read: accessUsers,
+    read: ({ req: { user } }) => {
+      if (!user) return false
+      if (['admin', 'staff'].includes(user.role)) return true
+      return { user: { equals: user.id } }
+    },
     create: () => true, // Logged in users can apply (or public depending on strategy)
     update: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role),
     delete: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role),
@@ -100,6 +104,6 @@ export const AffiliateApplications: CollectionConfig = {
     },
   ],
   hooks: {
-    // Add hooks here to create Affiliate on 'approved' status
+    afterChange: [afterAffiliateApplicationChange],
   }
 }

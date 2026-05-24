@@ -6,7 +6,6 @@ export const Wishlists: CollectionConfig = {
   admin: {
     defaultColumns: ['user', 'items'],
     useAsTitle: 'user',
-    hideCreate: true,
   },
   access: wishlistsAccess,
   fields: [

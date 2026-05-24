@@ -123,9 +123,8 @@ export const Coupons: CollectionConfig = {
       type: 'number',
       required: false,
       admin: {
-        description: (args) =>
-          args?.data?.type === 'store_credit' ? 'Total store credit value in cents.' : undefined,
-        condition: (_, siblingData) => siblingData.type === 'store_credit',
+        description: 'Total store credit value in cents.',
+        condition: (_, siblingData) => siblingData?.type === 'store_credit',
         position: 'sidebar',
       },
     },

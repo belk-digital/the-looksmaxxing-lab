@@ -1,0 +1,100 @@
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
+
+export async function updateAffiliateStats(affiliateId: string | number) {
+  const payload = await getPayload({ config: configPromise })
+
+  // 1. Get all clicks
+  const clicks = await payload.find({
+    collection: 'affiliate-clicks',
+    where: { affiliate: { equals: affiliateId } },
+    limit: 100000, // For production, you might want to use aggregation queries via db directly, but this is fine for now
+    overrideAccess: true,
+  })
+
+  const totalClicks = clicks.totalDocs
+  
+  // Unique clicks (deduplicated by ipHash)
+  const uniqueIps = new Set(clicks.docs.map(c => c.ipHash).filter(Boolean))
+  const uniqueClicks = uniqueIps.size
+
+  // Get last click date
+  const lastClick = await payload.find({
+    collection: 'affiliate-clicks',
+    where: { affiliate: { equals: affiliateId } },
+    sort: '-clickedAt',
+    limit: 1,
+    overrideAccess: true,
+  })
+  const lastClickAt = lastClick.docs[0]?.clickedAt || null
+
+  // 2. Get all conversions
+  const conversions = await payload.find({
+    collection: 'affiliate-conversions',
+    where: { 
+      affiliate: { equals: affiliateId },
+      status: { not_equals: 'voided' } // Exclude voided
+    },
+    limit: 100000,
+    overrideAccess: true,
+  })
+
+  // Filter out reversed for some stats
+  const activeConversions = conversions.docs.filter(c => c.status !== 'reversed')
+  const totalConversions = activeConversions.length
+
+  let totalRevenue = 0
+  let totalCommissionEarned = 0
+  let totalCommissionPending = 0
+  let totalCommissionApproved = 0
+  let totalCommissionPaid = 0
+
+  for (const conv of conversions.docs) {
+    if (conv.status === 'reversed') continue
+
+    totalRevenue += (conv.orderSubtotal || 0)
+    
+    // Earned includes everything except reversed/voided
+    totalCommissionEarned += (conv.commissionAmount || 0)
+
+    if (conv.status === 'pending') {
+      totalCommissionPending += (conv.commissionAmount || 0)
+    } else if (conv.status === 'approved') {
+      totalCommissionApproved += (conv.commissionAmount || 0)
+    } else if (conv.status === 'paid') {
+      totalCommissionPaid += (conv.commissionAmount || 0)
+    }
+  }
+
+  // Get last conversion date
+  const lastConv = await payload.find({
+    collection: 'affiliate-conversions',
+    where: { 
+      affiliate: { equals: affiliateId },
+      status: { not_in: ['voided', 'reversed'] }
+    },
+    sort: '-createdAt',
+    limit: 1,
+    overrideAccess: true,
+  })
+  const lastConversionAt = lastConv.docs[0]?.createdAt || null
+
+  // 3. Update Affiliate record
+  await payload.update({
+    collection: 'affiliates',
+    id: affiliateId,
+    data: {
+      totalClicks,
+      uniqueClicks,
+      totalConversions,
+      totalRevenue,
+      totalCommissionEarned,
+      totalCommissionPending,
+      totalCommissionApproved,
+      totalCommissionPaid,
+      lastClickAt,
+      lastConversionAt,
+    },
+    overrideAccess: true,
+  })
+}

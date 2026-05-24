@@ -28,8 +28,10 @@ export const Users: CollectionConfig = {
       type: 'text',
       unique: true,
       index: true,
-      admin: { readOnly: true, description: 'Set by Clerk webhook. Do not edit.' },
-      access: { read: () => false }, // Never expose to client
+      access: { 
+        read: () => false,
+        update: () => false, // Prevent manual editing in admin UI
+      },
     },
     {
       name: 'phone',

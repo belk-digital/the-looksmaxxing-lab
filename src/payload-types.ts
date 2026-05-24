@@ -161,9 +161,6 @@ export interface User {
   id: number;
   firstName?: string | null;
   lastName?: string | null;
-  /**
-   * Set by Clerk webhook. Do not edit.
-   */
   clerkUserId?: string | null;
   phone?: string | null;
   role?: ('customer' | 'admin' | 'staff') | null;
@@ -310,6 +307,7 @@ export interface Product {
   slug?: string | null;
   price: number;
   stock: number;
+  categories?: (number | Category)[] | null;
   hasVariants?: boolean | null;
   variants?:
     | {
@@ -416,6 +414,9 @@ export interface Coupon {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Total store credit value in cents.
+   */
   storeCreditAmount?: number | null;
   /**
    * Remaining credit balance. Managed by the system.
@@ -500,6 +501,17 @@ export interface Order {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Before discounts/shipping/tax
+   */
+  subtotal?: number | null;
+  discountTotal?: number | null;
+  total?: number | null;
+  couponCode?: string | null;
+  /**
+   * For orders without a registered user account
+   */
+  guestEmail?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -1174,6 +1186,7 @@ export interface ProductsSelect<T extends boolean = true> {
   slug?: T;
   price?: T;
   stock?: T;
+  categories?: T;
   hasVariants?: T;
   variants?:
     | T
@@ -1321,6 +1334,11 @@ export interface OrdersSelect<T extends boolean = true> {
         createdAt?: T;
         id?: T;
       };
+  subtotal?: T;
+  discountTotal?: T;
+  total?: T;
+  couponCode?: T;
+  guestEmail?: T;
   createdAt?: T;
   updatedAt?: T;
 }

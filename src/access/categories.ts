@@ -1,7 +1,7 @@
 // src/access/categories.ts
-import type { Access } from 'payload'
+import type { CollectionAccess } from 'payload'
 
-export const access: Access = {
+export const access: CollectionAccess = {
   // Public can read only visible categories; admins/staff can read all.
   read: ({ req: { user } }) => {
     if (!user) return { isVisible: { equals: true } }

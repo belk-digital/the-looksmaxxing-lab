@@ -16,6 +16,7 @@ export async function Header() {
       collection: 'users',
       where: { clerkUserId: { equals: userId } },
       limit: 1,
+      overrideAccess: true,
     })
     
     const payloadUser = payloadUsers.docs[0]
@@ -25,6 +26,7 @@ export async function Header() {
         collection: 'carts',
         where: { user: { equals: payloadUser.id } },
         limit: 1,
+        overrideAccess: true,
       })
       if (carts.docs[0]?.items) {
         cartItemCount = carts.docs[0].items.reduce((sum, item) => sum + (item.quantity || 1), 0)
@@ -34,6 +36,7 @@ export async function Header() {
         collection: 'wishlists',
         where: { user: { equals: payloadUser.id } },
         limit: 1,
+        overrideAccess: true,
       })
       if (wishlists.docs[0]?.items) {
         wishlistItemCount = wishlists.docs[0].items.length

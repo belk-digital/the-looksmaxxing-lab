@@ -1,5 +1,5 @@
 // src/access/users.ts
-import type { Access } from 'payload'
+import type { CollectionAccess } from 'payload'
 
 /**
  * Access control for the Users collection.
@@ -9,7 +9,7 @@ import type { Access } from 'payload'
  * - update: own record (limited fields) OR admin (all)
  * - delete: admin only
  */
-export const accessUsers: Access = {
+export const accessUsers: CollectionAccess = {
   create: () => true,
   read: ({ req: { user } }) => {
     if (!user) return false

@@ -16,6 +16,7 @@ export default async function AffiliateDashboardPage() {
     collection: 'affiliates',
     where: { user: { equals: user.id } },
     limit: 1,
+    overrideAccess: true,
   })
 
   const affiliate = result.docs[0]

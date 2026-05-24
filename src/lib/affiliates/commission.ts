@@ -56,7 +56,7 @@ export async function attributeOrder(
   const commissionAmount = await computeCommission(order, affiliate.id)
 
   // Basic fraud checks
-  const customerEmail = (typeof order.guestEmail === 'string' ? order.guestEmail : '') || (typeof order.user === 'object' && order.user !== null && 'email' in order.user ? String(order.user.email) : '')
+  const customerEmail = typeof order.owner === 'object' && order.owner !== null ? order.owner.email : order.guestEmail
   let isSelfReferral = false
   
   // Check if affiliate's user email matches customer email
@@ -96,5 +96,6 @@ export async function attributeOrder(
       flaggedForReview: isSelfReferral,
       fraudNotes,
     } as any, // Typecast due to dynamically generated types possibly missing fields
+    overrideAccess: true,
   })
 }

@@ -1,6 +1,7 @@
 import { CollectionConfig } from 'payload'
 import { validateStatusTransition } from '../lib/orders/state'
 import { sql } from '@payloadcms/db-postgres'
+import { afterOrderChange } from '@/hooks/orders'
 
 export const Orders: CollectionConfig = {
   slug: 'orders',
@@ -22,12 +23,12 @@ export const Orders: CollectionConfig = {
       async ({ operation, originalDoc, data, req }) => {
         if (operation === 'create') {
           const year = new Date().getFullYear()
-          const counterRes: any = await req.payload.db.query({
-            query: sql`INSERT INTO "order_counters" ("year", "counter") VALUES (${year}, 1)
+          const db = req.payload.db as any
+          await db.drizzle.execute(sql`CREATE TABLE IF NOT EXISTS "order_counters" ("year" integer PRIMARY KEY, "counter" integer NOT NULL)`)
+          const counterRes: any = await db.drizzle.execute(sql`INSERT INTO "order_counters" ("year", "counter") VALUES (${year}, 1)
                       ON CONFLICT ("year") DO UPDATE SET "counter" = "order_counters"."counter" + 1
-                      RETURNING "counter"`,
-          })
-          const counter = (counterRes[0] as any).counter
+                      RETURNING "counter"`)
+          const counter = (counterRes.rows ? counterRes.rows[0].counter : counterRes[0].counter)
           const padded = String(counter).padStart(5, '0')
           data.orderNumber = `PEP-${year}-${padded}`
 
@@ -163,7 +164,15 @@ export const Orders: CollectionConfig = {
         { name: 'createdAt', type: 'date', admin: { readonly: true } },
       ],
     },
+    { name: 'subtotal', type: 'number', admin: { position: 'sidebar', description: 'Before discounts/shipping/tax' } },
+    { name: 'discountTotal', type: 'number', admin: { position: 'sidebar' } },
+    { name: 'total', type: 'number', admin: { position: 'sidebar' } },
+    { name: 'couponCode', type: 'text', admin: { position: 'sidebar' } },
+    { name: 'guestEmail', type: 'text', admin: { position: 'sidebar', description: 'For orders without a registered user account' } },
     { name: 'createdAt', type: 'date', admin: { position: 'sidebar', disabled: true } },
     { name: 'updatedAt', type: 'date', admin: { position: 'sidebar', disabled: true } },
   ],
+  hooks: {
+    afterChange: [afterOrderChange],
+  }
 }

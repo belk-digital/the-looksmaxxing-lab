@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-
+import { afterAffiliateConversionChange } from '@/hooks/affiliateConversions'
 export const AffiliateConversions: CollectionConfig = {
   slug: 'affiliate-conversions',
   admin: {
@@ -38,5 +38,8 @@ export const AffiliateConversions: CollectionConfig = {
     { name: 'fraudScore', type: 'number' },
     { name: 'flaggedForReview', type: 'checkbox' },
     { name: 'fraudNotes', type: 'text' },
-  ]
+  ],
+  hooks: {
+    afterChange: [afterAffiliateConversionChange],
+  }
 }
