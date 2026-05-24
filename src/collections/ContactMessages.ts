@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import { CollectionConfig } from 'payload'
 import { accessContent } from '../access/content'
 
 export const ContactMessages: CollectionConfig = {

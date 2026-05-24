@@ -8,9 +8,7 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
   },
   auth: {
-    tokenStrategy: 'httpOnly', // use httpOnly cookies for auth tokens
-    verifyEmail: true, // enable built‑in email verification flow
-    resetPassword: true, // enable password reset flow
+    tokenExpiration: 7200,
   },
   access: accessUsers,
   fields: [
@@ -18,12 +16,20 @@ export const Users: CollectionConfig = {
     {
       name: 'firstName',
       type: 'text',
-      required: true,
+      required: false,
     },
     {
       name: 'lastName',
       type: 'text',
-      required: true,
+      required: false,
+    },
+    {
+      name: 'clerkUserId',
+      type: 'text',
+      unique: true,
+      index: true,
+      admin: { readOnly: true, description: 'Set by Clerk webhook. Do not edit.' },
+      access: { read: () => false }, // Never expose to client
     },
     {
       name: 'phone',
@@ -44,18 +50,7 @@ export const Users: CollectionConfig = {
         { label: 'Staff', value: 'staff' },
       ],
     },
-    {
-      name: 'provider',
-      type: 'text',
-      // 'email' for native login, 'google' for OAuth users
-      defaultValue: 'email',
-    },
-    {
-      name: 'googleId',
-      type: 'text',
-      // Store Google sub (unique identifier) when user signs up via Google OAuth
-      required: false,
-    },
+
     {
       name: 'emailVerified',
       type: 'checkbox',

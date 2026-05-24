@@ -1,5 +1,5 @@
 // src/hooks/categories.ts
-import type { BeforeChangeHook } from 'payload/types'
+import type { BeforeChangeHook } from 'payload'
 import slugify from 'slugify'
 
 /**

@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import { CollectionConfig } from 'payload'
 import { couponsAccess } from '../access/coupons'
 import { couponsHook } from '../hooks/coupons'
 

@@ -1,4 +1,4 @@
-import { CollectionBeforeChangeHook } from 'payload/types'
+import { CollectionBeforeChangeHook } from 'payload'
 import slugify from 'slugify'
 
 export const productsBeforeChange: CollectionBeforeChangeHook = async ({

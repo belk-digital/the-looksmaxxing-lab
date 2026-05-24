@@ -1,5 +1,5 @@
 // src/hooks/users.ts
-import type { BeforeChangeHook, AfterChangeHook } from 'payload/types'
+import type { BeforeChangeHook, AfterChangeHook } from 'payload'
 
 /**
  * Lower‑case the email on create / update.

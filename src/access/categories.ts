@@ -1,5 +1,5 @@
 // src/access/categories.ts
-import type { Access } from 'payload/types'
+import type { Access } from 'payload'
 
 export const access: Access = {
   // Public can read only visible categories; admins/staff can read all.

@@ -22,6 +22,11 @@ import { Wishlists } from './collections/Wishlists'
 import { Reviews } from './collections/Reviews'
 import { Orders } from './collections/Orders'
 import { ShippingZones } from './collections/ShippingZones'
+import { AffiliateApplications } from './collections/AffiliateApplications'
+import { Affiliates } from './collections/Affiliates'
+import { AffiliateClicks } from './collections/AffiliateClicks'
+import { AffiliateConversions } from './collections/AffiliateConversions'
+import { AffiliatePayouts } from './collections/AffiliatePayouts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -49,6 +54,11 @@ export default buildConfig({
     Pages,
     ContactMessages,
     EmailLogs,
+    AffiliateApplications,
+    Affiliates,
+    AffiliateClicks,
+    AffiliateConversions,
+    AffiliatePayouts,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

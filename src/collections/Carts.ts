@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import { CollectionConfig } from 'payload'
 import { cartsAccess } from '../access/carts'
 
 export const Carts: CollectionConfig = {

@@ -1,5 +1,5 @@
 // src/access/users.ts
-import type { Access } from 'payload/types'
+import type { Access } from 'payload'
 
 /**
  * Access control for the Users collection.

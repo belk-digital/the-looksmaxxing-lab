@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import { CollectionConfig } from 'payload'
 import { validateStatusTransition } from '../lib/orders/state'
 import { sql } from '@payloadcms/db-postgres'
 

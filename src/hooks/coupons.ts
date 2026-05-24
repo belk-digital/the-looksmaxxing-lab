@@ -1,4 +1,4 @@
-import { BeforeChangeHook } from 'payload/types'
+import { BeforeChangeHook } from 'payload'
 
 export const couponsHook: BeforeChangeHook = async ({ data, originalDoc, operation }) => {
   // Ensure code is uppercase
