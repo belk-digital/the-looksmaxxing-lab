@@ -36,7 +36,7 @@ export const Users: CollectionConfig = {
     {
       name: 'phone',
       type: 'text',
-      validate: (val) => {
+      validate: (val: string | null | undefined) => {
         if (!val) return true
         const regex = /^\+?[1-9]\d{1,14}$/
         return regex.test(val) || 'Phone must be in E.164 format'

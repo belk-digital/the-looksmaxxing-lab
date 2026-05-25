@@ -61,7 +61,7 @@ export async function submitAffiliateApplication(formData: FormData) {
         niche,
         whyJoin,
         agreedToTerms,
-        socialLinks,
+        socialLinks: socialLinks as any,
       },
       overrideAccess: true,
     })

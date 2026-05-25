@@ -87,16 +87,18 @@ async function runTest() {
         fulfillmentStatus: 'unfulfilled',
         subtotal: 10000, // $100
         discountTotal: 0,
+        taxTotal: 0,
+        feeTotal: 0,
         total: 10000,
         guestEmail: 'customer@example.com',
-      }
+      } as any
     })
     console.log(`Order created: ${order.id}`)
 
     // 4. Run Attribution Engine manually (since we skip the Next.js checkout API here)
     console.log('\nRunning Attribution Engine...')
     const { attributeOrder } = await import('../src/lib/affiliates/commission')
-    await attributeOrder(order, affiliate.id, null, click.id)
+    await attributeOrder(order as any, String(affiliate.id), null, String(click.id))
     
     // Wait for the conversion hook to run
     await updateAffiliateStats(affiliate.id)

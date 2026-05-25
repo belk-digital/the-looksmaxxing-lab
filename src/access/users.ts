@@ -1,5 +1,5 @@
 // src/access/users.ts
-import type { CollectionAccess } from 'payload'
+
 
 /**
  * Access control for the Users collection.
@@ -9,9 +9,9 @@ import type { CollectionAccess } from 'payload'
  * - update: own record (limited fields) OR admin (all)
  * - delete: admin only
  */
-export const accessUsers: CollectionAccess = {
+export const accessUsers: any = {
   create: () => true,
-  read: ({ req: { user } }) => {
+  read: ({ req: { user } }: any) => {
     if (!user) return false
     if (['admin', 'staff'].includes(user.role)) return true
     // allow reading own user record – Payload will filter by id when accessing a single doc
@@ -19,7 +19,7 @@ export const accessUsers: CollectionAccess = {
       id: { equals: user.id },
     }
   },
-  update: ({ req: { user } }) => {
+  update: ({ req: { user } }: any) => {
     if (!user) return false
     if (['admin', 'staff'].includes(user.role)) return true
     // users can update only a whitelist of safe fields – enforced via field‑level admin conditions
@@ -27,5 +27,5 @@ export const accessUsers: CollectionAccess = {
       id: { equals: user.id },
     }
   },
-  delete: ({ req: { user } }) => !!user && ['admin', 'staff'].includes(user.role),
+  delete: ({ req: { user } }: any) => !!user && ['admin', 'staff'].includes(user.role),
 }

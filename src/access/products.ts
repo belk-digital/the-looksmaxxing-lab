@@ -1,13 +1,13 @@
-import type { CollectionAccess } from 'payload'
 
-export const productsAccess = {
-  read: ({ req }) => {
+
+export const productsAccess: any = {
+  read: ({ req }: any) => {
     // Admin or staff can read all; public can read only active products
-    const isAdmin = req?.user?.role?.some?.((r) => ['admin', 'staff'].includes(r))
+    const isAdmin = ['admin', 'staff'].includes(req?.user?.role as string)
     if (isAdmin) return {}
     return { status: { equals: 'active' } }
   },
-  create: ({ req }) => ({ role: { contains: 'admin' } }),
-  update: ({ req }) => ({ role: { contains: 'admin' } }),
-  delete: ({ req }) => ({ role: { contains: 'admin' } }),
-} as Access
+  create: ({ req }: any) => req?.user?.role === 'admin',
+  update: ({ req }: any) => req?.user?.role === 'admin',
+  delete: ({ req }: any) => req?.user?.role === 'admin',
+}

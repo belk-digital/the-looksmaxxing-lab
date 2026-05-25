@@ -52,7 +52,7 @@ export default async function WishlistPage({ params }: { params: Promise<{ local
                   ${((item.priceSnapshot ?? 0) / 100).toFixed(2)}
                 </p>
               </div>
-              <form action={removeFromWishlist} className="ml-4">
+              <form action={async (formData) => { "use server"; await removeFromWishlist(formData) }} className="ml-4">
                 <input type="hidden" name="productId" value={typeof item.product === 'object' ? item.product.id : item.product} />
                 <button
                   type="submit"

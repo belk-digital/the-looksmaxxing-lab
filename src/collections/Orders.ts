@@ -60,6 +60,7 @@ export const Orders: CollectionConfig = {
       },
     ],
     afterChange: [
+      afterOrderChange,
       async ({ operation, doc }) => {
         if (operation === 'update') {
           // TODO: send status change email (Phase 14)
@@ -174,7 +175,7 @@ export const Orders: CollectionConfig = {
       fields: [
         { name: 'amount', type: 'number' },
         { name: 'reason', type: 'text' },
-        { name: 'createdAt', type: 'date', admin: { readonly: true } },
+        { name: 'createdAt', type: 'date', admin: { readOnly: true } },
       ],
     },
     { name: 'subtotal', type: 'number', admin: { position: 'sidebar', description: 'Before discounts/shipping/tax' } },
@@ -226,7 +227,4 @@ export const Orders: CollectionConfig = {
       },
     },
   ],
-  hooks: {
-    afterChange: [afterOrderChange],
-  }
 }

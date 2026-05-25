@@ -94,7 +94,7 @@ export async function updateAffiliateStats(affiliateId: string | number) {
       totalCommissionPaid,
       lastClickAt,
       lastConversionAt,
-    },
+    } as any,
     overrideAccess: true,
   })
 }

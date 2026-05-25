@@ -44,6 +44,7 @@ export async function addToCart(productId: string | number, quantity: number = 1
           variantSku,
           quantity,
           priceSnapshot,
+          addedAt: new Date().toISOString(),
         }],
       },
       overrideAccess: true,
@@ -218,7 +219,12 @@ async function calculateCartTotals(cartItems: any[], payload: any, coupon?: any)
     }
   }
 
-  return { discount, description, eligibleSubtotal, totalSubtotal };
+  let freeShipping = false;
+  if (coupon && coupon.type === 'free_shipping') {
+    freeShipping = true;
+  }
+
+  return { discount, description, eligibleSubtotal, totalSubtotal, freeShipping };
 }
 
 export async function verifyCoupon(couponCode: string, subtotal: number) {

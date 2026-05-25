@@ -1,7 +1,8 @@
-import type { CollectionBeforeChangeHook } from "payload"
+import type { CollectionBeforeValidateHook } from "payload"
 import { Payload } from 'payload'
 
-export const beforeValidateReview = async ({ data, req }: HookArgs) => {
+export const beforeValidateReview: CollectionBeforeValidateHook = async ({ data, req }) => {
+  if (!data) return data
   // If an order is linked, verify it is delivered/completed
   if (data.order) {
     const order = await req.payload.find({

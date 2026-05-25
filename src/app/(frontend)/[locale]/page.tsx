@@ -24,17 +24,17 @@ export default function Homepage() {
         
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Link 
-            href="/shop" 
+            href="/products" 
             className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:scale-105 hover:shadow-indigo-500/40 sm:w-auto"
           >
             Shop Now
             <ArrowRight className="h-5 w-5" />
           </Link>
           <Link 
-            href="/about" 
+            href="/login" 
             className="flex w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-8 py-4 text-base font-semibold text-white backdrop-blur-md transition-all hover:bg-white/10 sm:w-auto"
           >
-            Learn More
+            Login / Join
           </Link>
         </div>
       </section>

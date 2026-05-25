@@ -15,11 +15,10 @@ export const Reviews: CollectionConfig = {
     },
     // Only authenticated users can create a review; we'll validate order delivery in hook
     create: ({ req }) => !!req.user,
-    // Update: owner can edit while pending, admins can always edit
-    update: ({ req, doc }) => {
+    update: ({ req }) => {
       if (req.user?.role === 'admin') return true
-      if (!doc) return false
-      return doc.user?.equals(req.user?.id) && doc.status === 'pending'
+      if (!req.user) return false
+      return { and: [{ user: { equals: req.user.id } }, { status: { equals: 'pending' } }] } as any
     },
     delete: ({ req }) => req.user?.role === 'admin',
   },
@@ -49,7 +48,7 @@ export const Reviews: CollectionConfig = {
       name: 'rating',
       type: 'number',
       required: true,
-      validate: (val) => (val >= 1 && val <= 5) || 'Rating must be between 1 and 5',
+      validate: (val: number | null | undefined) => (val && val >= 1 && val <= 5) || 'Rating must be between 1 and 5',
     },
     {
       name: 'comment',

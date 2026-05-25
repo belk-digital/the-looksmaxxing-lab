@@ -68,7 +68,7 @@ export async function attributeOrder(
   const commissionAmount = await computeCommission(order, affiliate.id)
 
   // Basic fraud checks
-  const customerEmail = typeof order.owner === 'object' && order.owner !== null ? order.owner.email : order.guestEmail
+  const customerEmail = (typeof order.owner === 'object' && order.owner !== null ? order.owner.email : order.guestEmail) || ''
   let isSelfReferral = false
   
   // Check if affiliate's user email matches customer email

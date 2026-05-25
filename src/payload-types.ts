@@ -457,6 +457,9 @@ export interface Coupon {
    * Remaining credit balance. Managed by the system.
    */
   remainingBalance?: number | null;
+  /**
+   * Percentage (0-100), fixed amount in cents, or ignored for free shipping.
+   */
   value?: number | null;
   appliesTo: 'all' | 'specific_products' | 'specific_categories';
   products?:

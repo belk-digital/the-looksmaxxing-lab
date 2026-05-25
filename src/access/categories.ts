@@ -1,15 +1,12 @@
 // src/access/categories.ts
-import type { CollectionAccess } from 'payload'
 
-export const access: CollectionAccess = {
-  // Public can read only visible categories; admins/staff can read all.
-  read: ({ req: { user } }) => {
+export const access: any = {
+  read: ({ req: { user } }: any) => {
     if (!user) return { isVisible: { equals: true } }
     if (['admin', 'staff'].includes(user.role)) return true
     return { isVisible: { equals: true } }
   },
-  // Creation / update / delete limited to admin / staff.
-  create: ({ req: { user } }) => !!user && ['admin', 'staff'].includes(user.role),
-  update: ({ req: { user } }) => !!user && ['admin', 'staff'].includes(user.role),
-  delete: ({ req: { user } }) => !!user && ['admin', 'staff'].includes(user.role),
+  create: ({ req: { user } }: any) => !!user && ['admin', 'staff'].includes(user.role),
+  update: ({ req: { user } }: any) => !!user && ['admin', 'staff'].includes(user.role),
+  delete: ({ req: { user } }: any) => !!user && ['admin', 'staff'].includes(user.role),
 }

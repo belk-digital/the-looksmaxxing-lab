@@ -62,7 +62,7 @@ export default async function CheckoutPage() {
   
   let subtotal = 0
   if (hasItems) {
-    for (const item of cart.items) {
+    for (const item of cart?.items || []) {
       // In a real app we'd fetch missing product details here or heavily populate the cart
       if (typeof item.product === 'object' && item.product !== null) {
         subtotal += (item.product.price || 0) * (item.quantity || 1)
@@ -82,7 +82,7 @@ export default async function CheckoutPage() {
           Your cart is empty. <a href="/products" className="underline">Go add some products.</a>
         </div>
       ) : (
-        <form action={processCheckout} className="space-y-8">
+        <form action={async (formData) => { "use server"; await processCheckout(formData) }} className="space-y-8">
           
           {/* Order Summary */}
           <div className="bg-white/5 border border-white/10 rounded-lg p-6">
@@ -165,7 +165,7 @@ export default async function CheckoutPage() {
             </div>
           </div>
 
-          <CheckoutSummary subtotal={subtotal} shippingZones={shippingZones} processingFees={processingFees} />
+          <CheckoutSummary subtotal={subtotal} shippingZones={shippingZones} processingFees={processingFees as any} />
 
           {/* Payment Method */}
           <div className="bg-white/5 border border-white/10 rounded-lg p-6">

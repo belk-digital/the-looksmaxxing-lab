@@ -10,12 +10,12 @@ export const AffiliateApplications: CollectionConfig = {
   access: {
     read: ({ req: { user } }) => {
       if (!user) return false
-      if (['admin', 'staff'].includes(user.role)) return true
+      if (['admin', 'staff'].includes(user.role as string)) return true
       return { user: { equals: user.id } }
     },
     create: () => true, // Logged in users can apply (or public depending on strategy)
-    update: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role),
-    delete: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role),
+    update: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role as string),
+    delete: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role as string),
   },
   fields: [
     {

@@ -9,13 +9,13 @@ export const Affiliates: CollectionConfig = {
   access: {
     read: ({ req: { user } }) => {
       if (!user) return false
-      if (['admin', 'staff'].includes(user.role)) return true
+      if (['admin', 'staff'].includes(user.role as string)) return true
       return { user: { equals: user.id } }
     },
-    create: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role),
+    create: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role as string),
     update: ({ req: { user } }) => {
       if (!user) return false
-      if (['admin', 'staff'].includes(user.role)) return true
+      if (['admin', 'staff'].includes(user.role as string)) return true
       return { user: { equals: user.id } }
     },
     delete: () => false, // Never delete

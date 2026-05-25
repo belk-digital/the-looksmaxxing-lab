@@ -143,12 +143,7 @@ export const Coupons: CollectionConfig = {
       type: 'number',
       required: false,
       admin: {
-        description: (args) => {
-          const type = args?.data?.type
-          if (type === 'percentage') return 'Enter a discount percentage (0‑100).'
-          if (type === 'fixed_amount') return 'Enter a fixed discount amount in cents.'
-          return 'Value is ignored for free shipping coupons.'
-        },
+        description: 'Percentage (0-100), fixed amount in cents, or ignored for free shipping.',
       },
     },
 
