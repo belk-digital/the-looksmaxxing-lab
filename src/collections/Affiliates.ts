@@ -52,11 +52,11 @@ export const Affiliates: CollectionConfig = {
         {
           label: 'Commission',
           fields: [
-            { name: 'commissionRate', type: 'number', defaultValue: 10, admin: { description: 'Percentage of eligible order value' } },
-            { name: 'commissionType', type: 'select', defaultValue: 'percentage', options: ['percentage', 'fixed_amount'] },
+            { name: 'commissionRate', type: 'number', admin: { description: 'Leave blank to use Global Default. Percentage of eligible order value or fixed amount in cents.' } },
+            { name: 'commissionType', type: 'select', options: ['percentage', 'fixed_amount'], admin: { description: 'Leave blank to use Global Default.' } },
             { name: 'customerDiscount', type: 'number', defaultValue: 10, admin: { description: '% discount the customer gets using their coupon' } },
-            { name: 'pendingPeriodDays', type: 'number', defaultValue: 30 },
-            { name: 'commissionOn', type: 'select', defaultValue: 'subtotal_after_coupon', options: ['subtotal_after_coupon', 'subtotal_before_coupon'] },
+            { name: 'pendingPeriodDays', type: 'number', admin: { description: 'Leave blank to use Global Default. Days before commission is approved.' } },
+            { name: 'commissionOn', type: 'select', options: ['subtotal_after_coupon', 'subtotal_before_coupon'], admin: { description: 'Leave blank to use Global Default.' } },
             { name: 'tier', type: 'select', defaultValue: 'standard', options: ['standard', 'silver', 'gold', 'vip'] },
           ]
         },

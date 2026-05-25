@@ -87,6 +87,7 @@ export interface Config {
     'affiliate-clicks': AffiliateClick;
     'affiliate-conversions': AffiliateConversion;
     'affiliate-payouts': AffiliatePayout;
+    'processing-fees': ProcessingFee;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -114,6 +115,7 @@ export interface Config {
     'affiliate-clicks': AffiliateClicksSelect<false> | AffiliateClicksSelect<true>;
     'affiliate-conversions': AffiliateConversionsSelect<false> | AffiliateConversionsSelect<true>;
     'affiliate-payouts': AffiliatePayoutsSelect<false> | AffiliatePayoutsSelect<true>;
+    'processing-fees': ProcessingFeesSelect<false> | ProcessingFeesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -123,8 +125,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'affiliate-settings': AffiliateSetting;
+  };
+  globalsSelect: {
+    'affiliate-settings': AffiliateSettingsSelect<false> | AffiliateSettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -305,14 +311,32 @@ export interface Product {
   seoTitle?: string | null;
   seoDescription?: string | null;
   slug?: string | null;
+  sku?: string | null;
   price: number;
+  /**
+   * If set, this price will override the regular price.
+   */
+  salePrice?: number | null;
   stock: number;
+  /**
+   * Weight in kg or lbs (depending on global settings)
+   */
+  weight?: number | null;
+  /**
+   * Dimensions in cm or inches (depending on global settings)
+   */
+  dimensions?: {
+    length?: number | null;
+    width?: number | null;
+    height?: number | null;
+  };
   categories?: (number | Category)[] | null;
   hasVariants?: boolean | null;
   variants?:
     | {
         sku: string;
         price: number;
+        salePrice?: number | null;
         stock: number;
         options?:
           | {
@@ -321,6 +345,17 @@ export interface Product {
               id?: string | null;
             }[]
           | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Enable to sell multiple products together as a kit.
+   */
+  isBundle?: boolean | null;
+  bundleItems?:
+    | {
+        product: number | Product;
+        quantity: number;
         id?: string | null;
       }[]
     | null;
@@ -452,9 +487,15 @@ export interface Order {
    */
   orderNumber?: string | null;
   /**
-   * User who placed the order.
+   * User who placed the order (null for guests).
    */
-  owner: number | User;
+  owner?: (number | null) | User;
+  /**
+   * First name of the customer (useful for guest orders).
+   */
+  customerFirstName?: string | null;
+  customerLastName?: string | null;
+  customerPhone?: string | null;
   items?:
     | {
         product: number | Product;
@@ -506,14 +547,59 @@ export interface Order {
    */
   subtotal?: number | null;
   discountTotal?: number | null;
-  total?: number | null;
+  shippingTotal?: number | null;
+  taxTotal: number;
+  /**
+   * Total of all applied processing fees in cents
+   */
+  feeTotal: number;
+  total: number;
+  /**
+   * Processing fees applied to this order
+   */
+  appliedFees?:
+    | {
+        feeId?: (number | null) | ProcessingFee;
+        feeName?: string | null;
+        amount?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  shippingMethod?: string | null;
   couponCode?: string | null;
+  customerNote?: string | null;
   /**
    * For orders without a registered user account
    */
   guestEmail?: string | null;
   createdAt: string;
   updatedAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "processing-fees".
+ */
+export interface ProcessingFee {
+  id: number;
+  /**
+   * The name of the fee displayed to customers (e.g., "Rush Processing", "Insurance")
+   */
+  name: string;
+  /**
+   * Amount in cents (e.g., 250 = $2.50) OR percentage (e.g., 3 = 3%) depending on type
+   */
+  amount: number;
+  type: 'fixed_amount' | 'percentage';
+  /**
+   * If disabled, this fee will not be applied or shown.
+   */
+  isActive?: boolean | null;
+  /**
+   * If true, customers must actively check a box to apply this fee. If false, it is mandatory for all orders.
+   */
+  isOptional?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Customer reviews – verification ties to delivered orders.
@@ -710,15 +796,24 @@ export interface Affiliate {
   coupon?: (number | null) | Coupon;
   cookieDurationDays?: number | null;
   /**
-   * Percentage of eligible order value
+   * Leave blank to use Global Default. Percentage of eligible order value or fixed amount in cents.
    */
   commissionRate?: number | null;
+  /**
+   * Leave blank to use Global Default.
+   */
   commissionType?: ('percentage' | 'fixed_amount') | null;
   /**
    * % discount the customer gets using their coupon
    */
   customerDiscount?: number | null;
+  /**
+   * Leave blank to use Global Default. Days before commission is approved.
+   */
   pendingPeriodDays?: number | null;
+  /**
+   * Leave blank to use Global Default.
+   */
   commissionOn?: ('subtotal_after_coupon' | 'subtotal_before_coupon') | null;
   tier?: ('standard' | 'silver' | 'gold' | 'vip') | null;
   totalClicks?: number | null;
@@ -994,6 +1089,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'affiliate-payouts';
         value: number | AffiliatePayout;
+      } | null)
+    | ({
+        relationTo: 'processing-fees';
+        value: number | ProcessingFee;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1184,8 +1283,18 @@ export interface ProductsSelect<T extends boolean = true> {
   seoTitle?: T;
   seoDescription?: T;
   slug?: T;
+  sku?: T;
   price?: T;
+  salePrice?: T;
   stock?: T;
+  weight?: T;
+  dimensions?:
+    | T
+    | {
+        length?: T;
+        width?: T;
+        height?: T;
+      };
   categories?: T;
   hasVariants?: T;
   variants?:
@@ -1193,6 +1302,7 @@ export interface ProductsSelect<T extends boolean = true> {
     | {
         sku?: T;
         price?: T;
+        salePrice?: T;
         stock?: T;
         options?:
           | T
@@ -1201,6 +1311,14 @@ export interface ProductsSelect<T extends boolean = true> {
               value?: T;
               id?: T;
             };
+        id?: T;
+      };
+  isBundle?: T;
+  bundleItems?:
+    | T
+    | {
+        product?: T;
+        quantity?: T;
         id?: T;
       };
   averageRating?: T;
@@ -1295,6 +1413,9 @@ export interface CouponsSelect<T extends boolean = true> {
 export interface OrdersSelect<T extends boolean = true> {
   orderNumber?: T;
   owner?: T;
+  customerFirstName?: T;
+  customerLastName?: T;
+  customerPhone?: T;
   items?:
     | T
     | {
@@ -1336,8 +1457,21 @@ export interface OrdersSelect<T extends boolean = true> {
       };
   subtotal?: T;
   discountTotal?: T;
+  shippingTotal?: T;
+  taxTotal?: T;
+  feeTotal?: T;
   total?: T;
+  appliedFees?:
+    | T
+    | {
+        feeId?: T;
+        feeName?: T;
+        amount?: T;
+        id?: T;
+      };
+  shippingMethod?: T;
   couponCode?: T;
+  customerNote?: T;
   guestEmail?: T;
   createdAt?: T;
   updatedAt?: T;
@@ -1600,6 +1734,19 @@ export interface AffiliatePayoutsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "processing-fees_select".
+ */
+export interface ProcessingFeesSelect<T extends boolean = true> {
+  name?: T;
+  amount?: T;
+  type?: T;
+  isActive?: T;
+  isOptional?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -1637,6 +1784,43 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "affiliate-settings".
+ */
+export interface AffiliateSetting {
+  id: number;
+  /**
+   * Global default commission percentage applied to all affiliates unless individually overridden.
+   */
+  defaultCommissionRate: number;
+  /**
+   * Global default commission type.
+   */
+  defaultCommissionType: 'percentage' | 'fixed_amount';
+  /**
+   * Global default base for calculating commission.
+   */
+  defaultCommissionOn: 'subtotal_after_coupon' | 'subtotal_before_coupon';
+  defaultCookieDurationDays: number;
+  defaultPendingPeriodDays: number;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "affiliate-settings_select".
+ */
+export interface AffiliateSettingsSelect<T extends boolean = true> {
+  defaultCommissionRate?: T;
+  defaultCommissionType?: T;
+  defaultCommissionOn?: T;
+  defaultCookieDurationDays?: T;
+  defaultPendingPeriodDays?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

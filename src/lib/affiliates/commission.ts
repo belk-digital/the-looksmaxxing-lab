@@ -9,15 +9,27 @@ export async function computeCommission(order: Order, affiliateId: string | numb
     id: affiliateId,
   }) as Affiliate
 
+  const settings = await payload.findGlobal({
+    slug: 'affiliate-settings',
+  }) as any // Cast since types might not be generated yet
+
   // The affiliate coupon discount (they gave away X% so don't earn on the discount amount)
   const affiliateCouponDiscount = order.couponCode === affiliate.couponCode ? (order.discountTotal ?? 0) : 0
 
-  const eligibleSubtotal = affiliate.commissionOn === 'subtotal_after_coupon'
+  const commissionOn = affiliate.commissionOn ?? settings?.defaultCommissionOn ?? 'subtotal_after_coupon'
+  const eligibleSubtotal = commissionOn === 'subtotal_after_coupon'
     ? (order.subtotal || 0) - affiliateCouponDiscount
     : (order.subtotal || 0)
 
+  const rate = affiliate.commissionRate ?? settings?.defaultCommissionRate ?? 10
+  const type = affiliate.commissionType ?? settings?.defaultCommissionType ?? 'percentage'
+
+  if (type === 'fixed_amount') {
+    return rate // rate is actually the fixed amount in cents
+  }
+
   // Floor to avoid floating point issues (everything in cents)
-  return Math.floor((eligibleSubtotal * (affiliate.commissionRate || 10)) / 100)
+  return Math.floor((eligibleSubtotal * rate) / 100)
 }
 
 export async function attributeOrder(
@@ -70,7 +82,10 @@ export async function attributeOrder(
   const status = isVoid ? 'voided' : 'pending'
   const fraudNotes = isSelfReferral ? 'self_referral' : ''
   
-  const pendingPeriodDays = affiliate.pendingPeriodDays || 30
+  // Also fallback to global settings for pending period
+  const settings = await payload.findGlobal({ slug: 'affiliate-settings' }) as any
+  const pendingPeriodDays = affiliate.pendingPeriodDays ?? settings?.defaultPendingPeriodDays ?? 30
+  
   const pendingUntil = new Date()
   pendingUntil.setDate(pendingUntil.getDate() + pendingPeriodDays)
 
@@ -87,7 +102,7 @@ export async function attributeOrder(
       orderSubtotal: order.subtotal,
       orderDiscount: order.discountTotal,
       eligibleSubtotal: order.subtotal, // simplified
-      commissionRate: affiliate.commissionRate,
+      commissionRate: affiliate.commissionRate ?? settings?.defaultCommissionRate ?? 10,
       commissionAmount: isVoid ? 0 : commissionAmount,
       status,
       pendingUntil: pendingUntil.toISOString(),

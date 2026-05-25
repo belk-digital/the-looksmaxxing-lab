@@ -6,7 +6,7 @@ async function run() {
   const payload = await getPayload({ config })
   
   // 1. Get user or create dummy user
-  let user = await payload.find({ collection: 'users', where: { email: { equals: 'dummy@test.com' } }, limit: 1 })
+  const user = await payload.find({ collection: 'users', where: { email: { equals: 'dummy@test.com' } }, limit: 1 })
   let userId = user.docs.length > 0 ? user.docs[0].id : null
 
   if (!userId) {

@@ -74,12 +74,8 @@
           "name": "users_sessions_parent_id_fk",
           "tableFrom": "users_sessions",
           "tableTo": "users",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -345,12 +341,8 @@
           "name": "users_default_shipping_address_id_addresses_id_fk",
           "tableFrom": "users",
           "tableTo": "addresses",
-          "columnsFrom": [
-            "default_shipping_address_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["default_shipping_address_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -358,12 +350,8 @@
           "name": "users_default_billing_address_id_addresses_id_fk",
           "tableFrom": "users",
           "tableTo": "addresses",
-          "columnsFrom": [
-            "default_billing_address_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["default_billing_address_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -887,12 +875,8 @@
           "name": "addresses_user_id_users_id_fk",
           "tableFrom": "addresses",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1044,12 +1028,8 @@
           "name": "categories_parent_id_categories_id_fk",
           "tableFrom": "categories",
           "tableTo": "categories",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1132,12 +1112,8 @@
           "name": "products_variants_options_parent_id_fk",
           "tableFrom": "products_variants_options",
           "tableTo": "products_variants",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1226,12 +1202,8 @@
           "name": "products_variants_parent_id_fk",
           "tableFrom": "products_variants",
           "tableTo": "products",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1503,12 +1475,8 @@
           "name": "products_rels_parent_fk",
           "tableFrom": "products_rels",
           "tableTo": "products",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1516,12 +1484,8 @@
           "name": "products_rels_categories_fk",
           "tableFrom": "products_rels",
           "tableTo": "categories",
-          "columnsFrom": [
-            "categories_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["categories_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1638,12 +1602,8 @@
           "name": "carts_items_product_id_products_id_fk",
           "tableFrom": "carts_items",
           "tableTo": "products",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["product_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1651,12 +1611,8 @@
           "name": "carts_items_parent_id_fk",
           "tableFrom": "carts_items",
           "tableTo": "carts",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1750,12 +1706,8 @@
           "name": "carts_user_id_users_id_fk",
           "tableFrom": "carts",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1872,12 +1824,8 @@
           "name": "wishlists_items_product_id_products_id_fk",
           "tableFrom": "wishlists_items",
           "tableTo": "products",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["product_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1885,12 +1833,8 @@
           "name": "wishlists_items_parent_id_fk",
           "tableFrom": "wishlists_items",
           "tableTo": "wishlists",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1984,12 +1928,8 @@
           "name": "wishlists_user_id_users_id_fk",
           "tableFrom": "wishlists",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -2066,12 +2006,8 @@
           "name": "coupons_locked_emails_parent_id_fk",
           "tableFrom": "coupons_locked_emails",
           "tableTo": "coupons",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2163,12 +2099,8 @@
           "name": "coupons_products_product_id_products_id_fk",
           "tableFrom": "coupons_products",
           "tableTo": "products",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["product_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -2176,12 +2108,8 @@
           "name": "coupons_products_parent_id_fk",
           "tableFrom": "coupons_products",
           "tableTo": "coupons",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2273,12 +2201,8 @@
           "name": "coupons_categories_category_id_categories_id_fk",
           "tableFrom": "coupons_categories",
           "tableTo": "categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -2286,12 +2210,8 @@
           "name": "coupons_categories_parent_id_fk",
           "tableFrom": "coupons_categories",
           "tableTo": "coupons",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2565,12 +2485,8 @@
           "name": "orders_items_product_id_products_id_fk",
           "tableFrom": "orders_items",
           "tableTo": "products",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["product_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -2578,12 +2494,8 @@
           "name": "orders_items_parent_id_fk",
           "tableFrom": "orders_items",
           "tableTo": "orders",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2672,12 +2584,8 @@
           "name": "orders_refunds_parent_id_fk",
           "tableFrom": "orders_refunds",
           "tableTo": "orders",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2873,12 +2781,8 @@
           "name": "orders_owner_id_users_id_fk",
           "tableFrom": "orders",
           "tableTo": "users",
-          "columnsFrom": [
-            "owner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -3011,12 +2915,8 @@
           "name": "reviews_product_id_products_id_fk",
           "tableFrom": "reviews",
           "tableTo": "products",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["product_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -3024,12 +2924,8 @@
           "name": "reviews_user_id_users_id_fk",
           "tableFrom": "reviews",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -3037,12 +2933,8 @@
           "name": "reviews_order_id_orders_id_fk",
           "tableFrom": "reviews",
           "tableTo": "orders",
-          "columnsFrom": [
-            "order_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["order_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -3131,12 +3023,8 @@
           "name": "shippingzones_methods_parent_id_fk",
           "tableFrom": "shippingzones_methods",
           "tableTo": "shippingzones",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -3332,12 +3220,8 @@
           "name": "blog_posts_author_id_users_id_fk",
           "tableFrom": "blog_posts",
           "tableTo": "users",
-          "columnsFrom": [
-            "author_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["author_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -3680,12 +3564,8 @@
           "name": "affiliate_applications_social_links_parent_id_fk",
           "tableFrom": "affiliate_applications_social_links",
           "tableTo": "affiliate_applications",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -3885,12 +3765,8 @@
           "name": "affiliate_applications_user_id_users_id_fk",
           "tableFrom": "affiliate_applications",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -3898,12 +3774,8 @@
           "name": "affiliate_applications_reviewed_by_id_users_id_fk",
           "tableFrom": "affiliate_applications",
           "tableTo": "users",
-          "columnsFrom": [
-            "reviewed_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["reviewed_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -3911,12 +3783,8 @@
           "name": "affiliate_applications_linked_affiliate_id_affiliates_id_fk",
           "tableFrom": "affiliate_applications",
           "tableTo": "affiliates",
-          "columnsFrom": [
-            "linked_affiliate_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["linked_affiliate_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -4000,12 +3868,8 @@
           "name": "affiliates_social_links_parent_id_fk",
           "tableFrom": "affiliates_social_links",
           "tableTo": "affiliates",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -4107,12 +3971,8 @@
           "name": "affiliates_payout_methods_parent_id_fk",
           "tableFrom": "affiliates_payout_methods",
           "tableTo": "affiliates",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -4508,12 +4368,8 @@
           "name": "affiliates_user_id_users_id_fk",
           "tableFrom": "affiliates",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -4521,12 +4377,8 @@
           "name": "affiliates_approved_by_id_users_id_fk",
           "tableFrom": "affiliates",
           "tableTo": "users",
-          "columnsFrom": [
-            "approved_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["approved_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -4534,12 +4386,8 @@
           "name": "affiliates_parent_affiliate_id_affiliates_id_fk",
           "tableFrom": "affiliates",
           "tableTo": "affiliates",
-          "columnsFrom": [
-            "parent_affiliate_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_affiliate_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -4547,12 +4395,8 @@
           "name": "affiliates_coupon_id_coupons_id_fk",
           "tableFrom": "affiliates",
           "tableTo": "coupons",
-          "columnsFrom": [
-            "coupon_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["coupon_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -4794,12 +4638,8 @@
           "name": "affiliate_clicks_affiliate_id_affiliates_id_fk",
           "tableFrom": "affiliate_clicks",
           "tableTo": "affiliates",
-          "columnsFrom": [
-            "affiliate_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["affiliate_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -4807,12 +4647,8 @@
           "name": "affiliate_clicks_conversion_id_affiliate_conversions_id_fk",
           "tableFrom": "affiliate_clicks",
           "tableTo": "affiliate_conversions",
-          "columnsFrom": [
-            "conversion_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["conversion_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -5164,12 +5000,8 @@
           "name": "affiliate_conversions_affiliate_id_affiliates_id_fk",
           "tableFrom": "affiliate_conversions",
           "tableTo": "affiliates",
-          "columnsFrom": [
-            "affiliate_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["affiliate_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -5177,12 +5009,8 @@
           "name": "affiliate_conversions_order_id_orders_id_fk",
           "tableFrom": "affiliate_conversions",
           "tableTo": "orders",
-          "columnsFrom": [
-            "order_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["order_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -5190,12 +5018,8 @@
           "name": "affiliate_conversions_customer_id_users_id_fk",
           "tableFrom": "affiliate_conversions",
           "tableTo": "users",
-          "columnsFrom": [
-            "customer_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["customer_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -5203,12 +5027,8 @@
           "name": "affiliate_conversions_attribution_click_id_affiliate_clicks_id_fk",
           "tableFrom": "affiliate_conversions",
           "tableTo": "affiliate_clicks",
-          "columnsFrom": [
-            "attribution_click_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["attribution_click_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -5216,12 +5036,8 @@
           "name": "affiliate_conversions_payout_id_affiliate_payouts_id_fk",
           "tableFrom": "affiliate_conversions",
           "tableTo": "affiliate_payouts",
-          "columnsFrom": [
-            "payout_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["payout_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -5229,12 +5045,8 @@
           "name": "affiliate_conversions_reversed_by_id_users_id_fk",
           "tableFrom": "affiliate_conversions",
           "tableTo": "users",
-          "columnsFrom": [
-            "reversed_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["reversed_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -5485,12 +5297,8 @@
           "name": "affiliate_payouts_affiliate_id_affiliates_id_fk",
           "tableFrom": "affiliate_payouts",
           "tableTo": "affiliates",
-          "columnsFrom": [
-            "affiliate_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["affiliate_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -5498,12 +5306,8 @@
           "name": "affiliate_payouts_created_by_id_users_id_fk",
           "tableFrom": "affiliate_payouts",
           "tableTo": "users",
-          "columnsFrom": [
-            "created_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -5511,12 +5315,8 @@
           "name": "affiliate_payouts_processed_by_id_users_id_fk",
           "tableFrom": "affiliate_payouts",
           "tableTo": "users",
-          "columnsFrom": [
-            "processed_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["processed_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -5524,12 +5324,8 @@
           "name": "affiliate_payouts_receipt_file_id_media_id_fk",
           "tableFrom": "affiliate_payouts",
           "tableTo": "media",
-          "columnsFrom": [
-            "receipt_file_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["receipt_file_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -5642,12 +5438,8 @@
           "name": "affiliate_payouts_rels_parent_fk",
           "tableFrom": "affiliate_payouts_rels",
           "tableTo": "affiliate_payouts",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -5655,12 +5447,8 @@
           "name": "affiliate_payouts_rels_affiliate_conversions_fk",
           "tableFrom": "affiliate_payouts_rels",
           "tableTo": "affiliate_conversions",
-          "columnsFrom": [
-            "affiliate_conversions_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["affiliate_conversions_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -6304,12 +6092,8 @@
           "name": "payload_locked_documents_rels_parent_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "payload_locked_documents",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6317,12 +6101,8 @@
           "name": "payload_locked_documents_rels_users_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "users",
-          "columnsFrom": [
-            "users_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["users_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6330,12 +6110,8 @@
           "name": "payload_locked_documents_rels_media_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "media",
-          "columnsFrom": [
-            "media_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["media_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6343,12 +6119,8 @@
           "name": "payload_locked_documents_rels_addresses_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "addresses",
-          "columnsFrom": [
-            "addresses_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["addresses_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6356,12 +6128,8 @@
           "name": "payload_locked_documents_rels_categories_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "categories",
-          "columnsFrom": [
-            "categories_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["categories_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6369,12 +6137,8 @@
           "name": "payload_locked_documents_rels_products_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "products",
-          "columnsFrom": [
-            "products_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["products_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6382,12 +6146,8 @@
           "name": "payload_locked_documents_rels_carts_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "carts",
-          "columnsFrom": [
-            "carts_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["carts_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6395,12 +6155,8 @@
           "name": "payload_locked_documents_rels_wishlists_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "wishlists",
-          "columnsFrom": [
-            "wishlists_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["wishlists_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6408,12 +6164,8 @@
           "name": "payload_locked_documents_rels_coupons_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "coupons",
-          "columnsFrom": [
-            "coupons_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["coupons_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6421,12 +6173,8 @@
           "name": "payload_locked_documents_rels_orders_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "orders",
-          "columnsFrom": [
-            "orders_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["orders_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6434,12 +6182,8 @@
           "name": "payload_locked_documents_rels_reviews_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "reviews",
-          "columnsFrom": [
-            "reviews_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["reviews_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6447,12 +6191,8 @@
           "name": "payload_locked_documents_rels_shippingzones_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "shippingzones",
-          "columnsFrom": [
-            "shippingzones_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["shippingzones_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6460,12 +6200,8 @@
           "name": "payload_locked_documents_rels_blog_posts_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "blog_posts",
-          "columnsFrom": [
-            "blog_posts_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["blog_posts_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6473,12 +6209,8 @@
           "name": "payload_locked_documents_rels_pages_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "pages",
-          "columnsFrom": [
-            "pages_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pages_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6486,12 +6218,8 @@
           "name": "payload_locked_documents_rels_contact_messages_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "contact_messages",
-          "columnsFrom": [
-            "contact_messages_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contact_messages_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6499,12 +6227,8 @@
           "name": "payload_locked_documents_rels_email_logs_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "email_logs",
-          "columnsFrom": [
-            "email_logs_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["email_logs_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6512,12 +6236,8 @@
           "name": "payload_locked_documents_rels_affiliate_applications_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "affiliate_applications",
-          "columnsFrom": [
-            "affiliate_applications_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["affiliate_applications_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6525,12 +6245,8 @@
           "name": "payload_locked_documents_rels_affiliates_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "affiliates",
-          "columnsFrom": [
-            "affiliates_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["affiliates_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6538,12 +6254,8 @@
           "name": "payload_locked_documents_rels_affiliate_clicks_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "affiliate_clicks",
-          "columnsFrom": [
-            "affiliate_clicks_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["affiliate_clicks_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6551,12 +6263,8 @@
           "name": "payload_locked_documents_rels_affiliate_conversions_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "affiliate_conversions",
-          "columnsFrom": [
-            "affiliate_conversions_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["affiliate_conversions_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6564,12 +6272,8 @@
           "name": "payload_locked_documents_rels_affiliate_payouts_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "affiliate_payouts",
-          "columnsFrom": [
-            "affiliate_payouts_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["affiliate_payouts_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -6773,12 +6477,8 @@
           "name": "payload_preferences_rels_parent_fk",
           "tableFrom": "payload_preferences_rels",
           "tableTo": "payload_preferences",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6786,12 +6486,8 @@
           "name": "payload_preferences_rels_users_fk",
           "tableFrom": "payload_preferences_rels",
           "tableTo": "users",
-          "columnsFrom": [
-            "users_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["users_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -6883,154 +6579,82 @@
     "public.enum_users_role": {
       "name": "enum_users_role",
       "schema": "public",
-      "values": [
-        "customer",
-        "admin",
-        "staff"
-      ]
+      "values": ["customer", "admin", "staff"]
     },
     "public.enum_users_preferred_locale": {
       "name": "enum_users_preferred_locale",
       "schema": "public",
-      "values": [
-        "en",
-        "es"
-      ]
+      "values": ["en", "es"]
     },
     "public.enum_products_status": {
       "name": "enum_products_status",
       "schema": "public",
-      "values": [
-        "draft",
-        "active",
-        "archived"
-      ]
+      "values": ["draft", "active", "archived"]
     },
     "public.enum_coupons_type": {
       "name": "enum_coupons_type",
       "schema": "public",
-      "values": [
-        "percentage",
-        "fixed_amount",
-        "free_shipping",
-        "buy_one_get_one",
-        "store_credit"
-      ]
+      "values": ["percentage", "fixed_amount", "free_shipping", "buy_one_get_one", "store_credit"]
     },
     "public.enum_coupons_applies_to": {
       "name": "enum_coupons_applies_to",
       "schema": "public",
-      "values": [
-        "all",
-        "specific_products",
-        "specific_categories"
-      ]
+      "values": ["all", "specific_products", "specific_categories"]
     },
     "public.enum_orders_status": {
       "name": "enum_orders_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "paid",
-        "fulfilled",
-        "shipped",
-        "completed",
-        "refunded",
-        "cancelled"
-      ]
+      "values": ["pending", "paid", "fulfilled", "shipped", "completed", "refunded", "cancelled"]
     },
     "public.enum_orders_payment_status": {
       "name": "enum_orders_payment_status",
       "schema": "public",
-      "values": [
-        "unpaid",
-        "authorized",
-        "captured",
-        "refunded"
-      ]
+      "values": ["unpaid", "authorized", "captured", "refunded"]
     },
     "public.enum_orders_fulfillment_status": {
       "name": "enum_orders_fulfillment_status",
       "schema": "public",
-      "values": [
-        "unfulfilled",
-        "partial",
-        "fulfilled"
-      ]
+      "values": ["unfulfilled", "partial", "fulfilled"]
     },
     "public.enum_reviews_status": {
       "name": "enum_reviews_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "approved",
-        "rejected"
-      ]
+      "values": ["pending", "approved", "rejected"]
     },
     "public.enum_blog_posts_status": {
       "name": "enum_blog_posts_status",
       "schema": "public",
-      "values": [
-        "draft",
-        "published"
-      ]
+      "values": ["draft", "published"]
     },
     "public.enum_pages_status": {
       "name": "enum_pages_status",
       "schema": "public",
-      "values": [
-        "draft",
-        "published"
-      ]
+      "values": ["draft", "published"]
     },
     "public.enum_email_logs_status": {
       "name": "enum_email_logs_status",
       "schema": "public",
-      "values": [
-        "sent",
-        "failed"
-      ]
+      "values": ["sent", "failed"]
     },
     "public.enum_affiliate_applications_social_links_platform": {
       "name": "enum_affiliate_applications_social_links_platform",
       "schema": "public",
-      "values": [
-        "instagram",
-        "youtube",
-        "tiktok",
-        "twitter",
-        "reddit"
-      ]
+      "values": ["instagram", "youtube", "tiktok", "twitter", "reddit"]
     },
     "public.enum_affiliate_applications_status": {
       "name": "enum_affiliate_applications_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "approved",
-        "rejected"
-      ]
+      "values": ["pending", "approved", "rejected"]
     },
     "public.enum_affiliate_applications_estimated_monthly_reach": {
       "name": "enum_affiliate_applications_estimated_monthly_reach",
       "schema": "public",
-      "values": [
-        "<1k",
-        "1k-10k",
-        "10k-100k",
-        "100k+"
-      ]
+      "values": ["<1k", "1k-10k", "10k-100k", "100k+"]
     },
     "public.enum_affiliates_social_links_platform": {
       "name": "enum_affiliates_social_links_platform",
       "schema": "public",
-      "values": [
-        "instagram",
-        "youtube",
-        "tiktok",
-        "twitter",
-        "reddit"
-      ]
+      "values": ["instagram", "youtube", "tiktok", "twitter", "reddit"]
     },
     "public.enum_affiliates_payout_methods_type": {
       "name": "enum_affiliates_payout_methods_type",
@@ -7049,87 +6673,47 @@
     "public.enum_affiliates_status": {
       "name": "enum_affiliates_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "approved",
-        "rejected",
-        "suspended"
-      ]
+      "values": ["pending", "approved", "rejected", "suspended"]
     },
     "public.enum_affiliates_commission_type": {
       "name": "enum_affiliates_commission_type",
       "schema": "public",
-      "values": [
-        "percentage",
-        "fixed_amount"
-      ]
+      "values": ["percentage", "fixed_amount"]
     },
     "public.enum_affiliates_commission_on": {
       "name": "enum_affiliates_commission_on",
       "schema": "public",
-      "values": [
-        "subtotal_after_coupon",
-        "subtotal_before_coupon"
-      ]
+      "values": ["subtotal_after_coupon", "subtotal_before_coupon"]
     },
     "public.enum_affiliates_tier": {
       "name": "enum_affiliates_tier",
       "schema": "public",
-      "values": [
-        "standard",
-        "silver",
-        "gold",
-        "vip"
-      ]
+      "values": ["standard", "silver", "gold", "vip"]
     },
     "public.enum_affiliates_payout_currency": {
       "name": "enum_affiliates_payout_currency",
       "schema": "public",
-      "values": [
-        "USD",
-        "BTC",
-        "ETH",
-        "USDT_ERC20",
-        "USDT_TRC20",
-        "STORE_CREDIT"
-      ]
+      "values": ["USD", "BTC", "ETH", "USDT_ERC20", "USDT_TRC20", "STORE_CREDIT"]
     },
     "public.enum_affiliate_clicks_source": {
       "name": "enum_affiliate_clicks_source",
       "schema": "public",
-      "values": [
-        "referral_link",
-        "coupon_code_attempt"
-      ]
+      "values": ["referral_link", "coupon_code_attempt"]
     },
     "public.enum_affiliate_clicks_device_type": {
       "name": "enum_affiliate_clicks_device_type",
       "schema": "public",
-      "values": [
-        "desktop",
-        "mobile",
-        "tablet"
-      ]
+      "values": ["desktop", "mobile", "tablet"]
     },
     "public.enum_affiliate_conversions_attribution_source": {
       "name": "enum_affiliate_conversions_attribution_source",
       "schema": "public",
-      "values": [
-        "referral_link",
-        "coupon_code",
-        "both"
-      ]
+      "values": ["referral_link", "coupon_code", "both"]
     },
     "public.enum_affiliate_conversions_status": {
       "name": "enum_affiliate_conversions_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "approved",
-        "paid",
-        "reversed",
-        "voided"
-      ]
+      "values": ["pending", "approved", "paid", "reversed", "voided"]
     },
     "public.enum_affiliate_conversions_reversed_reason": {
       "name": "enum_affiliate_conversions_reversed_reason",
@@ -7145,12 +6729,7 @@
     "public.enum_affiliate_payouts_currency": {
       "name": "enum_affiliate_payouts_currency",
       "schema": "public",
-      "values": [
-        "USD",
-        "BTC",
-        "ETH",
-        "USDT"
-      ]
+      "values": ["USD", "BTC", "ETH", "USDT"]
     },
     "public.enum_affiliate_payouts_payment_method": {
       "name": "enum_affiliate_payouts_payment_method",
@@ -7169,12 +6748,7 @@
     "public.enum_affiliate_payouts_status": {
       "name": "enum_affiliate_payouts_status",
       "schema": "public",
-      "values": [
-        "draft",
-        "processing",
-        "paid",
-        "failed"
-      ]
+      "values": ["draft", "processing", "paid", "failed"]
     }
   },
   "schemas": {},

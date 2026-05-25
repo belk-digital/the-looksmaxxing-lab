@@ -40,6 +40,13 @@ export const Products: CollectionConfig = {
       unique: true,
     },
     {
+      name: 'sku',
+      type: 'text',
+      admin: {
+        condition: (data) => !data.hasVariants,
+      },
+    },
+    {
       name: 'price',
       type: 'number',
       required: true,
@@ -47,11 +54,35 @@ export const Products: CollectionConfig = {
       defaultValue: 0,
     },
     {
+      name: 'salePrice',
+      type: 'number',
+      min: 0,
+      admin: {
+        description: 'If set, this price will override the regular price.',
+      },
+    },
+    {
       name: 'stock',
       type: 'number',
       required: true,
       min: 0,
       defaultValue: 0,
+    },
+    {
+      name: 'weight',
+      type: 'number',
+      min: 0,
+      admin: { description: 'Weight in kg or lbs (depending on global settings)' },
+    },
+    {
+      name: 'dimensions',
+      type: 'group',
+      fields: [
+        { name: 'length', type: 'number', min: 0 },
+        { name: 'width', type: 'number', min: 0 },
+        { name: 'height', type: 'number', min: 0 },
+      ],
+      admin: { description: 'Dimensions in cm or inches (depending on global settings)' },
     },
     {
       name: 'categories',
@@ -81,6 +112,11 @@ export const Products: CollectionConfig = {
           min: 0,
         },
         {
+          name: 'salePrice',
+          type: 'number',
+          min: 0,
+        },
+        {
           name: 'stock',
           type: 'number',
           required: true,
@@ -96,6 +132,23 @@ export const Products: CollectionConfig = {
         },
       ],
       // hide when hasVariants is false – handled in admin UI via custom component if needed
+    },
+    {
+      name: 'isBundle',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: { position: 'sidebar', description: 'Enable to sell multiple products together as a kit.' },
+    },
+    {
+      name: 'bundleItems',
+      type: 'array',
+      admin: {
+        condition: (data) => data.isBundle === true,
+      },
+      fields: [
+        { name: 'product', type: 'relationship', relationTo: 'products', required: true },
+        { name: 'quantity', type: 'number', required: true, min: 1, defaultValue: 1 },
+      ],
     },
     {
       name: 'averageRating',

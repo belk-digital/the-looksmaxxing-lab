@@ -8,8 +8,6 @@ const intlMiddleware = createIntlMiddleware(routing)
 const isProtectedRoute = createRouteMatcher([
   '/(.*)/account(.*)',
   '/account(.*)',
-  '/(.*)/checkout(.*)',
-  '/checkout(.*)',
   '/(.*)/affiliates/dashboard(.*)',
   '/affiliates/dashboard(.*)',
 ])

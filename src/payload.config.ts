@@ -27,6 +27,8 @@ import { Affiliates } from './collections/Affiliates'
 import { AffiliateClicks } from './collections/AffiliateClicks'
 import { AffiliateConversions } from './collections/AffiliateConversions'
 import { AffiliatePayouts } from './collections/AffiliatePayouts'
+import { ProcessingFees } from './collections/ProcessingFees'
+import { AffiliateSettings } from './globals/AffiliateSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -37,7 +39,13 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      beforeNavLinks: ['@/components/admin/NavBadges'],
+    },
   },
+  globals: [
+    AffiliateSettings,
+  ],
   collections: [
     Users,
     Media,
@@ -59,6 +67,7 @@ export default buildConfig({
     AffiliateClicks,
     AffiliateConversions,
     AffiliatePayouts,
+    ProcessingFees,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

@@ -18,7 +18,7 @@ async function runTest() {
     if (affiliates.docs.length === 0) {
       console.log('No approved affiliates found. Creating one...')
       // Setup a dummy user if none exists
-      let user = await payload.find({ collection: 'users', limit: 1 })
+      const user = await payload.find({ collection: 'users', limit: 1 })
       if (user.docs.length === 0) {
          const u = await payload.create({
             collection: 'users',

@@ -1,12 +1,24 @@
-import type { CollectionAccess } from 'payload'
+import type { Access } from 'payload'
 
 export const wishlistsAccess = {
   read: ({ req }) => {
-    const userId = req?.user?.id
-    if (!userId) return false
-    return { user: { equals: userId } }
+    const user = req?.user
+    if (!user) return false
+    // Admins can see all wishlists in the dashboard
+    if (user.role === 'admin' || user.role === 'superadmin') return true
+    return { user: { equals: user.id } }
   },
   create: ({ req }) => !!req?.user?.id,
-  update: ({ req }) => !!req?.user?.id,
-  delete: ({ req }) => !!req?.user?.id,
+  update: ({ req }) => {
+    const user = req?.user
+    if (!user) return false
+    if (user.role === 'admin' || user.role === 'superadmin') return true
+    return { user: { equals: user.id } }
+  },
+  delete: ({ req }) => {
+    const user = req?.user
+    if (!user) return false
+    if (user.role === 'admin' || user.role === 'superadmin') return true
+    return { user: { equals: user.id } }
+  },
 } as Access

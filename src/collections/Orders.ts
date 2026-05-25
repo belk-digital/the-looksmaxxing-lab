@@ -6,7 +6,7 @@ import { afterOrderChange } from '@/hooks/orders'
 export const Orders: CollectionConfig = {
   slug: 'orders',
   admin: {
-    defaultColumns: ['orderNumber', 'status', 'paymentStatus', 'fulfillmentStatus', 'owner'],
+    defaultColumns: ['orderNumber', 'status', 'paymentStatus', 'fulfillmentStatus', 'owner', 'orderTime'],
     description: 'Customer orders – generated server‑side only.',
   },
   access: {
@@ -77,8 +77,21 @@ export const Orders: CollectionConfig = {
       name: 'owner',
       type: 'relationship',
       relationTo: 'users',
-      required: true,
-      admin: { description: 'User who placed the order.' },
+      required: false,
+      admin: { description: 'User who placed the order (null for guests).' },
+    },
+    {
+      name: 'customerFirstName',
+      type: 'text',
+      admin: { description: 'First name of the customer (useful for guest orders).' },
+    },
+    {
+      name: 'customerLastName',
+      type: 'text',
+    },
+    {
+      name: 'customerPhone',
+      type: 'text',
     },
     {
       name: 'items',
@@ -166,11 +179,52 @@ export const Orders: CollectionConfig = {
     },
     { name: 'subtotal', type: 'number', admin: { position: 'sidebar', description: 'Before discounts/shipping/tax' } },
     { name: 'discountTotal', type: 'number', admin: { position: 'sidebar' } },
-    { name: 'total', type: 'number', admin: { position: 'sidebar' } },
+    { name: 'shippingTotal', type: 'number', admin: { position: 'sidebar' }, defaultValue: 0 },
+    {
+      name: 'taxTotal',
+      type: 'number',
+      required: true,
+      defaultValue: 0,
+    },
+    {
+      name: 'feeTotal',
+      type: 'number',
+      required: true,
+      defaultValue: 0,
+      admin: { description: 'Total of all applied processing fees in cents' },
+    },
+    {
+      name: 'total',
+      type: 'number',
+      required: true,
+      defaultValue: 0,
+    },
+    {
+      name: 'appliedFees',
+      type: 'array',
+      admin: { description: 'Processing fees applied to this order' },
+      fields: [
+        { name: 'feeId', type: 'relationship', relationTo: 'processing-fees' },
+        { name: 'feeName', type: 'text' },
+        { name: 'amount', type: 'number' },
+      ],
+    },
+    { name: 'shippingMethod', type: 'text', admin: { position: 'sidebar' } },
     { name: 'couponCode', type: 'text', admin: { position: 'sidebar' } },
+    { name: 'customerNote', type: 'textarea' },
     { name: 'guestEmail', type: 'text', admin: { position: 'sidebar', description: 'For orders without a registered user account' } },
     { name: 'createdAt', type: 'date', admin: { position: 'sidebar', disabled: true } },
     { name: 'updatedAt', type: 'date', admin: { position: 'sidebar', disabled: true } },
+    {
+      name: 'orderTime',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '@/components/admin/NullField',
+          Cell: '@/components/admin/TimeAgoCell',
+        },
+      },
+    },
   ],
   hooks: {
     afterChange: [afterOrderChange],
