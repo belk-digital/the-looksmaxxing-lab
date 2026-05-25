@@ -57,7 +57,7 @@ async function run() {
 
     if (existing.docs.length > 0) {
       console.log(`Product "${prod.name}" already exists.`)
-      productIds.push(existing.docs[0].id as string)
+      productIds.push(existing.docs[0].id as unknown as string)
     } else {
       const created = await payload.create({
         collection: 'products',
@@ -72,7 +72,7 @@ async function run() {
         } as any,
       })
       console.log(`Created product: ${prod.name}`)
-      productIds.push(created.id as string)
+      productIds.push(created.id as unknown as string)
     }
   }
 
@@ -85,7 +85,7 @@ async function run() {
 
   if (existingUser.docs.length > 0) {
     console.log('Dummy user already exists.')
-    userId = existingUser.docs[0].id as string
+    userId = existingUser.docs[0].id as unknown as string
   } else {
     const createdUser = await payload.create({
       collection: 'users',
@@ -98,7 +98,7 @@ async function run() {
       },
     })
     console.log('Created dummy user.')
-    userId = createdUser.id as string
+    userId = createdUser.id as unknown as string
   }
 
   console.log('Seeding dummy order...')
@@ -119,6 +119,8 @@ async function run() {
         fulfillmentStatus: 'unfulfilled',
         subtotal: 59.99,
         discountTotal: 0,
+        taxTotal: 0,
+        feeTotal: 0,
         total: 59.99,
         items: [
           {
