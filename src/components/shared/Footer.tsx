@@ -43,34 +43,29 @@ export function Footer() {
             <h3 className="text-label-md uppercase tracking-wider text-cream">SHOP</h3>
             <ul className="flex flex-col gap-4">
               <li><Link href="/shop" className="text-body-sm text-cream/70 hover:text-cream transition-colors">All Products</Link></li>
-              <li><Link href="/shop/categories" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Categories</Link></li>
-              <li><Link href="/shop/best-sellers" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Best Sellers</Link></li>
-              <li><Link href="/gift-cards" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Gift Cards</Link></li>
+              <li><Link href="/shop" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Best Sellers</Link></li>
             </ul>
           </div>
           <div className="flex flex-col gap-6">
             <h3 className="text-label-md uppercase tracking-wider text-cream">THE LAB</h3>
             <ul className="flex flex-col gap-4">
               <li><Link href="/about" className="text-body-sm text-cream/70 hover:text-cream transition-colors">About</Link></li>
-              <li><Link href="/science" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Science</Link></li>
               <li><Link href="/journal" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Journal</Link></li>
-              <li><Link href="/press" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Press</Link></li>
+              <li><Link href="/affiliates" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Affiliates</Link></li>
             </ul>
           </div>
           <div className="flex flex-col gap-6">
             <h3 className="text-label-md uppercase tracking-wider text-cream">RESOURCES</h3>
             <ul className="flex flex-col gap-4">
-              <li><Link href="/calculator" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Peptide Calculator</Link></li>
-              <li><Link href="/coa" className="text-body-sm text-cream/70 hover:text-cream transition-colors">COA Library</Link></li>
+              <li><Link href="/peptide-calculator" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Peptide Calculator</Link></li>
+              <li><Link href="/certificates" className="text-body-sm text-cream/70 hover:text-cream transition-colors">COA Library</Link></li>
               <li><Link href="/faq" className="text-body-sm text-cream/70 hover:text-cream transition-colors">FAQ</Link></li>
-              <li><Link href="/shipping" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Shipping</Link></li>
             </ul>
           </div>
           <div className="flex flex-col gap-6">
             <h3 className="text-label-md uppercase tracking-wider text-cream">CONNECT</h3>
             <ul className="flex flex-col gap-4">
               <li><Link href="/contact" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Contact</Link></li>
-              <li><Link href="/affiliates" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Affiliates</Link></li>
               <li><a href="#" className="text-body-sm text-cream/70 hover:text-cream transition-colors">Instagram</a></li>
               <li><a href="#" className="text-body-sm text-cream/70 hover:text-cream transition-colors">YouTube</a></li>
               <li><a href="#" className="text-body-sm text-cream/70 hover:text-cream transition-colors">TikTok</a></li>

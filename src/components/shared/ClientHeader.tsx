@@ -95,14 +95,23 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0 }) {
                 SHOP
               </Link>
             </div>
-            <Link href="/science" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity">
-              SCIENCE
+            <Link href="/peptide-calculator" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity">
+              CALCULATOR
             </Link>
             <Link href="/about" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity">
               ABOUT
             </Link>
             <Link href="/journal" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity">
               JOURNAL
+            </Link>
+            <Link href="/faq" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity">
+              FAQ
+            </Link>
+            <Link href="/contact" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity">
+              CONTACT
+            </Link>
+            <Link href="/affiliates" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity">
+              AFFILIATES
             </Link>
           </nav>
 

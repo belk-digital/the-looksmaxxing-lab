@@ -83,8 +83,8 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                       SHOP
                       <ChevronRight size={24} className="text-ink-muted group-hover:text-gold transition-colors" strokeWidth={1.5} />
                     </button>
-                    <Link href="/science" onClick={onClose} className="flex items-center justify-between text-left font-display text-display-sm text-ink group">
-                      SCIENCE
+                    <Link href="/peptide-calculator" onClick={onClose} className="flex items-center justify-between text-left font-display text-display-sm text-ink group">
+                      CALCULATOR
                       <ChevronRight size={24} className="text-ink-muted group-hover:text-gold transition-colors" strokeWidth={1.5} />
                     </Link>
                     <Link href="/about" onClick={onClose} className="flex items-center justify-between text-left font-display text-display-sm text-ink group">
@@ -93,6 +93,18 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                     </Link>
                     <Link href="/journal" onClick={onClose} className="flex items-center justify-between text-left font-display text-display-sm text-ink group">
                       JOURNAL
+                      <ChevronRight size={24} className="text-ink-muted group-hover:text-gold transition-colors" strokeWidth={1.5} />
+                    </Link>
+                    <Link href="/faq" onClick={onClose} className="flex items-center justify-between text-left font-display text-display-sm text-ink group">
+                      FAQ
+                      <ChevronRight size={24} className="text-ink-muted group-hover:text-gold transition-colors" strokeWidth={1.5} />
+                    </Link>
+                    <Link href="/contact" onClick={onClose} className="flex items-center justify-between text-left font-display text-display-sm text-ink group">
+                      CONTACT
+                      <ChevronRight size={24} className="text-ink-muted group-hover:text-gold transition-colors" strokeWidth={1.5} />
+                    </Link>
+                    <Link href="/affiliates" onClick={onClose} className="flex items-center justify-between text-left font-display text-display-sm text-ink group">
+                      AFFILIATES
                       <ChevronRight size={24} className="text-ink-muted group-hover:text-gold transition-colors" strokeWidth={1.5} />
                     </Link>
                   </nav>
