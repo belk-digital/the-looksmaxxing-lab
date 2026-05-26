@@ -115,7 +115,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                     <button className="flex items-center gap-4 text-body-lg text-ink hover:text-gold transition-colors text-left">
                       <Search size={20} strokeWidth={1.5} /> Search
                     </button>
-                    <Link href="/wishlist" onClick={onClose} className="flex items-center gap-4 text-body-lg text-ink hover:text-gold transition-colors">
+                    <Link href="/account/wishlist" onClick={onClose} className="flex items-center gap-4 text-body-lg text-ink hover:text-gold transition-colors">
                       <Heart size={20} strokeWidth={1.5} /> Wishlist
                     </Link>
                     <Link href="/account" onClick={onClose} className="flex items-center gap-4 text-body-lg text-ink hover:text-gold transition-colors">

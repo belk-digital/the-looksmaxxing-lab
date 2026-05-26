@@ -171,7 +171,7 @@ export function CartDrawer() {
                       {amountToFreeShipping > 0 ? 'Calculated at checkout' : 'Free'}
                     </span>
                   </div>
-                  <Link href="/checkout" className={buttonVariants({ variant: 'dark', size: 'lg', className: "w-full h-14 mb-3 text-label-lg" })}>
+                  <Link href="/checkout" onClick={closeCart} className={buttonVariants({ variant: 'dark', size: 'lg', className: "w-full h-14 mb-3 text-label-lg" })}>
                     CHECKOUT →
                   </Link>
                   <Link href="/cart" onClick={closeCart} className={buttonVariants({ variant: 'link', className: "w-full text-ink-muted hover:text-ink text-label-md" })}>

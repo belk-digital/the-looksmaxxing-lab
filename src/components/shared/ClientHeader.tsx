@@ -120,7 +120,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0 }) {
             <button className="hidden md:block p-2 hover:opacity-70 transition-opacity">
               <Search size={20} strokeWidth={1.5} />
             </button>
-            <Link href="/wishlist" className="hidden md:flex p-2 hover:opacity-70 transition-opacity relative items-center justify-center">
+            <Link href="/account/wishlist" className="hidden md:flex p-2 hover:opacity-70 transition-opacity relative items-center justify-center">
               <Heart size={20} strokeWidth={1.5} />
               {wishlistItemCount > 0 && (
                 <span className="absolute top-1 right-1 w-2 h-2 bg-gold rounded-full" />
