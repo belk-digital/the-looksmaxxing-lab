@@ -55,10 +55,10 @@ export function ProductClient({ product }: ProductClientProps) {
     if (!selectedVariant?.inStock) return
 
     cartStore.addItem({
-      id: `${product.id}-${selectedVariant.id}`,
       productId: product.id,
       name: product.name,
-      variantName: selectedVariant.name,
+      variantId: selectedVariant.id,
+      variantName: selectedVariant.title,
       price: parseFloat(selectedVariant.price.replace('$', '')),
       quantity: quantity,
       image: product.images[0]

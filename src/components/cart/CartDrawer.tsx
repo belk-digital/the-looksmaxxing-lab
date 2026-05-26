@@ -9,6 +9,7 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { QuantityStepper } from '@/components/shop/QuantityStepper'
 import { useCartStore } from '@/store/cartStore'
 import { EmptyState } from '@/components/shared/EmptyState'
+import { ShoppingBag } from 'lucide-react'
 
 export function CartDrawer() {
   const { isOpen, closeCart, items, removeItem, updateQuantity } = useCartStore()
