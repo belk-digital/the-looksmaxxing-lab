@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Accordion as AccordionPrimitive } from 'radix-ui'
 
 import { cn } from '@/lib/utils'
-import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
+import { PlusIcon } from 'lucide-react'
 
 function Accordion({ className, ...props }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
   return (
@@ -23,7 +23,7 @@ function AccordionItem({
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"
-      className={cn('not-last:border-b', className)}
+      className={cn('not-last:border-b border-border-subtle', className)}
       {...props}
     />
   )
@@ -39,19 +39,15 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          'group/accordion-trigger focus-visible:ring-3 focus-visible:ring-ring/50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-muted-foreground relative flex flex-1 items-start justify-between rounded-md border border-transparent py-4 text-left text-sm font-medium outline-none transition-all hover:underline focus-visible:border-ring focus-visible:after:border-ring disabled:pointer-events-none disabled:opacity-50',
+          'group/accordion-trigger focus-visible:ring-3 focus-visible:ring-ring/50 relative flex flex-1 items-center justify-between rounded-md border border-transparent py-6 text-left text-body-lg font-sans outline-none transition-all hover:text-ink focus-visible:border-ring focus-visible:after:border-ring disabled:pointer-events-none disabled:opacity-50 data-[state=open]:text-ink',
           className,
         )}
         {...props}
       >
         {children}
-        <ChevronDownIcon
+        <PlusIcon
           data-slot="accordion-trigger-icon"
-          className="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden"
-        />
-        <ChevronUpIcon
-          data-slot="accordion-trigger-icon"
-          className="pointer-events-none hidden shrink-0 group-aria-expanded/accordion-trigger:inline"
+          className="pointer-events-none shrink-0 text-ink-muted transition-transform duration-500 ease-out-quart group-data-[state=open]/accordion-trigger:rotate-45 ml-4"
         />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>

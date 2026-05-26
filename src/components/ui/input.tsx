@@ -1,19 +1,56 @@
-import * as React from 'react'
+'use client'
 
-import { cn } from '@/lib/utils'
+import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
+import { motion, AnimatePresence } from "framer-motion"
 
-function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
-  return (
-    <input
-      type={type}
-      data-slot="input"
-      className={cn(
-        'shadow-xs focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-2.5 py-1 text-base outline-none transition-[color,box-shadow] file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
-        className,
-      )}
-      {...props}
-    />
-  )
+const inputVariants = cva(
+  "flex w-full rounded-sm border px-4 h-12 font-sans text-body-md transition-all duration-200 ease-out placeholder:text-ink-subtle focus-visible:outline-none focus-visible:shadow-focus focus-visible:border-border-strong disabled:cursor-not-allowed disabled:opacity-40",
+  {
+    variants: {
+      variant: {
+        default: "bg-cream-warm border-border",
+        error: "bg-cream-warm border-error text-error",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement>,
+    VariantProps<typeof inputVariants> {
+  error?: string
 }
 
-export { Input }
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, variant, error, ...props }, ref) => {
+    return (
+      <div className="w-full">
+        <input
+          className={inputVariants({ variant: error ? "error" : variant, className })}
+          ref={ref}
+          {...props}
+        />
+        <AnimatePresence>
+          {error && (
+            <motion.p
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="text-error text-body-sm mt-1"
+            >
+              {error}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
+    )
+  }
+)
+Input.displayName = "Input"
+
+export { Input, inputVariants }

@@ -1,6 +1,9 @@
 import '@/app/globals.css'
-import { Header } from '@/components/shared/Header'
 import { ClerkProvider } from '@clerk/nextjs'
+import { fontDisplay, fontSans } from '@/app/fonts'
+import { LayoutClientWrapper } from '@/components/shared/LayoutClientWrapper'
+import { Header } from '@/components/shared/Header'
+import { Footer } from '@/components/shared/Footer'
 
 export const metadata = {
   title: 'Looksmaxxing Lab',
@@ -10,16 +13,15 @@ export const metadata = {
 export default function FrontendLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <html lang="en" className="h-full" suppressHydrationWarning>
+      <html lang="en" className={`h-full ${fontDisplay.variable} ${fontSans.variable}`} suppressHydrationWarning>
         <head />
         <body
-          className="h-full bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white antialiased"
+          className="h-full bg-cream text-ink antialiased"
           suppressHydrationWarning
         >
-          <div className="flex min-h-screen flex-col relative">
-            <Header />
-            <main className="flex-1">{children}</main>
-          </div>
+          <LayoutClientWrapper header={<Header />} footer={<Footer />}>
+            {children}
+          </LayoutClientWrapper>
         </body>
       </html>
     </ClerkProvider>
