@@ -1,11 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion'
-import { Search, Heart, User, ShoppingBag, Menu, X } from 'lucide-react'
-import { Container } from '@/components/ui/container'
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
+import { ShoppingBag, Menu } from 'lucide-react'
 import { MobileMenu } from './MobileMenu'
 import { useCartStore } from '@/store/cartStore'
 import { CartDrawer } from '@/components/cart/CartDrawer'
@@ -13,198 +11,102 @@ import { CartDrawer } from '@/components/cart/CartDrawer'
 export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0 }) {
   const cartStore = useCartStore()
   const activeCartCount = cartStore.items.reduce((acc, i) => acc + i.quantity, 0)
-  const { scrollY } = useScroll()
-  const [scrolled, setScrolled] = useState(false)
-  const [showAnnouncement, setShowAnnouncement] = useState(true)
-  const [megaMenuOpen, setMegaMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [hidden, setHidden] = useState(false)
   
-  useMotionValueEvent(scrollY, 'change', (latest) => {
-    setScrolled(latest > 50)
+  const { scrollY } = useScroll()
+  const lastYRef = useRef(0)
+
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    const difference = y - lastYRef.current
+    if (Math.abs(difference) > 20) { // Require a 20px threshold before triggering
+      if (difference > 0 && y > 150) {
+        setHidden(true) // Scroll down and past 150px
+      } else {
+        setHidden(false) // Scroll up
+      }
+      lastYRef.current = y
+    }
   })
 
-  // Mega menu timers
-  const enterTimeout = React.useRef<NodeJS.Timeout | null>(null)
-  const leaveTimeout = React.useRef<NodeJS.Timeout | null>(null)
-
-  const handleMouseEnter = () => {
-    if (leaveTimeout.current) clearTimeout(leaveTimeout.current)
-    enterTimeout.current = setTimeout(() => setMegaMenuOpen(true), 100)
-  }
-
-  const handleMouseLeave = () => {
-    if (enterTimeout.current) clearTimeout(enterTimeout.current)
-    leaveTimeout.current = setTimeout(() => setMegaMenuOpen(false), 300)
-  }
-
   return (
-    <div className="fixed top-0 inset-x-0 z-sticky flex flex-col pointer-events-none">
+    <div className="fixed top-6 inset-x-0 z-sticky flex justify-center pointer-events-none px-4">
       
-      <AnimatePresence>
-        {showAnnouncement && (
-          <motion.div
-            initial={{ height: 36, opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="bg-ink flex items-center justify-center relative overflow-hidden pointer-events-auto"
-          >
-            <span className="text-cream text-label-md">Order over $300 — complimentary 2-day shipping</span>
-            <button 
-              onClick={() => setShowAnnouncement(false)}
-              className="absolute right-4 text-cream hover:text-gold transition-colors"
-            >
-              <X size={16} />
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <motion.header
-        animate={{
-          backgroundColor: scrolled ? 'rgba(250, 247, 242, 0.85)' : 'rgba(250, 247, 242, 0)',
-          backdropFilter: scrolled ? 'blur(12px)' : 'blur(0px)',
-          borderBottom: scrolled ? '1px solid rgba(216, 205, 184, 0.5)' : '1px solid transparent',
-          color: scrolled ? '#0A0A0A' : '#FAF7F2',
+        variants={{
+          visible: { y: 0, opacity: 1 },
+          hidden: { y: -100, opacity: 0 }
         }}
-        transition={{ duration: 0.3 }}
-        className="h-20 w-full relative pointer-events-auto"
+        initial="hidden"
+        animate={hidden ? "hidden" : "visible"}
+        transition={{ duration: 0.35, ease: "easeOut" }}
+        className="w-full max-w-[1100px] h-[60px] rounded-full bg-[#110915] shadow-2xl flex items-center justify-between px-6 md:px-8 pointer-events-auto border border-white/10"
       >
-        <Container size="wide" className="h-full flex items-center justify-between">
-          
-          {/* Mobile Left: Hamburger */}
-          <div className="flex md:hidden flex-1">
-            <button onClick={() => setMobileMenuOpen(true)} className="p-2 -ml-2">
-              <Menu size={20} strokeWidth={1.5} />
-            </button>
-          </div>
+        {/* Mobile Hamburger */}
+        <div className="flex md:hidden flex-1">
+          <button onClick={() => setMobileMenuOpen(true)} className="p-2 -ml-2 text-white">
+            <Menu size={20} />
+          </button>
+        </div>
 
-          {/* Left / Center Mobile: Logo */}
-          <div className="flex-1 md:flex-none flex justify-center md:justify-start">
-            <Link href="/" className="font-sans text-label-lg uppercase tracking-wider hover:opacity-80 transition-opacity">
-              THE LOOKSMAXXING LAB
-            </Link>
-          </div>
+        {/* Left: Logo (Mimicking the reference swirl) */}
+        <div className="flex-1 md:flex-none flex justify-center md:justify-start">
+          <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
+            <svg width="48" height="24" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 15 C15 7, 45 7, 45 15 C45 23, 20 23, 20 15 C20 11, 40 11, 40 15 C40 19, 25 19, 25 15" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M5 15 C5 2, 55 2, 55 15 C55 28, 10 28, 10 15" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="58" cy="4" r="1.5" fill="white" />
+            </svg>
+          </Link>
+        </div>
 
-          {/* Center Desktop: Nav */}
-          <nav className="hidden md:flex items-center justify-center gap-12 flex-1 h-full">
-            <div 
-              className="h-full flex items-center relative"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              <Link href="/shop" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity cursor-pointer">
-                SHOP
-              </Link>
-            </div>
-            <Link href="/peptide-calculator" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity">
-              CALCULATOR
-            </Link>
-            <Link href="/about" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity">
-              ABOUT
-            </Link>
-            <Link href="/journal" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity">
-              JOURNAL
-            </Link>
-            <Link href="/faq" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity">
-              FAQ
-            </Link>
-            <Link href="/contact" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity">
-              CONTACT
-            </Link>
-            <Link href="/affiliates" className="text-label-lg uppercase tracking-wider hover:opacity-70 transition-opacity">
-              AFFILIATES
-            </Link>
-          </nav>
+        {/* Center: Nav (Restored original site links) */}
+        <nav className="hidden lg:flex items-center justify-center gap-6 xl:gap-8 flex-1">
+          <Link href="/shop" className="text-[9px] xl:text-[10px] font-sans font-medium text-white tracking-[0.2em] uppercase hover:text-white/70 transition-colors">
+            SHOP
+          </Link>
+          <Link href="/peptide-calculator" className="text-[9px] xl:text-[10px] font-sans font-medium text-white tracking-[0.2em] uppercase hover:text-white/70 transition-colors">
+            CALCULATOR
+          </Link>
+          <Link href="/about" className="text-[9px] xl:text-[10px] font-sans font-medium text-white tracking-[0.2em] uppercase hover:text-white/70 transition-colors">
+            ABOUT
+          </Link>
+          <Link href="/journal" className="text-[9px] xl:text-[10px] font-sans font-medium text-white tracking-[0.2em] uppercase hover:text-white/70 transition-colors">
+            JOURNAL
+          </Link>
+          <Link href="/faq" className="text-[9px] xl:text-[10px] font-sans font-medium text-white tracking-[0.2em] uppercase hover:text-white/70 transition-colors">
+            FAQ
+          </Link>
+          <Link href="/contact" className="text-[9px] xl:text-[10px] font-sans font-medium text-white tracking-[0.2em] uppercase hover:text-white/70 transition-colors">
+            CONTACT
+          </Link>
+          <Link href="/affiliates" className="text-[9px] xl:text-[10px] font-sans font-medium text-white tracking-[0.2em] uppercase hover:text-white/70 transition-colors">
+            AFFILIATES
+          </Link>
+        </nav>
 
-          {/* Right: Icons */}
-          <div className="flex items-center justify-end gap-4 flex-1 md:flex-none">
-            <button className="hidden md:block p-2 hover:opacity-70 transition-opacity">
-              <Search size={20} strokeWidth={1.5} />
-            </button>
-            <Link href="/account/wishlist" className="hidden md:flex p-2 hover:opacity-70 transition-opacity relative items-center justify-center">
-              <Heart size={20} strokeWidth={1.5} />
-              {wishlistItemCount > 0 && (
-                <span className="absolute top-1 right-1 w-2 h-2 bg-gold rounded-full" />
+        {/* Right: SHOP NOW Button & Cart */}
+        <div className="flex items-center justify-end gap-5 flex-1 lg:flex-none">
+          <button onClick={cartStore.openCart} className="p-1 text-white hover:text-white/70 transition-colors relative flex items-center justify-center">
+            <ShoppingBag size={18} strokeWidth={1.5} />
+            <AnimatePresence>
+              {activeCartCount > 0 && (
+                <motion.span 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  className="absolute -top-1 -right-1 bg-white text-black text-[9px] font-bold w-[14px] h-[14px] flex items-center justify-center rounded-full"
+                >
+                  {activeCartCount}
+                </motion.span>
               )}
-            </Link>
-            <Link href="/account" className="hidden md:flex p-2 hover:opacity-70 transition-opacity items-center justify-center">
-              <User size={20} strokeWidth={1.5} />
-            </Link>
-            <button onClick={cartStore.openCart} className="p-2 hover:opacity-70 transition-opacity relative flex items-center justify-center focus:outline-none">
-              <ShoppingBag size={20} strokeWidth={1.5} />
-              <AnimatePresence>
-                {activeCartCount > 0 && (
-                  <motion.span 
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1 bg-gold text-ink text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full"
-                  >
-                    {activeCartCount}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </button>
-          </div>
-
-        </Container>
-
-        {/* Mega Menu Dropdown */}
-        <AnimatePresence>
-          {megaMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              className="absolute top-full inset-x-0 bg-cream text-ink shadow-lg border-t border-border-subtle overflow-hidden"
-            >
-              <Container size="wide" className="py-12 flex gap-16">
-                <div className="w-1/3">
-                  <h3 className="text-label-md uppercase tracking-wider text-ink-muted mb-6">By Category</h3>
-                  <ul className="space-y-4">
-                    {['Bioregulators', 'Cellular Health', 'Cognitive', 'Essentials', 'Growth Factor', 'Metabolic', 'Receptor Agonist', 'Recovery'].map(cat => (
-                      <li key={cat}>
-                        <Link href={`/shop/${cat.toLowerCase().replace(' ', '-')}`} className="text-body-md hover:text-gold-dark transition-colors">
-                          {cat}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-label-md uppercase tracking-wider text-ink-muted mb-6">Featured</h3>
-                  <div className="grid grid-cols-2 gap-8">
-                    <Link href="/products/bpc-157-blend" className="group relative aspect-[4/5] bg-cream-warm rounded-sm overflow-hidden block">
-                      <Image 
-                        src="/temp-products/header-promo-1.png" 
-                        alt="Best Seller Promo" 
-                        fill 
-                        className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                      />
-                      <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-ink/60 to-transparent">
-                        <span className="text-cream text-label-md uppercase tracking-wider">Best Seller</span>
-                      </div>
-                    </Link>
-                    <Link href="/products/tb-500" className="group relative aspect-[4/5] bg-cream-warm rounded-sm overflow-hidden block">
-                      <Image 
-                        src="/temp-products/header-promo-2.png" 
-                        alt="New Arrival Promo" 
-                        fill 
-                        className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                      />
-                      <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-ink/60 to-transparent">
-                        <span className="text-cream text-label-md uppercase tracking-wider">New Arrival</span>
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-              </Container>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
+            </AnimatePresence>
+          </button>
+          
+          <Link href="/shop" className="hidden md:inline-flex border border-white/30 rounded-full px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase text-white hover:bg-white hover:text-black transition-all">
+            SHOP NOW
+          </Link>
+        </div>
       </motion.header>
 
       <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />

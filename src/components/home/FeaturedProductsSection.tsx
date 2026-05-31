@@ -44,6 +44,9 @@ const SAMPLE_PRODUCTS: Product[] = [
 ]
 
 export function FeaturedProductsSection() {
+  const col1 = [SAMPLE_PRODUCTS[0], SAMPLE_PRODUCTS[2]]
+  const col2 = [SAMPLE_PRODUCTS[1], SAMPLE_PRODUCTS[3]]
+
   return (
     <Container size="page" className="py-32">
       <div className="flex flex-col items-center text-center mb-16">
@@ -60,14 +63,38 @@ export function FeaturedProductsSection() {
       </div>
 
       <StaggerChildren staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
-        {SAMPLE_PRODUCTS.map((product, index) => (
-          <motion.div variants={staggerItemVariants} key={product.slug} className="flex h-full">
+        {/* Column 1 */}
+        <div className="flex flex-col gap-6">
+          <motion.div variants={staggerItemVariants} className="w-full">
             <FeaturedProductCard 
-              product={product} 
-              aspectRatio={index % 2 === 0 ? '4/5' : '16/10'} 
+              product={col1[0]} 
+              size="tall"
+              id="target-product-image"
             />
           </motion.div>
-        ))}
+          <motion.div variants={staggerItemVariants} className="w-full">
+            <FeaturedProductCard 
+              product={col1[1]} 
+              size="small"
+            />
+          </motion.div>
+        </div>
+
+        {/* Column 2 */}
+        <div className="flex flex-col gap-6">
+          <motion.div variants={staggerItemVariants} className="w-full">
+            <FeaturedProductCard 
+              product={col2[0]} 
+              size="small"
+            />
+          </motion.div>
+          <motion.div variants={staggerItemVariants} className="w-full">
+            <FeaturedProductCard 
+              product={col2[1]} 
+              size="tall"
+            />
+          </motion.div>
+        </div>
       </StaggerChildren>
 
       <div className="flex justify-center mt-16">

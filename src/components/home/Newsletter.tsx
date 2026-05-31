@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 
 export function Newsletter() {
   return (
-    <section className="w-full bg-cream-sand py-32">
+    <section className="relative z-10 w-full bg-[#EAE4DC] py-32">
       <Container size="content" className="flex flex-col items-center text-center">
         
         <FadeUp>
