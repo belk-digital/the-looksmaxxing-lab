@@ -38,7 +38,7 @@ const AnimatedHUDCard = ({
     hidden: { opacity: 0, filter: 'blur(4px)', y: 5 },
     visible: { 
       opacity: 1, filter: 'blur(0px)', y: 0,
-      transition: { duration: 0.5, delay: delay + 0.7, ease: "easeOut" } 
+      transition: { duration: 0.5, delay: delay + 0.7, ease: "easeOut" as const } 
     }
   }
 

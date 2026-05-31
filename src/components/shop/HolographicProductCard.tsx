@@ -83,7 +83,7 @@ export function HolographicProductCard({ product }: { product: StandardProduct }
           {/* Badge */}
           {product.badge && (
             <div className="absolute top-4 left-4 z-20">
-              <Badge variant={product.badge === 'sale' ? 'secondary' : 'default'} className="bg-gold/20 text-gold border border-gold/30">
+              <Badge variant={product.badge} className="px-3 py-1 bg-white/10 backdrop-blur-md text-white border-white/20">
                 {product.badge === 'bestseller' ? 'Best Seller' : product.badge}
               </Badge>
             </div>
