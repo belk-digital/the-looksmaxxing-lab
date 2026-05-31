@@ -72,9 +72,25 @@ export function WhatSetsUsApart() {
                 </h2>
               </FadeUp>
               <FadeUp delay={0.2}>
-                <p className="text-body-md text-ink/70 leading-relaxed mb-12 max-w-md">
+                <p className="text-body-md text-ink/70 leading-relaxed mb-8 max-w-md">
                   We operate at the bleeding edge of aesthetic science. Our commitment to uncompromised quality translates into repeatable, verifiable research results.
                 </p>
+              </FadeUp>
+
+              {/* Interactive Scroll Prompt */}
+              <FadeUp delay={0.3}>
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-5 h-8 rounded-full border-[1.5px] border-ink/20 flex justify-center pt-1.5 shrink-0">
+                    <motion.div 
+                      animate={{ y: [0, 8, 0], opacity: [1, 0, 1] }} 
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                      className="w-1 h-1.5 bg-ink/40 rounded-full"
+                    />
+                  </div>
+                  <span className="text-[9px] font-sans uppercase tracking-[0.25em] font-bold text-ink/40">
+                    Scroll to Explore
+                  </span>
+                </div>
               </FadeUp>
 
               {/* Passive Scroll Indicators */}

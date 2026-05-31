@@ -31,14 +31,14 @@ export function AboutTeaser() {
         
         {/* 1. Deep Background Layer */}
         <motion.div 
-          style={{ y: bgY }}
+          style={{ y: bgY, willChange: 'transform' }}
           className="absolute inset-[-20%] w-[140%] h-[140%] z-0"
         >
           <Image 
             src="/temp-products/about-lifestyle.png"
             alt="The Looksmaxxing Lab Facility"
             fill
-            className="object-cover opacity-40 mix-blend-luminosity"
+            className="object-cover opacity-40 grayscale"
           />
           {/* Vignette & Gradient for readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/80" />
@@ -46,7 +46,7 @@ export function AboutTeaser() {
 
         {/* 4. Extreme Foreground Blur Layer (Left Side, huge scale, blurred, placed BEHIND text for depth) */}
         <motion.div 
-          style={{ y: fgBlurY }}
+          style={{ y: fgBlurY, willChange: 'transform' }}
           className="absolute top-[-10%] left-[-30%] sm:left-[-15%] md:left-[-5%] w-[80vw] max-w-[600px] aspect-[1/2.2] z-0 pointer-events-none opacity-40 rotate-12"
         >
           <Image 
@@ -59,7 +59,7 @@ export function AboutTeaser() {
 
         {/* 2. Middle Layer: Huge Typography */}
         <motion.div 
-          style={{ y: textY }}
+          style={{ y: textY, willChange: 'transform' }}
           className="relative z-10 w-full flex flex-col items-center justify-center text-center px-6 pointer-events-none"
         >
           <span className="text-label-md uppercase tracking-widest text-gold mb-6 md:mb-8 block font-bold">
@@ -80,7 +80,7 @@ export function AboutTeaser() {
 
         {/* 3. Foreground Focus Layer (Right Side) */}
         <motion.div 
-          style={{ y: fgFocusY }}
+          style={{ y: fgFocusY, willChange: 'transform' }}
           className="absolute bottom-[-30%] right-[-10%] sm:right-0 md:right-[5%] lg:right-[10%] w-[50vw] max-w-[400px] aspect-[1/2.2] z-20 pointer-events-none drop-shadow-2xl -rotate-6"
         >
           <Image 

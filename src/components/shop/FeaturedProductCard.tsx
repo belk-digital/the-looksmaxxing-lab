@@ -28,10 +28,10 @@ export function FeaturedProductCard({ product, size = 'small', id }: FeaturedPro
     >
       {/* Invisible Spacers for Layout */}
       <div className={`w-full ${imageAspectClass}`} />
-      <div className="h-[190px] w-full" />
+      <div className="h-[210px] w-full" />
 
       {/* Animated Image Area */}
-      <div id={id} className="absolute top-3 left-3 right-3 bottom-[202px] group-hover:bottom-3 overflow-hidden bg-[#F5F5F7] rounded-[2rem] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-0">
+      <div id={id} className="absolute top-3 left-3 right-3 bottom-[222px] group-hover:bottom-3 overflow-hidden bg-[#F5F5F7] rounded-[2rem] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-0">
         <Image
           src={product.image}
           alt={product.name}
@@ -47,9 +47,12 @@ export function FeaturedProductCard({ product, size = 'small', id }: FeaturedPro
       </button>
 
       {/* Info Area - Fixed at bottom */}
-      <div className="absolute bottom-3 left-3 right-3 h-[190px] flex flex-col px-4 pt-6 pb-2 z-10 pointer-events-none">
-        <h3 className="text-xl sm:text-2xl font-bold mb-3 text-ink group-hover:text-white transition-colors duration-500">{product.name}</h3>
-        <p className="text-sm text-ink/70 group-hover:text-white/80 line-clamp-2 mb-8 transition-colors duration-500">
+      <div className="absolute bottom-3 left-3 right-3 h-[210px] flex flex-col px-4 pt-6 pb-2 z-10 pointer-events-none">
+        <span className="text-xs font-semibold tracking-widest uppercase text-ink/50 group-hover:text-white/60 mb-1 transition-colors duration-500">
+          {product.category}
+        </span>
+        <h3 className="text-xl sm:text-2xl font-bold mb-2 text-ink group-hover:text-white transition-colors duration-500">{product.name}</h3>
+        <p className="text-sm text-ink/70 group-hover:text-white/80 line-clamp-2 mb-6 transition-colors duration-500">
           {product.shortDescription}
         </p>
         <div className="flex items-center justify-between mt-auto">

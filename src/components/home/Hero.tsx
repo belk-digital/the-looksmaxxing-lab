@@ -7,10 +7,12 @@ import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Sparkle } from 'lucide-react'
+import { usePreloader } from './HomePreloaderWrapper'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export function Hero() {
+  const { isReady } = usePreloader()
   const marqueeItems = [
     "≥99% HPLC PURITY",
     "LC-MS VERIFIED",
@@ -33,10 +35,13 @@ export function Hero() {
   const vialRef = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {
+    if (!isReady) return; // Wait for the preloader to shoot the vial UP before dropping it DOWN
+
     // 1. Dramatic entrance drop with slight rotation and scale
+    // Start way above the screen so it looks like it came from the preloader
     gsap.fromTo(vialRef.current, 
       { 
-        y: -350, 
+        y: -800, // Increased drop height to match launch speed
         scale: 1.15, 
         rotation: 12,
         opacity: 0,
@@ -48,71 +53,74 @@ export function Hero() {
         rotation: 0,
         opacity: 1,
         filter: 'blur(0px)',
-        duration: 1.8, 
-        ease: "back.out(1.2)", 
-        delay: 0.1,
-        onComplete: () => {
-          // 2. Continuous elegant floating/breathing animation after settling
-          const floatingAnim = gsap.to(vialRef.current, {
-            y: -15,
-            rotation: -1.5,
-            duration: 3.5,
-            yoyo: true,
-            repeat: -1,
-            ease: "sine.inOut"
-          })
-
-          // 3. ScrollTrigger to attach to the 2nd section
-          setTimeout(() => {
-            const targetElement = document.getElementById('target-product-image');
-            if (targetElement && vialRef.current) {
-              
-              // We create a scrubbed timeline
-              const tl = gsap.timeline({
-                scrollTrigger: {
-                  trigger: document.body,
-                  start: "top top",
-                  endTrigger: targetElement,
-                  end: "center center",
-                  scrub: 1,
-                  invalidateOnRefresh: true, // Recalculates flawlessly on mobile scroll/resize
-                  onEnter: () => floatingAnim.pause(),
-                  onLeaveBack: () => floatingAnim.play(),
-                }
-              });
-
-              tl.to(vialRef.current, {
-                x: () => {
-                  const targetRect = targetElement.getBoundingClientRect();
-                  // Measure from the static parent to avoid reading mid-animation transformed values
-                  const parentRect = vialRef.current!.parentElement!.getBoundingClientRect();
-                  return (targetRect.left + targetRect.width / 2) - (parentRect.left + parentRect.width / 2);
-                },
-                y: () => {
-                  const targetRect = targetElement.getBoundingClientRect();
-                  const parentRect = vialRef.current!.parentElement!.getBoundingClientRect();
-                  return (targetRect.top + targetRect.height / 2) - (parentRect.top + parentRect.height / 2);
-                },
-                scale: () => {
-                  const targetRect = targetElement.getBoundingClientRect();
-                  const parentRect = vialRef.current!.parentElement!.getBoundingClientRect();
-                  return (targetRect.height / parentRect.height) * 0.95;
-                },
-                rotation: 0,
-                ease: "power1.inOut"
-              })
-              // Disappear at the end
-              .to(vialRef.current, {
-                opacity: 0,
-                duration: 0.1
-              }, "-=0.1");
-              
-            }
-          }, 500); // slight delay to ensure target is rendered
-        }
+        duration: 1.4, // Slightly faster drop to maintain momentum
+        ease: "power2.inOut", 
+        delay: 0.1, // Almost immediate after preloader fades
       }
     )
-  }, [])
+
+    // 2. Continuous elegant floating/breathing animation after settling
+    // Delay ensures it starts right after the entrance drop finishes
+    const floatingAnim = gsap.to(vialRef.current, {
+      y: -20,
+      rotation: -5.5,
+      duration: 2.5,
+      yoyo: true,
+      repeat: -1,
+      ease: "sine.inOut",
+      delay: 1.5
+    })
+
+    // 3. ScrollTrigger to attach to the 2nd section
+    // Defined synchronously so useGSAP can automatically clean it up on unmount!
+    const targetElement = document.getElementById('target-product-image');
+    if (targetElement && vialRef.current) {
+      
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: document.body,
+          start: "top top",
+          endTrigger: targetElement,
+          end: "center center",
+          scrub: true,
+          invalidateOnRefresh: true, // Recalculates flawlessly on mobile scroll/resize
+          onEnter: () => floatingAnim.pause(),
+          onLeaveBack: () => floatingAnim.play(),
+        }
+      });
+
+      tl.to(vialRef.current, {
+        x: () => {
+          if (!vialRef.current || !vialRef.current.parentElement) return 0;
+          const targetRect = targetElement.getBoundingClientRect();
+          // Measure from the static parent to avoid reading mid-animation transformed values
+          const parentRect = vialRef.current.parentElement.getBoundingClientRect();
+          return (targetRect.left + targetRect.width / 2) - (parentRect.left + parentRect.width / 2);
+        },
+        y: () => {
+          if (!vialRef.current || !vialRef.current.parentElement) return 0;
+          const targetRect = targetElement.getBoundingClientRect();
+          const parentRect = vialRef.current.parentElement.getBoundingClientRect();
+          return (targetRect.top + targetRect.height / 2) - (parentRect.top + parentRect.height / 2);
+        },
+        scale: () => {
+          if (!vialRef.current || !vialRef.current.parentElement) return 1;
+          const targetRect = targetElement.getBoundingClientRect();
+          const parentRect = vialRef.current.parentElement.getBoundingClientRect();
+          return (targetRect.height / parentRect.height) * 0.95;
+        },
+        rotation: 0,
+        force3D: true,
+        ease: "power1.inOut"
+      })
+      // Disappear at the end
+      .to(vialRef.current, {
+        opacity: 0,
+        duration: 0.1
+      }, "-=0.1");
+      
+    }
+  }, [isReady])
 
   return (
     <section className="relative w-full bg-white min-h-[100dvh] lg:h-[100dvh] z-[50] flex flex-col pt-24 lg:pt-32 pb-8 lg:pb-10">
@@ -167,11 +175,11 @@ export function Hero() {
 
         {/* The Vial Image - Using GSAP for animations */}
         {/* On mobile: pops out of top. On desktop: anchored to bottom, popping out top naturally due to height */}
-        <div className="absolute left-1/2 -top-[15%] sm:-top-[20%] md:-top-[25%] lg:top-auto lg:bottom-4 xl:bottom-8 w-full max-w-[140px] sm:max-w-[180px] md:max-w-[240px] lg:max-w-[260px] xl:max-w-[290px] -translate-x-1/2 z-30 pointer-events-none">
+        <div className="absolute left-1/2 -top-[15%] sm:-top-[20%] md:-top-[25%] lg:top-auto lg:bottom-4 xl:bottom-8 w-full max-w-[140px] sm:max-w-[180px] md:max-w-[240px] lg:max-w-[min(260px,32dvh)] xl:max-w-[min(290px,35dvh)] -translate-x-1/2 z-30 pointer-events-none">
           <div 
             ref={vialRef}
             className="relative w-full aspect-[1/2.2]"
-            style={{ opacity: 0 }}
+            style={{ opacity: 0, willChange: 'transform' }}
           >
             <Image 
               src="/temp-homepage/hero-vial-image.webp" 

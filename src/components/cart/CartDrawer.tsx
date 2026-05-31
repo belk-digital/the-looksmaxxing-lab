@@ -51,7 +51,7 @@ export function CartDrawer() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             onClick={closeCart}
-            className="fixed inset-0 bg-ink/55 z-[100]"
+            className="fixed inset-0 bg-ink/40 backdrop-blur-sm z-[100]"
             aria-hidden="true"
           />
 
@@ -61,47 +61,49 @@ export function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-0 right-0 h-full w-full md:w-[480px] bg-cream z-[101] shadow-xl flex flex-col"
+            className="fixed top-0 right-0 h-full w-full md:w-[480px] bg-[#F5F5F7] md:rounded-l-[2rem] z-[101] shadow-2xl flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-border-subtle shrink-0">
-              <h2 className="text-label-lg uppercase tracking-wider text-ink">
-                Your Cart ({items.reduce((acc, i) => acc + i.quantity, 0)})
+            <div className="flex items-center justify-between p-6 md:p-8 bg-white shrink-0 shadow-sm z-10 relative">
+              <h2 className="text-label-md uppercase tracking-widest text-ink font-bold">
+                Your Cart <span className="text-ink/60 font-medium ml-1">({items.reduce((acc, i) => acc + i.quantity, 0)})</span>
               </h2>
               <button 
                 onClick={closeCart}
-                className="p-2 -mr-2 text-ink-muted hover:text-ink transition-colors focus:outline-none"
+                className="p-2 -mr-2 bg-cream-warm/50 hover:bg-cream-warm rounded-full text-ink/60 hover:text-ink transition-all focus:outline-none"
                 aria-label="Close cart"
               >
-                <X size={20} strokeWidth={1.5} />
+                <X size={20} strokeWidth={2} />
               </button>
             </div>
 
             {items.length === 0 ? (
               /* Empty State */
-              <EmptyState
-                  icon={ShoppingBag}
-                  title="Your cart is empty"
-                  description="Looks like you haven't added any compounds to your cart yet."
-                  action={
-                    <Link href="/shop" onClick={closeCart} className={buttonVariants({ variant: 'dark' })}>
-                      Browse Products
-                    </Link>
-                  }
-                />
+              <div className="flex-1 flex flex-col bg-[#F5F5F7]">
+                <EmptyState
+                    icon={ShoppingBag}
+                    title="Your cart is empty"
+                    description="Looks like you haven't added any compounds to your cart yet."
+                    action={
+                      <Link href="/shop" onClick={closeCart} className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-ink text-white hover:bg-ink/80 transition-colors uppercase tracking-[0.15em] text-sm font-bold shadow-md">
+                        Browse Products
+                      </Link>
+                    }
+                  />
+              </div>
             ) : (
               /* Populated Cart */
               <>
                 {/* Shipping Progress */}
-                <div className="p-6 bg-cream-warm border-b border-border-subtle shrink-0">
-                  <p className="text-body-sm text-ink text-center mb-3">
+                <div className="px-6 md:px-8 py-5 bg-[#F5F5F7] shrink-0">
+                  <p className="text-sm font-medium text-ink text-center mb-3">
                     {amountToFreeShipping > 0 
                       ? `Add $${amountToFreeShipping.toFixed(2)} more for free 2-day shipping`
                       : "You've unlocked free 2-day shipping!"}
                   </p>
-                  <div className="w-full h-1 bg-border-subtle rounded-full overflow-hidden">
+                  <div className="w-full h-1.5 bg-border-subtle/60 rounded-full overflow-hidden">
                     <motion.div 
-                      className="h-full bg-gold rounded-full"
+                      className="h-full bg-gradient-to-r from-[#C9B58E] to-[#A89570] rounded-full shadow-[0_0_10px_rgba(201,181,142,0.5)]"
                       initial={{ width: 0 }}
                       animate={{ width: `${progressToFreeShipping}%` }}
                       transition={{ duration: 0.8, ease: "easeOut" }}
@@ -110,45 +112,45 @@ export function CartDrawer() {
                 </div>
 
                 {/* Items List */}
-                <div className="flex-1 overflow-y-auto px-6 py-2">
-                  <div className="flex flex-col">
+                <div className="flex-1 overflow-y-auto px-6 md:px-8 py-2">
+                  <div className="flex flex-col gap-4 pb-4">
                     <AnimatePresence>
                       {items.map((item) => (
                         <motion.div 
                           key={item.id}
                           layout
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="flex gap-4 py-6 border-b border-border-subtle last:border-0"
+                          initial={{ opacity: 0, scale: 0.95, height: 0 }}
+                          animate={{ opacity: 1, scale: 1, height: 'auto' }}
+                          exit={{ opacity: 0, scale: 0.95, height: 0 }}
+                          className="flex gap-4 p-4 bg-white rounded-2xl shadow-[0_2px_12px_-4px_rgba(0,0,0,0.04)] border border-black/[0.02]"
                         >
-                          <div className="relative w-20 h-20 bg-cream-warm shrink-0 border border-border-subtle">
-                            <Image src={item.image} alt={item.name} fill className="object-cover" />
+                          <div className="relative w-[88px] h-[88px] bg-[#F5F5F7] rounded-xl shrink-0 overflow-hidden">
+                            <Image src={item.image} alt={item.name} fill unoptimized className="object-cover" />
                           </div>
-                          <div className="flex flex-col flex-1 justify-between">
+                          <div className="flex flex-col flex-1 justify-between py-0.5">
                             <div className="flex justify-between items-start gap-2">
                               <div className="flex flex-col">
-                                <Link href={`/products/${item.productId}`} onClick={closeCart} className="text-editorial-sm font-display text-ink hover:text-gold transition-colors">
+                                <Link href={`/products/${item.productId}`} onClick={closeCart} className="text-body-md font-bold font-display text-ink hover:text-[#C9B58E] transition-colors line-clamp-1">
                                   {item.name}
                                 </Link>
-                                <span className="text-label-sm uppercase tracking-wider text-ink-muted mt-1">
+                                <span className="text-[10px] uppercase tracking-wider text-ink/60 mt-1 font-medium">
                                   {item.variantName}
                                 </span>
                               </div>
                               <button 
                                 onClick={() => removeItem(item.id)}
-                                className="text-ink-muted hover:text-error transition-colors"
+                                className="text-ink/40 hover:text-error transition-colors p-1"
                                 aria-label="Remove item"
                               >
-                                <X size={16} strokeWidth={1.5} />
+                                <X size={16} strokeWidth={2} />
                               </button>
                             </div>
-                            <div className="flex items-end justify-between mt-4">
+                            <div className="flex items-end justify-between mt-3">
                               <QuantityStepper 
                                 value={item.quantity} 
                                 onChange={(val) => updateQuantity(item.id, val)} 
                               />
-                              <span className="text-body-md font-medium text-ink">
+                              <span className="text-body-md font-bold text-ink">
                                 ${(item.price * item.quantity).toFixed(2)}
                               </span>
                             </div>
@@ -160,21 +162,21 @@ export function CartDrawer() {
                 </div>
 
                 {/* Sticky Summary */}
-                <div className="p-6 bg-cream border-t border-border-subtle shrink-0 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)]">
+                <div className="p-6 md:p-8 bg-white shrink-0 shadow-[0_-10px_30px_-10px_rgba(0,0,0,0.06)] z-10 relative">
                   <div className="flex justify-between items-center mb-3">
-                    <span className="text-body-md text-ink-muted">Subtotal</span>
-                    <span className="text-body-md text-ink font-medium">${subtotal.toFixed(2)}</span>
+                    <span className="text-body-md font-medium text-ink/70">Subtotal</span>
+                    <span className="text-lg text-ink font-bold">${subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between items-center mb-6">
-                    <span className="text-body-md text-ink-muted">Shipping</span>
-                    <span className="text-body-md text-ink">
+                    <span className="text-body-md font-medium text-ink/70">Shipping</span>
+                    <span className="text-body-md text-ink font-bold">
                       {amountToFreeShipping > 0 ? 'Calculated at checkout' : 'Free'}
                     </span>
                   </div>
-                  <Link href="/checkout" onClick={closeCart} className={buttonVariants({ variant: 'dark', size: 'lg', className: "w-full h-14 mb-3 text-label-lg" })}>
-                    CHECKOUT →
+                  <Link href="/checkout" onClick={closeCart} className="flex items-center justify-center w-full px-8 py-4 rounded-full bg-ink text-white hover:bg-ink/80 transition-colors uppercase tracking-[0.15em] text-sm font-bold shadow-md mb-4">
+                    CHECKOUT
                   </Link>
-                  <Link href="/cart" onClick={closeCart} className={buttonVariants({ variant: 'link', className: "w-full text-ink-muted hover:text-ink text-label-md" })}>
+                  <Link href="/cart" onClick={closeCart} className="flex items-center justify-center w-full text-ink/50 hover:text-ink text-sm font-bold transition-colors">
                     VIEW CART
                   </Link>
                 </div>

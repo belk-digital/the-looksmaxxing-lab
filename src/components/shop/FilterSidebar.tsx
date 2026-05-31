@@ -184,59 +184,9 @@ function FilterSidebarInner() {
   )
 
   return (
-    <>
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:block w-[280px] shrink-0 sticky top-32 h-[calc(100vh-8rem)] overflow-y-auto pr-6 custom-scrollbar">
-        <Content />
-      </aside>
-
-      {/* Mobile Full-Screen Overlay */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-40 bg-cream p-6 overflow-y-auto md:hidden pt-24"
-          >
-            <h2 className="text-display-sm font-display text-ink mb-8">Filters</h2>
-            <Content />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed bottom-6 right-6 z-50 w-14 h-14 bg-ink text-cream rounded-full shadow-lg flex items-center justify-center transition-transform active:scale-95"
-        aria-label="Toggle filters"
-      >
-        <AnimatePresence mode="wait">
-          {isOpen ? (
-            <motion.div
-              key="close"
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }}
-              transition={{ duration: 0.15 }}
-            >
-              <X size={24} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="filter"
-              initial={{ rotate: 90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: -90, opacity: 0 }}
-              transition={{ duration: 0.15 }}
-            >
-              <Filter size={24} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </button>
-    </>
+    <div className="w-full h-full overflow-y-auto pr-4 custom-scrollbar bg-cream">
+      <Content />
+    </div>
   )
 }
 

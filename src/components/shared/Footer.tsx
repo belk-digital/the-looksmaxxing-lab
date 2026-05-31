@@ -79,12 +79,7 @@ const FooterContent = () => (
         </div>
       </div>
 
-      {/* 2. Massive Logo Typography */}
-      <div className="flex flex-col items-center justify-center w-full mb-8 border-y border-cream/10 py-6 md:py-8 relative overflow-hidden">
-        <h1 className="font-display text-[12vw] sm:text-[10vw] xl:text-[140px] text-cream hover:opacity-80 transition-opacity tracking-tighter leading-[0.8] text-center w-full whitespace-nowrap">
-          LOOKSMAXXING
-        </h1>
-      </div>
+
 
       {/* 3. Bottom Row: Copyright, Credits, Legal */}
       <div className="w-full flex flex-col lg:flex-row justify-between items-center gap-4 mb-6">

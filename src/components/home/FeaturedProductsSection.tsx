@@ -12,7 +12,7 @@ const SAMPLE_PRODUCTS: Product[] = [
   {
     name: 'BPC-157 Blend',
     slug: 'bpc-157-blend',
-    image: '/temp-products/product-image.PNG',
+    image: '/temp-products/product-image.png',
     shortDescription: 'The ultimate recovery protocol. Enhanced tissue repair and joint support formulated for maximum bioavailability.',
     priceRange: '$120 - $300',
     category: 'Recovery'
@@ -20,7 +20,7 @@ const SAMPLE_PRODUCTS: Product[] = [
   {
     name: 'TB-500',
     slug: 'tb-500',
-    image: '/temp-products/product-image.PNG',
+    image: '/temp-products/product-image.png',
     shortDescription: 'Systemic healing and inflammation modulation. Frequently stacked with BPC-157 for synergistic effects.',
     priceRange: '$140 - $350',
     category: 'Recovery'
@@ -28,7 +28,7 @@ const SAMPLE_PRODUCTS: Product[] = [
   {
     name: 'GHK-Cu Copper Peptide',
     slug: 'ghk-cu',
-    image: '/temp-products/product-image.PNG',
+    image: '/temp-products/product-image.png',
     shortDescription: 'Advanced cellular health and collagen synthesis. A foundational peptide for longevity protocols.',
     priceRange: '$85 - $200',
     category: 'Cellular Health'
@@ -36,7 +36,7 @@ const SAMPLE_PRODUCTS: Product[] = [
   {
     name: 'Semaglutide',
     slug: 'semaglutide',
-    image: '/temp-products/product-image.PNG',
+    image: '/temp-products/product-image.png',
     shortDescription: 'GLP-1 receptor agonist for optimized metabolic function and lean mass preservation.',
     priceRange: '$200 - $500',
     category: 'Metabolic'
