@@ -4,6 +4,7 @@ import { fontDisplay, fontSans } from '@/app/fonts'
 import { LayoutClientWrapper } from '@/components/shared/LayoutClientWrapper'
 import { Header } from '@/components/shared/Header'
 import { Footer } from '@/components/shared/Footer'
+import { SmoothScroll } from '@/components/shared/SmoothScroll'
 
 export const metadata = {
   title: 'Looksmaxxing Lab',
@@ -19,9 +20,11 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
           className="h-full bg-cream text-ink antialiased"
           suppressHydrationWarning
         >
-          <LayoutClientWrapper header={<Header />} footer={<Footer />}>
-            {children}
-          </LayoutClientWrapper>
+          <SmoothScroll>
+            <LayoutClientWrapper header={<Header />} footer={<Footer />}>
+              {children}
+            </LayoutClientWrapper>
+          </SmoothScroll>
         </body>
       </html>
     </ClerkProvider>
