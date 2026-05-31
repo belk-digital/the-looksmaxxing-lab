@@ -20,7 +20,7 @@ const AnimatedHUDCard = ({
     visible: { 
       scaleX: 1, 
       opacity: 1,
-      transition: { duration: 0.5, delay: delay, ease: [0.16, 1, 0.3, 1] } 
+      transition: { duration: 0.5, delay: delay, ease: [0.16, 1, 0.3, 1] as const } 
     }
   }
 
@@ -30,7 +30,7 @@ const AnimatedHUDCard = ({
     visible: { 
       clipPath: 'inset(0% 0% 0% 0%)',
       opacity: 1,
-      transition: { duration: 0.6, delay: delay + 0.4, ease: [0.16, 1, 0.3, 1] }
+      transition: { duration: 0.6, delay: delay + 0.4, ease: [0.16, 1, 0.3, 1] as const }
     }
   }
 
@@ -94,7 +94,7 @@ const MobileAnimatedCard = ({ icon, title, desc, delay }: { icon: React.ReactNod
           hidden: { clipPath: 'inset(100% 0 0 0)', opacity: 0 },
           visible: { 
             clipPath: 'inset(0% 0% 0% 0%)', opacity: 1,
-            transition: { duration: 0.6, delay: delay, ease: [0.16, 1, 0.3, 1] }
+            transition: { duration: 0.6, delay: delay, ease: [0.16, 1, 0.3, 1] as const }
           }
         }}
         className="relative z-10 w-full bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl overflow-hidden shadow-2xl"
