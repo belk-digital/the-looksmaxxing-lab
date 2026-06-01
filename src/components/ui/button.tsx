@@ -3,6 +3,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { motion } from "framer-motion"
+import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center font-sans uppercase tracking-wider font-medium transition-all duration-300 ease-out-quart rounded-sm focus-visible:outline-none focus-visible:shadow-focus disabled:opacity-40 disabled:pointer-events-none active:scale-[0.98]',
@@ -59,7 +60,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, isLoading, children, disabled, ...props }, ref) => {
     return (
       <button
-        className={buttonVariants({ variant, size, className })}
+        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         disabled={isLoading || disabled}
         {...props}

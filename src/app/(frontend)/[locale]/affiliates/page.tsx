@@ -8,18 +8,13 @@ import { FadeUp } from '@/components/motion/FadeUp'
 import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
 import { EyebrowHeading } from '@/components/editorial/EyebrowHeading'
 import { Button } from '@/components/ui/button'
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from '@/components/ui/accordion'
+import { FaqCarousel, FaqItem } from '@/components/shared/FaqCarousel'
 
-const FAQ_DATA = [
-  { q: 'How long do cookies last?', a: 'Our affiliate tracking cookie remains active for 30 days after the initial click.' },
-  { q: 'When do I get paid?', a: 'Commissions have a 30-day pending period to account for potential returns. Once approved, you can request a payout anytime if you meet the minimum threshold.' },
-  { q: 'What payment methods do you support?', a: 'We process payouts globally via PayPal, Wise, Bank Wire, and major cryptocurrencies (BTC, ETH, USDT).' },
-  { q: 'Do I get free products?', a: 'Top-tier Gold and VIP affiliates receive seasonal research allocations for content creation. Standard affiliates do not receive free compounds initially.' },
+const AFFILIATE_FAQS: FaqItem[] = [
+  { question: 'How long do cookies last?', answer: 'Our affiliate tracking cookie remains active for 30 days after the initial click.' },
+  { question: 'When do I get paid?', answer: 'Commissions have a 30-day pending period to account for potential returns. Once approved, you can request a payout anytime if you meet the minimum threshold.' },
+  { question: 'What payment methods do you support?', answer: 'We process payouts globally via PayPal, Wise, Bank Wire, and major cryptocurrencies (BTC, ETH, USDT).' },
+  { question: 'Do I get free products?', answer: 'Top-tier Gold and VIP affiliates receive seasonal research allocations for content creation. Standard affiliates do not receive free compounds initially.' },
 ]
 
 export default function AffiliatesLandingPage() {
@@ -124,24 +119,13 @@ export default function AffiliatesLandingPage() {
       </section>
 
       {/* 4. FAQ */}
-      <section className="px-6 py-32 max-w-[720px] mx-auto">
-        <FadeUp>
-          <div className="text-center mb-16">
-            <h2 className="text-editorial-lg font-serif text-ink">Frequent inquiries</h2>
-          </div>
-          
-          <Accordion type="single" collapsible className="w-full">
-            {FAQ_DATA.map((item, i) => (
-              <AccordionItem key={i} value={`faq-${i}`}>
-                <AccordionTrigger>{item.q}</AccordionTrigger>
-                <AccordionContent className="pb-8 leading-relaxed">
-                  {item.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </FadeUp>
-      </section>
+      <FaqCarousel 
+        faqs={AFFILIATE_FAQS}
+        title="Frequent"
+        accentTitle="Inquiries"
+        description="Everything you need to know about cookies, payouts, and our tiered commission structure."
+        theme="light"
+      />
 
       {/* 5. CTA */}
       <section className="bg-cream-sand py-32 px-6 text-center">

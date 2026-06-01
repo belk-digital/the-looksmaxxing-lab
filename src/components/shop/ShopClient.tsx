@@ -123,64 +123,68 @@ function ShopClientInner() {
         </div>
 
         {/* Top Toolbar */}
-        <div className={`flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 bg-white/95 backdrop-blur-xl border border-ink/10 p-4 rounded-2xl shadow-sm sticky z-30 transition-all duration-300 ${isScrollingDown ? 'top-4' : 'top-24'}`}>
-          <div className="flex items-center gap-4 flex-wrap">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" className="rounded-full px-6 gap-2 border-border-subtle hover:bg-ink/5">
-                  <Filter size={16} />
-                  Filters {activeChips.length > 0 && `(${activeChips.length})`}
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-full sm:max-w-md p-0 border-l border-border-subtle bg-cream">
-                <div className="p-6 border-b border-border-subtle bg-cream z-10 relative">
-                  <SheetTitle className="text-display-xs font-display text-ink">Filters</SheetTitle>
-                </div>
-                <div className="h-[calc(100vh-80px)] p-6 pt-0 overflow-hidden bg-cream relative z-0">
-                   <FilterSidebar />
-                </div>
-              </SheetContent>
-            </Sheet>
+        <div className={`flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 bg-white/95 backdrop-blur-xl border border-ink/10 p-3 sm:p-4 rounded-2xl shadow-sm sticky z-30 transition-all duration-300 ${isScrollingDown ? 'top-4' : 'top-20 sm:top-24'}`}>
+          {/* Top Row: Buttons */}
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-4">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="rounded-full px-4 sm:px-6 gap-2 border-border-subtle hover:bg-ink/5 text-sm sm:text-base">
+                    <Filter size={16} />
+                    Filters {activeChips.length > 0 && `(${activeChips.length})`}
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-full sm:max-w-md p-0 border-l border-border-subtle bg-cream">
+                  <div className="p-6 border-b border-border-subtle bg-cream z-10 relative">
+                    <SheetTitle className="text-display-xs font-display text-ink">Filters</SheetTitle>
+                  </div>
+                  <div className="h-[calc(100vh-80px)] p-6 pt-0 overflow-hidden bg-cream relative z-0">
+                     <FilterSidebar />
+                  </div>
+                </SheetContent>
+              </Sheet>
+              
+              <span className="text-body-sm text-ink/60 hidden md:inline-block whitespace-nowrap">
+                {products.length} Products
+              </span>
+            </div>
 
-            {/* Active Chips */}
-            <div className="flex flex-wrap gap-2">
+            <Select defaultValue="featured">
+              <SelectTrigger className="w-auto min-w-[140px] sm:w-[180px] bg-transparent border-none focus:ring-0 shadow-none hover:bg-ink/5 rounded-full px-2 sm:px-4 h-10 text-sm sm:text-base justify-end sm:justify-between gap-2">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="featured">Featured</SelectItem>
+                <SelectItem value="newest">Newest</SelectItem>
+                <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                <SelectItem value="rating">Best Rated</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Active Chips Row */}
+          {activeChips.length > 0 && (
+            <div className="flex flex-wrap gap-2 pt-3 border-t border-ink/5 w-full">
               {activeChips.map(chip => (
                 <button
                   key={chip.key}
                   onClick={() => removeFilter(chip.key.startsWith('category') ? 'category' : chip.key, chip.value)}
-                  className="flex items-center space-x-2 px-3 py-1.5 bg-ink/5 hover:bg-ink/10 rounded-full transition-colors group"
+                  className="flex items-center space-x-2 px-3 py-1.5 bg-ink/5 hover:bg-ink/10 rounded-full transition-colors group text-xs sm:text-sm"
                 >
-                  <span className="text-label-sm text-ink uppercase tracking-wider">{chip.label}</span>
-                  <X size={14} className="text-ink/60 group-hover:text-ink" />
+                  <span className="text-ink uppercase tracking-wider">{chip.label}</span>
+                  <X size={12} className="text-ink/60 group-hover:text-ink" />
                 </button>
               ))}
             </div>
-          </div>
-
-          <div className="flex items-center space-x-4 w-full md:w-auto justify-between md:justify-end">
-             <span className="text-body-sm text-ink/60 hidden sm:inline-block whitespace-nowrap">
-               {products.length} Products
-             </span>
-             <Select defaultValue="featured">
-               <SelectTrigger className="w-[180px] bg-transparent border-none focus:ring-0 shadow-none hover:bg-ink/5 rounded-full px-4 h-10">
-                 <SelectValue placeholder="Sort by" />
-               </SelectTrigger>
-               <SelectContent>
-                 <SelectItem value="featured">Featured</SelectItem>
-                 <SelectItem value="newest">Newest</SelectItem>
-                 <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                 <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                 <SelectItem value="rating">Best Rated</SelectItem>
-               </SelectContent>
-             </Select>
-          </div>
+          )}
         </div>
 
         {/* Results Area */}
         {products.length > 0 ? (
           <>
             {/* Product Grid - Full Width */}
-            <StaggerChildren staggerDelay={0.05} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <StaggerChildren staggerDelay={0.05} className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
               {products.map((product) => (
                 <motion.div variants={staggerItemVariants} key={product.slug} className="flex h-full w-full">
                   <FeaturedProductCard product={product} size="tall" />

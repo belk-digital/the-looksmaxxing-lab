@@ -1,0 +1,271 @@
+'use client'
+
+import React, { useRef, useState, useEffect } from 'react'
+import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { FadeUp } from '@/components/motion/FadeUp'
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface FaqCarouselProps {
+  faqs: FaqItem[];
+  title?: string;
+  accentTitle?: string;
+  description?: string;
+  theme?: 'light' | 'dark';
+}
+
+export function FaqCarousel({ 
+  faqs, 
+  title = "Frequently", 
+  accentTitle = "Asked Questions", 
+  description = "Find answers to common questions about our research compounds, laboratory protocols, and purity standards.",
+  theme = 'light'
+}: FaqCarouselProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const isDark = theme === 'dark';
+  const bgClass = isDark ? 'bg-ink' : 'bg-cream';
+  const titleClass = isDark ? 'text-cream' : 'text-ink';
+  const descClass = isDark ? 'text-cream-warm/70' : 'text-ink-muted';
+  
+  // Active/Inactive Card Styles
+  const activeCardBg = isDark ? 'bg-white text-ink' : 'bg-ink text-cream';
+  const inactiveCardBg = isDark ? 'bg-white/5 text-white/50' : 'bg-cream-sand text-ink/60';
+
+  // Set up scroll-jacking
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"]
+  });
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    // Determine active index based on scroll progress
+    // If we have 4 items, progress 0-0.25 is index 0, 0.25-0.5 is index 1, etc.
+    const chunk = 1 / faqs.length;
+    let index = Math.floor(latest / chunk);
+    // Ensure index doesn't go out of bounds (can happen exactly at 1.0)
+    index = Math.max(0, Math.min(faqs.length - 1, index));
+    
+    if (index !== activeIndex) {
+      setActiveIndex(index);
+    }
+  });
+
+  // Enforce bounding: Only scroll the container if the newly expanded card falls outside the viewport
+  useEffect(() => {
+    if (!scrollRef.current) return;
+    const container = scrollRef.current;
+    
+    // We can approximate the positions based on card widths
+    // Inactive width is min(70vw, 280px). Active width is min(85vw, 480px). Gap is 24px.
+    // For simplicity, we get the actual DOM rects.
+    // Wait for Framer Motion layout to start
+    setTimeout(() => {
+      const cards = container.querySelectorAll('.faq-card');
+      const activeCard = cards[activeIndex] as HTMLElement;
+      if (!activeCard) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const cardRect = activeCard.getBoundingClientRect();
+
+      let newScrollLeft = container.scrollLeft;
+
+      // If the right edge of the card overflows the right edge of the container
+      if (cardRect.right > containerRect.right) {
+        newScrollLeft += (cardRect.right - containerRect.right) + 24; 
+      }
+      // If the left edge of the card is hidden past the left edge of the container
+      else if (cardRect.left < containerRect.left) {
+        newScrollLeft -= (containerRect.left - cardRect.left) + 24;
+      }
+
+      if (newScrollLeft !== container.scrollLeft) {
+        container.scrollTo({ left: newScrollLeft, behavior: 'smooth' });
+      }
+    }, 50);
+  }, [activeIndex]);
+
+  const scrollWindow = (direction: 'left' | 'right') => {
+    if (!sectionRef.current) return;
+    
+    const rect = sectionRef.current.getBoundingClientRect();
+    const startY = window.scrollY + rect.top; 
+    const sectionHeight = sectionRef.current.offsetHeight - window.innerHeight;
+    
+    // We divide the scrollable area into (faqs.length) segments
+    const chunkHeight = sectionHeight / faqs.length;
+    
+    let newIndex = direction === 'right' ? activeIndex + 1 : activeIndex - 1;
+    newIndex = Math.max(0, Math.min(faqs.length - 1, newIndex));
+    
+    // Target the middle of the corresponding chunk
+    const targetY = startY + (chunkHeight * newIndex) + (chunkHeight / 2);
+    
+    window.scrollTo({ top: targetY, behavior: 'smooth' });
+  };
+
+  // Card Widths
+  // Adjusted for better mobile peek (Active is 80vw to show more of the next card)
+  const getCardStyle = (isActive: boolean) => {
+    if (isActive) {
+      return { width: 'min(80vw, 480px)', minWidth: 'min(80vw, 480px)' };
+    }
+    return { width: 'min(60vw, 280px)', minWidth: 'min(60vw, 280px)' };
+  };
+
+  return (
+    <section 
+      ref={sectionRef} 
+      className={`w-full relative ${bgClass}`}
+      style={{ height: `${faqs.length * 80}vh` }} // Make section taller based on number of FAQs
+    >
+      <div className="sticky top-0 h-[100dvh] w-full flex flex-col justify-center pt-24 lg:pt-32 pb-12 overflow-hidden">
+        
+        {/* Background Elements */}
+        <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
+          {/* Cinematic Film Grain / Noise Texture */}
+          <div 
+            className={`absolute inset-0 mix-blend-overlay ${isDark ? 'opacity-[0.04]' : 'opacity-[0.06]'}`}
+            style={{ 
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            }}
+          />
+          
+          {/* Subtle Glow Orbs */}
+          <div className="absolute top-0 right-0 w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] bg-gold/5 rounded-full blur-[120px] -translate-y-1/3 translate-x-1/3" />
+          <div className="absolute bottom-0 left-0 w-[100vw] h-[100vw] md:w-[50vw] md:h-[50vw] bg-ink/5 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/4" />
+        </div>
+
+        <div className="max-w-[1400px] mx-auto px-6 w-full relative z-10">
+          
+          {/* Header */}
+          <div className="mb-12 lg:mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
+            <FadeUp className="max-w-2xl">
+              <h2 className={`text-4xl lg:text-6xl font-serif tracking-tight leading-tight ${titleClass}`}>
+                {title} <span className="text-gold">{accentTitle}</span>
+              </h2>
+            </FadeUp>
+            
+            <FadeUp delay={0.1} className="max-w-xs md:text-right">
+              <p className={`text-sm lg:text-base leading-relaxed mb-6 ${descClass}`}>
+                {description}
+              </p>
+              <div className="flex items-center md:justify-end gap-4">
+                <button 
+                  onClick={() => scrollWindow('left')}
+                  disabled={activeIndex === 0}
+                  aria-label="Previous question"
+                  className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors group disabled:opacity-30 disabled:cursor-not-allowed ${
+                    isDark 
+                      ? 'border-cream/20 hover:bg-cream/10 text-cream' 
+                      : 'border-ink/20 hover:bg-ink/5 text-ink'
+                  }`}
+                >
+                  <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                </button>
+                <button 
+                  onClick={() => scrollWindow('right')}
+                  disabled={activeIndex === faqs.length - 1}
+                  aria-label="Next question"
+                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors group disabled:opacity-30 disabled:cursor-not-allowed ${
+                    isDark 
+                      ? 'bg-cream text-ink hover:bg-cream/90' 
+                      : 'bg-ink text-cream hover:bg-ink/90'
+                  }`}
+                >
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </FadeUp>
+          </div>
+        </div>
+
+        {/* Carousel Track Container (100vw Full Bleed) */}
+        {/* We moved this outside the max-w-[1400px] wrapper. This ensures the overflow-x-auto container 
+            spans the entire physical screen, meaning shadows can NEVER be clipped by an invisible wrapper edge! */}
+        <div className="w-full relative z-10">
+          <div ref={scrollRef} className="w-full overflow-x-auto hide-scrollbar pb-24 pt-16 -mt-16">
+            <motion.div 
+              className="flex gap-6 items-stretch py-8"
+              // We use layout to allow cards to flex smoothly, removing explicit x translation
+            >
+              {/* Leading Spacer: Mathematically aligns the first card with the px-6 padding of the max-w-[1400px] header */}
+              <div className="shrink-0" style={{ width: 'max(1.5rem, calc(50vw - 700px + 1.5rem))' }} aria-hidden="true" />
+              {faqs.map((faq, index) => {
+                const isActive = index === activeIndex;
+
+                return (
+                  <div 
+                    key={index}
+                    onClick={() => {
+                      if (!isActive) {
+                         if (sectionRef.current) {
+                           const rect = sectionRef.current.getBoundingClientRect();
+                           const startY = window.scrollY + rect.top; 
+                           const sectionHeight = sectionRef.current.offsetHeight - window.innerHeight;
+                           const chunkHeight = sectionHeight / faqs.length;
+                           const targetY = startY + (chunkHeight * index) + (chunkHeight / 2);
+                           window.scrollTo({ top: targetY, behavior: 'smooth' });
+                         }
+                      }
+                    }}
+                    className={`faq-card shrink-0 overflow-hidden rounded-[2rem] p-8 lg:p-12 transition-all duration-500 ease-out flex flex-col cursor-pointer ${
+                      isActive 
+                        ? `${activeCardBg} shadow-2xl relative z-10` 
+                        : `${inactiveCardBg} hover:opacity-80 relative z-0`
+                    }`}
+                    style={{ ...getCardStyle(isActive), minHeight: '480px' }}
+                  >
+                    {/* Inner wrapper allows text to naturally wrap based on the card's current width */}
+                    <div className="w-full h-full flex flex-col relative">
+                      {/* We lock the question to the inactive width so it NEVER reflows when the card expands */}
+                      <h3 className={`text-2xl lg:text-3xl font-serif leading-tight mb-8 w-full max-w-[216px] lg:max-w-[184px] ${isActive ? '' : 'line-clamp-4'}`}>
+                        {faq.question}
+                      </h3>
+
+                      {/* We lock the answer to the active width so it doesn't reflow while fading in/out */}
+                      <div 
+                        className={`overflow-hidden transition-all duration-500 flex-1 flex flex-col justify-end w-[250px] md:w-[384px] ${
+                          isActive ? 'max-h-[300px] opacity-100 mt-auto' : 'max-h-0 opacity-0'
+                        }`}
+                      >
+                        <p className={`text-sm lg:text-base leading-relaxed font-light ${
+                          isActive 
+                            ? (isDark ? 'text-ink/70' : 'text-cream/70') 
+                            : ''
+                        }`}>
+                          {faq.answer}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+              
+              {/* Trailing Spacer: Provides symmetrical padding on the right side so the last card aligns nicely */}
+              <div className="shrink-0" style={{ width: 'max(1.5rem, calc(50vw - 700px + 1.5rem))' }} aria-hidden="true" />
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Scroll Down Indicator */}
+        <div className="absolute bottom-6 md:bottom-10 left-0 w-full flex justify-center pointer-events-none z-20">
+          <motion.div 
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            className={`flex flex-col items-center gap-3 ${isDark ? 'text-cream/50' : 'text-ink/40'}`}
+          >
+            <span className="text-[10px] font-mono tracking-[0.2em] uppercase">Scroll Down</span>
+            <div className="w-[1px] h-8 bg-current opacity-50" />
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}

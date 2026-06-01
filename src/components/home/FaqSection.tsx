@@ -1,16 +1,7 @@
-'use client'
-
 import React from 'react'
-import { Container } from '@/components/ui/container'
-import { FadeUp } from '@/components/motion/FadeUp'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
+import { FaqCarousel, FaqItem } from '@/components/shared/FaqCarousel'
 
-const FAQS = [
+const FAQS: FaqItem[] = [
   {
     question: "What is the purity standard for your peptides?",
     answer: "Every peptide we offer must meet or exceed a strictly enforced 99% purity threshold. We verify this through independent, third-party High-Performance Liquid Chromatography (HPLC) and Mass Spectrometry (LC-MS) testing for every batch."
@@ -39,54 +30,12 @@ const FAQS = [
 
 export function FaqSection() {
   return (
-    <section className="w-full bg-[#EAE4DC] py-24 md:py-32 relative z-10 overflow-visible">
-      <Container size="wide">
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 relative items-start">
-          
-          {/* Left Column - Sticky Header */}
-          <div className="w-full lg:w-5/12 flex-shrink-0">
-            <div className="lg:sticky lg:top-32">
-              <FadeUp>
-                <span className="text-label-md uppercase tracking-widest text-gold mb-4 block font-bold">
-                  INQUIRIES
-                </span>
-              </FadeUp>
-              <FadeUp delay={0.1}>
-                <h2 className="text-display-sm lg:text-[4.5rem] font-display text-ink mb-6 leading-[0.9] tracking-tight">
-                  Common<br className="hidden lg:block"/> Questions
-                </h2>
-              </FadeUp>
-              <FadeUp delay={0.2}>
-                <p className="text-body-md text-ink/70 leading-relaxed mb-8 lg:max-w-[85%]">
-                  Find detailed information regarding our laboratory protocols, purity standards, and ordering processes. For specific institutional inquiries, our support team is available.
-                </p>
-                <button className="text-sm font-bold uppercase tracking-widest text-ink hover:text-gold transition-colors border-b-2 border-ink hover:border-gold pb-1">
-                  Contact Support
-                </button>
-              </FadeUp>
-            </div>
-          </div>
-
-          {/* Right Column - Accordion List */}
-          <div className="w-full lg:w-7/12 pt-4 lg:pt-0">
-            <FadeUp delay={0.3} className="w-full">
-              <Accordion type="single" collapsible className="w-full">
-                {FAQS.map((faq, index) => (
-                  <AccordionItem key={index} value={`item-${index}`} className="border-b border-ink/20 py-2 lg:py-4">
-                    <AccordionTrigger className="text-left text-xl lg:text-2xl font-display text-ink hover:text-gold transition-colors py-6 [&>svg]:text-ink hover:[&>svg]:text-gold">
-                      {faq.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-body-md text-ink/70 leading-relaxed pb-6 pr-6 md:pr-12">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </FadeUp>
-          </div>
-
-        </div>
-      </Container>
-    </section>
+    <FaqCarousel 
+      faqs={FAQS} 
+      title="Common"
+      accentTitle="Questions"
+      description="Find detailed information regarding our laboratory protocols, purity standards, and ordering processes. For specific institutional inquiries, our support team is available."
+      theme="light"
+    />
   )
 }
