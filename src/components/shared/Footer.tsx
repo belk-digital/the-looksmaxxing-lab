@@ -4,112 +4,145 @@ import React, { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Container } from '@/components/ui/container'
 import { ArrowRight } from 'lucide-react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 
-const FooterContent = () => (
-  <div className="bg-ink text-cream pt-16 pb-8 w-full flex flex-col items-center overflow-hidden">
-    <Container size="wide" className="flex flex-col w-full relative z-10">
+const FooterContent = () => {
+  const targetRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start end", "end end"]
+  })
+  const x = useTransform(scrollYProgress, [0, 1], ["10%", "-25%"])
+
+  return (
+  <div ref={targetRef} className="bg-[#111111] text-cream pt-12 pb-0 w-full flex flex-col items-center overflow-hidden">
+    <Container size="wide" className="flex flex-col w-full relative z-10 px-6 lg:px-12">
       
-      {/* 1. Top Grid: Newsletter (Left) & Links (Right) */}
-      <div className="flex flex-col lg:flex-row justify-between gap-12 mb-12">
+      {/* 1. Top Section */}
+      <div className="flex flex-col lg:flex-row justify-between gap-16 lg:gap-8 mb-12">
         
-        {/* Newsletter */}
+        {/* Left: Socials & Newsletter */}
         <div className="w-full lg:w-5/12 flex flex-col items-start text-left">
-          <span className="text-[10px] uppercase tracking-widest text-gold mb-4 font-bold">STAY UPDATED</span>
-          <h2 className="font-display text-4xl mb-4 leading-[0.9] tracking-tight">
+          {/* Social Icons */}
+          <div className="flex items-center gap-4 mb-8">
+            <a href="#" className="w-10 h-10 rounded-full border border-cream/30 flex items-center justify-center hover:bg-cream hover:text-[#111111] transition-all">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+            <a href="#" className="w-10 h-10 rounded-full border border-cream/30 flex items-center justify-center hover:bg-cream hover:text-[#111111] transition-all">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
+            </a>
+            <a href="#" className="w-10 h-10 rounded-full border border-cream/30 flex items-center justify-center hover:bg-cream hover:text-[#111111] transition-all">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+            </a>
+          </div>
+
+          <h2 className="text-sm font-medium mb-1 tracking-wide text-cream/90">
             Research uninterrupted.
           </h2>
-          <p className="text-xs text-cream/60 mb-8 max-w-sm leading-relaxed">
-            Quiet updates on new compounds, lab notes, and exclusive availability. No marketing noise.
+          <p className="text-xs text-cream/50 mb-6 max-w-[280px] leading-relaxed">
+            Quiet updates on new compounds, lab notes, and exclusive availability.
           </p>
-          <form className="flex w-full max-w-sm gap-0 border-b border-cream/20 hover:border-gold transition-colors pb-2" onSubmit={(e) => e.preventDefault()}>
+          <form className="flex w-full max-w-[280px] gap-0 border-b border-cream/20 hover:border-cream transition-colors pb-2" onSubmit={(e) => e.preventDefault()}>
             <input 
               type="email" 
               placeholder="Email address" 
               required
-              className="bg-transparent border-none text-cream placeholder:text-cream/40 focus:outline-none flex-1 px-0 h-8 text-xs"
+              className="bg-transparent border-none text-cream placeholder:text-cream/30 focus:outline-none flex-1 px-0 h-6 text-xs"
             />
-            <button type="submit" className="shrink-0 flex items-center justify-center w-8 h-8 text-gold hover:translate-x-1 transition-transform group">
-              <ArrowRight className="w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity" />
+            <button type="submit" className="shrink-0 flex items-center justify-center text-cream/50 hover:text-white transition-colors">
+              <ArrowRight className="w-4 h-4" />
             </button>
           </form>
         </div>
 
-        {/* Links Grid */}
-        <div className="w-full lg:w-7/12 flex flex-wrap justify-between lg:justify-end gap-x-8 xl:gap-x-16 gap-y-8">
+        {/* Right: Links Grid */}
+        <div className="w-full lg:w-7/12 flex flex-wrap justify-between gap-x-8 gap-y-8">
           
           <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-4">
-              <h3 className="text-[10px] uppercase tracking-widest text-gold font-bold">Shop</h3>
-              <ul className="flex flex-col gap-2">
-                <li><Link href="/shop" className="text-xs text-cream/60 hover:text-white transition-colors">All Products</Link></li>
-                <li><Link href="/shop" className="text-xs text-cream/60 hover:text-white transition-colors">Best Sellers</Link></li>
-              </ul>
-            </div>
-            <div className="flex flex-col gap-4">
-              <h3 className="text-[10px] uppercase tracking-widest text-gold font-bold">Connect</h3>
-              <ul className="flex flex-col gap-2">
-                <li><Link href="/contact" className="text-xs text-cream/60 hover:text-white transition-colors">Contact</Link></li>
-                <li><a href="#" className="text-xs text-cream/60 hover:text-white transition-colors">Instagram</a></li>
-              </ul>
-            </div>
+            <h3 className="text-[11px] uppercase tracking-[0.2em] text-cream/80 font-medium">Shop</h3>
+            <ul className="flex flex-col gap-4">
+              <li><Link href="/shop" className="text-sm text-cream/50 hover:text-white transition-colors">All Products</Link></li>
+              <li><Link href="/shop" className="text-sm text-cream/50 hover:text-white transition-colors">Best Sellers</Link></li>
+            </ul>
           </div>
 
           <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-4">
-              <h3 className="text-[10px] uppercase tracking-widest text-gold font-bold">The Lab</h3>
-              <ul className="flex flex-col gap-2">
-                <li><Link href="/about" className="text-xs text-cream/60 hover:text-white transition-colors">About Us</Link></li>
-                <li><Link href="/journal" className="text-xs text-cream/60 hover:text-white transition-colors">Journal</Link></li>
-                <li><Link href="/affiliates" className="text-xs text-cream/60 hover:text-white transition-colors">Affiliates</Link></li>
-              </ul>
-            </div>
+            <h3 className="text-[11px] uppercase tracking-[0.2em] text-cream/80 font-medium">Connect</h3>
+            <ul className="flex flex-col gap-4">
+              <li><Link href="/contact" className="text-sm text-cream/50 hover:text-white transition-colors">Contact</Link></li>
+              <li><a href="#" className="text-sm text-cream/50 hover:text-white transition-colors">Instagram</a></li>
+            </ul>
           </div>
 
           <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-4">
-              <h3 className="text-[10px] uppercase tracking-widest text-gold font-bold">Resources</h3>
-              <ul className="flex flex-col gap-2">
-                <li><Link href="/peptide-calculator" className="text-xs text-cream/60 hover:text-white transition-colors">Peptide Calculator</Link></li>
-                <li><Link href="/certificates" className="text-xs text-cream/60 hover:text-white transition-colors">COA Library</Link></li>
-                <li><Link href="/faq" className="text-xs text-cream/60 hover:text-white transition-colors">FAQ</Link></li>
-              </ul>
-            </div>
+            <h3 className="text-[11px] uppercase tracking-[0.2em] text-cream/80 font-medium">The Lab</h3>
+            <ul className="flex flex-col gap-4">
+              <li><Link href="/about" className="text-sm text-cream/50 hover:text-white transition-colors">About Us</Link></li>
+              <li><Link href="/journal" className="text-sm text-cream/50 hover:text-white transition-colors">Journal</Link></li>
+              <li><Link href="/affiliates" className="text-sm text-cream/50 hover:text-white transition-colors">Affiliates</Link></li>
+            </ul>
+          </div>
+
+          <div className="flex flex-col gap-6">
+            <h3 className="text-[11px] uppercase tracking-[0.2em] text-cream/80 font-medium">Resources</h3>
+            <ul className="flex flex-col gap-4">
+              <li><Link href="/peptide-calculator" className="text-sm text-cream/50 hover:text-white transition-colors">Peptide Calculator</Link></li>
+              <li><Link href="/certificates" className="text-sm text-cream/50 hover:text-white transition-colors">COA Library</Link></li>
+              <li><Link href="/faq" className="text-sm text-cream/50 hover:text-white transition-colors">FAQ</Link></li>
+            </ul>
           </div>
 
         </div>
       </div>
 
-
-
-      {/* 3. Bottom Row: Copyright, Credits, Legal */}
-      <div className="w-full flex flex-col lg:flex-row justify-between items-center gap-4 mb-6">
-        <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-center md:text-left">
-          <p className="text-[9px] sm:text-[10px] text-cream/40 uppercase tracking-widest">
-            © {new Date().getFullYear()} The Looksmaxxing Lab.
-          </p>
-          <span className="hidden md:block text-cream/10">|</span>
-          <p className="text-[9px] sm:text-[10px] text-cream/40 uppercase tracking-widest">
-            Designed by <a href="https://belkdigital.com" target="_blank" rel="noopener noreferrer" className="text-cream/60 hover:text-gold transition-colors font-bold">Belk Digital</a>
-          </p>
-        </div>
-        <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
-          <Link href="/terms" className="text-[9px] sm:text-[10px] text-cream/40 hover:text-white uppercase tracking-widest transition-colors">Terms</Link>
-          <Link href="/privacy" className="text-[9px] sm:text-[10px] text-cream/40 hover:text-white uppercase tracking-widest transition-colors">Privacy</Link>
-          <Link href="/refund" className="text-[9px] sm:text-[10px] text-cream/40 hover:text-white uppercase tracking-widest transition-colors">Refund</Link>
-          <Link href="/disclaimer" className="text-[9px] sm:text-[10px] text-cream/40 hover:text-white uppercase tracking-widest transition-colors">Disclaimer</Link>
-        </div>
+      {/* 2. Divider & Button */}
+      <div className="w-full relative flex items-center mb-8">
+        <div className="flex-1 h-[1px] bg-cream/20" />
+        <Link href="/shop" className="absolute right-0 bg-white text-[#111111] px-6 lg:px-8 py-2 lg:py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-cream/90 transition-colors shadow-lg">
+          Get Started
+        </Link>
       </div>
 
-      {/* 4. FDA Disclaimer Box */}
-      <div className="w-full text-center text-[9px] leading-relaxed text-cream/30">
-        <p className="max-w-4xl mx-auto">
-          <strong className="text-cream/50">FDA Disclaimer:</strong> These statements have not been evaluated by the FDA. Products are strictly for laboratory and research use only. Not intended to diagnose, treat, cure, or prevent any disease, and not for human or animal consumption.
-        </p>
+      {/* 3. Bottom Row: FDA Disclaimer & Legal */}
+      <div className="w-full flex flex-col lg:flex-row justify-between items-start gap-12 mb-0">
+        
+        <div className="w-full lg:w-1/2 text-left">
+          <p className="text-[10px] text-cream/40 leading-relaxed max-w-[500px]">
+            <strong className="text-cream/60">FDA Disclaimer:</strong> These statements have not been evaluated by the FDA. Products are strictly for laboratory and research use only. Not intended to diagnose, treat, cure, or prevent any disease, and not for human or animal consumption.
+          </p>
+        </div>
+
+        <div className="w-full lg:w-1/2 flex flex-wrap justify-start lg:justify-end gap-x-8 gap-y-4">
+          <Link href="/terms" className="text-[10px] text-cream/70 hover:text-white uppercase tracking-widest transition-colors font-medium">Terms</Link>
+          <Link href="/privacy" className="text-[10px] text-cream/70 hover:text-white uppercase tracking-widest transition-colors font-medium">Privacy</Link>
+          <Link href="/refund" className="text-[10px] text-cream/70 hover:text-white uppercase tracking-widest transition-colors font-medium">Refund</Link>
+          <Link href="/disclaimer" className="text-[10px] text-cream/70 hover:text-white uppercase tracking-widest transition-colors font-medium">Disclaimer</Link>
+          <div className="flex flex-col items-start lg:items-end w-full lg:w-auto mt-4 lg:mt-0 gap-1">
+            <p className="text-[10px] text-cream/30 uppercase tracking-widest font-medium">
+              © {new Date().getFullYear()} The Looksmaxxing Lab.
+            </p>
+            <p className="text-[10px] text-cream/30 uppercase tracking-widest font-medium">
+              Designed and developed by <a href="https://www.belkdigital.com/" target="_blank" rel="noopener noreferrer" className="text-cream/50 hover:text-white transition-colors">Belk Digital</a>
+            </p>
+          </div>
+        </div>
+
       </div>
 
     </Container>
+    {/* 4. Massive Overflow Text */}
+    <div className="w-full flex justify-center items-end leading-none select-none pointer-events-none translate-y-[30%]">
+      <motion.div 
+        style={{ x }}
+        aria-hidden="true"
+        className="text-[14vw] font-sans font-bold text-cream/20 tracking-tighter whitespace-nowrap m-0 p-0"
+      >
+        The LooksMaxxing Lab. &bull; The LooksMaxxing Lab. &bull; The LooksMaxxing Lab.
+      </motion.div>
+    </div>
   </div>
-)
+  )
+}
 
 export function Footer() {
   const [footerHeight, setFooterHeight] = useState(0)
@@ -125,17 +158,8 @@ export function Footer() {
   }, [])
 
   return (
-    <>
-      <div 
-        className="w-full relative pointer-events-none" 
-        style={{ height: footerHeight ? `${footerHeight}px` : '100vh' }} 
-      />
-      <footer 
-        ref={footerRef}
-        className="fixed bottom-0 left-0 w-full z-[-1] bg-ink"
-      >
-        <FooterContent />
-      </footer>
-    </>
+    <footer className="w-full relative z-[99999] bg-ink" style={{ pointerEvents: 'auto' }}>
+      <FooterContent />
+    </footer>
   )
 }

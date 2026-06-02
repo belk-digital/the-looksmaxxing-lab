@@ -18,12 +18,14 @@ export function LayoutClientWrapper({
   const isCheckout = pathname.includes('/checkout')
 
   return (
-    <div className="flex min-h-screen flex-col relative">
+    <div className="flex min-h-screen flex-col relative z-0 isolate">
       {isCheckout ? <MinimalHeader /> : header}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col relative z-10 isolate">
         {children}
       </main>
-      {isCheckout ? <MinimalFooter /> : footer}
+      <div className="relative z-[99999] isolate">
+        {isCheckout ? <MinimalFooter /> : footer}
+      </div>
     </div>
   )
 }

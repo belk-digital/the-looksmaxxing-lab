@@ -79,10 +79,10 @@ export default function AboutPage() {
   ];
 
   return (
-    <main className="bg-cream min-h-screen">
+    <main className="bg-white min-h-screen">
       
       {/* 1. Window to the Lab Hero Section */}
-      <section className="relative min-h-[90vh] lg:min-h-[100dvh] flex flex-col items-center justify-center pt-24 lg:pt-32 pb-16 overflow-hidden bg-cream-sand">
+      <section className="relative min-h-[90vh] lg:min-h-[100dvh] flex flex-col items-center justify-center pt-24 lg:pt-32 pb-16 overflow-hidden bg-white">
         
         {/* Background Marquee */}
         <div className="absolute bottom-4 left-0 w-full overflow-hidden whitespace-nowrap flex z-0 pointer-events-none">
@@ -157,7 +157,7 @@ export default function AboutPage() {
       </section>
 
       {/* 2. Mission, Philosophy, Journey - Sticky Stack */}
-      <section className="py-24 lg:py-48 px-6 bg-[#FAFAF9] relative">
+      <section className="py-24 lg:py-48 px-6 bg-white relative">
         
         {/* Crisp Technical Geometry Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -215,7 +215,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="sticky top-20 lg:top-32 w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-10 lg:p-16 border border-ink/5 bg-[#F5EAD3] shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden group mb-8 lg:mb-12"
+              className="sticky top-20 lg:top-32 w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-10 lg:p-16 border border-ink/5 bg-white shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden group mb-8 lg:mb-12"
               style={{ zIndex: 10 }}
             >
               {/* SVG Noise */}
@@ -316,7 +316,7 @@ export default function AboutPage() {
       </section>
 
       {/* 3. Why Choose Us Section - Editorial Index */}
-      <section className="py-24 lg:py-48 px-6 bg-ink text-cream relative">
+      <section className="py-24 lg:py-48 px-6 bg-ink text-white relative">
         
         {/* Massive Interactive Background Vial (Left Side) */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -348,7 +348,7 @@ export default function AboutPage() {
             <FadeUp>
               <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-gold mb-8">The Gold Standard</h2>
               <h3 className="text-5xl lg:text-7xl font-serif mb-8 tracking-tight leading-[1.1]">Why Choose Us</h3>
-              <p className="text-xl text-cream/50 leading-relaxed max-w-md font-light">
+              <p className="text-xl text-white/50 leading-relaxed max-w-md font-light">
                 We don't cut corners. Every aspect of our operation is designed to ensure maximum efficacy and reliability, setting an uncompromising standard for the research community.
               </p>
             </FadeUp>
@@ -364,8 +364,8 @@ export default function AboutPage() {
                   <Search className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
                 </div>
                 <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-cream group-hover:text-gold transition-colors duration-500">Independent Testing</h4>
-                  <p className="text-lg text-cream/50 leading-relaxed font-light max-w-2xl">
+                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white group-hover:text-gold transition-colors duration-500">Independent Testing</h4>
+                  <p className="text-lg text-white/50 leading-relaxed font-light max-w-2xl">
                     Every single batch is tested by accredited US-based third-party laboratories via HPLC & Mass Spectrometry before it is ever made available for research.
                   </p>
                 </div>
@@ -377,8 +377,8 @@ export default function AboutPage() {
                   <ShieldCheck className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
                 </div>
                 <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-cream group-hover:text-gold transition-colors duration-500">&ge;99% Purity Guarantee</h4>
-                  <p className="text-lg text-cream/50 leading-relaxed font-light max-w-2xl">
+                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white group-hover:text-gold transition-colors duration-500">&ge;99% Purity Guarantee</h4>
+                  <p className="text-lg text-white/50 leading-relaxed font-light max-w-2xl">
                     We maintain the strictest purity thresholds in the industry. If a batch tests at 98.9%, it is destroyed. Compromise is simply not in our vocabulary.
                   </p>
                 </div>
@@ -390,8 +390,8 @@ export default function AboutPage() {
                   <Truck className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
                 </div>
                 <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-cream group-hover:text-gold transition-colors duration-500">USA Fulfillment</h4>
-                  <p className="text-lg text-cream/50 leading-relaxed font-light max-w-2xl">
+                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white group-hover:text-gold transition-colors duration-500">USA Fulfillment</h4>
+                  <p className="text-lg text-white/50 leading-relaxed font-light max-w-2xl">
                     All products are stocked securely in our climate-controlled US facilities, ensuring rapid domestic transit times and eliminating international customs delays.
                   </p>
                 </div>
@@ -403,8 +403,8 @@ export default function AboutPage() {
                   <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
                 </div>
                 <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-cream group-hover:text-gold transition-colors duration-500">Lyophilized Stability</h4>
-                  <p className="text-lg text-cream/50 leading-relaxed font-light max-w-2xl">
+                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white group-hover:text-gold transition-colors duration-500">Lyophilized Stability</h4>
+                  <p className="text-lg text-white/50 leading-relaxed font-light max-w-2xl">
                     Advanced lyophilization techniques guarantee structural integrity during transit and long-term storage, arriving in the exact condition it left the lab.
                   </p>
                 </div>
@@ -417,8 +417,7 @@ export default function AboutPage() {
       </section>
 
       {/* 4. Our Services Section - Scroll Interactive Index */}
-      {/* 4. Our Services Section - Scroll Interactive Index */}
-      <section ref={capabilitiesRef} className="relative h-auto lg:h-[300vh] bg-cream-sand text-ink">
+      <section ref={capabilitiesRef} className="relative h-auto lg:h-[300vh] bg-white text-ink">
         
         {/* Sticky Container */}
         <div className="lg:sticky top-0 lg:h-[100dvh] w-full flex flex-col justify-center lg:overflow-hidden px-6 py-16 lg:py-24">
@@ -516,10 +515,10 @@ export default function AboutPage() {
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   transition={{ duration: 0.5, delay: 0.1 }}
                 >
-                  <h4 className="text-3xl lg:text-5xl font-serif text-cream mb-6 leading-tight drop-shadow-md">
+                  <h4 className="text-3xl lg:text-5xl font-serif text-white mb-6 leading-tight drop-shadow-md">
                     {services[activeServiceIndex].title}
                   </h4>
-                  <p className="text-lg text-cream/80 leading-relaxed max-w-xl font-light">
+                  <p className="text-lg text-white/80 leading-relaxed max-w-xl font-light">
                     {services[activeServiceIndex].desc}
                   </p>
                 </motion.div>
@@ -541,7 +540,7 @@ export default function AboutPage() {
         theme="light"
       />
       {/* 6. CTA section with Interactive Motion Graphics */}
-      <section className="py-24 px-6 lg:px-12 bg-cream">
+      <section className="py-24 px-6 lg:px-12 bg-white">
         <FadeUp>
           <div className="relative w-full max-w-[1400px] mx-auto bg-ink rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl px-6 py-16 lg:py-24 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-0">
             
@@ -551,11 +550,11 @@ export default function AboutPage() {
             <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left gap-8 lg:pl-12">
               <span className="text-gold font-mono tracking-[0.2em] text-xs lg:text-sm uppercase font-bold">Initiate Your Protocol</span>
               
-              <h2 className="text-4xl lg:text-6xl xl:text-7xl font-serif text-cream leading-tight">
-                Ready to advance your <span className="italic font-light text-cream/90">research?</span>
+              <h2 className="text-4xl lg:text-6xl xl:text-7xl font-serif text-white leading-tight">
+                Ready to advance your <span className="italic font-light text-white/90">research?</span>
               </h2>
               
-              <p className="text-lg lg:text-xl text-cream/70 font-light max-w-xl">
+              <p className="text-lg lg:text-xl text-white/70 font-light max-w-xl">
                 Browse our catalog of highly purified, third-party verified compounds engineered for rigorous laboratory standards.
               </p>
               
@@ -566,7 +565,7 @@ export default function AboutPage() {
                   </Button>
                 </Link>
                 <Link href="/certificates" className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full rounded-full px-10 py-6 border-cream/20 text-cream hover:bg-cream/10 hover:text-cream transition-colors text-lg">
+                  <Button variant="outline" className="w-full rounded-full px-10 py-6 border-white/20 text-white hover:bg-white/10 hover:text-white transition-colors text-lg">
                     View COAs
                   </Button>
                 </Link>

@@ -14,10 +14,10 @@ export const metadata = {
 export default function FrontendLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <html lang="en" className={`h-full ${fontDisplay.variable} ${fontSans.variable}`} suppressHydrationWarning>
+      <html lang="en" className={`min-h-screen ${fontDisplay.variable} ${fontSans.variable}`} suppressHydrationWarning>
         <head />
         <body
-          className="h-full bg-cream text-ink antialiased"
+          className="min-h-screen bg-cream text-ink antialiased"
           suppressHydrationWarning
         >
           <SmoothScroll>

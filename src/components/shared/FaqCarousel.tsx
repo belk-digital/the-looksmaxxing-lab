@@ -254,17 +254,7 @@ export function FaqCarousel({
           </div>
         </div>
 
-        {/* Scroll Down Indicator */}
-        <div className="absolute bottom-6 md:bottom-10 left-0 w-full flex justify-center pointer-events-none z-20">
-          <motion.div 
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            className={`flex flex-col items-center gap-3 ${isDark ? 'text-cream/50' : 'text-ink/40'}`}
-          >
-            <span className="text-[10px] font-mono tracking-[0.2em] uppercase">Scroll Down</span>
-            <div className="w-[1px] h-8 bg-current opacity-50" />
-          </motion.div>
-        </div>
+
       </div>
     </section>
   )
