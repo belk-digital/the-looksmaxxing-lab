@@ -13,7 +13,6 @@ type MassUnit = 'mg' | 'mcg';
 export default function PeptideCalculatorPage() {
   // --- State ---
   const [peptideAmount, setPeptideAmount] = useState('5')
-  const [peptideUnit, setPeptideUnit] = useState<MassUnit>('mg')
   
   const [waterMl, setWaterMl] = useState('2')
   
@@ -27,7 +26,7 @@ export default function PeptideCalculatorPage() {
   const wMl = parseFloat(waterMl) || 0
   const dAmt = parseFloat(desiredDose) || 0
 
-  const totalPeptideMcg = peptideUnit === 'mg' ? vAmt * 1000 : vAmt
+  const totalPeptideMcg = vAmt * 1000
   const targetDoseMcg = doseUnit === 'mg' ? dAmt * 1000 : dAmt
 
   let isValid = totalPeptideMcg > 0 && wMl > 0 && targetDoseMcg > 0
@@ -50,8 +49,8 @@ export default function PeptideCalculatorPage() {
     const tickMarks = volumePerDose * 100
     tickMarksStr = tickMarks.toLocaleString(undefined, { maximumFractionDigits: 1 })
     
-    const dosesPerVial = Math.floor(wMl / volumePerDose)
-    dosesPerVialStr = dosesPerVial.toString()
+    const dosesPerVial = wMl / volumePerDose
+    dosesPerVialStr = dosesPerVial.toLocaleString(undefined, { maximumFractionDigits: 1 })
 
     if (volumePerDose > syringeVolume) {
       errorMsg = `Dose volume (${volumePerDose.toFixed(2)}ml) exceeds syringe capacity (${syringeVolume}ml).`
@@ -90,7 +89,7 @@ export default function PeptideCalculatorPage() {
   )
 
   return (
-    <main className="bg-white min-h-screen overflow-x-hidden">
+    <main className="bg-white min-h-screen">
       
       {/* ============================================
           SECTION 1: CALCULATOR (SPLIT SCREEN)
@@ -98,7 +97,7 @@ export default function PeptideCalculatorPage() {
       <section className="flex flex-col lg:flex-row w-full">
         
         {/* LEFT COLUMN: INPUTS */}
-        <div className="w-full lg:w-1/2 min-h-[50vh] lg:min-h-screen pt-32 pb-24 px-8 lg:px-16 xl:px-24 flex flex-col relative bg-white text-ink border-r border-ink/10">
+        <div className="w-full lg:w-1/2 min-h-[50vh] lg:min-h-screen pt-28 pb-12 px-8 lg:px-12 xl:px-16 flex flex-col relative bg-white text-ink border-r border-ink/10">
           
           <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.25] mix-blend-multiply z-0">
             <filter id="noiseLight">
@@ -109,28 +108,30 @@ export default function PeptideCalculatorPage() {
 
           <div className="relative z-10 flex-1 flex flex-col max-w-[800px] w-full mx-auto">
             
-            <Link href="/" className="inline-flex items-center gap-2 text-ink/40 hover:text-ink transition-colors text-[10px] font-mono uppercase tracking-widest mb-16 w-max">
+            <Link href="/" className="inline-flex items-center gap-2 text-ink/40 hover:text-ink transition-colors text-[10px] font-mono uppercase tracking-widest mb-8 w-max">
               <ArrowLeft className="w-4 h-4" /> Back to Lab
             </Link>
 
             <FadeUp>
-              <h1 className="text-5xl lg:text-[6vw] font-serif tracking-tighter leading-[0.9] mb-4">
-                Protocol
+              <h1 className="text-4xl lg:text-5xl font-serif tracking-tighter leading-[0.9] mb-2">
+                Peptide
               </h1>
-              <h1 className="text-5xl lg:text-[6vw] font-serif tracking-tighter leading-[0.9] text-ink/30 italic font-light mb-24">
-                Calibration
+              <h1 className="text-4xl lg:text-5xl font-serif tracking-tighter leading-[0.9] text-ink/30 italic font-light mb-4">
+                Calculator
               </h1>
+              <p className="text-sm font-mono text-ink/40 uppercase tracking-widest mb-12 flex items-center gap-2">
+                <Info className="w-4 h-4" /> Please read the step-by-step guide below before use.
+              </p>
             </FadeUp>
 
-            <div className="space-y-24">
+            <div className="space-y-8">
               
               {/* 01. Syringe Volume */}
               <FadeUp delay={0.1}>
-                <div className="flex flex-col md:flex-row items-baseline gap-4 md:gap-12 border-b-2 border-ink pb-8">
-                  <span className="text-3xl lg:text-4xl font-serif text-ink/20 leading-none">01</span>
-                  <div className="flex-1 w-full">
-                    <label className="block text-xs font-mono uppercase tracking-[0.2em] text-ink/60 mb-6">Syringe Capacity</label>
-                    <div className="flex flex-wrap gap-8">
+                <div className="flex flex-col border-b border-ink pb-6">
+                  <div className="w-full">
+                    <label className="block text-xs font-mono uppercase tracking-[0.2em] text-ink/60 mb-3">Syringe Capacity</label>
+                    <div className="flex flex-wrap gap-6">
                       {[
                         {label: '0.3 ML', v: 0.3},
                         {label: '0.5 ML', v: 0.5},
@@ -139,7 +140,7 @@ export default function PeptideCalculatorPage() {
                         <button
                           key={opt.v}
                           onClick={() => setSyringeVolume(opt.v as SyringeVolume)}
-                          className={`text-3xl lg:text-5xl font-serif transition-colors tracking-tight ${
+                          className={`text-2xl lg:text-3xl font-serif transition-colors tracking-tight ${
                             syringeVolume === opt.v ? 'text-ink' : 'text-ink/20 line-through hover:text-ink/40'
                           }`}
                         >
@@ -153,9 +154,8 @@ export default function PeptideCalculatorPage() {
 
               {/* 02. Peptide Amount */}
               <FadeUp delay={0.2}>
-                <div className="flex flex-col md:flex-row items-baseline gap-4 md:gap-12 border-b-2 border-ink pb-8">
-                  <span className="text-3xl lg:text-4xl font-serif text-ink/20 leading-none">02</span>
-                  <div className="flex-1 w-full flex flex-col">
+                <div className="flex flex-col border-b border-ink pb-6">
+                  <div className="w-full flex flex-col">
                     <label className="block text-xs font-mono uppercase tracking-[0.2em] text-ink/60 mb-2">Peptide in Vial</label>
                     <div className="flex items-end justify-between w-full">
                       <input 
@@ -164,10 +164,10 @@ export default function PeptideCalculatorPage() {
                         step="any"
                         value={peptideAmount}
                         onChange={e => setPeptideAmount(e.target.value)}
-                        className="bg-transparent text-6xl lg:text-8xl font-serif tracking-tighter text-ink focus:outline-none w-2/3"
+                        className="bg-transparent text-4xl lg:text-5xl font-serif tracking-tighter text-ink focus:outline-none w-2/3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="0"
                       />
-                      <UnitToggle value={peptideUnit} onChange={setPeptideUnit} />
+                      <span className="text-2xl lg:text-3xl font-serif text-ink">MG</span>
                     </div>
                   </div>
                 </div>
@@ -175,9 +175,8 @@ export default function PeptideCalculatorPage() {
 
               {/* 03. Bac Water */}
               <FadeUp delay={0.3}>
-                <div className="flex flex-col md:flex-row items-baseline gap-4 md:gap-12 border-b-2 border-ink pb-8">
-                  <span className="text-3xl lg:text-4xl font-serif text-ink/20 leading-none">03</span>
-                  <div className="flex-1 w-full flex flex-col">
+                <div className="flex flex-col border-b border-ink pb-6">
+                  <div className="w-full flex flex-col">
                     <div className="flex justify-between items-end mb-2">
                       <label className="block text-xs font-mono uppercase tracking-[0.2em] text-ink/60">Bacteriostatic Water (ML)</label>
                       <div className="flex gap-4">
@@ -198,7 +197,7 @@ export default function PeptideCalculatorPage() {
                       step="any"
                       value={waterMl}
                       onChange={e => setWaterMl(e.target.value)}
-                      className="bg-transparent text-6xl lg:text-8xl font-serif tracking-tighter text-ink focus:outline-none w-full"
+                      className="bg-transparent text-4xl lg:text-5xl font-serif tracking-tighter text-ink focus:outline-none w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="0"
                     />
                   </div>
@@ -207,9 +206,8 @@ export default function PeptideCalculatorPage() {
 
               {/* 04. Desired Dose */}
               <FadeUp delay={0.4}>
-                <div className="flex flex-col md:flex-row items-baseline gap-4 md:gap-12 border-b-2 border-ink pb-8">
-                  <span className="text-3xl lg:text-4xl font-serif text-ink/20 leading-none">04</span>
-                  <div className="flex-1 w-full flex flex-col">
+                <div className="flex flex-col border-b border-ink pb-6">
+                  <div className="w-full flex flex-col">
                     <label className="block text-xs font-mono uppercase tracking-[0.2em] text-ink/60 mb-2">Target Dose</label>
                     <div className="flex items-end justify-between w-full">
                       <input 
@@ -218,7 +216,7 @@ export default function PeptideCalculatorPage() {
                         step="any"
                         value={desiredDose}
                         onChange={e => setDesiredDose(e.target.value)}
-                        className="bg-transparent text-6xl lg:text-8xl font-serif tracking-tighter text-gold focus:outline-none w-2/3"
+                        className="bg-transparent text-4xl lg:text-5xl font-serif tracking-tighter text-gold focus:outline-none w-2/3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="0"
                       />
                       <UnitToggle value={doseUnit} onChange={setDoseUnit} />
@@ -228,11 +226,23 @@ export default function PeptideCalculatorPage() {
               </FadeUp>
 
             </div>
+            
+            <button 
+              onClick={() => {
+                setPeptideAmount('')
+                setWaterMl('')
+                setDesiredDose('')
+                setSyringeVolume(1.0)
+              }}
+              className="mt-12 text-xs font-mono uppercase tracking-[0.2em] text-ink/40 hover:text-ink transition-colors self-start border border-ink/10 px-6 py-3 rounded-full hover:bg-ink/5"
+            >
+              Reset Calculator
+            </button>
           </div>
         </div>
 
         {/* RIGHT COLUMN: RESULTS (DARK) */}
-        <div className="w-full lg:w-1/2 min-h-[60vh] lg:h-screen lg:sticky lg:top-0 pt-24 pb-24 px-8 lg:px-16 xl:px-24 flex flex-col justify-center relative bg-ink text-cream">
+        <div className="w-full lg:w-1/2 min-h-[60vh] lg:min-h-screen pt-24 pb-24 px-8 lg:px-16 xl:px-24 flex flex-col justify-center relative bg-ink text-cream">
           
           <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.1] mix-blend-overlay z-0">
             <filter id="noiseDark">
@@ -266,97 +276,145 @@ export default function PeptideCalculatorPage() {
                 <div className="relative h-[40vh] min-h-[300px] w-24 flex justify-center hidden sm:flex pt-10 pb-16">
                   <div className="w-14 h-full relative z-10 flex flex-col items-center">
                     
+                    {/* Measurements (Left side of barrel) */}
                     <div className="absolute right-full mr-4 top-0 bottom-0 flex flex-col justify-between py-[2px] pointer-events-none text-right z-10">
                       {getSyringeTicks().map((tick, i) => (
-                        <span key={i} className={`text-[10px] font-mono leading-none ${tick % (syringeVolume === 1.0 ? 20 : 10) === 0 ? 'text-cream/60' : 'text-transparent'}`}>
+                        <span key={i} className={`text-[10px] font-mono leading-none ${tick % (syringeVolume === 1.0 ? 20 : 10) === 0 ? 'text-cream/80 font-bold' : 'text-transparent'}`}>
                           {tick}
                         </span>
                       ))}
                     </div>
 
+                    {/* Plunger */}
                     <motion.div 
-                      className="absolute left-1/2 -translate-x-1/2 w-5 bg-cream/10 border-x border-t border-cream/20 z-0 origin-bottom flex justify-center"
+                      className="absolute left-1/2 -translate-x-1/2 w-4 bg-gradient-to-r from-cream/10 via-cream/30 to-cream/10 border-x border-cream/20 z-0 origin-bottom flex justify-center"
                       style={{ bottom: "100%" }}
-                      animate={{ height: `${100 - fillPercentage}%`, minHeight: '10px' }}
+                      animate={{ height: `${100 - fillPercentage}%`, minHeight: '15px' }}
                       transition={{ type: 'spring', stiffness: 60, damping: 15 }}
                     >
-                      <div className="absolute -top-2 w-10 h-2 bg-cream/30 rounded-full shadow-sm" />
+                      {/* Thumb rest */}
+                      <div className="absolute -top-3 w-12 h-3 bg-gradient-to-b from-cream/40 to-cream/20 rounded-full border border-cream/30 shadow-md backdrop-blur-sm" />
+                      {/* Plunger stem ridges */}
+                      <div className="w-full h-full opacity-30 bg-[repeating-linear-gradient(transparent,transparent_4px,rgba(255,255,255,0.5)_4px,rgba(255,255,255,0.5)_5px)]" />
                     </motion.div>
 
-                    <div className="w-20 h-2 bg-cream/20 rounded-full absolute top-0 -translate-y-1/2 border border-cream/30 backdrop-blur-md z-20" />
+                    {/* Flanges (Finger grips) */}
+                    <div className="w-24 h-3 bg-gradient-to-b from-cream/30 to-cream/10 rounded-full absolute top-0 -translate-y-1/2 border border-cream/40 backdrop-blur-md z-20 shadow-lg" />
                     
-                    <div className="w-full h-full border-x-2 border-t-2 border-cream/30 relative bg-gradient-to-r from-cream/5 via-transparent to-cream/10 overflow-hidden flex flex-col justify-end backdrop-blur-[2px] z-10 rounded-t-sm shadow-[inset_0_0_10px_rgba(255,255,255,0.05)]">
+                    {/* Barrel */}
+                    <div className="w-full h-full border-x-[3px] border-t-[3px] border-cream/30 relative bg-gradient-to-r from-cream/5 via-transparent to-cream/10 overflow-hidden flex flex-col justify-end backdrop-blur-[3px] z-10 rounded-t-md shadow-[inset_0_0_15px_rgba(255,255,255,0.1)]">
                       
+                      {/* Specular Highlight (Glass Reflection) */}
+                      <div className="absolute left-[15%] top-0 bottom-0 w-[4px] bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none z-40 mix-blend-overlay" />
+                      <div className="absolute right-[10%] top-0 bottom-0 w-[2px] bg-white/20 pointer-events-none z-40 mix-blend-overlay" />
+
+                      {/* Rubber Tip (Double Ridge) */}
                       <motion.div 
-                        className="absolute left-0 right-0 h-4 bg-[#1a1a1a] border-b-2 border-cream/40 z-20 shadow-[0_4px_10px_rgba(0,0,0,0.5)]"
+                        className="absolute left-0 right-0 h-5 z-30 flex flex-col justify-between"
                         animate={{ bottom: `${fillPercentage}%` }}
                         transition={{ type: 'spring', stiffness: 60, damping: 15 }}
                       >
-                        <div className="w-full h-[1px] bg-cream/10 mt-1" />
+                        <div className="w-full h-[6px] bg-[#111] rounded-t-sm shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
+                        <div className="w-[90%] h-[4px] bg-[#222] mx-auto" />
+                        <div className="w-full h-[6px] bg-[#111] rounded-b-sm shadow-[0_4px_10px_rgba(0,0,0,0.8)]" />
                       </motion.div>
                       
+                      {/* Liquid */}
                       <motion.div 
-                        className={`w-full ${errorMsg ? 'bg-red-600/80' : 'bg-gold/80'} backdrop-blur-md relative z-10`}
+                        className={`w-full ${errorMsg ? 'bg-red-600/90' : 'bg-gold/90'} backdrop-blur-md relative z-20`}
                         initial={{ height: 0 }}
                         animate={{ height: `${fillPercentage}%` }}
                         transition={{ type: 'spring', stiffness: 60, damping: 15 }}
                         style={{ originY: 1 }}
-                      />
+                      >
+                        {/* Liquid volumetric shading */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
+                        {/* Liquid top meniscus */}
+                        <div className="absolute top-0 w-full h-1 bg-white/20" />
+                      </motion.div>
                       
-                      <div className="absolute inset-0 flex flex-col justify-between py-[2px] pointer-events-none z-30">
-                        {getSyringeTicks().map((tick, i) => (
-                          <div key={i} className="flex items-center gap-1 w-full px-1">
-                            <div className={`h-[1px] bg-cream/40 ${tick % (syringeVolume === 1.0 ? 20 : 10) === 0 ? 'w-full' : 'w-1/2'}`} />
-                          </div>
-                        ))}
+                      {/* Ticks overlay */}
+                      <div className="absolute inset-0 flex flex-col justify-between py-[2px] pointer-events-none z-40">
+                        {getSyringeTicks().map((tick, i) => {
+                          const isMajor = tick % (syringeVolume === 1.0 ? 20 : 10) === 0;
+                          const isMid = tick % (syringeVolume === 1.0 ? 10 : 5) === 0;
+                          let width = 'w-1/3';
+                          if (isMajor) width = 'w-full';
+                          else if (isMid) width = 'w-2/3';
+                          
+                          return (
+                            <div key={i} className="flex items-center gap-1 w-full px-1">
+                              <div className={`h-[1.5px] bg-cream/70 ${width} shadow-[0_1px_0_rgba(0,0,0,0.3)]`} />
+                            </div>
+                          )
+                        })}
                       </div>
                     </div>
 
-                    <div className="w-full h-6 relative flex justify-center z-20 overflow-hidden">
-                       <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full absolute inset-0 z-0">
-                         <path d="M0,0 L40,100 L60,100 L100,0" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.3)" strokeWidth="4" />
+                    {/* Shoulder / Cone */}
+                    <div className="w-full h-8 relative flex justify-center z-20 overflow-hidden">
+                       <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full absolute inset-0 z-10 drop-shadow-md">
+                         <path d="M0,0 L35,100 L65,100 L100,0" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.4)" strokeWidth="3" />
                        </svg>
+                       {/* Glass reflection on cone */}
+                       <div className="absolute left-[30%] top-0 bottom-0 w-[2px] bg-white/20 pointer-events-none z-40 transform -skew-x-[20deg]" />
+
                        <motion.div 
-                         className={`absolute bottom-0 w-[40%] h-full ${errorMsg ? 'bg-red-600/80' : 'bg-gold/80'} z-10`}
+                         className={`absolute bottom-0 w-[30%] h-full ${errorMsg ? 'bg-red-600/90' : 'bg-gold/90'} z-20`}
                          initial={{ opacity: 0 }}
                          animate={{ opacity: fillPercentage > 0 ? 1 : 0 }}
-                       />
+                       >
+                         <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
+                       </motion.div>
                     </div>
 
-                    <div className="w-[2px] h-12 bg-gradient-to-r from-cream/40 to-cream/10 relative z-0">
-                       <motion.div 
-                         className={`absolute top-0 left-0 w-full h-full ${errorMsg ? 'bg-red-600' : 'bg-gold'}`}
-                         initial={{ opacity: 0 }}
-                         animate={{ opacity: fillPercentage > 0 ? 1 : 0 }}
-                       />
+                    {/* Needle Hub & Needle */}
+                    <div className="flex flex-col items-center relative z-0">
+                      {/* Hub */}
+                      <div className="w-4 h-3 bg-gradient-to-b from-cream/40 to-cream/20 rounded-b-sm border-x border-b border-cream/50 z-10 shadow-sm" />
+                      {/* Needle shaft */}
+                      <div className="w-[3px] h-16 bg-gradient-to-r from-gray-400 via-gray-200 to-gray-500 relative z-0 shadow-lg border-x border-black/10">
+                         {/* Needle Specular */}
+                         <div className="absolute top-0 bottom-0 left-[1px] w-[1px] bg-white/50" />
+                         {/* Liquid inside needle */}
+                         <motion.div 
+                           className={`absolute top-0 left-0 w-full h-full ${errorMsg ? 'bg-red-600/50' : 'bg-gold/50'}`}
+                           initial={{ opacity: 0 }}
+                           animate={{ opacity: fillPercentage > 0 ? 1 : 0 }}
+                         />
+                         {/* Bevel tip */}
+                         <div className="absolute -bottom-[3px] left-0 w-full h-[4px] bg-gradient-to-r from-gray-400 via-gray-200 to-gray-500" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {errorMsg ? (
+            <div className="flex flex-col gap-12 border-t border-cream/10 pt-12">
+              {errorMsg && (
                 <div className="border border-red-500/30 bg-red-500/10 p-6 flex items-start gap-4">
                   <Info className="w-6 h-6 text-red-400 shrink-0 mt-1" />
                   <p className="text-sm font-mono text-red-200 leading-relaxed uppercase tracking-wider">
                     {errorMsg}
                   </p>
                 </div>
-              ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 border-t border-cream/10 pt-12">
-                  <div>
-                    <span className="block text-[10px] font-mono text-cream/40 uppercase tracking-widest mb-4">Concentration</span>
-                    <span className="text-2xl lg:text-3xl font-serif">{concentrationStr}</span>
-                  </div>
-                  <div>
-                    <span className="block text-[10px] font-mono text-cream/40 uppercase tracking-widest mb-4">Draw Volume</span>
-                    <span className="text-2xl lg:text-3xl font-serif">{volumePerDoseStr}</span>
-                  </div>
-                  <div className="col-span-2 md:col-span-1">
-                    <span className="block text-[10px] font-mono text-cream/40 uppercase tracking-widest mb-4">Est. Total Doses</span>
-                    <span className="text-2xl lg:text-3xl font-serif">{dosesPerVialStr}</span>
-                  </div>
-                </div>
               )}
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
+                <div>
+                  <span className="block text-[10px] font-mono text-cream/40 uppercase tracking-widest mb-4">Concentration</span>
+                  <span className="text-2xl lg:text-3xl font-serif">{concentrationStr}</span>
+                </div>
+                <div>
+                  <span className="block text-[10px] font-mono text-cream/40 uppercase tracking-widest mb-4">Draw Volume</span>
+                  <span className="text-2xl lg:text-3xl font-serif">{volumePerDoseStr}</span>
+                </div>
+                <div className="col-span-2 md:col-span-1">
+                  <span className="block text-[10px] font-mono text-cream/40 uppercase tracking-widest mb-4">Doses Per Vial</span>
+                  <span className="text-2xl lg:text-3xl font-serif">{dosesPerVialStr}</span>
+                </div>
+              </div>
+            </div>
             </FadeUp>
 
             <FadeUp delay={0.3} className="mt-16 pt-8 border-t border-cream/10">
@@ -631,59 +689,93 @@ export default function PeptideCalculatorPage() {
             </FadeUp>
           </div>
 
-          {/* Right: Editorial Index List */}
-          <div className="flex flex-col w-full">
-            <StaggerChildren className="w-full">
+          {/* Right: Editorial Index List (Now Stackable Cards) */}
+          <div className="flex flex-col w-full pb-[20vh] relative">
               
-              <motion.div variants={staggerItemVariants} className="group border-t border-white/10 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-gold/30 transition-colors duration-500">
-                <div className="text-gold/60 shrink-0 mt-2">
-                  <FlaskConical className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
-                </div>
-                <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white group-hover:text-gold transition-colors duration-500">Concentration (mcg/ml)</h4>
-                  <p className="text-lg text-white/50 leading-relaxed font-light max-w-2xl">
-                    Divide the total peptide amount (converted to mcg) by the volume of bacteriostatic water (in ml). For example: A 5mg vial reconstituted with 2ml of bac water produces a concentration of <strong className="text-white/80">2,500 mcg/ml</strong>. This means every milliliter of your solution contains 2,500 micrograms of peptide.
-                  </p>
-                </div>
-              </motion.div>
-
-              <motion.div variants={staggerItemVariants} className="group border-t border-white/10 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-gold/30 transition-colors duration-500">
-                <div className="text-gold/60 shrink-0 mt-2">
-                  <Droplets className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
-                </div>
-                <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white group-hover:text-gold transition-colors duration-500">Draw Volume (ml)</h4>
-                  <p className="text-lg text-white/50 leading-relaxed font-light max-w-2xl">
-                    Divide your desired dose (in mcg) by the concentration (mcg/ml). Continuing the example: A target dose of 250mcg at a 2,500 mcg/ml concentration requires <strong className="text-white/80">0.1 ml</strong> to be drawn from the vial. This is the exact volume of liquid you need to extract.
-                  </p>
+              <motion.div 
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="sticky top-20 lg:top-32 w-full rounded-[2rem] lg:rounded-[3rem] p-8 lg:p-12 border border-white/10 bg-[#151515] shadow-2xl mb-6 lg:mb-8"
+                style={{ zIndex: 10 }}
+              >
+                <div className="flex flex-col md:flex-row gap-6 md:gap-10 md:items-start">
+                  <div className="text-gold/80 shrink-0 mt-1 bg-gold/10 p-4 rounded-2xl">
+                    <FlaskConical className="w-6 h-6 md:w-8 md:h-8" strokeWidth={1.5} />
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white">Concentration (mcg/ml)</h4>
+                    <p className="text-lg text-white/60 leading-relaxed font-light max-w-2xl">
+                      Divide the total peptide amount (converted to mcg) by the volume of bacteriostatic water (in ml). For example: A 5mg vial reconstituted with 2ml of bac water produces a concentration of <strong className="text-white/90 font-medium">2,500 mcg/ml</strong>. This means every milliliter of your solution contains 2,500 micrograms of peptide.
+                    </p>
+                  </div>
                 </div>
               </motion.div>
 
-              <motion.div variants={staggerItemVariants} className="group border-t border-white/10 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-gold/30 transition-colors duration-500">
-                <div className="text-gold/60 shrink-0 mt-2">
-                  <Syringe className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
-                </div>
-                <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white group-hover:text-gold transition-colors duration-500">Syringe IU / Tick Marks</h4>
-                  <p className="text-lg text-white/50 leading-relaxed font-light max-w-2xl">
-                    Multiply the draw volume (in ml) by 100. This converts the volume to International Units (IU) as marked on standard U-100 insulin syringes. From the example above: 0.1 ml × 100 = <strong className="text-white/80">10 IU</strong>. You would pull the plunger back to the &ldquo;10&rdquo; tick mark on your syringe.
-                  </p>
-                </div>
-              </motion.div>
-
-              <motion.div variants={staggerItemVariants} className="group border-t border-b border-white/10 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-gold/30 transition-colors duration-500">
-                <div className="text-gold/60 shrink-0 mt-2">
-                  <BookOpen className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
-                </div>
-                <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white group-hover:text-gold transition-colors duration-500">Total Doses Per Vial</h4>
-                  <p className="text-lg text-white/50 leading-relaxed font-light max-w-2xl">
-                    Divide the total reconstituted volume (the amount of water you added) by the draw volume per dose. From the example: 2ml ÷ 0.1ml = <strong className="text-white/80">20 doses</strong>. This tells you how many complete administrations are available from a single vial at your current dosing rate.
-                  </p>
+              <motion.div 
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="sticky top-28 lg:top-40 w-full rounded-[2rem] lg:rounded-[3rem] p-8 lg:p-12 border border-white/10 bg-[#1A1A1A] shadow-2xl mb-6 lg:mb-8"
+                style={{ zIndex: 20 }}
+              >
+                <div className="flex flex-col md:flex-row gap-6 md:gap-10 md:items-start">
+                  <div className="text-gold/80 shrink-0 mt-1 bg-gold/10 p-4 rounded-2xl">
+                    <Droplets className="w-6 h-6 md:w-8 md:h-8" strokeWidth={1.5} />
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white">Draw Volume (ml)</h4>
+                    <p className="text-lg text-white/60 leading-relaxed font-light max-w-2xl">
+                      Divide your desired dose (in mcg) by the concentration (mcg/ml). Continuing the example: A target dose of 250mcg at a 2,500 mcg/ml concentration requires <strong className="text-white/90 font-medium">0.1 ml</strong> to be drawn from the vial. This is the exact volume of liquid you need to extract.
+                    </p>
+                  </div>
                 </div>
               </motion.div>
 
-            </StaggerChildren>
+              <motion.div 
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="sticky top-36 lg:top-48 w-full rounded-[2rem] lg:rounded-[3rem] p-8 lg:p-12 border border-white/10 bg-[#1F1F1F] shadow-2xl mb-6 lg:mb-8"
+                style={{ zIndex: 30 }}
+              >
+                <div className="flex flex-col md:flex-row gap-6 md:gap-10 md:items-start">
+                  <div className="text-gold/80 shrink-0 mt-1 bg-gold/10 p-4 rounded-2xl">
+                    <Syringe className="w-6 h-6 md:w-8 md:h-8" strokeWidth={1.5} />
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white">Syringe IU / Tick Marks</h4>
+                    <p className="text-lg text-white/60 leading-relaxed font-light max-w-2xl">
+                      Multiply the draw volume (in ml) by 100. This converts the volume to International Units (IU) as marked on standard U-100 insulin syringes. From the example above: 0.1 ml × 100 = <strong className="text-white/90 font-medium">10 IU</strong>. You would pull the plunger back to the &ldquo;10&rdquo; tick mark on your syringe.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div 
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="sticky top-44 lg:top-56 w-full rounded-[2rem] lg:rounded-[3rem] p-8 lg:p-12 border border-white/10 bg-[#252525] shadow-2xl mb-6 lg:mb-8"
+                style={{ zIndex: 40 }}
+              >
+                <div className="flex flex-col md:flex-row gap-6 md:gap-10 md:items-start">
+                  <div className="text-gold/80 shrink-0 mt-1 bg-gold/10 p-4 rounded-2xl">
+                    <BookOpen className="w-6 h-6 md:w-8 md:h-8" strokeWidth={1.5} />
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white">Total Doses Per Vial</h4>
+                    <p className="text-lg text-white/60 leading-relaxed font-light max-w-2xl">
+                      Divide the total reconstituted volume (the amount of water you added) by the draw volume per dose. From the example: 2ml ÷ 0.1ml = <strong className="text-white/90 font-medium">20 doses</strong>. This tells you how many complete administrations are available from a single vial at your current dosing rate.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
           </div>
           
         </div>
