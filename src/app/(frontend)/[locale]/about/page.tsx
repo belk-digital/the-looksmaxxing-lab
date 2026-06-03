@@ -8,7 +8,7 @@ import { FadeUp } from '@/components/motion/FadeUp'
 import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
 import { Button } from '@/components/ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { CheckCircle2, ShieldCheck, Microscope, Truck, Search, FlaskConical } from 'lucide-react'
+import { CheckCircle2, ShieldCheck, Microscope, Truck, Search, FlaskConical, ArrowRight } from 'lucide-react'
 import { FaqCarousel, FaqItem } from '@/components/shared/FaqCarousel'
 
 const ABOUT_FAQS: FaqItem[] = [
@@ -102,7 +102,7 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="text-label-md uppercase tracking-widest text-ink/50 mb-4 sm:mb-8 font-bold"
+            className="text-label-md uppercase tracking-widest text-[#5984c4] mb-4 sm:mb-8 font-bold"
           >
             Established 2024
           </motion.h2>
@@ -128,7 +128,7 @@ export default function AboutPage() {
                  className="object-cover object-center"
                  priority
                />
-               <div className="absolute inset-0 bg-ink/20 group-hover:bg-ink/10 transition-colors duration-700" />
+               <div className="absolute inset-0 bg-[#5984c4]/20 group-hover:bg-[#5984c4]/10 transition-colors duration-700" />
              </motion.div>
              
              {/* Center Overlay Text inside Window */}
@@ -148,7 +148,7 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-body-lg lg:text-xl text-ink-muted max-w-[720px] mx-auto text-center mt-6 sm:mt-12 leading-relaxed px-6"
+            className="text-body-lg lg:text-xl text-ink/70 max-w-[720px] mx-auto text-center mt-6 sm:mt-12 leading-relaxed px-6"
           >
             We are a premier, US-based supplier dedicated to providing the global research community with uncompromising quality, rigorous third-party testing, and absolute transparency in peptide synthesis.
           </motion.p>
@@ -163,7 +163,7 @@ export default function AboutPage() {
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           
           {/* Subtle Dot Grid Base */}
-          <div className="absolute inset-0 opacity-40" style={{ backgroundImage: "radial-gradient(#D6CDB8 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
+          <div className="absolute inset-0 opacity-40" style={{ backgroundImage: "radial-gradient(#e2e8f0 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
 
           {/* Large Rotating Ring */}
           <motion.div 
@@ -203,7 +203,7 @@ export default function AboutPage() {
         <div className="max-w-[900px] mx-auto relative z-10">
           
           <FadeUp className="text-center mb-24 lg:mb-40">
-            <h2 className="text-label-md uppercase tracking-widest text-gold mb-6 font-bold">Our Pillars</h2>
+            <h2 className="text-label-md uppercase tracking-widest text-[#5984c4] mb-6 font-bold">Our Pillars</h2>
             <h3 className="text-4xl lg:text-6xl font-serif text-ink tracking-tight">The Foundation of The Lab</h3>
           </FadeUp>
 
@@ -215,7 +215,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="sticky top-20 lg:top-32 w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-10 lg:p-16 border border-ink/5 bg-white shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden group mb-8 lg:mb-12"
+              className="sticky top-20 lg:top-32 w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-10 lg:p-16 border border-slate-100 bg-white shadow-sm overflow-hidden group mb-8 lg:mb-12"
               style={{ zIndex: 10 }}
             >
               {/* SVG Noise */}
@@ -230,7 +230,7 @@ export default function AboutPage() {
                 {/* Left: Editorial Number & Icon */}
                 <div className="flex flex-row md:flex-col justify-between items-end md:items-start border-b md:border-b-0 md:border-r border-ink/10 pb-6 md:pb-0 md:pr-8">
                   <span className="text-5xl lg:text-8xl font-serif text-ink tracking-tighter leading-none">01</span>
-                  <Microscope className="w-8 h-8 lg:w-12 lg:h-12 text-ink/30 mt-0 md:mt-12" strokeWidth={1} />
+                  <Microscope className="w-8 h-8 lg:w-12 lg:h-12 text-[#5984c4]/40 mt-0 md:mt-12" strokeWidth={1} />
                 </div>
                 
                 {/* Right: Content */}
@@ -249,7 +249,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="sticky top-28 lg:top-[12.5rem] w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-10 lg:p-16 border border-ink/5 bg-[#E5E9EF] shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden group mb-8 lg:mb-12"
+              className="sticky top-28 lg:top-[12.5rem] w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-10 lg:p-16 border border-slate-100 bg-[#f8fafd] shadow-sm overflow-hidden group mb-8 lg:mb-12"
               style={{ zIndex: 20 }}
             >
               {/* SVG Noise */}
@@ -264,7 +264,7 @@ export default function AboutPage() {
                 {/* Left: Editorial Number & Icon */}
                 <div className="flex flex-row md:flex-col justify-between items-end md:items-start border-b md:border-b-0 md:border-r border-ink/10 pb-6 md:pb-0 md:pr-8">
                   <span className="text-5xl lg:text-8xl font-serif text-ink tracking-tighter leading-none">02</span>
-                  <ShieldCheck className="w-8 h-8 lg:w-12 lg:h-12 text-ink/30 mt-0 md:mt-12" strokeWidth={1} />
+                  <ShieldCheck className="w-8 h-8 lg:w-12 lg:h-12 text-[#5984c4]/40 mt-0 md:mt-12" strokeWidth={1} />
                 </div>
                 
                 {/* Right: Content */}
@@ -283,7 +283,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="sticky top-36 lg:top-[17rem] w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-10 lg:p-16 border border-ink/5 bg-[#E8EFE3] shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden group"
+              className="sticky top-36 lg:top-[17rem] w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-10 lg:p-16 border border-slate-100 bg-[#eef3fb] shadow-sm overflow-hidden group"
               style={{ zIndex: 30 }}
             >
               {/* SVG Noise */}
@@ -298,7 +298,7 @@ export default function AboutPage() {
                 {/* Left: Editorial Number & Icon */}
                 <div className="flex flex-row md:flex-col justify-between items-end md:items-start border-b md:border-b-0 md:border-r border-ink/10 pb-6 md:pb-0 md:pr-8">
                   <span className="text-5xl lg:text-8xl font-serif text-ink tracking-tighter leading-none">03</span>
-                  <FlaskConical className="w-8 h-8 lg:w-12 lg:h-12 text-ink/30 mt-0 md:mt-12" strokeWidth={1} />
+                  <FlaskConical className="w-8 h-8 lg:w-12 lg:h-12 text-[#5984c4]/40 mt-0 md:mt-12" strokeWidth={1} />
                 </div>
                 
                 {/* Right: Content */}
@@ -316,7 +316,7 @@ export default function AboutPage() {
       </section>
 
       {/* 3. Why Choose Us Section - Editorial Index */}
-      <section className="py-24 lg:py-48 px-6 bg-ink text-white relative">
+      <section className="py-24 lg:py-48 px-6 bg-[#f8fafd] text-ink relative">
         
         {/* Massive Interactive Background Vial (Left Side) */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -330,7 +330,7 @@ export default function AboutPage() {
               repeat: Infinity,
               ease: "easeInOut"
             }}
-            className="absolute -left-10 md:left-0 top-[10%] md:top-[15%] h-[80vh] md:h-[100vh] w-[200px] md:w-[300px] lg:w-[450px] opacity-10 md:opacity-[0.15] mix-blend-screen"
+            className="absolute -left-10 md:left-0 top-[10%] md:top-[15%] h-[80vh] md:h-[100vh] w-[200px] md:w-[300px] lg:w-[450px] opacity-[0.05] mix-blend-multiply"
           >
             <Image 
               src="/temp-homepage/hero-vial-image.webp" 
@@ -346,9 +346,9 @@ export default function AboutPage() {
           {/* Left: Sticky Title Area */}
           <div className="lg:sticky lg:top-32">
             <FadeUp>
-              <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-gold mb-8">The Gold Standard</h2>
+              <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-[#5984c4] mb-8 font-bold">The Gold Standard</h2>
               <h3 className="text-5xl lg:text-7xl font-serif mb-8 tracking-tight leading-[1.1]">Why Choose Us</h3>
-              <p className="text-xl text-white/50 leading-relaxed max-w-md font-light">
+              <p className="text-xl text-ink/70 leading-relaxed max-w-md font-light">
                 We don't cut corners. Every aspect of our operation is designed to ensure maximum efficacy and reliability, setting an uncompromising standard for the research community.
               </p>
             </FadeUp>
@@ -359,52 +359,52 @@ export default function AboutPage() {
             <StaggerChildren className="w-full">
               
               {/* Item 01 */}
-              <motion.div variants={staggerItemVariants} className="group border-t border-white/10 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-gold/30 transition-colors duration-500">
-                <div className="text-gold/60 shrink-0 mt-2">
+              <motion.div variants={staggerItemVariants} className="group border-t border-slate-200 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-[#5984c4]/30 transition-colors duration-500">
+                <div className="text-[#5984c4] shrink-0 mt-2">
                   <Search className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
                 </div>
                 <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white group-hover:text-gold transition-colors duration-500">Independent Testing</h4>
-                  <p className="text-lg text-white/50 leading-relaxed font-light max-w-2xl">
+                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-ink group-hover:text-[#5984c4] transition-colors duration-500">Independent Testing</h4>
+                  <p className="text-lg text-ink/70 leading-relaxed font-light max-w-2xl">
                     Every single batch is tested by accredited US-based third-party laboratories via HPLC & Mass Spectrometry before it is ever made available for research.
                   </p>
                 </div>
               </motion.div>
 
               {/* Item 02 */}
-              <motion.div variants={staggerItemVariants} className="group border-t border-white/10 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-gold/30 transition-colors duration-500">
-                <div className="text-gold/60 shrink-0 mt-2">
+              <motion.div variants={staggerItemVariants} className="group border-t border-slate-200 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-[#5984c4]/30 transition-colors duration-500">
+                <div className="text-[#5984c4] shrink-0 mt-2">
                   <ShieldCheck className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
                 </div>
                 <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white group-hover:text-gold transition-colors duration-500">&ge;99% Purity Guarantee</h4>
-                  <p className="text-lg text-white/50 leading-relaxed font-light max-w-2xl">
+                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-ink group-hover:text-[#5984c4] transition-colors duration-500">&ge;99% Purity Guarantee</h4>
+                  <p className="text-lg text-ink/70 leading-relaxed font-light max-w-2xl">
                     We maintain the strictest purity thresholds in the industry. If a batch tests at 98.9%, it is destroyed. Compromise is simply not in our vocabulary.
                   </p>
                 </div>
               </motion.div>
 
               {/* Item 03 */}
-              <motion.div variants={staggerItemVariants} className="group border-t border-white/10 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-gold/30 transition-colors duration-500">
-                <div className="text-gold/60 shrink-0 mt-2">
+              <motion.div variants={staggerItemVariants} className="group border-t border-slate-200 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-[#5984c4]/30 transition-colors duration-500">
+                <div className="text-[#5984c4] shrink-0 mt-2">
                   <Truck className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
                 </div>
                 <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white group-hover:text-gold transition-colors duration-500">USA Fulfillment</h4>
-                  <p className="text-lg text-white/50 leading-relaxed font-light max-w-2xl">
+                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-ink group-hover:text-[#5984c4] transition-colors duration-500">USA Fulfillment</h4>
+                  <p className="text-lg text-ink/70 leading-relaxed font-light max-w-2xl">
                     All products are stocked securely in our climate-controlled US facilities, ensuring rapid domestic transit times and eliminating international customs delays.
                   </p>
                 </div>
               </motion.div>
 
               {/* Item 04 */}
-              <motion.div variants={staggerItemVariants} className="group border-t border-b border-white/10 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-gold/30 transition-colors duration-500">
-                <div className="text-gold/60 shrink-0 mt-2">
+              <motion.div variants={staggerItemVariants} className="group border-t border-b border-slate-200 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-[#5984c4]/30 transition-colors duration-500">
+                <div className="text-[#5984c4] shrink-0 mt-2">
                   <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
                 </div>
                 <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white group-hover:text-gold transition-colors duration-500">Lyophilized Stability</h4>
-                  <p className="text-lg text-white/50 leading-relaxed font-light max-w-2xl">
+                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-ink group-hover:text-[#5984c4] transition-colors duration-500">Lyophilized Stability</h4>
+                  <p className="text-lg text-ink/70 leading-relaxed font-light max-w-2xl">
                     Advanced lyophilization techniques guarantee structural integrity during transit and long-term storage, arriving in the exact condition it left the lab.
                   </p>
                 </div>
@@ -425,14 +425,14 @@ export default function AboutPage() {
         {/* Massive Typography Background Watermark */}
         <div className="absolute bottom-0 left-0 w-full pointer-events-none z-0 overflow-hidden">
           <motion.div style={{ x: capabilitiesX }} className="whitespace-nowrap">
-            <span className="text-[18vw] font-serif text-ink/[0.03] leading-none select-none tracking-tighter">
+            <span className="text-[18vw] font-serif text-slate-100 leading-none select-none tracking-tighter">
               CAPABILITIES
             </span>
           </motion.div>
         </div>
 
         {/* Subtle Background Texture */}
-        <div className="absolute inset-0 pointer-events-none z-0 opacity-40" style={{ backgroundImage: "radial-gradient(#D6CDB8 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
+        <div className="absolute inset-0 pointer-events-none z-0 opacity-40" style={{ backgroundImage: "radial-gradient(#e2e8f0 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
 
         <div className="max-w-[1280px] w-full mx-auto relative z-10">
           
@@ -440,7 +440,7 @@ export default function AboutPage() {
           <FadeUp>
             <div className="mb-12 lg:mb-24 flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
               <div>
-                <h2 className="text-xs uppercase tracking-[0.2em] text-gold mb-4 font-bold">
+                <h2 className="text-xs uppercase tracking-[0.2em] text-[#5984c4] mb-4 font-bold">
                   Capabilities
                 </h2>
                 <h3 className="text-4xl lg:text-6xl font-serif text-ink tracking-tight">Our Services</h3>
@@ -458,25 +458,25 @@ export default function AboutPage() {
             {/* Left Menu - Minimalist Typography List */}
             <div className="flex flex-col">
               <FadeUp delay={0.2}>
-                <div className="border-t border-ink/10">
+                <div className="border-t border-slate-200">
                   {services.map((service, index) => {
                     const isActive = activeServiceIndex === index;
                     return (
                       <button
                         key={service.id}
                         onClick={() => setActiveServiceIndex(index)}
-                        className={`group w-full flex items-center justify-between py-6 lg:py-10 border-b border-ink/10 transition-all duration-500 ${
+                        className={`group w-full flex items-center justify-between py-6 lg:py-10 border-b border-slate-200 transition-all duration-500 ${
                           isActive ? "opacity-100" : "opacity-40 hover:opacity-70"
                         }`}
                       >
                         <div className="flex flex-col items-start gap-2 lg:gap-3">
-                          <span className="text-[10px] lg:text-xs font-mono font-bold text-gold tracking-widest">[{service.id}]</span>
+                          <span className="text-[10px] lg:text-xs font-mono font-bold text-[#5984c4] tracking-widest">[{service.id}]</span>
                           <span className="text-xl lg:text-4xl font-serif text-ink text-left leading-tight">
                             {service.title}
                           </span>
                         </div>
                         {/* Interactive Arrow */}
-                        <div className={`transition-all duration-500 transform ${isActive ? 'translate-x-0 opacity-100 text-gold' : 'translate-x-0 lg:-translate-x-8 opacity-0 text-ink'}`}>
+                        <div className={`transition-all duration-500 transform ${isActive ? 'translate-x-0 opacity-100 text-[#5984c4]' : 'translate-x-0 lg:-translate-x-8 opacity-0 text-ink'}`}>
                           <svg width="24" height="24" className="lg:w-8 lg:h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                         </div>
                       </button>
@@ -539,64 +539,79 @@ export default function AboutPage() {
         description="Learn more about our shipping, lab protocols, and product storage guidelines."
         theme="light"
       />
-      {/* 6. CTA section with Interactive Motion Graphics */}
-      <section className="py-24 px-6 lg:px-12 bg-white">
+      {/* 6. CTA section - Redesigned for Premium Aesthetic */}
+      <section className="py-24 px-6 lg:px-12 bg-white relative overflow-hidden">
         <FadeUp>
-          <div className="relative w-full max-w-[1400px] mx-auto bg-ink rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl px-6 py-16 lg:py-24 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-0">
+          <div className="relative w-full max-w-[1400px] mx-auto bg-gradient-to-b from-[#f4f7fb] to-white border border-[#eef3fb] rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl shadow-[#5984c4]/10 px-6 py-24 lg:py-40 flex flex-col items-center justify-center text-center">
             
-
-
-            {/* Left Content */}
-            <div className="relative z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left gap-8 lg:pl-12">
-              <span className="text-gold font-mono tracking-[0.2em] text-xs lg:text-sm uppercase font-bold">Initiate Your Protocol</span>
+            {/* Ambient Glows */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] md:w-[800px] h-[400px] bg-[#5984c4]/10 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-sky-200/20 rounded-full blur-[100px] pointer-events-none" />
+            
+            {/* Background Vials & Tech Elements */}
+            <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
               
-              <h2 className="text-4xl lg:text-6xl xl:text-7xl font-serif text-white leading-tight">
-                Ready to advance your <span className="italic font-light text-white/90">research?</span>
+              {/* Subtle Dot Grid */}
+              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(#5984c4 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+              
+              {/* Floating Transparent Vial 1 */}
+              <motion.div
+                animate={{ y: [-15, 15, -15], rotate: [10, 15, 10] }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -left-[5%] md:left-[5%] top-[10%] w-[300px] md:w-[400px] h-[400px] md:h-[500px] opacity-[0.25] mix-blend-multiply"
+              >
+                <Image src="/temp-homepage/hero-vial-image.webp" alt="Vial Watermark" fill className="object-contain" />
+              </motion.div>
+
+              {/* Floating Transparent Vial 2 */}
+              <motion.div
+                animate={{ y: [15, -15, 15], rotate: [-15, -20, -15] }}
+                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                className="absolute -right-[10%] md:-right-[5%] bottom-[5%] w-[400px] md:w-[500px] h-[500px] md:h-[600px] opacity-[0.2] mix-blend-multiply"
+              >
+                <Image src="/temp-homepage/hero-vial-image.webp" alt="Vial Watermark" fill className="object-contain" />
+              </motion.div>
+
+              {/* Scientific Rings */}
+              <motion.div 
+                animate={{ rotate: 360 }}
+                transition={{ duration: 200, repeat: Infinity, ease: "linear" }}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] md:w-[800px] md:h-[800px] border-[1px] border-[#5984c4]/10 rounded-full"
+              />
+              <motion.div 
+                animate={{ rotate: -360 }}
+                transition={{ duration: 250, repeat: Infinity, ease: "linear" }}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] md:w-[1000px] md:h-[1000px] border-[1px] border-[#5984c4]/10 rounded-full border-dashed"
+              />
+            </div>
+
+            <div className="relative z-10 w-full max-w-4xl flex flex-col items-center gap-8">
+              <span className="text-[#5984c4] font-mono tracking-[0.2em] text-xs lg:text-sm uppercase font-bold bg-[#5984c4]/10 px-6 py-2 rounded-full">
+                Initiate Your Protocol
+              </span>
+              
+              <h2 className="text-5xl md:text-6xl lg:text-8xl font-serif text-ink leading-[1.1] tracking-tight">
+                Advance your <br/>
+                <span className="italic font-light text-[#5984c4]">research.</span>
               </h2>
               
-              <p className="text-lg lg:text-xl text-white/70 font-light max-w-xl">
-                Browse our catalog of highly purified, third-party verified compounds engineered for rigorous laboratory standards.
+              <p className="text-lg lg:text-2xl text-ink/60 font-light max-w-2xl mx-auto mt-2 lg:mt-4">
+                Explore our catalog of highly purified, third-party verified compounds engineered for rigorous laboratory standards.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 mt-4 w-full sm:w-auto">
-                <Link href="/shop" className="w-full sm:w-auto">
-                  <Button className="w-full rounded-full px-10 py-6 bg-gold text-ink hover:bg-gold/90 transition-colors shadow-lg font-medium text-lg">
+              <div className="flex flex-col sm:flex-row gap-4 mt-8 lg:mt-12 w-full sm:w-auto">
+                <Link href="/shop" className="w-full sm:w-auto group">
+                  <Button className="w-full rounded-full px-12 py-8 bg-ink text-white hover:bg-[#5984c4] transition-colors duration-500 shadow-xl font-medium text-lg flex items-center justify-center gap-3">
                     Shop Collection
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
-                <Link href="/certificates" className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full rounded-full px-10 py-6 border-white/20 text-white hover:bg-white/10 hover:text-white transition-colors text-lg">
+                <Link href="/certificates" className="w-full sm:w-auto group">
+                  <Button variant="outline" className="w-full rounded-full px-12 py-8 border-slate-200 text-ink hover:border-[#5984c4] hover:bg-slate-50 transition-colors duration-500 text-lg bg-white shadow-sm flex items-center justify-center gap-3">
                     View COAs
                   </Button>
                 </Link>
               </div>
-            </div>
-
-            {/* Right Interactive Motion Graphics */}
-            <div className="relative z-10 w-full lg:w-1/2 h-[400px] lg:h-[500px] flex items-center justify-center pointer-events-none">
-              {/* Central glowing orb behind the vial */}
-              <div className="absolute w-[400px] h-[400px] bg-gold/20 rounded-full blur-[100px] animate-pulse" />
-              
-              {/* Floating Vial Animation - Massive and partially clipped */}
-              <motion.div
-                animate={{ 
-                  y: [-10, 10, -10],
-                  rotate: [-1, 1, -1]
-                }}
-                transition={{ 
-                  duration: 6, 
-                  repeat: Infinity, 
-                  ease: "easeInOut" 
-                }}
-                className="absolute top-4 lg:top-0 -right-[5%] lg:-right-[15%] w-[110%] lg:w-[130%] h-[140%] lg:h-[150%] drop-shadow-2xl"
-              >
-                <Image 
-                  src="/temp-homepage/hero-vial-image.webp" 
-                  alt="Research Vial" 
-                  fill 
-                  className="object-contain object-top"
-                />
-              </motion.div>
             </div>
 
           </div>
