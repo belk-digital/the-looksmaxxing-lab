@@ -125,7 +125,7 @@ export function FaqCarousel({
       className={`w-full relative ${bgClass}`}
       style={{ height: `${faqs.length * 80}vh` }} // Make section taller based on number of FAQs
     >
-      <div className="sticky top-0 h-[100dvh] w-full flex flex-col justify-start pt-10 lg:pt-48 pb-12 overflow-hidden">
+      <div className="sticky top-0 h-[100dvh] w-full flex flex-col justify-start pt-10 lg:pt-16 pb-12 overflow-hidden">
         
         {/* Background Elements */}
         <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
