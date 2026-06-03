@@ -62,7 +62,7 @@ export function WhatSetsUsApart() {
             {/* Left Column: Headers & Tabs */}
             <div className="w-5/12 flex flex-col">
               <FadeUp>
-                <span className="text-label-md uppercase tracking-widest text-gold mb-4 block font-bold">
+                <span className="text-label-md uppercase tracking-widest text-[#5984c4] mb-4 block font-bold">
                   THE LOOKSMAXXING STANDARD
                 </span>
               </FadeUp>
@@ -107,7 +107,7 @@ export function WhatSetsUsApart() {
                       {isActive && (
                         <motion.div 
                           layoutId="activeScrollIndicator"
-                          className="absolute left-0 top-0 bottom-0 w-[2px] bg-gold"
+                          className="absolute left-0 top-0 bottom-0 w-[2px] bg-[#5984c4]"
                           initial={false}
                           transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         />
@@ -188,7 +188,7 @@ export function WhatSetsUsApart() {
           
           <div className="flex flex-col mb-12">
             <FadeUp>
-              <span className="text-label-md uppercase tracking-widest text-gold mb-4 block font-bold">
+              <span className="text-label-md uppercase tracking-widest text-[#5984c4] mb-4 block font-bold">
                 THE LOOKSMAXXING STANDARD
               </span>
             </FadeUp>

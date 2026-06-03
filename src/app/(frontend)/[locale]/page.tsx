@@ -1,6 +1,5 @@
 import { HomePreloaderWrapper } from '@/components/home/HomePreloaderWrapper'
 import { Hero } from '@/components/home/Hero'
-import { Marquee } from '@/components/shared/Marquee'
 import { FeaturedProductsSection } from '@/components/home/FeaturedProductsSection'
 import { CategoriesSection } from '@/components/home/CategoriesSection'
 import { AboutTeaser } from '@/components/home/AboutTeaser'
@@ -13,9 +12,8 @@ import { WhatSetsUsApart } from '@/components/home/WhatSetsUsApart'
 export default function Homepage() {
   return (
     <HomePreloaderWrapper>
-      <div className="flex flex-col w-full min-h-screen relative z-10 bg-cream">
+      <div className="flex flex-col w-full min-h-screen relative z-10 bg-white">
         <Hero />
-        <Marquee />
         <FeaturedProductsSection />
         <CategoriesSection />
         <AboutTeaser />

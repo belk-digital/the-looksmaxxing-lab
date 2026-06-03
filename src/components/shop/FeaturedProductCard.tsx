@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Heart } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 export interface Product {
   name: string
@@ -14,61 +14,75 @@ export interface Product {
 
 export interface FeaturedProductCardProps {
   product: Product
-  aspectRatio?: '4/5' | '16/10'
-  size?: 'tall' | 'small'
   id?: string
+  index?: number
 }
 
-export function FeaturedProductCard({ product, size = 'small', id }: FeaturedProductCardProps) {
-  const imageAspectClass = size === 'tall' ? 'aspect-[4/5]' : 'aspect-[16/10]';
-
+export function FeaturedProductCard({ product, id, index = 0 }: FeaturedProductCardProps) {
   return (
     <div 
-      className="group relative flex flex-col w-full bg-white p-2 sm:p-3 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] cursor-pointer"
+      className="group relative flex flex-col items-center w-full bg-transparent cursor-pointer"
     >
-      {/* Invisible Spacers for Layout */}
-      <div className={`w-full ${imageAspectClass}`} />
-      <div className="h-[170px] sm:h-[210px] w-full" />
-
-      {/* Animated Image Area */}
-      <div id={id} className="absolute top-2 sm:top-3 left-2 sm:left-3 right-2 sm:right-3 bottom-[178px] sm:bottom-[222px] group-hover:bottom-2 sm:group-hover:bottom-3 overflow-hidden bg-[#F5F5F7] rounded-xl sm:rounded-[2rem] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-0">
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          unoptimized
-          className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      </div>
-
-      <button className="absolute top-7 right-7 p-2.5 rounded-full bg-white/50 backdrop-blur-sm text-ink opacity-0 transition-opacity duration-300 group-hover:opacity-100 hover:bg-white z-20">
-        <Heart size={20} strokeWidth={1.5} />
-      </button>
-
-      {/* Info Area - Fixed at bottom */}
-      <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 right-2 sm:right-3 h-[170px] sm:h-[210px] flex flex-col px-3 sm:px-4 pt-4 sm:pt-6 pb-2 z-10 pointer-events-none">
-        <span className="text-[9px] sm:text-xs font-semibold tracking-widest uppercase text-ink/50 group-hover:text-white/60 mb-0.5 sm:mb-1 transition-colors duration-500 line-clamp-1">
-          {product.category}
-        </span>
-        <h3 className="text-sm sm:text-2xl font-bold mb-1 sm:mb-2 text-ink group-hover:text-white transition-colors duration-500 leading-tight">{product.name}</h3>
-        <p className="text-[10px] sm:text-sm text-ink/70 group-hover:text-white/80 line-clamp-2 mb-3 sm:mb-6 transition-colors duration-500">
-          {product.shortDescription}
-        </p>
-        <div className="flex items-center justify-between mt-auto">
-          <span className="text-sm sm:text-xl font-bold text-ink group-hover:text-white transition-colors duration-500">
-            {product.priceRange}
-          </span>
-          <button className="pointer-events-auto px-4 py-1.5 sm:px-6 sm:py-2.5 rounded-full bg-ink text-white group-hover:bg-white group-hover:text-ink hover:bg-ink/80 transition-colors font-medium shadow-md text-xs sm:text-base">
-            Buy
-          </button>
-        </div>
-      </div>
-
       {/* Absolute Link overlay so entire card is clickable */}
-      <Link href={`/shop/${product.slug}`} className="absolute inset-0 z-10">
+      <Link href={`/shop/${product.slug}`} className="absolute inset-0 z-0">
         <span className="sr-only">View {product.name}</span>
       </Link>
+
+      {/* Image Area with overlapping vial */}
+      <div id={id} className="relative w-full max-w-[220px] aspect-[3/4] flex items-center justify-center mb-8 mx-auto py-4 z-10 pointer-events-none">
+        
+        {/* Beige Circle Background */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] aspect-square rounded-full bg-cream transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105" />
+
+        {/* Product Image (Drops in naturally) */}
+        <motion.div 
+          initial={{ y: -80, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 200, 
+            damping: 15, 
+            delay: index * 0.1 + 0.2 // Stagger based on index
+          }}
+          className="w-[75%] h-[95%] z-10"
+        >
+          {/* Hover Wrapper */}
+          <div className="relative w-full h-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110">
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              unoptimized
+              className="object-contain mix-blend-multiply drop-shadow-sm"
+            />
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Info Area - Centered below image */}
+      <div className="flex flex-col items-center text-center w-full z-20 px-2 pointer-events-none">
+        
+        {/* Product Name */}
+        <h3 className="text-[14px] sm:text-[16px] font-bold text-black mb-1 leading-tight tracking-tight">
+          {product.name}
+        </h3>
+        
+        {/* Category / Dose */}
+        <span className="text-[9px] sm:text-[10px] font-bold tracking-[0.15em] uppercase text-slate-500 mb-3">
+          {product.category}
+        </span>
+        
+        {/* Price */}
+        <span className="text-[12px] sm:text-[14px] font-bold text-black mb-6">
+          {product.priceRange}
+        </span>
+        
+        {/* Add to Cart Button */}
+        <button className="pointer-events-auto px-6 py-2.5 sm:px-8 sm:py-3 rounded-none bg-white border border-slate-300 text-black hover:bg-black hover:text-white hover:border-black transition-all duration-300 font-bold tracking-[0.15em] uppercase text-[9px] sm:text-[10px] w-full max-w-[180px]">
+          ADD TO CART
+        </button>
+      </div>
     </div>
   )
 }

@@ -30,13 +30,13 @@ export function FaqCarousel({
   const [activeIndex, setActiveIndex] = useState(0);
 
   const isDark = theme === 'dark';
-  const bgClass = isDark ? 'bg-ink' : 'bg-cream';
+  const bgClass = isDark ? 'bg-ink' : 'bg-[#f4f7fb]';
   const titleClass = isDark ? 'text-cream' : 'text-ink';
-  const descClass = isDark ? 'text-cream-warm/70' : 'text-ink-muted';
+  const descClass = isDark ? 'text-cream-warm/70' : 'text-ink/70';
   
   // Active/Inactive Card Styles
-  const activeCardBg = isDark ? 'bg-white text-ink' : 'bg-ink text-cream';
-  const inactiveCardBg = isDark ? 'bg-white/5 text-white/50' : 'bg-cream-sand text-ink/60';
+  const activeCardBg = isDark ? 'bg-white text-ink' : 'bg-[#1c4477] text-white';
+  const inactiveCardBg = isDark ? 'bg-white/5 text-white/50' : 'bg-[#e6ebf0] text-[#1c4477]/70';
 
   // Set up scroll-jacking
   const { scrollYProgress } = useScroll({
@@ -125,17 +125,10 @@ export function FaqCarousel({
       className={`w-full relative ${bgClass}`}
       style={{ height: `${faqs.length * 80}vh` }} // Make section taller based on number of FAQs
     >
-      <div className="sticky top-0 h-[100dvh] w-full flex flex-col justify-center pt-24 lg:pt-32 pb-12 overflow-hidden">
+      <div className="sticky top-0 h-[100dvh] w-full flex flex-col justify-start pt-10 lg:pt-48 pb-12 overflow-hidden">
         
         {/* Background Elements */}
         <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
-          {/* Cinematic Film Grain / Noise Texture */}
-          <div 
-            className={`absolute inset-0 mix-blend-overlay ${isDark ? 'opacity-[0.04]' : 'opacity-[0.06]'}`}
-            style={{ 
-              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-            }}
-          />
           
           {/* Subtle Glow Orbs */}
           <div className="absolute top-0 right-0 w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] bg-gold/5 rounded-full blur-[120px] -translate-y-1/3 translate-x-1/3" />
@@ -148,7 +141,7 @@ export function FaqCarousel({
           <div className="mb-12 lg:mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
             <FadeUp className="max-w-2xl">
               <h2 className={`text-4xl lg:text-6xl font-serif tracking-tight leading-tight ${titleClass}`}>
-                {title} <span className="text-gold">{accentTitle}</span>
+                {title} <span className={isDark ? 'text-gold' : 'text-[#1c4477]'}>{accentTitle}</span>
               </h2>
             </FadeUp>
             
@@ -164,7 +157,7 @@ export function FaqCarousel({
                   className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors group disabled:opacity-30 disabled:cursor-not-allowed ${
                     isDark 
                       ? 'border-cream/20 hover:bg-cream/10 text-cream' 
-                      : 'border-ink/20 hover:bg-ink/5 text-ink'
+                      : 'border-slate-300 hover:bg-slate-100 text-slate-500 bg-white shadow-sm'
                   }`}
                 >
                   <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -173,10 +166,10 @@ export function FaqCarousel({
                   onClick={() => scrollWindow('right')}
                   disabled={activeIndex === faqs.length - 1}
                   aria-label="Next question"
-                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors group disabled:opacity-30 disabled:cursor-not-allowed ${
+                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors group disabled:opacity-30 disabled:cursor-not-allowed shadow-md ${
                     isDark 
                       ? 'bg-cream text-ink hover:bg-cream/90' 
-                      : 'bg-ink text-cream hover:bg-ink/90'
+                      : 'bg-ink text-white hover:bg-ink/90'
                   }`}
                 >
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -222,8 +215,17 @@ export function FaqCarousel({
                     }`}
                     style={{ ...getCardStyle(isActive), minHeight: '480px' }}
                   >
+                    {/* Subtle Noise Texture on Cards (Optimized for performance) */}
+                    <div 
+                      className="absolute inset-0 opacity-[0.04] pointer-events-none"
+                      style={{ 
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                        transform: 'translateZ(0)'
+                      }}
+                    />
+                    
                     {/* Inner wrapper allows text to naturally wrap based on the card's current width */}
-                    <div className="w-full h-full flex flex-col relative">
+                    <div className="w-full h-full flex flex-col relative z-10">
                       {/* We lock the question to the inactive width so it NEVER reflows when the card expands */}
                       <h3 className={`text-2xl lg:text-3xl font-serif leading-tight mb-8 w-full max-w-[216px] lg:max-w-[184px] ${isActive ? '' : 'line-clamp-4'}`}>
                         {faq.question}
@@ -237,7 +239,7 @@ export function FaqCarousel({
                       >
                         <p className={`text-sm lg:text-base leading-relaxed font-light ${
                           isActive 
-                            ? (isDark ? 'text-ink/70' : 'text-cream/70') 
+                            ? (isDark ? 'text-ink/70' : 'text-white/80') 
                             : ''
                         }`}>
                           {faq.answer}

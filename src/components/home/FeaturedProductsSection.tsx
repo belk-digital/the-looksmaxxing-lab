@@ -1,109 +1,153 @@
 'use client'
 
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { FeaturedProductCard, Product } from '@/components/shop/FeaturedProductCard'
 import { FadeUp } from '@/components/motion/FadeUp'
-import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
-import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
-import { motion } from 'framer-motion'
+import { Space_Grotesk } from 'next/font/google'
+import Link from 'next/link'
+import useEmblaCarousel from 'embla-carousel-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 const SAMPLE_PRODUCTS: Product[] = [
   {
     name: 'BPC-157 Blend',
     slug: 'bpc-157-blend',
-    image: '/temp-products/product-image.png',
+    image: '/temp-homepage/hero-vial-image.webp',
     shortDescription: 'The ultimate recovery protocol. Enhanced tissue repair and joint support formulated for maximum bioavailability.',
     priceRange: '$120 - $300',
-    category: 'Recovery'
+    category: '5MG'
   },
   {
     name: 'TB-500',
     slug: 'tb-500',
-    image: '/temp-products/product-image.png',
+    image: '/temp-homepage/hero-vial-image.webp',
     shortDescription: 'Systemic healing and inflammation modulation. Frequently stacked with BPC-157 for synergistic effects.',
     priceRange: '$140 - $350',
-    category: 'Recovery'
+    category: '5MG'
   },
   {
-    name: 'GHK-Cu Copper Peptide',
+    name: 'GHK-Cu',
     slug: 'ghk-cu',
-    image: '/temp-products/product-image.png',
+    image: '/temp-homepage/hero-vial-image.webp',
     shortDescription: 'Advanced cellular health and collagen synthesis. A foundational peptide for longevity protocols.',
     priceRange: '$85 - $200',
-    category: 'Cellular Health'
+    category: '50MG'
   },
   {
     name: 'Semaglutide',
     slug: 'semaglutide',
-    image: '/temp-products/product-image.png',
+    image: '/temp-homepage/hero-vial-image.webp',
     shortDescription: 'GLP-1 receptor agonist for optimized metabolic function and lean mass preservation.',
     priceRange: '$200 - $500',
-    category: 'Metabolic'
+    category: '5MG'
   }
 ]
 
+const CAROUSEL_PRODUCTS = [...SAMPLE_PRODUCTS, ...SAMPLE_PRODUCTS]
+
 export function FeaturedProductsSection() {
-  const col1 = [SAMPLE_PRODUCTS[0], SAMPLE_PRODUCTS[2]]
-  const col2 = [SAMPLE_PRODUCTS[1], SAMPLE_PRODUCTS[3]]
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    align: 'start',
+    loop: false,
+    slidesToScroll: 1,
+    breakpoints: {
+      '(min-width: 768px)': { slidesToScroll: 2 },
+      '(min-width: 1024px)': { slidesToScroll: 4 }
+    }
+  })
+
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
+
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi])
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi])
+  const scrollTo = useCallback((index: number) => emblaApi && emblaApi.scrollTo(index), [emblaApi])
+
+  const onInit = useCallback((emblaApi: any) => {
+    setScrollSnaps(emblaApi.scrollSnapList())
+  }, [])
+
+  const onSelect = useCallback((emblaApi: any) => {
+    setSelectedIndex(emblaApi.selectedScrollSnap())
+  }, [])
+
+  useEffect(() => {
+    if (!emblaApi) return
+    onInit(emblaApi)
+    onSelect(emblaApi)
+    emblaApi.on('reInit', onInit)
+    emblaApi.on('reInit', onSelect)
+    emblaApi.on('select', onSelect)
+  }, [emblaApi, onInit, onSelect])
 
   return (
-    <Container size="page" className="py-32">
-      <div className="flex flex-col items-center text-center mb-16">
-        <FadeUp>
-          <span className="text-label-md uppercase tracking-wider text-gold mb-4 block">
-            FEATURED PROTOCOLS
-          </span>
-        </FadeUp>
-        <FadeUp delay={0.1}>
-          <h2 className="text-display-md font-display text-ink max-w-2xl mx-auto">
-            Most-studied compounds
+    <section className="w-full bg-white relative z-20 py-24 sm:py-32">
+      <Container size="wide" className="px-6 md:px-12 lg:px-16">
+        
+        {/* Header matching reference image */}
+        <div className="flex items-center justify-between w-full mb-12 sm:mb-16 relative">
+          <div className="hidden sm:block flex-1" />
+          <h2 className={`text-center text-[16px] sm:text-[20px] lg:text-[24px] font-bold tracking-[0.2em] uppercase text-black ${spaceGrotesk.className}`}>
+            DISCOVER BEST SELLERS
           </h2>
-        </FadeUp>
-      </div>
-
-      <StaggerChildren staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
-        {/* Column 1 */}
-        <div className="flex flex-col gap-6">
-          <motion.div variants={staggerItemVariants} className="w-full">
-            <FeaturedProductCard 
-              product={col1[0]} 
-              size="tall"
-              id="target-product-image"
-            />
-          </motion.div>
-          <motion.div variants={staggerItemVariants} className="w-full">
-            <FeaturedProductCard 
-              product={col1[1]} 
-              size="small"
-            />
-          </motion.div>
+          <div className="sm:flex-1 flex justify-end absolute right-0 sm:relative">
+            <Link href="/shop" className="text-[9px] sm:text-[10px] font-bold tracking-[0.2em] text-[#5984c4] uppercase hover:text-[#3d65a0] transition-colors">
+              VIEW ALL
+            </Link>
+          </div>
         </div>
 
-        {/* Column 2 */}
-        <div className="flex flex-col gap-6">
-          <motion.div variants={staggerItemVariants} className="w-full">
-            <FeaturedProductCard 
-              product={col2[0]} 
-              size="small"
-            />
-          </motion.div>
-          <motion.div variants={staggerItemVariants} className="w-full">
-            <FeaturedProductCard 
-              product={col2[1]} 
-              size="tall"
-            />
-          </motion.div>
-        </div>
-      </StaggerChildren>
+        {/* Carousel */}
+        <FadeUp delay={0.1}>
+          <div className="relative w-full mx-auto px-0 sm:px-8">
+            
+            <div className="overflow-hidden" ref={emblaRef}>
+              <div className="flex -ml-4 sm:-ml-8">
+                {CAROUSEL_PRODUCTS.map((product, index) => (
+                  <div key={index} className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_25%] pl-4 sm:pl-8">
+                    <FeaturedProductCard product={product} index={index} />
+                  </div>
+                ))}
+              </div>
+            </div>
 
-      <div className="flex justify-center mt-16">
-        <FadeUp delay={0.4}>
-          <Button variant="secondary" size="lg">
-            View All Products
-          </Button>
+            {/* Navigation Arrows */}
+            <button 
+              onClick={scrollPrev} 
+              className="hidden sm:flex absolute left-0 top-[40%] -translate-y-1/2 p-2 text-slate-400 hover:text-black transition-colors"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft size={36} strokeWidth={1} />
+            </button>
+            <button 
+              onClick={scrollNext} 
+              className="hidden sm:flex absolute right-0 top-[40%] -translate-y-1/2 p-2 text-slate-400 hover:text-black transition-colors"
+              aria-label="Next slide"
+            >
+              <ChevronRight size={36} strokeWidth={1} />
+            </button>
+
+            {/* Pagination Dots */}
+            <div className="flex items-center justify-center gap-2 mt-12 sm:mt-16">
+              {scrollSnaps.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollTo(index)}
+                  aria-label={`Go to slide ${index + 1}`}
+                  className={`rounded-full transition-all duration-300 ${
+                    index === selectedIndex ? 'bg-[#5984c4] w-2 h-2' : 'bg-slate-200 hover:bg-slate-300 w-1.5 h-1.5'
+                  }`}
+                />
+              ))}
+            </div>
+
+          </div>
         </FadeUp>
-      </div>
-    </Container>
+
+      </Container>
+    </section>
   )
 }

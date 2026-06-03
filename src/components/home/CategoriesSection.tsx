@@ -32,14 +32,14 @@ const TEMP_IMAGES = [
 ]
 
 const CARD_COLORS = [
-  'bg-[#F5F1EB]', // Soft cream
+  'bg-[#F5F1EB]', // Soft beige
+  'bg-[#f2f6fc]', // Sky blue
+  'bg-[#FAF7F2]', // Light cream
+  'bg-[#eef3fb]', // Soft sky blue
   'bg-[#EBE5D9]', // Warm beige
-  'bg-[#F0F0F2]', // Cool light gray
-  'bg-[#E8EDE9]', // Sage tint
-  'bg-[#F3EAE8]', // Blush tint
-  'bg-[#E6E8E6]', // Neutral gray
-  'bg-[#EAE4DC]', // Warm taupe
-  'bg-[#F4F4F4]', // Off-white
+  'bg-[#e9f0f8]', // Deeper baby blue
+  'bg-[#F2EDE4]', // Smooth beige
+  'bg-[#edf2f9]', // Subtle blue-gray
 ]
 
 function CategoryCard({ category, index }: { category: typeof CATEGORIES[0], index: number }) {
@@ -48,7 +48,7 @@ function CategoryCard({ category, index }: { category: typeof CATEGORIES[0], ind
   const bgColor = CARD_COLORS[index % CARD_COLORS.length]
 
   return (
-    <Link href={`/shop/${category.slug}`} className="group flex flex-col w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[9/14] overflow-hidden rounded-[1rem] sm:rounded-[1.5rem] bg-white cursor-pointer shadow-sm hover:shadow-md transition-shadow duration-500">
+    <Link href={`/shop/${category.slug}`} className="group flex flex-col w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[9/14] overflow-hidden rounded-[1rem] sm:rounded-[1.5rem] bg-white cursor-pointer shadow-md hover:shadow-xl border border-slate-100 transition-all duration-500">
       
       {/* Top Half - Text Area */}
       <div className={`relative flex flex-col justify-between p-4 sm:p-6 lg:p-8 h-[45%] transition-colors duration-500 ${bgColor}`}>
@@ -58,7 +58,7 @@ function CategoryCard({ category, index }: { category: typeof CATEGORIES[0], ind
           <div className="hidden sm:flex flex-col gap-[2px]">
             <span className="font-bold">All</span>
             <span className="opacity-70">Research</span>
-            <span className="opacity-70 group-hover:text-gold transition-colors">Peptides</span>
+            <span className="opacity-70 group-hover:text-[#5984c4] transition-colors">Peptides</span>
             <span className="opacity-70">Protocols</span>
           </div>
           {/* Center Circle */}
@@ -81,7 +81,7 @@ function CategoryCard({ category, index }: { category: typeof CATEGORIES[0], ind
       </div>
 
       {/* Bottom Half - Image Area */}
-      <div className="relative w-full h-[55%] overflow-hidden bg-cream-warm">
+      <div className="relative w-full h-[55%] overflow-hidden bg-white">
         <Image 
           src={imageSrc}
           alt={category.name}
@@ -109,33 +109,35 @@ export function CategoriesSection() {
   const yOdd = useTransform(scrollYProgress, [0, 1], [0, -100])
 
   return (
-    <section ref={containerRef} className="py-16 sm:py-24 lg:py-32 w-full max-w-[92%] lg:max-w-[90%] mx-auto overflow-visible">
-      <div className="flex flex-col items-center text-center mb-10 lg:mb-20">
-        <FadeUp>
-          <span className="text-label-md uppercase tracking-wider text-gold mb-3 lg:mb-4 block">
-            BY CATEGORY
-          </span>
-        </FadeUp>
-        <FadeUp delay={0.1}>
-          <h2 className="text-[10vw] md:text-display-md font-display text-ink max-w-2xl mx-auto leading-tight">
-            Eight research focuses
-          </h2>
-        </FadeUp>
-      </div>
+    <div className="w-full bg-white">
+      <section ref={containerRef} className="py-16 sm:py-24 lg:py-32 w-full max-w-[92%] lg:max-w-[90%] mx-auto overflow-visible">
+        <div className="flex flex-col items-center text-center mb-10 lg:mb-20">
+          <FadeUp>
+            <span className="text-label-md uppercase tracking-wider text-[#5984c4] mb-3 lg:mb-4 block">
+              BY CATEGORY
+            </span>
+          </FadeUp>
+          <FadeUp delay={0.1}>
+            <h2 className="text-[10vw] md:text-display-md font-display text-ink max-w-2xl mx-auto leading-tight">
+              Eight research focuses
+            </h2>
+          </FadeUp>
+        </div>
 
-      <StaggerChildren staggerDelay={0.05} className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 mt-8">
-        {CATEGORIES.map((cat, i) => {
-          // Columns: 0, 1, 2, 3. Even/Odd logic creates the staggering alternating columns
-          const isEven = i % 2 === 0;
-          return (
-            <motion.div variants={staggerItemVariants} key={cat.slug} className="w-full h-full">
-              <motion.div style={{ y: isEven ? yEven : yOdd }} className="w-full h-full">
-                <CategoryCard category={cat} index={i} />
+        <StaggerChildren staggerDelay={0.05} className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 mt-8">
+          {CATEGORIES.map((cat, i) => {
+            // Columns: 0, 1, 2, 3. Even/Odd logic creates the staggering alternating columns
+            const isEven = i % 2 === 0;
+            return (
+              <motion.div variants={staggerItemVariants} key={cat.slug} className="w-full h-full">
+                <motion.div style={{ y: isEven ? yEven : yOdd }} className="w-full h-full">
+                  <CategoryCard category={cat} index={i} />
+                </motion.div>
               </motion.div>
-            </motion.div>
-          )
-        })}
-      </StaggerChildren>
-    </section>
+            )
+          })}
+        </StaggerChildren>
+      </section>
+    </div>
   )
 }

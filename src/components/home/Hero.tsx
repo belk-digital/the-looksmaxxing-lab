@@ -1,235 +1,158 @@
 'use client'
 
-import React, { useRef } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Sparkle } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowRight } from 'lucide-react'
+import { Space_Grotesk } from 'next/font/google'
 import { usePreloader } from './HomePreloaderWrapper'
+import { Marquee } from '@/components/shared/Marquee'
+
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-export function Hero() {
-  const { isReady } = usePreloader()
-  const marqueeItems = [
-    "≥99% HPLC PURITY",
-    "LC-MS VERIFIED",
-    "COA WITH EVERY ORDER",
-    "US-BASED FULFILLMENT",
-    "2-DAY SHIPPING OVER $300"
-  ]
-
-  const renderMarqueeContent = () => (
-    <div className="flex items-center">
-      {[...marqueeItems, ...marqueeItems].map((item, index) => (
-        <React.Fragment key={index}>
-          <span className="mx-6 md:mx-8 whitespace-nowrap">{item}</span>
-          <Sparkle className="w-8 h-8 md:w-12 md:h-12 shrink-0 opacity-80" strokeWidth={1.5} />
-        </React.Fragment>
-      ))}
+const MagneticButton = ({ children, className, variant = "default", size = "default" }: any) => {
+  return (
+    <div className="inline-block">
+      <Button variant={variant} size={size} className={className}>
+        {children}
+      </Button>
     </div>
   )
+}
+
+const backgroundImages = [
+  '/temp-homepage/hero-1.webp',
+  '/temp-homepage/hero-2.webp',
+  '/temp-homepage/hero-3.webp'
+]
+
+export function Hero() {
+  const { isReady } = usePreloader()
+  const textContainerRef = useRef<HTMLDivElement>(null)
   
-  const vialRef = useRef<HTMLDivElement>(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
+  // Auto-scroll carousel every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % backgroundImages.length)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
+  
   useGSAP(() => {
-    if (!isReady) return; // Wait for the preloader to shoot the vial UP before dropping it DOWN
+    if (!isReady) return;
 
-    // 1. Dramatic entrance drop with slight rotation and scale
-    // Start way above the screen so it looks like it came from the preloader
-    gsap.fromTo(vialRef.current, 
-      { 
-        y: -800, // Increased drop height to match launch speed
-        scale: 1.15, 
-        rotation: 12,
-        opacity: 0,
-        filter: 'blur(10px)'
-      },
-      { 
-        y: 0, 
-        scale: 1, 
-        rotation: 0,
-        opacity: 1,
-        filter: 'blur(0px)',
-        duration: 1.4, // Slightly faster drop to maintain momentum
-        ease: "power2.inOut", 
-        delay: 0.1, // Almost immediate after preloader fades
-      }
-    )
-
-    // 2. Continuous elegant floating/breathing animation after settling
-    // Delay ensures it starts right after the entrance drop finishes
-    const floatingAnim = gsap.to(vialRef.current, {
-      y: -20,
-      rotation: -5.5,
-      duration: 2.5,
-      yoyo: true,
-      repeat: -1,
-      ease: "sine.inOut",
-      delay: 1.5
-    })
-
-    // 3. ScrollTrigger to attach to the 2nd section
-    // Defined synchronously so useGSAP can automatically clean it up on unmount!
-    const targetElement = document.getElementById('target-product-image');
-    if (targetElement && vialRef.current) {
-      
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: document.body,
-          start: "top top",
-          endTrigger: targetElement,
-          end: "center center",
-          scrub: true,
-          invalidateOnRefresh: true, // Recalculates flawlessly on mobile scroll/resize
-          onEnter: () => floatingAnim.pause(),
-          onLeaveBack: () => floatingAnim.play(),
+    // Staggered text entrance
+    const elements = textContainerRef.current?.querySelectorAll('.gsap-reveal')
+    if (elements) {
+      gsap.fromTo(elements, 
+        { y: 30, opacity: 0 },
+        { 
+          y: 0, 
+          opacity: 1, 
+          duration: 1, 
+          stagger: 0.15,
+          ease: "power3.out",
+          delay: 0.2
         }
-      });
-
-      tl.to(vialRef.current, {
-        x: () => {
-          if (!vialRef.current || !vialRef.current.parentElement) return 0;
-          const targetRect = targetElement.getBoundingClientRect();
-          // Measure from the static parent to avoid reading mid-animation transformed values
-          const parentRect = vialRef.current.parentElement.getBoundingClientRect();
-          return (targetRect.left + targetRect.width / 2) - (parentRect.left + parentRect.width / 2);
-        },
-        y: () => {
-          if (!vialRef.current || !vialRef.current.parentElement) return 0;
-          const targetRect = targetElement.getBoundingClientRect();
-          const parentRect = vialRef.current.parentElement.getBoundingClientRect();
-          return (targetRect.top + targetRect.height / 2) - (parentRect.top + parentRect.height / 2);
-        },
-        scale: () => {
-          if (!vialRef.current || !vialRef.current.parentElement) return 1;
-          const targetRect = targetElement.getBoundingClientRect();
-          const parentRect = vialRef.current.parentElement.getBoundingClientRect();
-          return (targetRect.height / parentRect.height) * 0.95;
-        },
-        rotation: 0,
-        force3D: true,
-        ease: "power1.inOut"
-      })
-      // Disappear at the end
-      .to(vialRef.current, {
-        opacity: 0,
-        duration: 0.1
-      }, "-=0.1");
-      
+      )
     }
   }, [isReady])
 
   return (
-    <section className="relative w-full bg-white min-h-[100dvh] lg:h-[100dvh] z-[50] flex flex-col pt-24 lg:pt-32 pb-8 lg:pb-10">
+    <section className="relative w-full min-h-[100dvh] lg:h-[100dvh] overflow-hidden z-[50]">
       
-      {/* The Big Text */}
-      <div className="w-full text-center relative z-0 flex justify-center shrink-0">
-        <h1 className="text-[16vw] lg:text-[13vw] font-sans font-medium tracking-tight text-ink leading-[0.8] whitespace-nowrap px-4 select-none">
-          Peptide Lab
-        </h1>
-      </div>
-      
-      {/* The Middle Beige Section */}
-      <div className="relative z-10 w-full max-w-[92%] lg:max-w-[90%] mx-auto flex-1 flex flex-col lg:flex-row items-center lg:items-start justify-between mt-6 lg:mt-8 mb-8 lg:mb-8 min-h-[500px] lg:min-h-0">
-        
-        {/* Background & Marquee Container */}
-        <div className="absolute inset-0 bg-[#EBE0C5] rounded-[1.5rem] lg:rounded-[2.5rem] overflow-hidden -z-10">
-          {/* Marquee Background Text */}
-          <div className="absolute bottom-4 lg:bottom-6 left-0 w-full overflow-hidden whitespace-nowrap flex text-[#D8CCA9] font-sans font-medium text-4xl lg:text-6xl uppercase opacity-80 pointer-events-none select-none">
-            <div className="animate-marquee flex items-center whitespace-nowrap w-max">
-               {renderMarqueeContent()}
-               {renderMarqueeContent()}
-            </div>
-          </div>
-        </div>
-
-        {/* Content Container */}
-        <div className="w-full h-full flex flex-col lg:flex-row relative z-20 px-6 lg:px-12 py-8 lg:py-0 items-center justify-between">
-          
-          {/* Spacer for Mobile Vial so it has space to pop out the top without overlapping text */}
-          <div className="w-full lg:hidden min-h-[180px] sm:min-h-[240px] md:min-h-[300px] shrink-0" />
-
-          {/* Left Column Text */}
-          <div className="w-full lg:w-[30%] flex flex-col items-center lg:items-start text-center lg:text-left z-20 mb-8 lg:mb-0">
-            <h2 className="text-label-md lg:text-label-lg font-bold uppercase tracking-widest text-ink mb-3 lg:mb-4">
-              PREMIUM RESEARCH PEPTIDES
-            </h2>
-            <p className="text-body-sm lg:text-body-md text-ink/80 max-w-[280px]">
-              Precision-synthesized for maximum efficacy, our premium peptides provide the reliability and consistency needed for rigorous research applications.
-            </p>
-          </div>
-
-          {/* Right Column Text */}
-          <div className="w-full lg:w-[30%] flex flex-col items-center lg:items-end text-center lg:text-right z-20">
-            <p className="text-body-sm lg:text-body-md text-ink/80 max-w-[280px] mb-5 lg:mb-6">
-              Elevate your research with our high-purity compounds, thoroughly verified by independent third-party testing to ensure absolute quality and safety.
-            </p>
-            <Button variant="dark" size="sm" className="px-8 py-6 rounded-full uppercase tracking-[0.15em] text-[10px] lg:text-sm font-bold transition-colors shadow-md pointer-events-auto">
-              DISCOVER MORE
-            </Button>
-          </div>
-        </div>
-
-        {/* The Vial Image - Using GSAP for animations */}
-        {/* On mobile: pops out of top. On desktop: anchored to bottom, popping out top naturally due to height */}
-        <div className="absolute left-1/2 -top-[15%] sm:-top-[20%] md:-top-[25%] lg:top-auto lg:bottom-4 xl:bottom-8 w-full max-w-[140px] sm:max-w-[180px] md:max-w-[240px] lg:max-w-[min(260px,32dvh)] xl:max-w-[min(290px,35dvh)] -translate-x-1/2 z-30 pointer-events-none">
-          <div 
-            ref={vialRef}
-            className="relative w-full aspect-[1/2.2]"
-            style={{ opacity: 0, willChange: 'transform' }}
+      {/* Background Image Carousel */}
+      <div className="absolute inset-0 w-full h-full z-0 bg-ink">
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={currentImageIndex}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: 'easeInOut' }}
+            className="absolute inset-0 w-full h-full"
           >
             <Image 
-              src="/temp-homepage/hero-vial-image.webp" 
-              alt="Premium Peptide Vial" 
-              fill
-              className="object-contain drop-shadow-2xl object-center" 
-              priority
+              src={backgroundImages[currentImageIndex]} 
+              alt="Hero Background" 
+              fill 
+              className="object-cover object-center"
+              priority={currentImageIndex === 0}
             />
-          </div>
-        </div>
+          </motion.div>
+        </AnimatePresence>
         
+        {/* Subtle black overlay on the left to ensure text is always readable */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/20 to-transparent lg:w-[60%] z-10 pointer-events-none"></div>
+
+        {/* Subtle black overlay at the top to protect the transparent header icons */}
+        <div className="absolute top-0 inset-x-0 h-[160px] bg-gradient-to-b from-black/20 to-transparent z-10 pointer-events-none"></div>
       </div>
 
-      {/* Bottom White Section */}
-      <div className="w-full max-w-[92%] lg:max-w-[90%] mx-auto shrink-0 flex flex-col lg:flex-row items-center lg:items-start justify-between gap-6 lg:gap-8 mt-auto">
-        <div className="w-full lg:w-[25%] border-t lg:border-t-0 lg:border-l-2 border-ink/10 pt-5 lg:pt-0 lg:pl-6 text-center lg:text-left">
-          <h3 className="text-label-sm lg:text-label-md font-bold uppercase tracking-widest text-ink leading-relaxed lg:max-w-[150px] mx-auto lg:mx-0">
-            ADVANCED PROTOCOLS FOR OPTIMAL RESULTS
-          </h3>
-        </div>
+      <div className="relative w-full h-full px-6 md:px-12 lg:px-16 flex flex-col items-center lg:items-start justify-center pt-32 lg:pt-0 pb-16 lg:pb-0 z-20">
         
-        <div className="w-full lg:w-[45%] text-center lg:text-left">
-          <p className="font-display text-ink leading-tight text-[26px] sm:text-[32px] lg:text-[40px] max-w-[400px] lg:max-w-none mx-auto">
-            Curated performance compounds to elevate your research potential.
-          </p>
-        </div>
-        
-        <div className="w-full lg:w-[30%] flex gap-4 lg:gap-4 items-center justify-center lg:justify-end pb-4 lg:pb-0">
-          {/* Preview Image Block */}
-          <div className="relative w-16 lg:w-16 h-24 lg:h-24 rounded-lg overflow-hidden bg-cream-warm shadow-md shrink-0">
-             <Image 
-                src="/temp-homepage/hero-vial-image.webp" 
-                fill 
-                className="object-cover" 
-                alt="Product Preview" 
-             />
+        {/* Text & CTA */}
+        <div ref={textContainerRef} className="w-full lg:w-[50%] flex flex-col items-center lg:items-start text-center lg:text-left mt-4 lg:mt-0 drop-shadow-md">
+          
+          <div className="gsap-reveal overflow-hidden mb-6 lg:mb-8">
+            <h2 className="text-label-md font-bold text-white tracking-[0.2em] uppercase">
+              PRECISION. PURITY. PERFORMANCE.
+            </h2>
           </div>
-          {/* Stats Block */}
-          <div className="bg-[#EBE0C5] rounded-xl p-4 lg:p-4 flex flex-col gap-2 lg:gap-2 shadow-sm min-w-[120px] shrink-0">
-             <div className="flex -space-x-3">
-                <div className="w-8 h-8 rounded-full border-2 border-[#EBE0C5] bg-[#C9B58E] overflow-hidden relative"></div>
-                <div className="w-8 h-8 rounded-full border-2 border-[#EBE0C5] bg-[#A89570] overflow-hidden relative"></div>
-                <div className="w-8 h-8 rounded-full border-2 border-[#EBE0C5] bg-[#8C7A55] overflow-hidden relative"></div>
-             </div>
-             <p className="text-ink">
-               <span className="text-xl font-bold leading-none block mb-0.5">2K+</span>
-               <span className="text-[10px] font-medium leading-tight block">Happy customers<br/>worldwide</span>
-             </p>
+
+          <div className="gsap-reveal overflow-hidden mb-5 lg:mb-8">
+            <h1 className={`text-[44px] sm:text-[56px] lg:text-[72px] xl:text-[84px] leading-[1.05] font-bold tracking-tighter text-white ${spaceGrotesk.className}`}>
+              The Future of <br className="hidden lg:block" />
+              Precision Wellness
+            </h1>
+          </div>
+
+          <div className="gsap-reveal overflow-hidden mb-8 lg:mb-12">
+            <p className="text-body-md lg:text-body-lg text-white/90 max-w-[480px]">
+              Clinical-grade peptide research designed with luxury, purity, and modern longevity in mind.
+            </p>
+          </div>
+
+          <div className="gsap-reveal flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            <MagneticButton variant="ghost" className="group w-full sm:w-auto px-9 py-6 rounded-none uppercase text-[10px] tracking-[0.25em] font-bold bg-white text-black hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all duration-300 flex items-center justify-center gap-3">
+              SHOP PEPTIDES
+              <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1.5" />
+            </MagneticButton>
+            <MagneticButton variant="ghost" className="group w-full sm:w-auto px-9 py-6 rounded-none uppercase text-[10px] tracking-[0.25em] font-bold border border-white/50 text-white hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-md bg-white/5 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] flex items-center justify-center gap-3">
+              DISCOVER THE LAB
+              <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1.5" />
+            </MagneticButton>
+          </div>
+
+          {/* Functional Carousel Dots Indicator */}
+          <div className="gsap-reveal flex items-center gap-3 mt-12 lg:mt-24">
+            {backgroundImages.map((_, idx) => (
+              <div 
+                key={idx}
+                className={`h-2.5 rounded-full transition-all duration-500 cursor-pointer ${currentImageIndex === idx ? 'bg-[#1e4066] w-8' : 'bg-ink/20 hover:bg-ink/40 w-2.5'}`}
+                onClick={() => setCurrentImageIndex(idx)}
+              ></div>
+            ))}
           </div>
         </div>
+
+      </div>
+
+      {/* Modern White Marquee overlaying the bottom of the Hero */}
+      <div className="absolute bottom-0 inset-x-0 z-30 shadow-[0_-10px_50px_rgba(0,0,0,0.2)]">
+        <Marquee 
+          className="bg-white border-none py-5" 
+          textClassName="text-black font-bold tracking-[0.35em]" 
+          dotClassName="text-black/30 text-[14px]" 
+        />
       </div>
     </section>
   )

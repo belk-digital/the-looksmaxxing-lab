@@ -27,7 +27,7 @@ export function AboutTeaser() {
 
   return (
     <div className="w-full max-w-[96%] mx-auto my-16 md:my-24">
-      <section ref={containerRef} className="relative w-full h-[85vh] md:h-[95vh] overflow-hidden bg-ink flex items-center justify-center rounded-[2.5rem] shadow-2xl">
+      <section ref={containerRef} className="relative w-full h-[85vh] md:h-[95vh] overflow-hidden bg-white flex items-center justify-center rounded-[2.5rem] shadow-2xl border border-slate-100">
         
         {/* 1. Deep Background Layer */}
         <motion.div 
@@ -38,10 +38,14 @@ export function AboutTeaser() {
             src="/temp-products/about-lifestyle.png"
             alt="The Looksmaxxing Lab Facility"
             fill
-            className="object-cover opacity-40 grayscale"
+            className="object-cover opacity-100"
           />
+          {/* Light color overlay to soften the image */}
+          <div className="absolute inset-0 bg-white/40" />
+          {/* Sky blue color tint overlay */}
+          <div className="absolute inset-0 bg-[#5984c4]/20 mix-blend-color" />
           {/* Vignette & Gradient for readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/50 to-transparent" />
         </motion.div>
 
         {/* 4. Extreme Foreground Blur Layer (Left Side, huge scale, blurred, placed BEHIND text for depth) */}
@@ -53,7 +57,7 @@ export function AboutTeaser() {
             src="/temp-homepage/hero-vial-image.webp"
             alt="Foreground Blur Vial"
             fill
-            className="object-contain blur-2xl"
+            className="object-contain blur-xl mix-blend-multiply opacity-30"
           />
         </motion.div>
 
@@ -62,18 +66,18 @@ export function AboutTeaser() {
           style={{ y: textY, willChange: 'transform' }}
           className="relative z-10 w-full flex flex-col items-center justify-center text-center px-6 pointer-events-none"
         >
-          <span className="text-label-md uppercase tracking-widest text-gold mb-6 md:mb-8 block font-bold">
+          <span className="text-label-md uppercase tracking-widest text-[#5984c4] mb-6 md:mb-8 block font-bold">
             THE LAB
           </span>
-          <h2 className="text-[10vw] sm:text-[8vw] md:text-[6vw] font-display text-cream leading-[0.9] tracking-tight max-w-[95%] md:max-w-[70%] drop-shadow-2xl">
+          <h2 className="text-[10vw] sm:text-[8vw] md:text-[6vw] font-display text-ink leading-[0.9] tracking-tight max-w-[95%] md:max-w-[70%] drop-shadow-sm">
             Considered compounds for considered research.
           </h2>
-          <p className="mt-8 text-cream/70 max-w-xl text-sm sm:text-base md:text-lg mx-auto leading-relaxed drop-shadow-md">
+          <p className="mt-8 text-ink/70 max-w-xl text-sm sm:text-base md:text-lg mx-auto leading-relaxed">
             We synthesize ultra-pure peptides in sterile, state-of-the-art facilities. 
             Every batch is subjected to rigorous third-party LC-MS analysis to verify 
             potency and identity before it reaches your bench.
           </p>
-          <Button variant="outline" className="mt-10 border-white/20 text-white hover:bg-white hover:text-ink pointer-events-auto rounded-[1.5rem] px-8 py-6 backdrop-blur-md">
+          <Button variant="outline" className="mt-10 border-slate-300 text-ink hover:bg-[#5984c4] hover:text-white hover:border-[#5984c4] pointer-events-auto rounded-[1.5rem] px-8 py-6 backdrop-blur-md transition-all duration-300 uppercase tracking-widest text-[10px] font-bold shadow-sm">
             Read About Us
           </Button>
         </motion.div>
@@ -87,7 +91,7 @@ export function AboutTeaser() {
             src="/temp-homepage/hero-vial-image.webp"
             alt="Foreground Vial"
             fill
-            className="object-contain"
+            className="object-contain mix-blend-multiply drop-shadow-2xl"
           />
         </motion.div>
 
