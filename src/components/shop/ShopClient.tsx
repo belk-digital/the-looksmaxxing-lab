@@ -187,7 +187,7 @@ function ShopClientInner() {
             <StaggerChildren staggerDelay={0.05} className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
               {products.map((product) => (
                 <motion.div variants={staggerItemVariants} key={product.slug} className="flex h-full w-full">
-                  <FeaturedProductCard product={product} size="tall" />
+                  <FeaturedProductCard product={product} />
                 </motion.div>
               ))}
             </StaggerChildren>
