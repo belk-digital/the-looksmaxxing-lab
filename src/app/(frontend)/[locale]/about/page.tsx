@@ -112,7 +112,7 @@ export default function AboutPage() {
             initial={{ width: '90%', height: '40vh', borderRadius: '3rem' }}
             whileHover={{ width: '98%', height: '60vh', borderRadius: '1.5rem' }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="relative overflow-hidden shadow-2xl cursor-pointer group my-2 max-w-[1600px] w-full"
+            className="relative overflow-hidden shadow-2xl cursor-pointer group my-8 md:my-12 max-w-[1600px] w-full"
             style={{ width: '85%' }} // default width before hover
           >
              <motion.div 
@@ -132,9 +132,9 @@ export default function AboutPage() {
              </motion.div>
              
              {/* Center Overlay Text inside Window */}
-             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+             <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-4">
                 <motion.h1 
-                  className="text-[18vw] lg:text-[10vw] font-serif text-white leading-none tracking-tight mix-blend-overlay opacity-90 drop-shadow-2xl"
+                  className="text-center text-[16vw] md:text-[18vw] lg:text-[10vw] font-serif text-white leading-none tracking-tight mix-blend-overlay opacity-90 drop-shadow-2xl whitespace-nowrap"
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 1, delay: 0.4 }}
@@ -536,7 +536,7 @@ export default function AboutPage() {
         faqs={ABOUT_FAQS}
         title="Frequently"
         accentTitle="Asked Questions"
-        description="Learn more about our shipping, lab protocols, and product storage guidelines."
+        description="Learn more about our shipping, lab guidelines, and product storage guidelines."
         theme="light"
       />
       {/* 6. CTA section - Redesigned for Premium Aesthetic */}
@@ -587,7 +587,7 @@ export default function AboutPage() {
 
             <div className="relative z-10 w-full max-w-4xl flex flex-col items-center gap-8">
               <span className="text-[#5984c4] font-mono tracking-[0.2em] text-xs lg:text-sm uppercase font-bold bg-[#5984c4]/10 px-6 py-2 rounded-full">
-                Initiate Your Protocol
+                Initiate Your Guideline
               </span>
               
               <h2 className="text-5xl md:text-6xl lg:text-8xl font-serif text-ink leading-[1.1] tracking-tight">

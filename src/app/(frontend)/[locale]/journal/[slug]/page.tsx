@@ -65,13 +65,13 @@ export default function JournalPostPage() {
             </p>
 
             <p>
-              In recent years, the administration of NAD+ precursors such as NMN and NR has gained significant traction. However, direct NAD+ supplementation via intravenous or subcutaneous protocols continues to be heavily researched for its immediate bioavailability and profound impact on sirtuin activation.
+              In recent years, the administration of NAD+ precursors such as NMN and NR has gained significant traction. However, direct NAD+ supplementation via intravenous or subcutaneous guidelines continues to be heavily researched for its immediate bioavailability and profound impact on sirtuin activation.
             </p>
 
             <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Cellular Respiration and Sirtuins</h2>
             
             <p>
-              The relationship between NAD+ and sirtuins—a family of NAD+-dependent deacetylases—forms the foundation of many longevity protocols. Sirtuins regulate numerous cellular processes including DNA repair, inflammatory responses, and mitochondrial biogenesis.
+              The relationship between NAD+ and sirtuins—a family of NAD+-dependent deacetylases—forms the foundation of many longevity guidelines. Sirtuins regulate numerous cellular processes including DNA repair, inflammatory responses, and mitochondrial biogenesis.
             </p>
 
             <ImageFigure 
@@ -91,7 +91,7 @@ export default function JournalPostPage() {
             <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Clinical Observations</h2>
 
             <p>
-              In controlled environments, subjects receiving direct NAD+ demonstrate accelerated recovery from muscular fatigue and enhanced cognitive baselines. The challenge remains in the stabilization of the compound during transport and the optimization of reconstitution protocols to prevent rapid degradation.
+              In controlled environments, subjects receiving direct NAD+ demonstrate accelerated recovery from muscular fatigue and enhanced cognitive baselines. The challenge remains in the stabilization of the compound during transport and the optimization of reconstitution guidelines to prevent rapid degradation.
             </p>
 
             {/* References */}
@@ -120,8 +120,8 @@ export default function JournalPostPage() {
               <BlogPostCard 
                 slug={`related-post-${i}`}
                 title={`Exploring the synergistic effects of BPC-157 and TB-500 ${i}`}
-                category="Protocols"
-                excerpt="An analysis of co-administration protocols for enhanced tissue repair and angiogenesis."
+                category="Guidelines"
+                excerpt="An analysis of co-administration guidelines for enhanced tissue repair and angiogenesis."
                 imageSrc="/hero-image.png"
                 readTime="8 min read"
               />

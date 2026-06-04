@@ -16,7 +16,7 @@ const SAMPLE_PRODUCTS: Product[] = [
     name: 'BPC-157 Blend',
     slug: 'bpc-157-blend',
     image: '/temp-homepage/hero-vial-image.webp',
-    shortDescription: 'The ultimate recovery protocol. Enhanced tissue repair and joint support formulated for maximum bioavailability.',
+    shortDescription: 'The ultimate recovery guideline. Enhanced tissue repair and joint support formulated for maximum bioavailability.',
     priceRange: '$120 - $300',
     category: '5MG'
   },
@@ -32,7 +32,7 @@ const SAMPLE_PRODUCTS: Product[] = [
     name: 'GHK-Cu',
     slug: 'ghk-cu',
     image: '/temp-homepage/hero-vial-image.webp',
-    shortDescription: 'Advanced cellular health and collagen synthesis. A foundational peptide for longevity protocols.',
+    shortDescription: 'Advanced cellular health and collagen synthesis. A foundational peptide for longevity guidelines.',
     priceRange: '$85 - $200',
     category: '50MG'
   },

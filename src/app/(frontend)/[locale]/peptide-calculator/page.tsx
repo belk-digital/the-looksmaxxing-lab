@@ -450,7 +450,7 @@ export default function PeptideCalculatorPage() {
         {/* Background Watermark */}
         <div className="absolute top-[10%] left-0 w-full pointer-events-none z-0 overflow-hidden">
           <span className="text-[16vw] font-serif text-ink/[0.02] leading-none select-none tracking-tighter whitespace-nowrap">
-            PROTOCOL
+            GUIDELINE
           </span>
         </div>
 
@@ -506,7 +506,7 @@ export default function PeptideCalculatorPage() {
                         <tr className="border-b border-ink/10">
                           <td className="py-4 pr-8 font-serif text-lg">0.3 ML</td>
                           <td className="py-4 pr-8 font-serif text-lg">30 IU</td>
-                          <td className="py-4 text-base">Micro-dosing protocols, precise low-volume draws</td>
+                          <td className="py-4 text-base">Micro-dosing guidelines, precise low-volume draws</td>
                         </tr>
                         <tr className="border-b border-ink/10">
                           <td className="py-4 pr-8 font-serif text-lg">0.5 ML</td>
@@ -1030,7 +1030,7 @@ export default function PeptideCalculatorPage() {
                   All products referenced on this page and throughout The LooksMaxxing Lab are intended exclusively for <strong className="text-ink font-medium">in-vitro laboratory research purposes only</strong>. They are not intended for human consumption, diagnostic, therapeutic, or any other clinical use.
                 </p>
                 <p className="text-lg text-ink/60 leading-relaxed font-light mb-6">
-                  This calculator is provided strictly as a <strong className="text-ink font-medium">theoretical research tool</strong> to assist researchers in calculating reconstitution volumes and concentrations for their laboratory protocols. It does not constitute medical advice, and no information provided should be interpreted as guidance for human administration.
+                  This calculator is provided strictly as a <strong className="text-ink font-medium">theoretical research tool</strong> to assist researchers in calculating reconstitution volumes and concentrations for their laboratory guidelines. It does not constitute medical advice, and no information provided should be interpreted as guidance for human administration.
                 </p>
                 <p className="text-lg text-ink/60 leading-relaxed font-light">
                   By using this tool, you confirm that you are a qualified researcher and that all products will be used in strict compliance with applicable federal, state, and local regulations. The LooksMaxxing Lab assumes no liability for misuse of this tool or any products listed on our platform.

@@ -20,7 +20,7 @@ export function LayoutClientWrapper({
   return (
     <div className="flex min-h-screen flex-col relative z-0 isolate">
       {isCheckout ? <MinimalHeader /> : header}
-      <main className="flex-1 flex flex-col relative z-10 isolate">
+      <main className="flex-1 flex flex-col relative">
         {children}
       </main>
       <div className="relative z-[99999] isolate">

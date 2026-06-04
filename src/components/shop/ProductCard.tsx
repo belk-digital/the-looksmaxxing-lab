@@ -31,7 +31,10 @@ export function ProductCard({ product }: { product: StandardProduct }) {
       <Link href={`/products/${product.slug}`} className="flex flex-col flex-1">
         
         {/* Image Area */}
-        <div className="relative w-full aspect-[4/5] overflow-hidden bg-cream-warm mb-6">
+        <div className="relative w-full aspect-[4/5] overflow-hidden bg-white mb-6">
+          {/* Zooming Circle Background */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] aspect-square rounded-full bg-cream transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110" />
+          
           <motion.div
             variants={{
               rest: { scale: 1 },

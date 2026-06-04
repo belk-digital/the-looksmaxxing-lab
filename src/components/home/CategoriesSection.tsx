@@ -59,7 +59,7 @@ function CategoryCard({ category, index }: { category: typeof CATEGORIES[0], ind
             <span className="font-bold">All</span>
             <span className="opacity-70">Research</span>
             <span className="opacity-70 group-hover:text-[#5984c4] transition-colors">Peptides</span>
-            <span className="opacity-70">Protocols</span>
+            <span className="opacity-70">Guidelines</span>
           </div>
           {/* Center Circle */}
           <div className="hidden sm:block w-3 h-3 lg:w-4 lg:h-4 rounded-full border-2 border-ink mt-0.5" />

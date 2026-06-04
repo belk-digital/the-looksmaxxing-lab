@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import { SearchIcon } from 'lucide-react'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { EmptyState } from '@/components/shared/EmptyState'
-import { EyebrowHeading } from '@/components/editorial/EyebrowHeading'
 import { Input } from '@/components/ui/input'
 import {
   Accordion,
@@ -33,7 +32,7 @@ const FAQ_DATA = [
   {
     title: 'Returns',
     items: [
-      { q: 'Can I return an open vial?', a: 'Due to the strict quality control protocols required for research materials, we absolutely cannot accept returns on open or reconstituted products. This ensures that every researcher receives pristine, untampered compounds.' },
+      { q: 'Can I return an open vial?', a: 'Due to the strict quality control guidelines required for research materials, we absolutely cannot accept returns on open or reconstituted products. This ensures that every researcher receives pristine, untampered compounds.' },
       { q: 'My order arrived damaged, what should I do?', a: 'If your vials arrive compromised, please contact our support team within 48 hours of delivery. Include high-resolution photos of the damaged items and the packaging. We will expedite a replacement.' }
     ]
   },
@@ -67,22 +66,22 @@ export default function FAQPage() {
   }).filter(cat => cat.items.length > 0)
 
   return (
-    <main className="bg-cream min-h-screen pt-32 pb-24">
+    <main className="bg-[#f3f4f6] min-h-screen pt-32 lg:pt-40 pb-24">
       {/* Header & Search */}
-      <section className="px-6 mb-24 max-w-prose mx-auto flex flex-col items-center">
+      <section className="px-6 mb-16 lg:mb-24 max-w-2xl mx-auto flex flex-col items-center">
         <FadeUp className="w-full flex flex-col items-center">
-          <EyebrowHeading gold className="items-center mb-4 text-center">Support</EyebrowHeading>
-          <h1 className="text-display-md font-serif text-ink mb-6 text-center">Frequently Asked Questions</h1>
-          <p className="text-body-lg text-ink-muted text-center mb-10 max-w-content">
-            Everything you need to know about our research compounds, purity standards, and ordering protocols.
+          <span className="px-4 py-1.5 bg-white border border-gray-100 shadow-sm text-ink rounded-full text-xs font-bold uppercase tracking-widest mb-6">Support Center</span>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-ink mb-6 text-center tracking-tight leading-tight">Frequently Asked Questions</h1>
+          <p className="text-lg lg:text-xl text-gray-500 text-center mb-10 max-w-xl font-light leading-relaxed">
+            Everything you need to know about our research compounds, purity standards, and ordering guidelines.
           </p>
           
-          <div className="relative w-full max-w-[480px]">
-            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-muted" />
+          <div className="relative w-full max-w-[540px]">
+            <SearchIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <Input 
               type="text" 
               placeholder="Search for an answer..." 
-              className="pl-12 bg-cream-warm"
+              className="w-full h-14 pl-14 pr-6 rounded-full bg-white border-transparent shadow-sm hover:shadow-md focus:border-[#5984c4] focus:ring-1 focus:ring-[#5984c4] transition-all duration-300 text-lg placeholder:text-gray-400"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -91,10 +90,10 @@ export default function FAQPage() {
       </section>
 
       {/* FAQ Accordions */}
-      <section className="px-6 max-w-[720px] mx-auto mb-24">
+      <section className="px-4 md:px-6 max-w-[800px] mx-auto mb-24">
         <FadeUp delay={0.1}>
           {filteredCategories.length === 0 ? (
-            <div className="py-12 bg-cream-warm/30 border border-border-subtle rounded-sm">
+            <div className="py-24 bg-white rounded-[2rem] shadow-sm flex items-center justify-center">
               <EmptyState 
                 icon={SearchIcon} 
                 title="No results found" 
@@ -102,17 +101,22 @@ export default function FAQPage() {
               />
             </div>
           ) : (
-            <div className="flex flex-col gap-16">
+            <div className="flex flex-col gap-8">
               {filteredCategories.map((category) => (
-                <div key={category.title}>
-                  <h2 className="text-editorial-md font-serif text-ink mb-6">{category.title}</h2>
+                <div key={category.title} className="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-6 lg:p-10 shadow-sm">
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-8 h-8 rounded-full bg-[#5984c4]/10 flex items-center justify-center shrink-0">
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#5984c4]" />
+                    </div>
+                    <h2 className="text-2xl lg:text-3xl font-bold text-ink tracking-tight">{category.title}</h2>
+                  </div>
                   <Accordion type="multiple" className="w-full">
                     {category.items.map((item, i) => (
-                      <AccordionItem key={i} value={`${category.title}-${i}`}>
-                        <AccordionTrigger className="text-body-lg font-sans text-ink">
+                      <AccordionItem key={i} value={`${category.title}-${i}`} className="border-b border-gray-100 last:border-0">
+                        <AccordionTrigger className="text-lg md:text-xl font-medium text-ink hover:text-[#5984c4] transition-colors duration-300 py-6 text-left">
                           {item.q}
                         </AccordionTrigger>
-                        <AccordionContent className="text-body-md text-ink-muted leading-relaxed pb-8">
+                        <AccordionContent className="text-base md:text-lg text-gray-500 leading-relaxed pb-8 font-light">
                           {item.a}
                         </AccordionContent>
                       </AccordionItem>

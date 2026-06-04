@@ -19,7 +19,7 @@ const SAMPLE_POSTS = [
     title: 'GHK-Cu: Beyond Cosmetic Applications',
     slug: 'ghk-cu-beyond-cosmetic',
     category: 'Research Notes',
-    excerpt: 'Examining the systemic gene-modulating effects of the copper peptide complex and its implications for longevity protocols.',
+    excerpt: 'Examining the systemic gene-modulating effects of the copper peptide complex and its implications for longevity guidelines.',
     readTime: '12 min read',
     image: '/temp-products/ghk-cu.png'
   },
@@ -101,7 +101,7 @@ export function JournalTeaser() {
              SCIENCE JOURNAL
            </span>
            <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-display text-ink leading-[0.9] tracking-tight mb-4 md:mb-8 max-w-[90%] drop-shadow-sm">
-             Clinical reviews & protocols
+             Clinical reviews & guidelines
            </h2>
            <p className="text-xs md:text-body-md text-ink/70 mb-6 md:mb-12 max-w-md">
              Deep dives into molecular mechanisms, purity testing methodology, and the latest clinical literature surrounding synthetic peptides.

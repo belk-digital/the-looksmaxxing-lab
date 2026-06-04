@@ -24,7 +24,7 @@ const FAQS: FaqItem[] = [
   },
   {
     question: "How are the products synthesized?",
-    answer: "We utilize advanced solid-phase peptide synthesis (SPPS) and strict purification protocols to ensure maximum stability and fidelity, resulting in research-grade compounds suitable for rigorous laboratory environments."
+    answer: "We utilize advanced solid-phase peptide synthesis (SPPS) and strict purification guidelines to ensure maximum stability and fidelity, resulting in research-grade compounds suitable for rigorous laboratory environments."
   }
 ]
 
@@ -34,7 +34,7 @@ export function FaqSection() {
       faqs={FAQS} 
       title="Common"
       accentTitle="Questions"
-      description="Find detailed information regarding our laboratory protocols, purity standards, and ordering processes. For specific institutional inquiries, our support team is available."
+      description="Find detailed information regarding our laboratory guidelines, purity standards, and ordering processes. For specific institutional inquiries, our support team is available."
       theme="light"
     />
   )

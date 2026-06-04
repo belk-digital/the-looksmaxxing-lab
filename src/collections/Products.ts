@@ -163,6 +163,70 @@ export const Products: CollectionConfig = {
       admin: { readOnly: true },
     },
     {
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Product Details',
+          fields: [
+            { name: 'productDetailsTitle', type: 'text', defaultValue: 'Product Details' },
+            { name: 'productDetailsDescription', type: 'textarea' },
+          ],
+        },
+        {
+          label: 'Research Focus & Mechanism Overview',
+          fields: [
+            { name: 'researchFocusTitle', type: 'text', defaultValue: 'Research Focus & Mechanism Overview' },
+            { name: 'researchFocusDescription', type: 'textarea' },
+          ],
+        },
+        {
+          label: 'Quality & Purity Standards',
+          fields: [
+            { name: 'qualityPurityTitle', type: 'text', defaultValue: 'Quality & Purity Standards' },
+            { name: 'qualityPurityDescription', type: 'textarea' },
+          ],
+        },
+        {
+          label: 'Compliance Notice',
+          fields: [
+            { name: 'complianceNoticeTitle', type: 'text', defaultValue: 'Compliance Notice' },
+            { name: 'complianceNoticeDescription', type: 'textarea' },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'coaFile',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description: 'Upload the Certificate of Analysis (COA) document (PDF/Image)',
+      },
+    },
+    {
+      name: 'faqs',
+      type: 'array',
+      labels: {
+        singular: 'FAQ',
+        plural: 'FAQs',
+      },
+      fields: [
+        {
+          name: 'question',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'answer',
+          type: 'textarea',
+          required: true,
+        },
+      ],
+      admin: {
+        description: 'Add frequently asked questions specifically for this product.',
+      },
+    },
+    {
       name: 'status',
       type: 'select',
       options: [

@@ -361,6 +361,28 @@ export interface Product {
     | null;
   averageRating?: number | null;
   reviewCount?: number | null;
+  productDetailsTitle?: string | null;
+  productDetailsDescription?: string | null;
+  researchFocusTitle?: string | null;
+  researchFocusDescription?: string | null;
+  qualityPurityTitle?: string | null;
+  qualityPurityDescription?: string | null;
+  complianceNoticeTitle?: string | null;
+  complianceNoticeDescription?: string | null;
+  /**
+   * Upload the Certificate of Analysis (COA) document (PDF/Image)
+   */
+  coaFile?: (number | null) | Media;
+  /**
+   * Add frequently asked questions specifically for this product.
+   */
+  faqs?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
   status?: ('draft' | 'active' | 'archived') | null;
   isVisible?: boolean | null;
   updatedAt: string;
@@ -1326,6 +1348,22 @@ export interface ProductsSelect<T extends boolean = true> {
       };
   averageRating?: T;
   reviewCount?: T;
+  productDetailsTitle?: T;
+  productDetailsDescription?: T;
+  researchFocusTitle?: T;
+  researchFocusDescription?: T;
+  qualityPurityTitle?: T;
+  qualityPurityDescription?: T;
+  complianceNoticeTitle?: T;
+  complianceNoticeDescription?: T;
+  coaFile?: T;
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
   status?: T;
   isVisible?: T;
   updatedAt?: T;

@@ -1,7 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { EyebrowHeading } from './EyebrowHeading'
 
 export function BlogPostCard({
   slug,
@@ -19,26 +18,26 @@ export function BlogPostCard({
   readTime: string
 }) {
   return (
-    <Link href={`/journal/${slug}`} className="group flex flex-col gap-4 block h-full">
-      <div className="relative w-full aspect-[4/3] overflow-hidden rounded-sm">
+    <Link href={`/journal/${slug}`} className="group flex flex-col bg-white rounded-[2rem] p-4 h-full shadow-sm hover:shadow-md transition-shadow duration-300">
+      <div className="relative w-full aspect-[4/3] overflow-hidden rounded-2xl mb-6">
         <Image 
           src={imageSrc} 
           alt={title} 
           fill 
-          className="object-cover transition-transform duration-slow ease-out-quart group-hover:scale-[1.04]" 
+          className="object-cover transition-transform duration-[800ms] ease-out group-hover:scale-105" 
         />
       </div>
-      <div className="flex flex-col flex-grow">
-        <div className="flex justify-between items-center mb-2">
-          <EyebrowHeading gold={true} showRule={false} className="mb-0">
+      <div className="flex flex-col flex-grow px-2 pb-2">
+        <div className="flex justify-between items-center mb-4">
+          <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase tracking-wider">
             {category}
-          </EyebrowHeading>
-          <span className="text-label-md text-ink-muted uppercase tracking-wider">{readTime}</span>
+          </span>
+          <span className="text-xs text-gray-400 font-medium uppercase tracking-wider">{readTime}</span>
         </div>
-        <h3 className="text-editorial-md font-serif text-ink mb-2 group-hover:text-gold-dark transition-colors duration-fast">
+        <h3 className="text-xl font-bold text-ink mb-3 group-hover:text-blue-600 transition-colors duration-300 leading-tight">
           {title}
         </h3>
-        <p className="text-body-sm text-ink-muted line-clamp-2 mb-4">
+        <p className="text-sm text-gray-500 line-clamp-2 mt-auto leading-relaxed">
           {excerpt}
         </p>
       </div>

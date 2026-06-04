@@ -22,7 +22,7 @@ export function FaqCarousel({
   faqs, 
   title = "Frequently", 
   accentTitle = "Asked Questions", 
-  description = "Find answers to common questions about our research compounds, laboratory protocols, and purity standards.",
+  description = "Find answers to common questions about our research compounds, laboratory guidelines, and purity standards.",
   theme = 'light'
 }: FaqCarouselProps) {
   const sectionRef = useRef<HTMLElement>(null);

@@ -7,6 +7,7 @@ export interface Variant {
   id: string
   title: string
   price: string
+  salePrice?: string
   inStock: boolean
 }
 
@@ -15,9 +16,10 @@ interface VariantSelectorProps {
   value: string
   onChange: (id: string) => void
   label?: string
+  theme?: 'light' | 'dark'
 }
 
-export function VariantSelector({ variants, value, onChange, label = 'Size' }: VariantSelectorProps) {
+export function VariantSelector({ variants, value, onChange, label = 'Size', theme = 'light' }: VariantSelectorProps) {
   if (!variants || variants.length === 0) return null
 
   return (
@@ -27,7 +29,7 @@ export function VariantSelector({ variants, value, onChange, label = 'Size' }: V
           {label}
         </span>
       )}
-      <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-2 gap-3">
         {variants.map((variant) => {
           const isSelected = value === variant.id
           return (
@@ -36,30 +38,22 @@ export function VariantSelector({ variants, value, onChange, label = 'Size' }: V
               onClick={() => variant.inStock && onChange(variant.id)}
               disabled={!variant.inStock}
               className={cn(
-                "flex items-center w-full px-4 py-3 border rounded-sm transition-colors text-left",
+                "flex flex-col items-center justify-center w-full px-4 py-3 border rounded-sm transition-all duration-300 text-center",
                 isSelected 
-                  ? "border-ink bg-cream-warm" 
-                  : "border-border-subtle bg-transparent hover:border-ink/50",
-                !variant.inStock && "opacity-40 cursor-not-allowed"
+                  ? theme === 'dark' ? "border-white bg-white text-ink" : "border-ink bg-ink text-cream" 
+                  : theme === 'dark' ? "border-white/20 bg-transparent text-white hover:border-white" : "border-border-default bg-transparent text-ink hover:border-ink",
+                !variant.inStock && (theme === 'dark' ? "opacity-40 cursor-not-allowed bg-transparent text-white/50 border-white/10 hover:border-white/10" : "opacity-40 cursor-not-allowed bg-transparent text-ink-muted border-border-subtle hover:border-border-subtle")
               )}
             >
-              <div className="flex items-center gap-3 flex-1">
-                {/* Custom Radio Circle */}
-                <div className={cn(
-                  "w-[18px] h-[18px] rounded-full border flex items-center justify-center shrink-0",
-                  isSelected ? "border-ink" : "border-border-subtle"
-                )}>
-                  {isSelected && <div className="w-2 h-2 rounded-full bg-ink" />}
-                </div>
-                
-                <span className={cn(
-                  "text-body-md text-ink flex-1",
-                  !variant.inStock && "line-through"
-                )}>
-                  {variant.title} <span className="mx-2">·</span> {variant.price}
-                  {!variant.inStock && <span className="ml-2 uppercase text-label-sm tracking-wider">· OUT OF STOCK</span>}
-                </span>
-              </div>
+              <span className={cn(
+                "text-label-md uppercase tracking-wider mb-1",
+                !variant.inStock && "line-through"
+              )}>
+                {variant.title}
+              </span>
+              <span className="text-body-sm font-medium opacity-80">
+                {variant.inStock ? variant.price : 'OUT OF STOCK'}
+              </span>
             </button>
           )
         })}

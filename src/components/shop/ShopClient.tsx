@@ -118,7 +118,7 @@ function ShopClientInner() {
         <div className="mb-12">
           <h1 className="text-display-md font-display text-ink mb-4">All compounds</h1>
           <p className="text-body-lg text-ink/70 max-w-2xl">
-            Explore our complete catalog of research-grade peptides and compounds. Filter by category, purity, and availability to find exactly what your protocol requires.
+            Explore our complete catalog of research-grade peptides and compounds. Filter by category, purity, and availability to find exactly what your guideline requires.
           </p>
         </div>
 
