@@ -3,122 +3,138 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { X, ShoppingBag, Heart } from 'lucide-react'
-import { buttonVariants, Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/shared/EmptyState'
+import { Space_Grotesk } from 'next/font/google'
 
-const MOCK_WISHLIST = [
-  {
-    id: 'prod-1',
-    name: 'BPC-157',
-    slug: 'bpc-157',
-    image: '/temp-products/bpc-157.png',
-    descriptor: 'RECOVERY PEPTIDE',
-    price: '$75.00',
-  },
-  {
-    id: 'prod-2',
-    name: 'GHK-Cu',
-    slug: 'ghk-cu',
-    image: '/temp-products/ghk-cu.png',
-    descriptor: 'COPPER PEPTIDE',
-    price: '$95.00',
-  },
-  {
-    id: 'prod-3',
-    name: 'TB-500',
-    slug: 'tb-500',
-    image: '/temp-products/tb-500.png',
-    descriptor: 'HEALING FACTOR',
-    price: '$80.00',
-  }
-]
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
-export function WishlistClient() {
+export interface WishlistItem {
+  id: string;
+  name: string;
+  slug: string;
+  image: string;
+  descriptor: string;
+  price: string;
+}
+
+export interface AccountWishlistProps {
+  items: WishlistItem[];
+}
+
+export function WishlistClient({ items }: AccountWishlistProps) {
   return (
-    <div className="flex flex-col animate-in fade-in duration-500">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      className="flex flex-col w-full"
+    >
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 border-b border-border-subtle pb-4">
-        <div className="flex flex-col">
-          <h1 className="text-label-xl uppercase tracking-wider text-ink mb-1">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10 border-b border-gray-200 pb-6">
+        <div className="flex flex-col gap-2">
+          <h1 className={`text-4xl text-black font-bold tracking-tighter ${spaceGrotesk.className}`}>
             My Wishlist
           </h1>
-          <span className="text-body-sm text-ink-muted">{MOCK_WISHLIST.length} items</span>
+          <p className="text-sm text-gray-500">You have {items.length} items saved for later.</p>
         </div>
         
-        <Button variant="dark" className="gap-2 w-full sm:w-auto">
-          <ShoppingBag size={16} />
+        <button className="flex items-center justify-center gap-2 bg-black hover:bg-gray-800 text-white rounded-full px-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.15em] transition-all w-full sm:w-auto shadow-lg">
+          <ShoppingBag size={14} />
           Move All to Cart
-        </Button>
+        </button>
       </div>
 
-      {MOCK_WISHLIST.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-          {MOCK_WISHLIST.map(product => (
-            <div key={product.id} className="group relative flex flex-col w-full h-full">
-              
-              {/* Image Area */}
-              <div className="relative w-full aspect-[4/5] overflow-hidden bg-cream-warm mb-6">
-                <Link href={`/products/${product.slug}`}>
-                  <motion.div
-                    whileHover={{ scale: 1.04 }}
-                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                    className="w-full h-full relative"
-                  >
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                  </motion.div>
-                </Link>
+      <AnimatePresence>
+        {items.length > 0 ? (
+          <motion.div 
+            key="grid"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {items.map((product, i) => (
+              <motion.div 
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="group flex flex-col w-full bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 hover:border-gray-200 transition-all duration-500"
+              >
+                
+                {/* Image Area */}
+                <div className="relative w-full aspect-[4/5] overflow-hidden bg-gray-50">
+                  <Link href={`/products/${product.slug}`}>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                      className="w-full h-full relative"
+                    >
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    </motion.div>
+                  </Link>
 
-                {/* Remove Button Overlay */}
-                <button className="absolute top-4 right-4 z-10 p-2 bg-cream text-ink-muted hover:text-red-700 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <X size={18} />
-                </button>
-              </div>
-
-              {/* Info Area */}
-              <div className="flex flex-col flex-1">
-                <Link href={`/products/${product.slug}`}>
-                  <h3 className="text-editorial-md font-display text-ink mb-2 transition-colors duration-300 group-hover:text-gold">
-                    {product.name}
-                  </h3>
-                  <span className="text-label-md uppercase tracking-wider text-ink-muted mb-4 line-clamp-1">
-                    {product.descriptor}
-                  </span>
-                </Link>
-                <div className="mt-auto flex items-center justify-between gap-4">
-                  <span className="text-body-lg font-medium text-ink">
-                    {product.price}
-                  </span>
-                  <Button variant="outline" size="sm" className="whitespace-nowrap">
-                    Add to Cart
-                  </Button>
+                  {/* Remove Button Overlay */}
+                  <button className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/90 backdrop-blur-md text-gray-400 hover:text-red-500 hover:bg-white flex items-center justify-center rounded-full shadow-lg opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                    <X size={16} />
+                  </button>
                 </div>
-              </div>
-              
-            </div>
-          ))}
-        </div>
-      ) : (
-        <EmptyState
-          icon={Heart}
-          title="Your wishlist is empty"
-          description="Save items you want to buy later by clicking the heart icon on any product page."
-          action={
-            <Link href="/shop" className={buttonVariants({ variant: 'dark', size: 'lg' })}>
-              Start Browsing
-            </Link>
-          }
-        />
-      )}
 
-    </div>
+                {/* Info Area */}
+                <div className="flex flex-col flex-1 p-6">
+                  <Link href={`/products/${product.slug}`}>
+                    <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-2 block">
+                      {product.descriptor}
+                    </span>
+                    <h3 className={`text-2xl font-bold text-black mb-1 transition-colors duration-300 group-hover:text-purple-600 tracking-tight ${spaceGrotesk.className}`}>
+                      {product.name}
+                    </h3>
+                  </Link>
+                  
+                  <div className="mt-6 flex items-center justify-between gap-4 pt-4 border-t border-gray-50">
+                    <span className={`text-xl font-bold text-black tracking-tighter ${spaceGrotesk.className}`}>
+                      {product.price}
+                    </span>
+                    <button className="bg-gray-50 hover:bg-black text-black hover:text-white rounded-full px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] transition-colors shrink-0">
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+                
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <motion.div 
+            key="empty"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="w-full bg-gray-50 border border-dashed border-gray-200 rounded-3xl p-12"
+          >
+            <EmptyState
+              icon={Heart}
+              title="Your wishlist is empty"
+              description="Save items you want to buy later by clicking the heart icon on any product page."
+              action={
+                <Link href="/shop" className="inline-flex items-center justify-center bg-black hover:bg-gray-800 text-white rounded-full px-8 py-4 text-[11px] font-bold uppercase tracking-[0.15em] transition-colors shadow-lg">
+                  Start Browsing
+                </Link>
+              }
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+    </motion.div>
   )
 }

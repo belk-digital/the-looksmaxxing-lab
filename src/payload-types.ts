@@ -187,6 +187,10 @@ export interface User {
     | number
     | boolean
     | null;
+  /**
+   * Purity Points ($1 per point). Can be used by users at checkout.
+   */
+  purityPoints?: number | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -1180,6 +1184,7 @@ export interface UsersSelect<T extends boolean = true> {
   defaultBillingAddress?: T;
   lastLoginAt?: T;
   metadata?: T;
+  purityPoints?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

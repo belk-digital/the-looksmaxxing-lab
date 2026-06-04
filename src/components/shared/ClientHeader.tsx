@@ -4,9 +4,9 @@ import React, { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
-import { ShoppingBag, Menu, Search, X } from 'lucide-react'
+import { ShoppingBag, Menu, Search, X, User } from 'lucide-react'
 import { MobileMenu } from './MobileMenu'
-import { useCartStore } from '@/store/cartStore'
+import { useCartStore } from '@/lib/cart/store'
 import { CartDrawer } from '@/components/cart/CartDrawer'
 
 const ANNOUNCEMENTS = [
@@ -15,7 +15,7 @@ const ANNOUNCEMENTS = [
   "SUBSCRIBE FOR 15% OFF YOUR FIRST ORDER"
 ]
 
-export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0 }) {
+export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLoggedIn = false }) {
   const cartStore = useCartStore()
   const activeCartCount = cartStore.items.reduce((acc, i) => acc + i.quantity, 0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -23,13 +23,15 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0 }) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [announcementIndex, setAnnouncementIndex] = useState(0)
   const [announcementClosed, setAnnouncementClosed] = useState(true)
+  const [mounted, setMounted] = useState(false)
 
   const pathname = usePathname()
-  const isHome = pathname === '/' || pathname.match(/^\/[a-z]{2}$/)
+  const isHome = pathname === '/' || pathname === '/en'
 
   useEffect(() => {
     const isClosed = sessionStorage.getItem('announcement_closed') === 'true'
     setAnnouncementClosed(isClosed)
+    setMounted(true)
     
     if (!isClosed) {
       const timer = setInterval(() => {
@@ -122,7 +124,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0 }) {
 
           {/* Left: Logo (Mimicking the reference swirl) */}
           <div className="flex-1 md:flex-none flex justify-center md:justify-start">
-            <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
+            <Link href="/en" className="flex items-center hover:opacity-80 transition-opacity">
               <svg width="48" height="24" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 15 C15 7, 45 7, 45 15 C45 23, 20 23, 20 15 C20 11, 40 11, 40 15 C40 19, 25 19, 25 15" stroke={iconColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M5 15 C5 2, 55 2, 55 15 C55 28, 10 28, 10 15" stroke={iconColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -133,25 +135,25 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0 }) {
 
           {/* Center: Nav (Restored original site links) */}
           <nav className="hidden lg:flex items-center justify-center gap-6 xl:gap-8 flex-1">
-            <Link href="/shop" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+            <Link href="/en/shop" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
               SHOP
             </Link>
-            <Link href="/peptide-calculator" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+            <Link href="/en/peptide-calculator" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
               CALCULATOR
             </Link>
-            <Link href="/about" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+            <Link href="/en/about" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
               ABOUT
             </Link>
-            <Link href="/journal" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+            <Link href="/en/journal" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
               JOURNAL
             </Link>
-            <Link href="/faq" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+            <Link href="/en/faq" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
               FAQ
             </Link>
-            <Link href="/contact" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+            <Link href="/en/contact" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
               CONTACT
             </Link>
-            <Link href="/affiliates" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+            <Link href="/en/affiliates" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
               AFFILIATES
             </Link>
           </nav>
@@ -186,7 +188,21 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0 }) {
               </AnimatePresence>
             </button>
             
-            <Link href="/shop" className={`hidden md:inline-flex border rounded-none px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase transition-all ${textColor} ${buttonBorder}`}>
+            <div className="flex items-center min-w-[34px] justify-center">
+              {mounted ? (
+                isLoggedIn ? (
+                  <Link href="/en/account" className={`p-1 transition-colors flex items-center justify-center ${textColor} ${textHoverColor}`}>
+                    <User size={18} strokeWidth={1.5} />
+                  </Link>
+                ) : (
+                  <Link href="/en/login" className={`hidden md:inline-flex px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase transition-all shadow-md ${isTransparent ? 'bg-white text-black hover:bg-gray-200' : 'bg-black text-white hover:bg-gray-800'}`}>
+                    LOGIN
+                  </Link>
+                )
+              ) : null}
+            </div>
+            
+            <Link href="/en/shop" className={`hidden md:inline-flex border rounded-none px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase transition-all ${textColor} ${buttonBorder}`}>
               SHOP NOW
             </Link>
           </div>

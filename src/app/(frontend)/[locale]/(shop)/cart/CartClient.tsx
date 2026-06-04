@@ -9,7 +9,7 @@ import { Container } from '@/components/ui/container'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { QuantityStepper } from '@/components/shop/QuantityStepper'
-import { useCartStore } from '@/store/cartStore'
+import { useCartStore } from '@/lib/cart/store'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
 
@@ -53,7 +53,7 @@ const RELATED_PRODUCTS = [
 export function CartClient() {
   const { items, removeItem, updateQuantity } = useCartStore()
 
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+  const subtotal = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
   const shipping = subtotal >= 300 || subtotal === 0 ? 0 : 15 // $15 flat rate unless >= 300
   const tax = subtotal * 0.08 // 8% estimate
   const total = subtotal + shipping + tax
@@ -86,39 +86,39 @@ export function CartClient() {
         <div className="flex flex-col">
           <div className="border-t border-border-subtle">
             {items.map((item) => (
-              <div key={item.id} className="flex flex-col sm:flex-row gap-6 py-8 border-b border-border-subtle">
+              <div key={item.lineId} className="flex flex-col sm:flex-row gap-6 py-8 border-b border-border-subtle">
                 <div className="relative w-full sm:w-32 aspect-square bg-cream-warm shrink-0 border border-border-subtle rounded-sm overflow-hidden">
-                  <Image src={item.image} alt={item.name} fill className="object-cover" />
+                  <Image src={item.product?.imageUrl || '/placeholder.png'} alt={item.product?.name || 'Product'} fill className="object-cover" />
                 </div>
                 <div className="flex flex-col flex-1">
                   <div className="flex justify-between items-start gap-4">
                     <div className="flex flex-col gap-1">
                       <Link href={`/products/${item.productId}`} className="text-editorial-lg font-display text-ink hover:text-gold transition-colors">
-                        {item.name}
+                        {item.product?.name}
                       </Link>
                       <span className="text-label-md uppercase tracking-wider text-ink-muted">
-                        {item.variantName}
+                        {item.variantSku}
                       </span>
                     </div>
                     <span className="text-body-lg font-medium text-ink">
-                      ${item.price.toFixed(2)}
+                      ${item.priceSnapshot.toFixed(2)}
                     </span>
                   </div>
                   
                   <div className="flex items-end justify-between mt-6 sm:mt-auto pt-4">
                     <QuantityStepper 
                       value={item.quantity} 
-                      onChange={(val) => updateQuantity(item.id, val)} 
+                      onChange={(val) => updateQuantity(item.lineId, val)} 
                     />
                     <div className="flex items-center gap-6">
                       <div className="hidden sm:flex flex-col text-right">
                         <span className="text-label-sm uppercase tracking-wider text-ink-muted">Total</span>
                         <span className="text-body-lg text-ink font-medium">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          ${(item.priceSnapshot * item.quantity).toFixed(2)}
                         </span>
                       </div>
                       <button 
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeItem(item.lineId)}
                         className="text-ink-muted hover:text-error transition-colors p-2 sm:-mr-2 flex items-center justify-center"
                         aria-label="Remove item"
                       >

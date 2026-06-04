@@ -110,6 +110,14 @@ export const Users: CollectionConfig = {
       name: 'metadata',
       type: 'json',
     },
+    {
+      name: 'purityPoints',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        description: 'Purity Points ($1 per point). Can be used by users at checkout.',
+      },
+    },
   ],
   hooks: {
     beforeChange: [beforeChangeEmailLowercase],

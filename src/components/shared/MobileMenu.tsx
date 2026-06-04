@@ -94,19 +94,19 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                         Shop
                         <ChevronRight size={24} className="text-[#0A0A0A]/30 group-hover:text-[#0A0A0A] transition-colors" strokeWidth={1} />
                       </button>
-                      <Link href="/peptide-calculator" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
+                      <Link href="/en/peptide-calculator" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
                         Calculator
                       </Link>
-                      <Link href="/about" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
+                      <Link href="/en/about" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
                         About
                       </Link>
-                      <Link href="/journal" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
+                      <Link href="/en/journal" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
                         Journal
                       </Link>
-                      <Link href="/faq" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
+                      <Link href="/en/faq" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
                         FAQ
                       </Link>
-                      <Link href="/contact" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
+                      <Link href="/en/contact" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
                         Contact
                       </Link>
                     </nav>
@@ -117,10 +117,10 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                       <button className="flex items-center gap-4 text-[11px] font-sans tracking-[0.15em] uppercase text-[#0A0A0A]/70 hover:text-[#0A0A0A] transition-colors text-left">
                         <Search size={16} strokeWidth={1.5} /> SEARCH
                       </button>
-                      <Link href="/account/wishlist" onClick={onClose} className="flex items-center gap-4 text-[11px] font-sans tracking-[0.15em] uppercase text-[#0A0A0A]/70 hover:text-[#0A0A0A] transition-colors">
+                      <Link href="/en/account/wishlist" onClick={onClose} className="flex items-center gap-4 text-[11px] font-sans tracking-[0.15em] uppercase text-[#0A0A0A]/70 hover:text-[#0A0A0A] transition-colors">
                         <Heart size={16} strokeWidth={1.5} /> WISHLIST
                       </Link>
-                      <Link href="/account" onClick={onClose} className="flex items-center gap-4 text-[11px] font-sans tracking-[0.15em] uppercase text-[#0A0A0A]/70 hover:text-[#0A0A0A] transition-colors">
+                      <Link href="/en/account" onClick={onClose} className="flex items-center gap-4 text-[11px] font-sans tracking-[0.15em] uppercase text-[#0A0A0A]/70 hover:text-[#0A0A0A] transition-colors">
                         <User size={16} strokeWidth={1.5} /> ACCOUNT
                       </Link>
                     </div>
@@ -150,7 +150,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                       {['Bioregulators', 'Cellular Health', 'Cognitive', 'Essentials', 'Growth Factor', 'Metabolic', 'Receptor Agonist', 'Recovery'].map(cat => (
                         <li key={cat}>
                           <Link 
-                            href={`/shop/${cat.toLowerCase().replace(' ', '-')}`} 
+                            href={`/en/shop/${cat.toLowerCase().replace(' ', '-')}`} 
                             onClick={onClose}
                             className="text-lg font-sans text-[#0A0A0A] hover:text-[#0A0A0A]/60 transition-colors block"
                           >
@@ -159,7 +159,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                         </li>
                       ))}
                       <li className="pt-6 mt-4 border-t border-[#D8CCA9]/30">
-                        <Link href="/shop" onClick={onClose} className="text-sm font-sans font-semibold uppercase tracking-wider text-[#0A0A0A] hover:opacity-70 transition-opacity flex items-center justify-between">
+                        <Link href="/en/shop" onClick={onClose} className="text-sm font-sans font-semibold uppercase tracking-wider text-[#0A0A0A] hover:opacity-70 transition-opacity flex items-center justify-between">
                           View All Products
                           <ChevronRight size={16} className="text-[#0A0A0A]/30" strokeWidth={1.5} />
                         </Link>

@@ -9,7 +9,7 @@ import { Container } from '@/components/ui/container'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
-import { useCartStore } from '@/store/cartStore'
+import { useCartStore } from '@/lib/cart/store'
 
 // A small component to render each section block
 function CheckoutSection({
@@ -48,7 +48,7 @@ export function CheckoutClient() {
   const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false)
 
   // Calculations
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+  const subtotal = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
   const shipping = subtotal >= 300 || subtotal === 0 ? 0 : 15
   const tax = subtotal * 0.08
   const total = subtotal + shipping + tax
@@ -80,9 +80,9 @@ export function CheckoutClient() {
               >
                 <div className="p-4 border-t border-border-subtle border-dashed">
                   {items.map((item) => (
-                    <div key={item.id} className="flex justify-between items-center py-2 text-body-sm">
-                      <span className="text-ink-muted">{item.name} x {item.quantity}</span>
-                      <span className="text-ink">${(item.price * item.quantity).toFixed(2)}</span>
+                    <div key={item.lineId} className="flex justify-between items-center py-2 text-body-sm">
+                      <span className="text-ink-muted">{item.product?.name} x {item.quantity}</span>
+                      <span className="text-ink">${(item.priceSnapshot * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
@@ -262,19 +262,19 @@ export function CheckoutClient() {
               {/* Items List */}
               <div className="flex flex-col gap-4 mb-6 border-b border-border-subtle pb-6 max-h-[40vh] overflow-y-auto pr-2">
                 {items.map((item) => (
-                  <div key={item.id} className="flex gap-4">
+                  <div key={item.lineId} className="flex gap-4">
                     <div className="relative w-16 h-16 bg-cream shrink-0 border border-border-subtle rounded-sm overflow-hidden">
-                      <Image src={item.image} alt={item.name} fill className="object-cover" />
+                      <Image src={item.product?.imageUrl || '/placeholder.png'} alt={item.product?.name || 'Product'} fill className="object-cover" />
                       <div className="absolute -top-2 -right-2 w-5 h-5 bg-ink text-cream rounded-full flex items-center justify-center text-[10px] font-bold z-10">
                         {item.quantity}
                       </div>
                     </div>
                     <div className="flex flex-col flex-1 justify-center">
-                      <span className="text-editorial-sm font-display text-ink leading-tight">{item.name}</span>
-                      <span className="text-label-xs uppercase tracking-wider text-ink-muted mt-0.5">{item.variantName}</span>
+                      <span className="text-editorial-sm font-display text-ink leading-tight">{item.product?.name}</span>
+                      <span className="text-label-xs uppercase tracking-wider text-ink-muted mt-0.5">{item.variantSku}</span>
                     </div>
                     <span className="text-body-sm text-ink font-medium self-center">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      ${(item.priceSnapshot * item.quantity).toFixed(2)}
                     </span>
                   </div>
                 ))}

@@ -3,190 +3,228 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { buttonVariants, Button } from '@/components/ui/button'
-import { ArrowLeft, Package, RotateCcw } from 'lucide-react'
+import { ArrowLeft, Package, RotateCcw, MapPin, CreditCard, Truck } from 'lucide-react'
+import { Space_Grotesk } from 'next/font/google'
+import { motion } from 'framer-motion'
 
-type OrderStatus = 'Ordered' | 'Processing' | 'Shipped' | 'Delivered'
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
-// Mock Data
-const MOCK_ORDER = {
-  id: 'LL-2026-X8F9A',
-  date: 'May 20, 2026',
-  status: 'Processing' as OrderStatus,
-  customerName: 'Alex Sterling',
-  shippingAddress: {
-    line1: '123 Biohack Way',
-    city: 'Austin',
-    state: 'TX',
-    postalCode: '78701',
-    country: 'USA'
-  },
-  estimatedDelivery: 'May 30, 2026',
-  items: [
-    {
-      id: 'item-1',
-      name: 'TB-500',
-      variant: '5MG',
-      quantity: 1,
-      price: 80.00,
-      image: '/temp-products/tb-500.png'
-    },
-    {
-      id: 'item-2',
-      name: 'NAD+',
-      variant: '500MG',
-      quantity: 2,
-      price: 150.00,
-      image: '/temp-products/product-image.png'
-    }
-  ],
-  subtotal: 380.00,
-  shipping: 0.00,
-  tax: 30.40,
-  total: 410.40,
-  paymentMethod: 'Visa ending in 4242'
+type OrderStatus = 'Placed' | 'Processing' | 'Shipped' | 'Delivered'
+const STATUS_STEPS: OrderStatus[] = ['Placed', 'Processing', 'Shipped', 'Delivered']
+
+export interface OrderDetailProps {
+  order: any; // We use any here to safely traverse the dynamic payload object
 }
 
-const STATUS_STEPS: OrderStatus[] = ['Ordered', 'Processing', 'Shipped', 'Delivered']
+function getMappedStatus(payloadStatus: string): OrderStatus {
+  switch (payloadStatus) {
+    case 'shipped': return 'Shipped'
+    case 'completed': return 'Delivered'
+    case 'pending': return 'Placed'
+    case 'refunded':
+    case 'cancelled':
+      return 'Placed' // Technically an edge case for the timeline
+    case 'paid':
+    case 'fulfilled':
+    default:
+      return 'Processing'
+  }
+}
 
-export function OrderDetailClient({ id }: { id: string }) {
-  // Override ID with requested parameter, but keep the mock data for UI display
-  const order = { ...MOCK_ORDER, id: id.toUpperCase() }
-  const currentStepIndex = STATUS_STEPS.indexOf(order.status)
+export function OrderDetailClient({ order }: OrderDetailProps) {
+  const currentStepIndex = STATUS_STEPS.indexOf(getMappedStatus(order.status))
+  
+  const formattedDate = new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  }).format(new Date(order.createdAt))
+
+  const subtotal = order.subtotal || 0
+  const shipping = order.shippingTotal || 0
+  const tax = order.taxTotal || 0
+  const total = order.total || 0
 
   return (
-    <div className="flex flex-col animate-in fade-in duration-500 max-w-4xl">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      className="flex flex-col max-w-5xl"
+    >
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10 border-b border-gray-200 pb-6">
         <div className="flex flex-col gap-2">
-          <Link href="/account/orders" className="flex items-center gap-2 text-label-sm uppercase tracking-wider text-ink-muted hover:text-ink transition-colors mb-2">
+          <Link href="/account/orders" className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-black transition-colors mb-4 w-fit bg-gray-50 px-4 py-2 rounded-full">
             <ArrowLeft size={14} />
             Back to Orders
           </Link>
-          <h1 className="text-display-xs font-display text-ink leading-none">Order #{order.id}</h1>
-          <span className="text-body-sm text-ink-muted">Placed on {order.date}</span>
+          <h1 className={`text-4xl text-black font-bold tracking-tighter ${spaceGrotesk.className}`}>
+            Order {order.orderNumber}
+          </h1>
+          <p className="text-sm text-gray-500">Placed on {formattedDate}</p>
         </div>
 
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="gap-2">
-            <RotateCcw size={16} />
+          <button className="flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 text-black rounded-full px-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.1em] transition-all">
+            <RotateCcw size={14} />
             Request Return
-          </Button>
-          <Button variant="dark" className="gap-2">
-            <Package size={16} />
+          </button>
+          <button className="flex items-center justify-center gap-2 bg-black hover:bg-gray-800 text-white rounded-full px-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.1em] transition-all shadow-lg">
+            <Package size={14} />
             Reorder All
-          </Button>
+          </button>
         </div>
       </div>
 
-      {/* Tracking Timeline */}
-      <div className="bg-cream-warm border border-border-subtle p-8 rounded-sm mb-12">
-        <h2 className="text-label-md uppercase tracking-wider text-ink mb-8">Tracking Status</h2>
-        <div className="relative flex justify-between">
-          {/* Connecting Line (Background) */}
-          <div className="absolute top-4 left-0 w-full h-0.5 bg-border-subtle -z-10" />
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        
+        {/* Left Column: Items and Timeline */}
+        <div className="flex flex-col gap-8 flex-1 w-full">
           
-          {/* Connecting Line (Progress) */}
-          <div 
-            className="absolute top-4 left-0 h-0.5 bg-ink -z-10 transition-all duration-1000 ease-out-quart" 
-            style={{ width: `${(Math.max(currentStepIndex, 0) / (STATUS_STEPS.length - 1)) * 100}%` }} 
-          />
+          {/* Tracking Timeline */}
+          <div className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm">
+            <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-black mb-8 border-b border-gray-100 pb-4">Tracking Status</h2>
+            <div className="relative flex justify-between px-4 sm:px-8">
+              {/* Connecting Line (Background) */}
+              <div className="absolute top-4 left-8 right-8 h-[2px] bg-gray-100 -z-10 rounded-full" />
+              
+              {/* Connecting Line (Progress) */}
+              <div 
+                className="absolute top-4 left-8 h-[2px] bg-black -z-10 transition-all duration-1000 ease-out rounded-full" 
+                style={{ width: `calc(${(Math.max(currentStepIndex, 0) / (STATUS_STEPS.length - 1)) * 100}% - 4rem)` }} 
+              />
 
-          {STATUS_STEPS.map((step, index) => {
-            const isCompleted = index <= currentStepIndex
-            const isCurrent = index === currentStepIndex
-            
-            return (
-              <div key={step} className="flex flex-col items-center gap-3 bg-cream-warm px-2">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-500 ${
-                  isCompleted ? 'bg-ink text-cream' : 'bg-cream border-2 border-border-subtle text-ink-muted'
-                }`}>
-                  {isCompleted && (
-                    <div className="w-2 h-2 bg-cream rounded-full" />
-                  )}
-                </div>
-                <span className={`text-label-sm uppercase tracking-wider ${
-                  isCurrent ? 'text-ink font-medium' : isCompleted ? 'text-ink-muted' : 'text-ink-muted/50'
-                }`}>
-                  {step}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Summary Section (Reused layout style from Checkout) */}
-      <div className="w-full h-px bg-border-subtle mb-12" />
-        
-      <div className="w-full flex flex-col gap-12 text-left">
-        
-        {/* Items List */}
-        <div>
-          <h2 className="text-label-md uppercase tracking-wider text-ink mb-6 border-b border-border-subtle pb-2">Items Ordered</h2>
-          <div className="flex flex-col gap-6">
-            {order.items.map(item => (
-              <div key={item.id} className="flex items-center gap-4">
-                <div className="relative w-16 h-16 bg-cream-warm shrink-0 border border-border-subtle rounded-sm overflow-hidden">
-                  <Image src={item.image} alt={item.name} fill className="object-cover" />
-                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-ink text-cream rounded-full flex items-center justify-center text-[10px] font-bold z-10">
-                    {item.quantity}
+              {STATUS_STEPS.map((step, index) => {
+                const isCompleted = index <= currentStepIndex
+                const isCurrent = index === currentStepIndex
+                
+                return (
+                  <div key={step} className="flex flex-col items-center gap-3 bg-white px-2">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 shadow-sm ${
+                      isCompleted ? 'bg-black text-white border-none' : 'bg-white border-2 border-gray-100 text-gray-300'
+                    }`}>
+                      {isCompleted && (
+                        <div className="w-2 h-2 bg-white rounded-full" />
+                      )}
+                    </div>
+                    <span className={`text-[10px] font-bold uppercase tracking-[0.1em] ${
+                      isCurrent ? 'text-black' : isCompleted ? 'text-gray-500' : 'text-gray-300'
+                    }`}>
+                      {step}
+                    </span>
                   </div>
-                </div>
-                <div className="flex flex-col flex-1">
-                  <span className="text-editorial-sm font-display text-ink leading-tight">{item.name}</span>
-                  <span className="text-label-xs uppercase tracking-wider text-ink-muted mt-0.5">{item.variant}</span>
-                </div>
-                <span className="text-body-sm text-ink font-medium">
-                  ${(item.price * item.quantity).toFixed(2)}
-                </span>
+                )
+              })}
+            </div>
+            
+            {order.status === 'cancelled' && (
+              <div className="mt-8 bg-red-50 text-red-600 p-4 rounded-xl text-sm font-medium border border-red-100 flex items-center gap-2">
+                This order has been cancelled.
               </div>
-            ))}
+            )}
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-cream-warm p-8 rounded-sm border border-border-subtle">
-          {/* Shipping Info */}
-          <div className="flex flex-col gap-2 text-body-sm">
-            <span className="text-label-sm uppercase tracking-wider text-ink-muted mb-2">Shipping To</span>
-            <span className="text-ink font-medium">{order.customerName}</span>
-            <span className="text-ink-muted">{order.shippingAddress.line1}</span>
-            <span className="text-ink-muted">{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.postalCode}</span>
-            <span className="text-ink-muted">{order.shippingAddress.country}</span>
-            <div className="mt-4 flex flex-col">
-              <span className="text-label-sm uppercase tracking-wider text-ink-muted mb-1">Estimated Delivery</span>
-              <span className="text-ink font-medium">{order.estimatedDelivery}</span>
+          {/* Items List */}
+          <div className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm">
+            <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-black mb-6 border-b border-gray-100 pb-4">Items Ordered</h2>
+            <div className="flex flex-col gap-6">
+              {order.items?.map((item: any) => {
+                // Safely extract product data from snapshot or direct relation
+                const product = item.productSnapshot || item.product || {}
+                const title = product.title || product.name || 'Unknown Product'
+                const price = product.basePrice || product.price || 0
+                const imageUrl = product.images?.[0]?.image?.url || product.images?.[0]?.url || '/placeholder.png'
+                
+                return (
+                  <div key={item.id || Math.random()} className="flex items-center gap-6 group">
+                    <div className="relative w-20 h-20 bg-gray-50 shrink-0 border border-gray-100 rounded-2xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow">
+                      <Image src={imageUrl} alt={title} fill className="object-cover" sizes="80px" />
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-[10px] font-bold z-10 border-2 border-white shadow-sm">
+                        {item.quantity}
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col flex-1">
+                      <Link href={`/products/${product.slug || ''}`}>
+                        <span className={`text-lg text-black font-bold tracking-tight hover:text-purple-600 transition-colors ${spaceGrotesk.className}`}>
+                          {title}
+                        </span>
+                      </Link>
+                      {product.descriptor && (
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 mt-1">
+                          {product.descriptor}
+                        </span>
+                      )}
+                    </div>
+                    
+                    <span className={`text-xl font-bold text-black tracking-tighter ${spaceGrotesk.className}`}>
+                      ${(price * item.quantity).toFixed(2)}
+                    </span>
+                  </div>
+                )
+              })}
             </div>
           </div>
           
-          {/* Payment & Totals */}
-          <div className="flex flex-col gap-3 text-body-sm">
-            <div className="flex flex-col mb-4">
-              <span className="text-label-sm uppercase tracking-wider text-ink-muted mb-2">Payment Method</span>
-              <span className="text-ink">{order.paymentMethod}</span>
-            </div>
-            <div className="flex justify-between text-ink-muted">
-              <span>Subtotal</span>
-              <span>${order.subtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-ink-muted">
-              <span>Shipping</span>
-              <span>{order.shipping === 0 ? 'Free' : `$${order.shipping.toFixed(2)}`}</span>
-            </div>
-            <div className="flex justify-between text-ink-muted border-b border-border-subtle pb-3">
-              <span>Tax</span>
-              <span>${order.tax.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-ink font-medium mt-1">
-              <span>Total</span>
-              <span className="text-label-lg">${order.total.toFixed(2)}</span>
-            </div>
-          </div>
         </div>
 
+        {/* Right Column: Summaries */}
+        <div className="flex flex-col gap-8 w-full lg:w-[340px] shrink-0">
+          
+          {/* Shipping Summary */}
+          {order.shippingAddress && (
+            <div className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm flex flex-col gap-6">
+              <div className="flex items-center gap-3 border-b border-gray-100 pb-4 text-black">
+                <Truck size={16} />
+                <h2 className="text-xs font-bold uppercase tracking-[0.15em]">Shipping Info</h2>
+              </div>
+              
+              <div className="flex flex-col gap-1 text-sm text-gray-500 leading-relaxed">
+                <span className={`text-lg text-black font-bold tracking-tight mb-2 ${spaceGrotesk.className}`}>
+                  {order.customerFirstName} {order.customerLastName}
+                </span>
+                <span>{order.shippingAddress.line1}</span>
+                {order.shippingAddress.line2 && <span>{order.shippingAddress.line2}</span>}
+                <span>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.postalCode}</span>
+                <span>{order.shippingAddress.country}</span>
+              </div>
+            </div>
+          )}
+          
+          {/* Order Summary */}
+          <div className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm flex flex-col gap-6">
+            <div className="flex items-center gap-3 border-b border-gray-100 pb-4 text-black">
+              <CreditCard size={16} />
+              <h2 className="text-xs font-bold uppercase tracking-[0.15em]">Order Summary</h2>
+            </div>
+            
+            <div className="flex flex-col gap-3 text-sm">
+              <div className="flex justify-between text-gray-500">
+                <span>Subtotal</span>
+                <span>${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-gray-500">
+                <span>Shipping</span>
+                <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+              </div>
+              <div className="flex justify-between text-gray-500 border-b border-gray-100 pb-4">
+                <span>Tax</span>
+                <span>${tax.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center text-black font-bold mt-2">
+                <span className="text-sm">Total</span>
+                <span className={`text-3xl tracking-tighter ${spaceGrotesk.className}`}>${total.toFixed(2)}</span>
+              </div>
+              <div className="bg-green-50 text-green-600 text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-2 rounded-lg mt-2 text-center border border-green-100">
+                {order.paymentStatus === 'paid' ? 'Payment Successful' : 'Payment Processing'}
+              </div>
+            </div>
+          </div>
+          
+        </div>
       </div>
-
-    </div>
+    </motion.div>
   )
 }

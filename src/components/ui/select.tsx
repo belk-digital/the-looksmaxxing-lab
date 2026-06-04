@@ -61,6 +61,7 @@ function SelectContent({
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
+        data-lenis-prevent
         data-slot="select-content"
         data-align-trigger={position === 'item-aligned'}
         className={cn(

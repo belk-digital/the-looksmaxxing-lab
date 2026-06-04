@@ -9,8 +9,8 @@ const inputVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-cream-warm border-border",
-        error: "bg-cream-warm border-error text-error",
+        default: "bg-transparent border-border",
+        error: "bg-transparent border-error text-error",
       },
     },
     defaultVariants: {

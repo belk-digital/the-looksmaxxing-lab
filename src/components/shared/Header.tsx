@@ -45,5 +45,5 @@ export async function Header() {
     }
   }
 
-  return <ClientHeader cartItemCount={cartItemCount} wishlistItemCount={wishlistItemCount} />
+  return <ClientHeader cartItemCount={cartItemCount} wishlistItemCount={wishlistItemCount} isLoggedIn={!!userId} />
 }

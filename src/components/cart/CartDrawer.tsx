@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { QuantityStepper } from '@/components/shop/QuantityStepper'
-import { useCartStore } from '@/store/cartStore'
+import { useCartStore } from '@/lib/cart/store'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ShoppingBag } from 'lucide-react'
 
@@ -35,7 +35,7 @@ export function CartDrawer() {
     return () => window.removeEventListener('keydown', handleEsc)
   }, [closeCart])
 
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+  const subtotal = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
   const FREE_SHIPPING_THRESHOLD = 300
   const progressToFreeShipping = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)
   const amountToFreeShipping = FREE_SHIPPING_THRESHOLD - subtotal
@@ -117,7 +117,7 @@ export function CartDrawer() {
                     <AnimatePresence>
                       {items.map((item) => (
                         <motion.div 
-                          key={item.id}
+                          key={item.lineId}
                           layout
                           initial={{ opacity: 0, scale: 0.95, height: 0 }}
                           animate={{ opacity: 1, scale: 1, height: 'auto' }}
@@ -125,20 +125,20 @@ export function CartDrawer() {
                           className="flex gap-4 p-4 bg-white rounded-2xl shadow-[0_2px_12px_-4px_rgba(0,0,0,0.04)] border border-black/[0.02]"
                         >
                           <div className="relative w-[88px] h-[88px] bg-[#F5F5F7] rounded-xl shrink-0 overflow-hidden">
-                            <Image src={item.image} alt={item.name} fill unoptimized className="object-cover" />
+                            <Image src={item.product?.imageUrl || '/placeholder.png'} alt={item.product?.name || 'Product'} fill unoptimized className="object-cover" />
                           </div>
                           <div className="flex flex-col flex-1 justify-between py-0.5">
                             <div className="flex justify-between items-start gap-2">
                               <div className="flex flex-col">
                                 <Link href={`/products/${item.productId}`} onClick={closeCart} className="text-body-md font-bold font-display text-ink hover:text-[#C9B58E] transition-colors line-clamp-1">
-                                  {item.name}
+                                  {item.product?.name}
                                 </Link>
                                 <span className="text-[10px] uppercase tracking-wider text-ink/60 mt-1 font-medium">
-                                  {item.variantName}
+                                  {item.variantSku}
                                 </span>
                               </div>
                               <button 
-                                onClick={() => removeItem(item.id)}
+                                onClick={() => removeItem(item.lineId)}
                                 className="text-ink/40 hover:text-error transition-colors p-1"
                                 aria-label="Remove item"
                               >
@@ -148,10 +148,10 @@ export function CartDrawer() {
                             <div className="flex items-end justify-between mt-3">
                               <QuantityStepper 
                                 value={item.quantity} 
-                                onChange={(val) => updateQuantity(item.id, val)} 
+                                onChange={(val) => updateQuantity(item.lineId, val)} 
                               />
                               <span className="text-body-md font-bold text-ink">
-                                ${(item.price * item.quantity).toFixed(2)}
+                                ${(item.priceSnapshot * item.quantity).toFixed(2)}
                               </span>
                             </div>
                           </div>

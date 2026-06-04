@@ -2,130 +2,210 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { buttonVariants } from '@/components/ui/button'
-import { ArrowRight, Package, LifeBuoy } from 'lucide-react'
+import { ArrowRight, Package, LifeBuoy, TrendingUp, Heart, Calendar, MapPin, Wallet } from 'lucide-react'
+import { Space_Grotesk } from 'next/font/google'
+import { motion, Variants } from 'framer-motion'
 
-export function AccountOverviewClient() {
-  // Hardcoded sample data
-  const stats = {
-    ordersPlaced: 4,
-    wishlistCount: 12,
-    memberSince: '2025'
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
+
+export interface AccountOverviewProps {
+  stats: {
+    ordersPlaced: number;
+    wishlistCount: number;
+    purityPoints: number;
+    memberSince: string;
+  };
+  recentOrders: {
+    id: string;
+    orderNumber: string;
+    date: string;
+    status: string;
+    total: number;
+  }[];
+  defaultAddress: {
+    name: string;
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+  } | null;
+}
+
+export function AccountOverviewClient({ stats, recentOrders, defaultAddress }: AccountOverviewProps) {
+  // Animation variants
+  const containerVars: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
   }
   
-  const recentOrders = [
-    { id: 'LL-2026-X8F9A', date: 'May 20, 2026', status: 'Processing', total: 410.40 },
-    { id: 'LL-2026-B4291', date: 'Apr 12, 2026', status: 'Delivered', total: 125.00 },
-    { id: 'LL-2026-Z7103', date: 'Jan 05, 2026', status: 'Delivered', total: 640.20 },
-  ]
-  
-  const defaultAddress = {
-    name: 'Alex Sterling',
-    street: '123 Biohack Way, Apt 4',
-    city: 'Austin',
-    state: 'TX',
-    zip: '78701',
-    country: 'United States'
+  const itemVars: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   }
 
   return (
-    <div className="flex flex-col gap-12 animate-in fade-in duration-500">
+    <motion.div 
+      variants={containerVars}
+      initial="hidden"
+      animate="show"
+      className="flex flex-col gap-12"
+    >
       
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-cream-warm p-6 rounded-sm flex flex-col justify-center border border-border-subtle">
-          <span className="text-display-sm font-display text-ink leading-none mb-3">{stats.ordersPlaced}</span>
-          <span className="text-label-md uppercase tracking-wider text-ink-muted">Orders Placed</span>
-        </div>
-        <div className="bg-cream-warm p-6 rounded-sm flex flex-col justify-center border border-border-subtle">
-          <span className="text-display-sm font-display text-ink leading-none mb-3">{stats.wishlistCount}</span>
-          <span className="text-label-md uppercase tracking-wider text-ink-muted">Wishlist Items</span>
-        </div>
-        <div className="bg-cream-warm p-6 rounded-sm flex flex-col justify-center border border-border-subtle">
-          <span className="text-display-sm font-display text-ink leading-none mb-3">{stats.memberSince}</span>
-          <span className="text-label-md uppercase tracking-wider text-ink-muted">Member Since</span>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+        <motion.div variants={itemVars} className="group relative bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 transition-all duration-500 overflow-hidden">
+          <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-500 text-amber-500">
+            <Wallet size={64} />
+          </div>
+          <div className="relative z-10 flex flex-col h-full justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">Purity Points</span>
+            <span className={`text-5xl text-black leading-none font-bold tracking-tighter ${spaceGrotesk.className}`}>{stats.purityPoints}</span>
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemVars} className="group relative bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 transition-all duration-500 overflow-hidden">
+          <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-500">
+            <Package size={64} />
+          </div>
+          <div className="relative z-10 flex flex-col h-full justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">Orders Placed</span>
+            <span className={`text-5xl text-black leading-none font-bold tracking-tighter ${spaceGrotesk.className}`}>{stats.ordersPlaced}</span>
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemVars} className="group relative bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 transition-all duration-500 overflow-hidden">
+          <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-500 text-red-500">
+            <Heart size={64} />
+          </div>
+          <div className="relative z-10 flex flex-col h-full justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">Wishlist Items</span>
+            <span className={`text-5xl text-black leading-none font-bold tracking-tighter ${spaceGrotesk.className}`}>{stats.wishlistCount}</span>
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemVars} className="group relative bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 transition-all duration-500 overflow-hidden">
+          <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-500 text-blue-500">
+            <Calendar size={64} />
+          </div>
+          <div className="relative z-10 flex flex-col h-full justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">Member Since</span>
+            <span className={`text-5xl text-black leading-none font-bold tracking-tighter ${spaceGrotesk.className}`}>{stats.memberSince}</span>
+          </div>
+        </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-12 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-12 items-start">
         
         {/* Left Column: Recent Orders */}
-        <div className="flex flex-col gap-6">
-          <div className="flex items-center justify-between border-b border-border-subtle pb-4">
-            <h3 className="text-label-lg uppercase tracking-wider text-ink">Recent Orders</h3>
-            <Link href="/account/orders" className="text-label-sm uppercase tracking-wider text-ink-muted hover:text-ink transition-colors">
+        <motion.div variants={itemVars} className="flex flex-col gap-6">
+          <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+            <h3 className="text-xs font-bold uppercase tracking-[0.15em] text-black">Recent Orders</h3>
+            <Link href="/en/account/orders" className="text-[10px] font-bold uppercase tracking-[0.1em] text-purple-600 hover:text-purple-700 transition-colors bg-purple-50 px-3 py-1.5 rounded-full hover:bg-purple-100">
               View All
             </Link>
           </div>
           
           <div className="flex flex-col gap-4">
-            {recentOrders.map((order) => (
-              <div key={order.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border border-border-subtle rounded-sm hover:bg-cream-warm/50 transition-colors gap-4">
-                <div className="flex flex-col gap-1">
-                  <span className="text-label-md uppercase tracking-wider text-ink">Order #{order.id}</span>
-                  <span className="text-body-sm text-ink-muted">{order.date}</span>
+            {recentOrders.map((order, i) => (
+              <motion.div 
+                key={order.id} 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.1 + 0.3 }}
+                className="group flex flex-col sm:flex-row sm:items-center justify-between p-6 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-lg hover:shadow-black/5 hover:border-gray-200 transition-all duration-300 gap-4 cursor-pointer relative overflow-hidden"
+              >
+                {/* Highlight bar on hover */}
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-black translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300" />
+                
+                <div className="flex flex-col gap-2 pl-2">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-black">Order #{order.id}</span>
+                  <span className="text-xs font-medium text-gray-500">{order.date}</span>
                 </div>
                 
-                <div className="flex flex-col sm:items-end gap-1">
-                  <span className="text-body-sm text-ink font-medium">${order.total.toFixed(2)}</span>
-                  <div className="flex items-center gap-2">
-                    <span className={`w-2 h-2 rounded-full ${order.status === 'Processing' ? 'bg-gold' : 'bg-ink'}`} />
-                    <span className="text-body-xs uppercase tracking-wider text-ink-muted">{order.status}</span>
+                <div className="flex flex-col sm:items-end gap-2">
+                  <span className="text-sm text-black font-bold">${order.total.toFixed(2)}</span>
+                  <div className="flex items-center gap-2 bg-gray-50 px-2.5 py-1 rounded-full">
+                    <span className={`w-1.5 h-1.5 rounded-full ${order.status === 'Processing' ? 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]' : 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]'}`} />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-600">{order.status}</span>
                   </div>
                 </div>
                 
-                <Link href={`/account/orders/${order.id}`} className={buttonVariants({ variant: 'outline', size: 'sm', className: 'mt-2 sm:mt-0 whitespace-nowrap shrink-0' })}>
-                  View Order
+                <Link href={`/en/account/orders/${order.id}`} className="bg-black text-white rounded-full px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] hover:bg-gray-800 transition-all duration-300 mt-2 sm:mt-0 whitespace-nowrap text-center shadow-md">
+                  View Details
                 </Link>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Right Column: Address & Quick Links */}
-        <div className="flex flex-col gap-12">
+        <motion.div variants={itemVars} className="flex flex-col gap-12">
           
           {/* Default Address */}
           <div className="flex flex-col gap-6">
-            <div className="flex items-center justify-between border-b border-border-subtle pb-4">
-              <h3 className="text-label-lg uppercase tracking-wider text-ink">Default Address</h3>
-              <Link href="/account/addresses" className="text-label-sm uppercase tracking-wider text-ink-muted hover:text-ink transition-colors">
+            <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+              <h3 className="text-xs font-bold uppercase tracking-[0.15em] text-black">Default Address</h3>
+              <Link href="/en/account/addresses" className="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-400 hover:text-black transition-colors">
                 Edit
               </Link>
             </div>
             
-            <div className="bg-cream-warm p-6 rounded-sm border border-border-subtle flex flex-col text-body-sm text-ink-muted leading-relaxed">
-              <span className="text-ink font-medium text-body-md mb-2">{defaultAddress.name}</span>
-              <span>{defaultAddress.street}</span>
-              <span>{defaultAddress.city}, {defaultAddress.state} {defaultAddress.zip}</span>
-              <span>{defaultAddress.country}</span>
-            </div>
+            {defaultAddress ? (
+              <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex flex-col text-sm text-gray-600 leading-relaxed hover:shadow-md transition-shadow">
+                <span className="text-black font-bold mb-3 uppercase tracking-[0.15em] text-[11px] bg-gray-50 px-3 py-1.5 rounded-full self-start inline-flex items-center gap-2">
+                  <MapPin size={12} className="text-gray-400" />
+                  {defaultAddress.name}
+                </span>
+                <div className="flex flex-col gap-1 pl-1">
+                  <span>{defaultAddress.street}</span>
+                  <span>{defaultAddress.city}, {defaultAddress.state} {defaultAddress.zip}</span>
+                  <span>{defaultAddress.country}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white p-8 rounded-3xl border border-dashed border-gray-200 flex flex-col items-center justify-center text-center gap-4 text-gray-500">
+                <p className="text-sm">You haven't saved any addresses yet.</p>
+                <Link href="/en/account/addresses" className="text-[11px] font-bold uppercase tracking-[0.15em] text-black hover:underline">
+                  Add Address
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Quick Links */}
           <div className="flex flex-col gap-6">
-            <h3 className="text-label-lg uppercase tracking-wider text-ink border-b border-border-subtle pb-4">Need Help?</h3>
+            <h3 className="text-xs font-bold uppercase tracking-[0.15em] text-black border-b border-gray-200 pb-4">Support</h3>
             <div className="flex flex-col gap-3">
-              <Link href="/track" className="flex items-center justify-between p-4 border border-border-subtle rounded-sm hover:border-ink transition-colors group">
-                <div className="flex items-center gap-3 text-ink">
-                  <Package size={18} className="text-ink-muted group-hover:text-ink transition-colors" />
-                  <span className="text-label-sm uppercase tracking-wider">Track an Order</span>
+              <Link href="/en/track" className="flex items-center justify-between p-5 border border-gray-100 rounded-2xl hover:border-transparent hover:shadow-lg hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300 group bg-white relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-50 to-gray-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="flex items-center gap-4 text-black relative z-10">
+                  <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-white transition-colors shadow-sm">
+                    <TrendingUp size={16} className="text-gray-500 group-hover:text-black transition-colors" />
+                  </div>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.15em]">Track Order</span>
                 </div>
-                <ArrowRight size={16} className="text-ink-muted group-hover:text-ink transition-colors group-hover:translate-x-1" />
+                <ArrowRight size={16} className="text-gray-300 group-hover:text-black transition-all duration-300 group-hover:translate-x-2 relative z-10" />
               </Link>
               
-              <Link href="/contact" className="flex items-center justify-between p-4 border border-border-subtle rounded-sm hover:border-ink transition-colors group">
-                <div className="flex items-center gap-3 text-ink">
-                  <LifeBuoy size={18} className="text-ink-muted group-hover:text-ink transition-colors" />
-                  <span className="text-label-sm uppercase tracking-wider">Contact Support</span>
+              <Link href="/en/contact" className="flex items-center justify-between p-5 border border-gray-100 rounded-2xl hover:border-transparent hover:shadow-lg hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300 group bg-white relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-50 to-gray-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="flex items-center gap-4 text-black relative z-10">
+                  <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-white transition-colors shadow-sm">
+                    <LifeBuoy size={16} className="text-gray-500 group-hover:text-black transition-colors" />
+                  </div>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.15em]">Contact Us</span>
                 </div>
-                <ArrowRight size={16} className="text-ink-muted group-hover:text-ink transition-colors group-hover:translate-x-1" />
+                <ArrowRight size={16} className="text-gray-300 group-hover:text-black transition-all duration-300 group-hover:translate-x-2 relative z-10" />
               </Link>
             </div>
           </div>
 
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   )
 }

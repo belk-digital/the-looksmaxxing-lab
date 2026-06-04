@@ -32,6 +32,8 @@ interface CartState {
   clear: () => void
   setCoupon: (code: string | null) => void
   toggleDrawer: () => void
+  openCart: () => void
+  closeCart: () => void
 }
 
 export const useCartStore = create<CartState>()(
@@ -95,6 +97,8 @@ export const useCartStore = create<CartState>()(
       setCoupon: (code) => set({ couponCode: code }),
 
       toggleDrawer: () => set((state) => ({ isOpen: !state.isOpen })),
+      openCart: () => set({ isOpen: true }),
+      closeCart: () => set({ isOpen: false }),
     }),
     {
       name: 'looksmaxxing-cart-storage',

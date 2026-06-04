@@ -10,7 +10,7 @@ import { Container } from '@/components/ui/container'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { StockIndicator } from '@/components/ui/stock-indicator'
-import { useCartStore } from '@/store/cartStore'
+import { useCartStore } from '@/lib/cart/store'
 import { toast } from 'sonner'
 
 import { ImageGallery } from '@/components/shop/ImageGallery'
@@ -111,15 +111,12 @@ export function ProductClient({ product }: ProductClientProps) {
   const handleAddToCart = () => {
     if (!selectedVariant?.inStock) return
 
-    cartStore.addItem({
-      productId: product.id,
-      name: product.name,
-      variantId: selectedVariant.id,
-      variantName: selectedVariant.title,
-      price: parseFloat(selectedVariant.price.replace('$', '')),
-      quantity: quantity,
-      image: product.images[0]
-    })
+    cartStore.addItem(
+      { id: product.id, name: product.name, imageUrl: product.images[0] },
+      selectedVariant.title,
+      quantity,
+      parseFloat(selectedVariant.price.replace('$', ''))
+    )
 
     setJustAdded(true)
     toast.success('Added to cart', { 
