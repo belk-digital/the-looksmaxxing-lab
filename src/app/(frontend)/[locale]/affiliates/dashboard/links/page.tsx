@@ -2,6 +2,11 @@ import { getPayloadUser } from '@/lib/auth/getPayloadUser'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { redirect } from 'next/navigation'
+import { LinksClient } from './LinksClient'
+
+export const metadata = {
+  title: 'Links & Creatives | Partner Dashboard',
+}
 
 export default async function AffiliateLinksPage() {
   const user = await getPayloadUser()
@@ -15,6 +20,7 @@ export default async function AffiliateLinksPage() {
     collection: 'affiliates',
     where: { user: { equals: user.id } },
     limit: 1,
+    overrideAccess: true,
   })
 
   const affiliate = result.docs[0]
@@ -22,34 +28,14 @@ export default async function AffiliateLinksPage() {
     redirect('/affiliates/dashboard')
   }
 
-  const referralLink = `${process.env.NEXT_PUBLIC_SERVER_URL}/ref/${affiliate.referralSlug}`
+  const referralLink = `${process.env.NEXT_PUBLIC_SERVER_URL || 'https://looksmaxxinglab.com'}/ref/${affiliate.referralSlug}`
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold tracking-tight text-white">Links & Creatives</h1>
-      
-      <div className="rounded-xl border border-gray-800 bg-gray-900/50 p-6 shadow-sm">
-        <h3 className="mb-2 text-lg font-medium text-white">Your Standard Referral Link</h3>
-        <p className="mb-4 text-sm text-gray-400">Share this link. Anyone who clicks it will be tracked as your referral.</p>
-        <div className="flex items-center space-x-2">
-          <input
-            type="text"
-            readOnly
-            value={referralLink}
-            className="flex-1 rounded border border-gray-700 bg-gray-800 px-4 py-2 text-white"
-          />
-        </div>
-      </div>
-
-      <div className="rounded-xl border border-gray-800 bg-gray-900/50 p-6 shadow-sm">
-        <h3 className="mb-2 text-lg font-medium text-white">Your Custom Coupon Code</h3>
-        <p className="mb-4 text-sm text-gray-400">
-          Share this coupon code with your audience. They get {affiliate.customerDiscount}% off, and you earn {affiliate.commissionRate}% commission.
-        </p>
-        <div className="inline-block rounded border border-gray-700 bg-gray-800 px-6 py-3">
-          <span className="text-xl font-bold tracking-widest text-primary">{affiliate.couponCode}</span>
-        </div>
-      </div>
-    </div>
+    <LinksClient 
+      referralLink={referralLink}
+      couponCode={affiliate.couponCode || ''}
+      customerDiscount={affiliate.customerDiscount || 10}
+      commissionRate={affiliate.commissionRate || 10}
+    />
   )
 }

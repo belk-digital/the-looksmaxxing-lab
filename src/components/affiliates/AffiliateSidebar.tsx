@@ -17,7 +17,6 @@ const NAV_ITEMS = [
   { name: 'Overview', href: '/affiliates/dashboard', icon: LayoutDashboard },
   { name: 'Links & Assets', href: '/affiliates/dashboard/links', icon: LinkIcon },
   { name: 'Conversions', href: '/affiliates/dashboard/conversions', icon: Target },
-  { name: 'Earnings', href: '/affiliates/dashboard/earnings', icon: DollarSign },
   { name: 'Payouts', href: '/affiliates/dashboard/payouts', icon: WalletCards },
   { name: 'Settings', href: '/affiliates/dashboard/settings', icon: Settings },
 ]
