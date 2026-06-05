@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { ArrowRight, Package, LifeBuoy, TrendingUp, Heart, Calendar, MapPin, Wallet } from 'lucide-react'
+import { ArrowRight, Package, LifeBuoy, TrendingUp, Heart, Calendar, MapPin, Wallet, Users, BarChart3 } from 'lucide-react'
 import { Space_Grotesk } from 'next/font/google'
 import { motion, Variants } from 'framer-motion'
 
@@ -30,9 +30,10 @@ export interface AccountOverviewProps {
     zip: string;
     country: string;
   } | null;
+  affiliateStatus?: 'none' | 'pending' | 'approved' | 'rejected' | 'suspended';
 }
 
-export function AccountOverviewClient({ stats, recentOrders, defaultAddress }: AccountOverviewProps) {
+export function AccountOverviewClient({ stats, recentOrders, defaultAddress, affiliateStatus = 'none' }: AccountOverviewProps) {
   // Animation variants
   const containerVars: Variants = {
     hidden: { opacity: 0 },
@@ -178,8 +179,54 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress }: A
 
           {/* Quick Links */}
           <div className="flex flex-col gap-6">
-            <h3 className="text-xs font-bold uppercase tracking-[0.15em] text-black border-b border-gray-200 pb-4">Support</h3>
+            <h3 className="text-xs font-bold uppercase tracking-[0.15em] text-black border-b border-gray-200 pb-4">Support & Programs</h3>
             <div className="flex flex-col gap-3">
+              
+              {/* Affiliate Status Cards */}
+              {affiliateStatus === 'approved' && (
+                <Link href="/en/affiliates/dashboard" className="flex items-center justify-between p-5 border border-blue-100 rounded-2xl hover:border-blue-200 hover:shadow-lg hover:shadow-blue-500/10 hover:-translate-y-1 transition-all duration-300 group bg-gradient-to-br from-[#f8faff] to-[#eef4ff] relative overflow-hidden">
+                  <div className="flex items-center gap-4 text-black relative z-10">
+                    <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center group-hover:bg-blue-600 transition-colors shadow-sm">
+                      <BarChart3 size={16} />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#5984c4]">Partner Dashboard</span>
+                      <span className="text-xs text-blue-900/60 mt-0.5">Manage links and payouts</span>
+                    </div>
+                  </div>
+                  <ArrowRight size={16} className="text-[#5984c4] group-hover:translate-x-2 transition-all duration-300 relative z-10" />
+                </Link>
+              )}
+              
+              {affiliateStatus === 'none' && (
+                <Link href="/en/affiliates" className="flex items-center justify-between p-5 border border-amber-100 rounded-2xl hover:border-amber-200 hover:shadow-lg hover:shadow-amber-500/10 hover:-translate-y-1 transition-all duration-300 group bg-gradient-to-br from-amber-50 to-orange-50 relative overflow-hidden">
+                  <div className="flex items-center gap-4 text-black relative z-10">
+                    <div className="w-10 h-10 rounded-full bg-amber-500 text-white flex items-center justify-center group-hover:bg-amber-600 transition-colors shadow-sm">
+                      <Users size={16} />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-amber-600">Earn 15% Commission</span>
+                      <span className="text-xs text-amber-900/60 mt-0.5">Join the Partner Program</span>
+                    </div>
+                  </div>
+                  <ArrowRight size={16} className="text-amber-500 group-hover:translate-x-2 transition-all duration-300 relative z-10" />
+                </Link>
+              )}
+
+              {affiliateStatus === 'pending' && (
+                <div className="flex items-center justify-between p-5 border border-gray-200 rounded-2xl bg-gray-50 relative overflow-hidden">
+                  <div className="flex items-center gap-4 text-black relative z-10">
+                    <div className="w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center shadow-sm">
+                      <Users size={16} />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-gray-500">Partner Program</span>
+                      <span className="text-xs text-gray-400 mt-0.5">Application under review</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <Link href="/en/track" className="flex items-center justify-between p-5 border border-gray-100 rounded-2xl hover:border-transparent hover:shadow-lg hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300 group bg-white relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-50 to-gray-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 <div className="flex items-center gap-4 text-black relative z-10">

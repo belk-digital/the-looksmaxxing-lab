@@ -4,7 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Space_Grotesk } from 'next/font/google'
-import { LayoutDashboard, Package, MapPin, Heart, Settings, LogOut, Wallet } from 'lucide-react'
+import { LayoutDashboard, Package, MapPin, Heart, Settings, LogOut, Wallet, BarChart3, Users } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 import { useClerk } from '@clerk/nextjs'
@@ -21,7 +21,15 @@ const NAV_ITEMS = [
   { name: 'Settings', href: '/account/settings', icon: Settings },
 ]
 
-export function AccountSidebar({ userName = 'User', purityPoints = 0 }: { userName?: string, purityPoints?: number }) {
+export function AccountSidebar({ 
+  userName = 'User', 
+  purityPoints = 0,
+  affiliateStatus = 'none' 
+}: { 
+  userName?: string
+  purityPoints?: number
+  affiliateStatus?: 'none' | 'pending' | 'approved' | 'rejected' | 'suspended'
+}) {
   const pathname = usePathname() || ''
   const { signOut } = useClerk()
   const [open, setOpen] = useState(false)
@@ -92,6 +100,17 @@ export function AccountSidebar({ userName = 'User', purityPoints = 0 }: { userNa
             </Link>
           )
         })}
+
+        {/* Affiliate Link (if approved) */}
+        {affiliateStatus === 'approved' && (
+          <Link
+            href="/en/affiliates/dashboard"
+            className="relative flex items-center justify-center lg:justify-start gap-3 shrink-0 px-4 py-3.5 rounded-2xl text-[11px] font-bold uppercase tracking-[0.15em] transition-all duration-300 text-[#5984c4] hover:bg-blue-50/50 bg-blue-50 lg:bg-transparent group"
+          >
+            <BarChart3 size={16} className="relative z-10 transition-colors duration-300 text-[#5984c4] group-hover:text-blue-600" />
+            <span className="relative z-10 group-hover:text-blue-600">Partner Dashboard</span>
+          </Link>
+        )}
         
         <div className="hidden lg:block w-full h-px bg-gray-200 my-4" />
         
@@ -128,6 +147,35 @@ export function AccountSidebar({ userName = 'User', purityPoints = 0 }: { userNa
           </DialogContent>
         </Dialog>
       </nav>
+
+      {/* Promotional Affiliate Box if not affiliate */}
+      {affiliateStatus === 'none' && (
+        <div className="hidden lg:flex flex-col gap-3 mt-4 bg-gradient-to-br from-[#f8faff] to-[#eef4ff] border border-blue-100/50 shadow-sm p-5 rounded-2xl w-full relative overflow-hidden group">
+          <div className="absolute top-0 right-0 -mt-2 -mr-2 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 text-blue-500 pointer-events-none">
+            <Users size={80} />
+          </div>
+          <div className="relative z-10 flex flex-col gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#5984c4]">Partner Program</span>
+            <p className="text-[11px] text-blue-900/80 leading-relaxed font-medium">
+              Earn <strong className="text-blue-900 font-bold">15% commission</strong> by referring researchers.
+            </p>
+          </div>
+          <Link href="/en/affiliates" className="relative z-10 mt-2 bg-white text-[#5984c4] hover:bg-blue-50 hover:text-blue-600 border border-blue-100 rounded-xl px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] transition-all duration-300 text-center shadow-sm">
+            Apply Now
+          </Link>
+        </div>
+      )}
+      
+      {affiliateStatus === 'pending' && (
+        <div className="hidden lg:flex flex-col gap-3 mt-4 bg-gray-50 border border-gray-200/50 shadow-sm p-5 rounded-2xl w-full relative overflow-hidden">
+          <div className="relative z-10 flex flex-col gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-500">Partner Program</span>
+            <p className="text-[11px] text-gray-600 leading-relaxed font-medium">
+              Your application is currently under review.
+            </p>
+          </div>
+        </div>
+      )}
     </aside>
   )
 }

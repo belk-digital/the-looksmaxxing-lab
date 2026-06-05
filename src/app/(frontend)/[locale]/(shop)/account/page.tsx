@@ -44,6 +44,15 @@ export default async function AccountOverviewPage() {
   
   const defaultAddressDoc = addresses.find(a => a.isDefaultShipping) || addresses[0] || null
 
+  // 4. Fetch Affiliate Status
+  const { docs: affiliates } = await payload.find({
+    collection: 'affiliates',
+    where: { user: { equals: user.id } },
+    limit: 1,
+    overrideAccess: true,
+  })
+  const affiliateStatus = affiliates.length > 0 ? (affiliates[0].status || 'pending') : 'none'
+
   const stats = {
     ordersPlaced,
     wishlistCount,
@@ -74,6 +83,7 @@ export default async function AccountOverviewPage() {
       stats={stats} 
       recentOrders={recentOrders} 
       defaultAddress={defaultAddress} 
+      affiliateStatus={affiliateStatus}
     />
   )
 }
