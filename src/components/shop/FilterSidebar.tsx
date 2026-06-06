@@ -10,20 +10,24 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 
-const CATEGORIES = [
-  'Bioregulators', 'Cellular Health', 'Cognitive Function', 
-  'Essentials', 'Growth Factor', 'Metabolic', 
-  'Receptor Agonist', 'Recovery'
-]
+export interface Category {
+  id: string | number
+  name: string
+  slug: string
+}
 
-function FilterSidebarInner() {
+export interface FilterSidebarProps {
+  categories?: Category[]
+}
+
+function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [isOpen, setIsOpen] = useState(false)
 
   // Local state for optimistic UI updates before pushing to URL
-  const [categories, setCategories] = useState<string[]>([])
+  const [activeCategories, setActiveCategories] = useState<string[]>([])
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500])
   const [inStock, setInStock] = useState(false)
   const [onSale, setOnSale] = useState(false)
@@ -32,7 +36,7 @@ function FilterSidebarInner() {
 
   // Sync from URL
   useEffect(() => {
-    setCategories(searchParams.getAll('category'))
+    setActiveCategories(searchParams.getAll('category'))
     const minP = searchParams.get('minPrice')
     const maxP = searchParams.get('maxPrice')
     if (minP && maxP) setPriceRange([parseInt(minP), parseInt(maxP)])
@@ -60,9 +64,9 @@ function FilterSidebarInner() {
   }, [searchParams, pathname, router])
 
   const toggleCategory = (cat: string) => {
-    const next = categories.includes(cat)
-      ? categories.filter(c => c !== cat)
-      : [...categories, cat]
+    const next = activeCategories.includes(cat)
+      ? activeCategories.filter(c => c !== cat)
+      : [...activeCategories, cat]
     updateFilters('category', next)
   }
 
@@ -85,15 +89,15 @@ function FilterSidebarInner() {
           Category
         </h4>
         <div className="flex flex-col gap-3">
-          {CATEGORIES.map(cat => (
-            <div key={cat} className="flex items-center space-x-3">
+          {categories.map(cat => (
+            <div key={cat.id} className="flex items-center space-x-3">
               <Checkbox 
-                id={`cat-${cat}`} 
-                checked={categories.includes(cat)}
-                onCheckedChange={() => toggleCategory(cat)}
+                id={`cat-${cat.slug}`} 
+                checked={activeCategories.includes(cat.name)}
+                onCheckedChange={() => toggleCategory(cat.name)}
               />
-              <Label htmlFor={`cat-${cat}`} className="text-body-sm text-ink cursor-pointer leading-none">
-                {cat}
+              <Label htmlFor={`cat-${cat.slug}`} className="text-body-sm text-ink cursor-pointer leading-none">
+                {cat.name}
               </Label>
             </div>
           ))}
@@ -190,10 +194,10 @@ function FilterSidebarInner() {
   )
 }
 
-export function FilterSidebar() {
+export function FilterSidebar({ categories }: FilterSidebarProps) {
   return (
     <Suspense fallback={<div className="w-[280px] hidden md:block shrink-0" />}>
-      <FilterSidebarInner />
+      <FilterSidebarInner categories={categories} />
     </Suspense>
   )
 }

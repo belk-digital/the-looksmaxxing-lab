@@ -36,7 +36,7 @@ export function AffiliateSidebar({
     <aside className="w-full h-fit flex flex-col gap-8 lg:sticky lg:top-32 z-10">
       {/* Greeting */}
       <div className="hidden lg:flex flex-col gap-1">
-        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Partner Dashboard</span>
+        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Affiliate Dashboard</span>
         <h2 className={`text-2xl font-bold text-black tracking-tight ${spaceGrotesk.className}`}>
           {userName}
         </h2>

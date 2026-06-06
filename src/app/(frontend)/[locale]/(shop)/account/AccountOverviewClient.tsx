@@ -190,7 +190,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
                       <BarChart3 size={16} />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#5984c4]">Partner Dashboard</span>
+                      <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#5984c4]">Affiliate Dashboard</span>
                       <span className="text-xs text-blue-900/60 mt-0.5">Manage links and payouts</span>
                     </div>
                   </div>

@@ -312,6 +312,15 @@ export interface Product {
   id: number;
   name: string;
   description?: string | null;
+  /**
+   * Upload images for the product. The first image is the primary thumbnail.
+   */
+  images?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
   slug?: string | null;
@@ -339,6 +348,10 @@ export interface Product {
   variants?:
     | {
         sku: string;
+        /**
+         * Optional specific image for this variant (e.g., 5mg vial vs 10mg kit)
+         */
+        image?: (number | null) | Media;
         price: number;
         salePrice?: number | null;
         stock: number;
@@ -1310,6 +1323,12 @@ export interface CategoriesSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   name?: T;
   description?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
   seoTitle?: T;
   seoDescription?: T;
   slug?: T;
@@ -1331,6 +1350,7 @@ export interface ProductsSelect<T extends boolean = true> {
     | T
     | {
         sku?: T;
+        image?: T;
         price?: T;
         salePrice?: T;
         stock?: T;

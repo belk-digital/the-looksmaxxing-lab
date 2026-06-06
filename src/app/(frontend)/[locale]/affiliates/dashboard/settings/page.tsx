@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { SettingsClient } from './SettingsClient'
 
 export const metadata = {
-  title: 'Settings | Partner Dashboard',
+  title: 'Settings | Affiliate Dashboard',
 }
 
 export default async function AffiliateSettingsPage() {

@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { LinksClient } from './LinksClient'
 
 export const metadata = {
-  title: 'Links & Creatives | Partner Dashboard',
+  title: 'Links & Creatives | Affiliate Dashboard',
 }
 
 export default async function AffiliateLinksPage() {

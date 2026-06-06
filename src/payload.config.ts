@@ -85,28 +85,31 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
-    s3Storage({
-      collections: {
-        media: {
-          generateFileURL: ({ filename, prefix }) => {
-            const publicUrl = process.env.R2_PUBLIC_URL || ''
-            const base = publicUrl.replace(/\/$/, '')
-            return prefix ? `${base}/${prefix}/${filename}` : `${base}/${filename}`
+    ...(process.env.R2_BUCKET ? [
+      s3Storage({
+        collections: {
+          media: {
+            disableLocalStorage: true,
+            disablePayloadAccessControl: true,
+            generateFileURL: ({ filename, prefix }) => {
+              const publicUrl = process.env.R2_PUBLIC_URL || ''
+              const base = publicUrl.replace(/\/$/, '')
+              return prefix ? `${base}/${prefix}/${filename}` : `${base}/${filename}`
+            },
           },
         },
-      },
-      bucket: process.env.R2_BUCKET || '',
-      config: {
-        endpoint: process.env.R2_ENDPOINT || '',
-        credentials: {
-          accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
-          secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
+        bucket: process.env.R2_BUCKET,
+        config: {
+          endpoint: process.env.R2_ENDPOINT || '',
+          credentials: {
+            accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
+            secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
+          },
+          region: 'auto',
+          forcePathStyle: true,
         },
-        region: 'auto',
-        forcePathStyle: true,
-      },
-      enabled: !!process.env.R2_BUCKET,
-    }),
+      })
+    ] : []),
   ],
   email: resendAdapter({
     defaultFromAddress: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',

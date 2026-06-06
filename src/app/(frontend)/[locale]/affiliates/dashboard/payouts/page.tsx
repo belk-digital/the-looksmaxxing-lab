@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { PayoutsClient } from './PayoutsClient'
 
 export const metadata = {
-  title: 'Payouts | Partner Dashboard',
+  title: 'Payouts | Affiliate Dashboard',
 }
 
 export default async function AffiliatePayoutsPage() {
@@ -45,7 +45,19 @@ export default async function AffiliatePayoutsPage() {
     reference: payout.transactionId || '',
   }))
 
+  const availableBalance = affiliate.totalCommissionApproved || 0
+  const minimumThreshold = affiliate.minimumPayoutThreshold || 5000 // default $50
+
+  const hasPendingRequest = payoutsRes.docs.some(
+    p => p.status === 'draft' || p.status === 'processing'
+  )
+
   return (
-    <PayoutsClient payouts={mappedPayouts} />
+    <PayoutsClient 
+      payouts={mappedPayouts} 
+      availableBalance={availableBalance}
+      minimumThreshold={minimumThreshold}
+      hasPendingRequest={hasPendingRequest}
+    />
   )
 }

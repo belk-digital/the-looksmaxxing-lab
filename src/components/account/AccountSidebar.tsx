@@ -108,7 +108,7 @@ export function AccountSidebar({
             className="relative flex items-center justify-center lg:justify-start gap-3 shrink-0 px-4 py-3.5 rounded-2xl text-[11px] font-bold uppercase tracking-[0.15em] transition-all duration-300 text-[#5984c4] hover:bg-blue-50/50 bg-blue-50 lg:bg-transparent group"
           >
             <BarChart3 size={16} className="relative z-10 transition-colors duration-300 text-[#5984c4] group-hover:text-blue-600" />
-            <span className="relative z-10 group-hover:text-blue-600">Partner Dashboard</span>
+            <span className="relative z-10 group-hover:text-blue-600">Affiliate Dashboard</span>
           </Link>
         )}
         

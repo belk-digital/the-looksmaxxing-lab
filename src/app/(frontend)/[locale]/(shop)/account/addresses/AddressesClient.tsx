@@ -99,17 +99,29 @@ export function AddressesClient({ addresses }: AccountAddressesProps) {
 
   async function handleAddSubmit(formData: FormData) {
     startTransition(async () => {
-      if (editingId) {
-        const { updateAddress } = await import('./actions')
-        await updateAddress(editingId, formData)
-        toast.success('Address updated successfully')
-      } else {
-        const { addAddress } = await import('./actions')
-        await addAddress(formData)
-        toast.success('Address saved successfully')
+      try {
+        if (editingId) {
+          const { updateAddress } = await import('./actions')
+          const result = await updateAddress(editingId, formData)
+          if (!result?.success) {
+            toast.error(result?.error || 'Failed to update address')
+            return
+          }
+          toast.success('Address updated successfully')
+        } else {
+          const { addAddress } = await import('./actions')
+          const result = await addAddress(formData)
+          if (!result?.success) {
+            toast.error(result?.error || 'Failed to save address')
+            return
+          }
+          toast.success('Address saved successfully')
+        }
+        setOpen(false)
+        setEditingId(null)
+      } catch (error: any) {
+        toast.error(error.message || 'An unexpected error occurred')
       }
-      setOpen(false)
-      setEditingId(null)
     })
   }
 

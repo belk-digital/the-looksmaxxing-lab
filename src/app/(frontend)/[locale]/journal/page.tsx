@@ -76,7 +76,7 @@ export default function JournalIndexPage() {
              {/* Center Overlay Text inside Window */}
              <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-4">
                 <motion.h1 
-                  className="text-center text-[10vw] sm:text-[12vw] md:text-[14vw] lg:text-[10vw] font-serif text-white leading-none tracking-tight mix-blend-overlay opacity-90 drop-shadow-2xl whitespace-nowrap"
+                  className="text-center text-[10vw] sm:text-[12vw] md:text-[14vw] lg:text-[10vw] font-serif text-white leading-none tracking-tight mix-blend-overlay opacity-90 whitespace-nowrap transform-gpu"
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 1, delay: 0.4 }}
@@ -101,6 +101,9 @@ export default function JournalIndexPage() {
       {/* Featured Post */}
       <section className="px-4 md:px-6 mb-12 md:mb-16 max-w-[1280px] mx-auto">
         <FadeUp delay={0.1}>
+          <div className="mb-6 px-2 lg:px-4">
+            <h2 className="text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-[#5984c4]">Featured Article</h2>
+          </div>
           <Link href="/journal/the-case-for-nad-in-mitochondrial-research" className="group block relative w-full bg-white rounded-[1.5rem] md:rounded-[2rem] p-3 md:p-4 lg:p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
             <div className="relative w-full h-[35vh] min-h-[250px] md:h-[50vh] md:min-h-[400px] rounded-2xl md:rounded-3xl overflow-hidden mb-6 md:mb-8">
               <Image 

@@ -1,0 +1,170 @@
+'use client'
+
+import React, { useRef, useState, useEffect } from 'react'
+import Image from 'next/image'
+import { motion, useMotionValue, useSpring } from 'framer-motion'
+import { FadeUp } from '@/components/motion/FadeUp'
+
+export interface SwipeCard {
+  title: string
+  desc: string
+  image: string
+}
+
+export interface SwipeCarouselProps {
+  title: string
+  description: string
+  cards: SwipeCard[]
+}
+
+export function SwipeCarousel({ title, description, cards }: SwipeCarouselProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  
+  // Custom Cursor state
+  const [isHovered, setIsHovered] = useState(false)
+  const cursorX = useMotionValue(-100)
+  const cursorY = useMotionValue(-100)
+  
+  const springConfig = { damping: 25, stiffness: 200, mass: 0.5 }
+  const cursorXSpring = useSpring(cursorX, springConfig)
+  const cursorYSpring = useSpring(cursorY, springConfig)
+
+  // Track dragging bounds and mobile state
+  const [dragConstraints, setDragConstraints] = useState({ left: 0, right: 0 })
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    
+    const updateConstraints = () => {
+      checkMobile()
+      if (containerRef.current && trackRef.current && !isMobile) {
+        const containerWidth = containerRef.current.offsetWidth
+        const trackWidth = trackRef.current.scrollWidth
+        setDragConstraints({
+          left: -Math.max(trackWidth - containerWidth + 48, 0),
+          right: 0
+        })
+      }
+    }
+    
+    setTimeout(updateConstraints, 100)
+    window.addEventListener('resize', updateConstraints)
+    return () => window.removeEventListener('resize', updateConstraints)
+  }, [cards, isMobile])
+
+  // Mobile Auto-Scroll
+  useEffect(() => {
+    if (!isMobile) return;
+    
+    const interval = setInterval(() => {
+      if (trackRef.current) {
+        const track = trackRef.current;
+        const cardWidth = 280 + 16; // w-[280px] + gap-4
+        
+        // If we've reached the end, scroll back to start
+        if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 10) {
+          track.scrollTo({ left: 0, behavior: 'smooth' })
+        } else {
+          track.scrollBy({ left: cardWidth, behavior: 'smooth' })
+        }
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isMobile]);
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (containerRef.current && !isMobile) {
+      const rect = containerRef.current.getBoundingClientRect()
+      cursorX.set(e.clientX - rect.left)
+      cursorY.set(e.clientY - rect.top)
+    }
+  }
+
+  return (
+    <section className="py-24 lg:py-32 bg-[#f4f3ef] text-ink overflow-hidden">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
+        
+        {/* Header */}
+        <FadeUp className="max-w-2xl mb-12 lg:mb-16">
+          <h2 className="text-4xl lg:text-5xl font-serif font-medium tracking-tight mb-6 text-ink">
+            {title}
+          </h2>
+          <p className="text-lg lg:text-xl text-ink/70 leading-relaxed font-light">
+            {description}
+          </p>
+        </FadeUp>
+
+        {/* Carousel Container */}
+        <div 
+          ref={containerRef}
+          className="relative w-full md:cursor-none"
+          onPointerMove={handlePointerMove}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* Custom Cursor Bubble (Desktop Only) */}
+          <motion.div
+            className="pointer-events-none absolute z-50 hidden md:flex items-center justify-center w-20 h-20 lg:w-24 lg:h-24 bg-white/90 backdrop-blur-md rounded-full shadow-xl border border-white/20"
+            style={{
+              x: cursorXSpring,
+              y: cursorYSpring,
+              translateX: '-50%',
+              translateY: '-50%',
+            }}
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ 
+              scale: isHovered && !isMobile ? 1 : 0, 
+              opacity: isHovered && !isMobile ? 1 : 0 
+            }}
+            transition={{ duration: 0.2 }}
+          >
+            <span className="text-ink font-sans font-medium text-[10px] lg:text-[12px] uppercase tracking-wider">SWIPE</span>
+          </motion.div>
+
+          {/* Draggable Track (Desktop) / Scrollable Track (Mobile) */}
+          <motion.div 
+            ref={trackRef}
+            drag={isMobile ? false : "x"}
+            dragConstraints={dragConstraints}
+            dragElastic={0.1}
+            whileTap={{ cursor: isMobile ? "auto" : "grabbing" }}
+            className={`flex gap-4 md:gap-6 items-stretch pb-8 ${isMobile ? 'overflow-x-auto snap-x snap-mandatory' : ''} hide-scrollbar`}
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {cards.map((card, idx) => (
+              <motion.div 
+                key={idx}
+                className="relative shrink-0 w-[280px] md:w-[350px] lg:w-[400px] h-[350px] md:h-[450px] lg:h-[500px] rounded-[2rem] overflow-hidden group border border-slate-200 snap-center"
+              >
+                <Image 
+                  src={card.image} 
+                  alt={card.title} 
+                  fill 
+                  className="object-cover transition-transform duration-700 group-hover:scale-105" 
+                  draggable={false} // Important so browser doesn't try to drag the image
+                />
+                
+                {/* Gradient overlay for text legibility */}
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent pointer-events-none" />
+                
+                {/* Content */}
+                <div className="absolute bottom-0 left-0 w-full p-6 lg:p-8 pointer-events-none">
+                  <h3 className="text-2xl lg:text-3xl font-serif text-white mb-3 tracking-wide">
+                    {card.title}
+                  </h3>
+                  <p className="text-white/80 font-light leading-relaxed text-sm md:text-base">
+                    {card.desc}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+          
+        </div>
+      </div>
+    </section>
+  )
+}

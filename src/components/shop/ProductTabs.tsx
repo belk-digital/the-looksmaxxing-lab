@@ -60,7 +60,15 @@ export function ProductTabs({ tabs }: ProductTabsProps) {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="w-full h-full text-body-lg text-ink-muted leading-relaxed"
           >
-            {activeTabContent}
+            {typeof activeTabContent === 'string' ? (
+              <div className="flex flex-col gap-4 max-w-3xl">
+                <p className="text-body-lg text-ink-muted leading-relaxed whitespace-pre-wrap">
+                  {activeTabContent}
+                </p>
+              </div>
+            ) : (
+              activeTabContent
+            )}
           </motion.div>
         </AnimatePresence>
       </div>

@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react'
 import { Space_Grotesk } from 'next/font/google'
-import { motion, Variants } from 'framer-motion'
-import { Copy, Check, ExternalLink } from 'lucide-react'
+import { motion, Variants, AnimatePresence } from 'framer-motion'
+import { Copy, Check, ExternalLink, Edit2, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { updateCouponCode } from './actions'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
@@ -16,9 +17,16 @@ interface LinksClientProps {
   commissionRate: number;
 }
 
-export function LinksClient({ referralLink, couponCode, customerDiscount, commissionRate }: LinksClientProps) {
+export function LinksClient({ referralLink, couponCode: initialCouponCode, customerDiscount, commissionRate }: LinksClientProps) {
   const [copiedLink, setCopiedLink] = useState(false)
   const [copiedCode, setCopiedCode] = useState(false)
+  
+  // Edit states
+  const [couponCode, setCouponCode] = useState(initialCouponCode)
+  const [isEditing, setIsEditing] = useState(false)
+  const [newCode, setNewCode] = useState(initialCouponCode)
+  const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleCopy = (text: string, type: 'link' | 'code') => {
     navigator.clipboard.writeText(text)
@@ -29,6 +37,33 @@ export function LinksClient({ referralLink, couponCode, customerDiscount, commis
       setCopiedCode(true)
       setTimeout(() => setCopiedCode(false), 2000)
     }
+  }
+
+  const handleSaveCode = async () => {
+    setError(null)
+    setIsSaving(true)
+    
+    try {
+      const result = await updateCouponCode(newCode)
+      
+      if (result.success && result.code) {
+        setCouponCode(result.code)
+        setNewCode(result.code)
+        setIsEditing(false)
+      } else {
+        setError(result.error || 'Failed to update code.')
+      }
+    } catch (err: any) {
+      setError(err.message || 'An unexpected error occurred.')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setNewCode(couponCode)
+    setIsEditing(false)
+    setError(null)
   }
 
   // Animation variants
@@ -98,16 +133,90 @@ export function LinksClient({ referralLink, couponCode, customerDiscount, commis
         </div>
         
         <div className="flex flex-col sm:flex-row gap-3 mt-2 relative z-10">
-          <div className="flex-1 bg-white rounded-xl px-4 py-3.5 text-lg font-mono font-bold text-[#5984c4] border border-blue-100/50 flex items-center justify-center sm:justify-start">
-            {couponCode}
-          </div>
-          <Button 
-            onClick={() => handleCopy(couponCode, 'code')}
-            className="rounded-xl h-12 px-8 text-xs font-bold uppercase tracking-widest gap-2 bg-[#5984c4] hover:bg-blue-600 text-white border-none shadow-md shrink-0 w-full sm:w-auto"
-          >
-            {copiedCode ? <Check size={16} /> : <Copy size={16} />}
-            {copiedCode ? 'Copied!' : 'Copy Code'}
-          </Button>
+          <AnimatePresence mode="wait">
+            {isEditing ? (
+              <motion.div 
+                key="edit"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="flex-1 flex flex-col gap-2"
+              >
+                <input
+                  type="text"
+                  value={newCode}
+                  onChange={(e) => setNewCode(e.target.value.toUpperCase())}
+                  placeholder="e.g. JOHN20"
+                  maxLength={20}
+                  className="w-full bg-white rounded-xl px-4 py-3.5 text-lg font-mono font-bold text-[#5984c4] border-2 border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all shadow-inner"
+                  autoFocus
+                />
+                {error && <span className="text-xs font-medium text-red-500 bg-red-50 px-3 py-1.5 rounded-lg w-fit">{error}</span>}
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="view"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="flex-1 bg-white rounded-xl px-4 py-3.5 text-lg font-mono font-bold text-[#5984c4] border border-blue-100/50 flex items-center justify-between shadow-sm"
+              >
+                <span>{couponCode}</span>
+                <button 
+                  onClick={() => setIsEditing(true)}
+                  className="p-2 text-blue-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                  title="Edit custom code"
+                >
+                  <Edit2 size={16} />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence mode="wait">
+            {isEditing ? (
+              <motion.div 
+                key="edit-actions"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="flex gap-2 shrink-0 w-full sm:w-auto h-[52px]"
+              >
+                <Button 
+                  onClick={handleCancelEdit}
+                  disabled={isSaving}
+                  variant="outline"
+                  className="flex-1 sm:flex-none rounded-xl h-full px-6 text-xs font-bold uppercase tracking-widest gap-2 bg-white text-gray-500 border-gray-200"
+                >
+                  <X size={16} />
+                </Button>
+                <Button 
+                  onClick={handleSaveCode}
+                  disabled={isSaving}
+                  className="flex-1 sm:w-32 rounded-xl h-full px-8 text-xs font-bold uppercase tracking-widest gap-2 bg-[#5984c4] hover:bg-blue-600 text-white border-none shadow-md"
+                >
+                  {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
+                  {isSaving ? 'Saving' : 'Save'}
+                </Button>
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="copy-action"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="shrink-0 w-full sm:w-auto h-[52px]"
+              >
+                <Button 
+                  onClick={() => handleCopy(couponCode, 'code')}
+                  className="w-full rounded-xl h-full px-8 text-xs font-bold uppercase tracking-widest gap-2 bg-[#5984c4] hover:bg-blue-600 text-white border-none shadow-md"
+                >
+                  {copiedCode ? <Check size={16} /> : <Copy size={16} />}
+                  {copiedCode ? 'Copied!' : 'Copy Code'}
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
 

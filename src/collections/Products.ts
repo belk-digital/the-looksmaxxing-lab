@@ -25,6 +25,22 @@ export const Products: CollectionConfig = {
       localized: true,
     },
     {
+      name: 'images',
+      type: 'array',
+      label: 'Product Images',
+      fields: [
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+        }
+      ],
+      admin: {
+        description: 'Upload images for the product. The first image is the primary thumbnail.',
+      }
+    },
+    {
       name: 'seoTitle',
       type: 'text',
       localized: true,
@@ -104,6 +120,14 @@ export const Products: CollectionConfig = {
           name: 'sku',
           type: 'text',
           required: true,
+        },
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          admin: {
+            description: 'Optional specific image for this variant (e.g., 5mg vial vs 10mg kit)',
+          }
         },
         {
           name: 'price',

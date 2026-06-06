@@ -10,7 +10,7 @@ import config from '@payload-config'
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 export const metadata = {
-  title: 'Partner Dashboard | The Looksmaxxing Lab',
+  title: 'Affiliate Dashboard | The Looksmaxxing Lab',
 }
 
 export default async function AffiliateDashboardLayout({ children }: { children: React.ReactNode }) {
@@ -40,7 +40,7 @@ export default async function AffiliateDashboardLayout({ children }: { children:
     <div className="pt-20 bg-[#FAFAFA] min-h-screen selection:bg-black/10">
       <Container size="page" className="py-12 md:py-16">
         <h1 className={`text-4xl md:text-5xl font-bold tracking-tighter text-black mb-12 drop-shadow-sm ${spaceGrotesk.className}`}>
-          Partner Dashboard
+          Affiliate Dashboard
         </h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-12 lg:gap-20">

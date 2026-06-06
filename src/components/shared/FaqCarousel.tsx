@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useRef, useState, useEffect } from 'react'
-import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
+import { motion, useScroll, useMotionValueEvent, useMotionValue, useSpring } from 'framer-motion'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { FadeUp } from '@/components/motion/FadeUp'
 
@@ -28,6 +28,15 @@ export function FaqCarousel({
   const sectionRef = useRef<HTMLElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // Custom Cursor state
+  const [isHovered, setIsHovered] = useState(false);
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+  
+  const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
+  const cursorXSpring = useSpring(cursorX, springConfig);
+  const cursorYSpring = useSpring(cursorY, springConfig);
 
   const isDark = theme === 'dark';
   const bgClass = isDark ? 'bg-ink' : 'bg-[#f4f7fb]';
@@ -125,8 +134,41 @@ export function FaqCarousel({
       className={`w-full relative ${bgClass}`}
       style={{ height: `${faqs.length * 80}vh` }} // Make section taller based on number of FAQs
     >
-      <div className="sticky top-0 h-[100dvh] w-full flex flex-col justify-start pt-10 lg:pt-16 pb-12 overflow-hidden">
+      <div 
+        className="sticky top-0 h-[100dvh] w-full flex flex-col justify-start pt-10 lg:pt-16 pb-12 overflow-hidden md:cursor-none"
+        onPointerMove={(e) => {
+          cursorX.set(e.clientX);
+          cursorY.set(e.clientY);
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         
+        {/* Custom Cursor Bubble (Desktop Only) */}
+        <motion.div
+          className={`pointer-events-none absolute z-50 hidden md:flex items-center justify-center w-20 h-20 lg:w-24 lg:h-24 rounded-full shadow-xl border border-white/20 ${
+            isDark ? 'bg-[#5984c4]/90 backdrop-blur-md text-white' : 'bg-white/90 backdrop-blur-md text-[#5984c4]'
+          }`}
+          style={{
+            x: cursorXSpring,
+            y: cursorYSpring,
+            translateX: '-50%',
+            translateY: '-50%',
+            top: 0,
+            left: 0,
+          }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ 
+            scale: isHovered ? 1 : 0, 
+            opacity: isHovered ? 1 : 0 
+          }}
+          transition={{ duration: 0.2 }}
+        >
+          <span className="font-sans font-medium text-[10px] lg:text-[12px] uppercase tracking-wider text-center leading-[1.2]">
+            KEEP<br/>SCROLLING
+          </span>
+        </motion.div>
+
         {/* Background Elements */}
         <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
           
@@ -208,12 +250,12 @@ export function FaqCarousel({
                          }
                       }
                     }}
-                    className={`faq-card shrink-0 overflow-hidden rounded-[2rem] p-8 lg:p-12 transition-all duration-500 ease-out flex flex-col cursor-pointer ${
+                    className={`faq-card shrink-0 overflow-hidden rounded-[2rem] p-6 md:p-8 lg:p-12 transition-all duration-500 ease-out flex flex-col cursor-pointer lg:min-h-[480px] ${
                       isActive 
                         ? `${activeCardBg} shadow-2xl relative z-10` 
                         : `${inactiveCardBg} hover:opacity-80 relative z-0`
                     }`}
-                    style={{ ...getCardStyle(isActive), minHeight: '480px' }}
+                    style={{ ...getCardStyle(isActive) }}
                   >
                     {/* Subtle Noise Texture on Cards (Optimized for performance) */}
                     <div 
@@ -227,14 +269,14 @@ export function FaqCarousel({
                     {/* Inner wrapper allows text to naturally wrap based on the card's current width */}
                     <div className="w-full h-full flex flex-col relative z-10">
                       {/* We lock the question to the inactive width so it NEVER reflows when the card expands */}
-                      <h3 className={`text-2xl lg:text-3xl font-serif leading-tight mb-8 w-full max-w-[216px] lg:max-w-[184px] ${isActive ? '' : 'line-clamp-4'}`}>
+                      <h3 className={`text-2xl lg:text-3xl font-serif leading-tight mb-6 md:mb-8 w-full max-w-[216px] lg:max-w-[184px] ${isActive ? '' : 'line-clamp-4'}`}>
                         {faq.question}
                       </h3>
 
                       {/* We lock the answer to the active width so it doesn't reflow while fading in/out */}
                       <div 
-                        className={`overflow-hidden transition-all duration-500 flex-1 flex flex-col justify-end w-[250px] md:w-[384px] ${
-                          isActive ? 'max-h-[300px] opacity-100 mt-auto' : 'max-h-0 opacity-0'
+                        className={`overflow-hidden transition-all duration-500 w-full md:w-[384px] ${
+                          isActive ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
                         }`}
                       >
                         <p className={`text-sm lg:text-base leading-relaxed font-light ${

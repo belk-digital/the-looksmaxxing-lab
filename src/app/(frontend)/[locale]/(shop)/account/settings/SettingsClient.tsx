@@ -32,9 +32,17 @@ export function SettingsClient({ user }: AccountSettingsProps) {
 
   async function handleSubmit(formData: FormData) {
     startTransition(async () => {
-      const { updateProfile } = await import('./actions')
-      await updateProfile(formData)
-      toast.success('Profile updated successfully')
+      try {
+        const { updateProfile } = await import('./actions')
+        const result = await updateProfile(formData)
+        if (!result?.success) {
+          toast.error(result?.error || 'Failed to update profile')
+          return
+        }
+        toast.success('Profile updated successfully')
+      } catch (error: any) {
+        toast.error(error.message || 'An unexpected error occurred')
+      }
     })
   }
 

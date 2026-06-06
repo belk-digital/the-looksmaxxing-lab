@@ -3,13 +3,15 @@
 import React, { useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion'
+import { motion, useScroll, useTransform, useMotionValueEvent, useMotionValue, useSpring } from 'framer-motion'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
 import { Button } from '@/components/ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { CheckCircle2, ShieldCheck, Microscope, Truck, Search, FlaskConical, ArrowRight } from 'lucide-react'
 import { FaqCarousel, FaqItem } from '@/components/shared/FaqCarousel'
+import { WhyChooseUs } from '@/components/about/WhyChooseUs'
+import { SwipeCarousel } from '@/components/shared/SwipeCarousel'
 
 const ABOUT_FAQS: FaqItem[] = [
   {
@@ -32,6 +34,14 @@ const ABOUT_FAQS: FaqItem[] = [
 
 export default function AboutPage() {
   const [activeServiceIndex, setActiveServiceIndex] = useState(0);
+
+  // Custom Cursor State for Services
+  const [isServicesHovered, setIsServicesHovered] = useState(false);
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+  const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
+  const cursorXSpring = useSpring(cursorX, springConfig);
+  const cursorYSpring = useSpring(cursorY, springConfig);
 
   // Hero Parallax
   const { scrollYProgress: heroScroll } = useScroll({
@@ -134,7 +144,7 @@ export default function AboutPage() {
              {/* Center Overlay Text inside Window */}
              <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-4">
                 <motion.h1 
-                  className="text-center text-[16vw] md:text-[18vw] lg:text-[10vw] font-serif text-white leading-none tracking-tight mix-blend-overlay opacity-90 drop-shadow-2xl whitespace-nowrap"
+                  className="text-center text-[16vw] md:text-[18vw] lg:text-[10vw] font-serif text-white leading-none tracking-tight mix-blend-overlay opacity-90 whitespace-nowrap transform-gpu"
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 1, delay: 0.4 }}
@@ -315,106 +325,41 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 3. Why Choose Us Section - Editorial Index */}
-      <section className="py-24 lg:py-48 px-6 bg-[#f8fafd] text-ink relative">
-        
-        {/* Massive Interactive Background Vial (Left Side) */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          <motion.div
-            animate={{
-              y: [-40, 40, -40],
-              rotate: [-2, 2, -2]
-            }}
-            transition={{
-              duration: 15,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="absolute -left-10 md:left-0 top-[10%] md:top-[15%] h-[80vh] md:h-[100vh] w-[200px] md:w-[300px] lg:w-[450px] opacity-[0.05] mix-blend-multiply"
-          >
-            <Image 
-              src="/temp-homepage/hero-vial-image.webp" 
-              alt="Vial Background"
-              fill
-              className="object-contain object-left-top"
-            />
-          </motion.div>
-        </div>
+      {/* 3. Why Choose Us Section - Interactive Split Layout */}
+      <WhyChooseUs />
 
-        <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-16 lg:gap-24 items-start relative z-10">
-          
-          {/* Left: Sticky Title Area */}
-          <div className="lg:sticky lg:top-32">
-            <FadeUp>
-              <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-[#5984c4] mb-8 font-bold">The Gold Standard</h2>
-              <h3 className="text-5xl lg:text-7xl font-serif mb-8 tracking-tight leading-[1.1]">Why Choose Us</h3>
-              <p className="text-xl text-ink/70 leading-relaxed max-w-md font-light">
-                We don't cut corners. Every aspect of our operation is designed to ensure maximum efficacy and reliability, setting an uncompromising standard for the research community.
-              </p>
-            </FadeUp>
-          </div>
-
-          {/* Right: Editorial Index List */}
-          <div className="flex flex-col w-full">
-            <StaggerChildren className="w-full">
-              
-              {/* Item 01 */}
-              <motion.div variants={staggerItemVariants} className="group border-t border-slate-200 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-[#5984c4]/30 transition-colors duration-500">
-                <div className="text-[#5984c4] shrink-0 mt-2">
-                  <Search className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
-                </div>
-                <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-ink group-hover:text-[#5984c4] transition-colors duration-500">Independent Testing</h4>
-                  <p className="text-lg text-ink/70 leading-relaxed font-light max-w-2xl">
-                    Every single batch is tested by accredited US-based third-party laboratories via HPLC & Mass Spectrometry before it is ever made available for research.
-                  </p>
-                </div>
-              </motion.div>
-
-              {/* Item 02 */}
-              <motion.div variants={staggerItemVariants} className="group border-t border-slate-200 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-[#5984c4]/30 transition-colors duration-500">
-                <div className="text-[#5984c4] shrink-0 mt-2">
-                  <ShieldCheck className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
-                </div>
-                <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-ink group-hover:text-[#5984c4] transition-colors duration-500">&ge;99% Purity Guarantee</h4>
-                  <p className="text-lg text-ink/70 leading-relaxed font-light max-w-2xl">
-                    We maintain the strictest purity thresholds in the industry. If a batch tests at 98.9%, it is destroyed. Compromise is simply not in our vocabulary.
-                  </p>
-                </div>
-              </motion.div>
-
-              {/* Item 03 */}
-              <motion.div variants={staggerItemVariants} className="group border-t border-slate-200 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-[#5984c4]/30 transition-colors duration-500">
-                <div className="text-[#5984c4] shrink-0 mt-2">
-                  <Truck className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
-                </div>
-                <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-ink group-hover:text-[#5984c4] transition-colors duration-500">USA Fulfillment</h4>
-                  <p className="text-lg text-ink/70 leading-relaxed font-light max-w-2xl">
-                    All products are stocked securely in our climate-controlled US facilities, ensuring rapid domestic transit times and eliminating international customs delays.
-                  </p>
-                </div>
-              </motion.div>
-
-              {/* Item 04 */}
-              <motion.div variants={staggerItemVariants} className="group border-t border-b border-slate-200 py-12 flex flex-col md:flex-row gap-6 md:gap-12 md:items-start hover:border-[#5984c4]/30 transition-colors duration-500">
-                <div className="text-[#5984c4] shrink-0 mt-2">
-                  <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
-                </div>
-                <div className="flex flex-col gap-4">
-                  <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-ink group-hover:text-[#5984c4] transition-colors duration-500">Lyophilized Stability</h4>
-                  <p className="text-lg text-ink/70 leading-relaxed font-light max-w-2xl">
-                    Advanced lyophilization techniques guarantee structural integrity during transit and long-term storage, arriving in the exact condition it left the lab.
-                  </p>
-                </div>
-              </motion.div>
-
-            </StaggerChildren>
-          </div>
-          
-        </div>
-      </section>
+      {/* 3.5. Research Backed Compounds Carousel */}
+      <SwipeCarousel 
+        title="Research-Backed Compounds"
+        description="Every compound is synthesized with purposeful, high-performance processes to ensure absolute purity and stability for your laboratory research."
+        cards={[
+          {
+            title: 'BPC-157',
+            desc: 'A pentadecapeptide known for its rapid wound healing properties and cytoprotective effects in research environments.',
+            image: '/hero-image.png'
+          },
+          {
+            title: 'TB-500',
+            desc: 'A synthetic fraction of Thymosin Beta-4, crucial for actin upregulation and cellular migration assays.',
+            image: '/temp-homepage/hero-vial-image.webp'
+          },
+          {
+            title: 'GHK-Cu',
+            desc: 'A naturally occurring copper complex used extensively in tissue remodeling and antioxidant pathways.',
+            image: '/hero-image.png'
+          },
+          {
+            title: 'Tirzepatide',
+            desc: 'A dual GIP and GLP-1 receptor agonist studied for robust glycemic control and metabolic shifts.',
+            image: '/temp-homepage/hero-vial-image.webp'
+          },
+          {
+            title: 'Semaglutide',
+            desc: 'A GLP-1 analogue widely researched for its potent effects on appetite regulation and weight management models.',
+            image: '/hero-image.png'
+          }
+        ]}
+      />
 
       {/* 4. Our Services Section - Scroll Interactive Index */}
       <section ref={capabilitiesRef} className="relative h-auto lg:h-[300vh] bg-white text-ink">
@@ -423,7 +368,7 @@ export default function AboutPage() {
         <div className="lg:sticky top-0 lg:h-[100dvh] w-full flex flex-col justify-center lg:overflow-hidden px-6 py-16 lg:py-24">
         
         {/* Massive Typography Background Watermark */}
-        <div className="absolute bottom-0 left-0 w-full pointer-events-none z-0 overflow-hidden">
+        <div className="absolute bottom-0 left-0 w-full pointer-events-none z-0 overflow-hidden opacity-30">
           <motion.div style={{ x: capabilitiesX }} className="whitespace-nowrap">
             <span className="text-[18vw] font-serif text-slate-100 leading-none select-none tracking-tighter">
               CAPABILITIES
@@ -453,10 +398,43 @@ export default function AboutPage() {
             </div>
           </FadeUp>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-8 lg:gap-24 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             
             {/* Left Menu - Minimalist Typography List */}
-            <div className="flex flex-col">
+            <div 
+              className="flex flex-col relative md:cursor-none"
+              onPointerMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                cursorX.set(e.clientX - rect.left);
+                cursorY.set(e.clientY - rect.top);
+              }}
+              onMouseEnter={() => setIsServicesHovered(true)}
+              onMouseLeave={() => setIsServicesHovered(false)}
+            >
+              
+              {/* Custom Cursor Bubble (Desktop Only) */}
+              <motion.div
+                className="pointer-events-none absolute z-50 hidden md:flex items-center justify-center w-20 h-20 lg:w-24 lg:h-24 bg-[#5984c4]/90 backdrop-blur-md rounded-full shadow-xl border border-white/20 text-white"
+                style={{
+                  x: cursorXSpring,
+                  y: cursorYSpring,
+                  translateX: '-50%',
+                  translateY: '-50%',
+                  top: 0,
+                  left: 0,
+                }}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ 
+                  scale: isServicesHovered ? 1 : 0, 
+                  opacity: isServicesHovered ? 1 : 0 
+                }}
+                transition={{ duration: 0.2 }}
+              >
+                <span className="font-sans font-medium text-[10px] lg:text-[12px] uppercase tracking-wider text-center leading-[1.2]">
+                  CLICK<br/>ME
+                </span>
+              </motion.div>
+
               <FadeUp delay={0.2}>
                 <div className="border-t border-slate-200">
                   {services.map((service, index) => {
@@ -487,7 +465,7 @@ export default function AboutPage() {
             </div>
 
             {/* Right Display - Borderless Premium Viewport */}
-            <FadeUp delay={0.4} className="relative w-full h-[350px] lg:h-[70vh] max-h-[700px] rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden shadow-2xl">
+            <FadeUp delay={0.4} className="relative w-full h-[300px] lg:h-[55vh] max-h-[550px] rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden shadow-2xl">
               
               {/* Background Image / Graphic */}
               <motion.div 
@@ -508,17 +486,17 @@ export default function AboutPage() {
               </motion.div>
 
               {/* Animated Text Content */}
-              <div className="absolute bottom-0 left-0 w-full p-8 lg:p-12 z-10">
+              <div className="absolute bottom-0 left-0 w-full p-8 z-10">
                 <motion.div
                   key={`text-${activeServiceIndex}`}
                   initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   transition={{ duration: 0.5, delay: 0.1 }}
                 >
-                  <h4 className="text-3xl lg:text-5xl font-serif text-white mb-6 leading-tight drop-shadow-md">
+                  <h4 className="text-3xl lg:text-4xl font-serif text-white mb-4 leading-tight drop-shadow-md">
                     {services[activeServiceIndex].title}
                   </h4>
-                  <p className="text-lg text-white/80 leading-relaxed max-w-xl font-light">
+                  <p className="text-base lg:text-lg text-white/80 leading-relaxed max-w-xl font-light">
                     {services[activeServiceIndex].desc}
                   </p>
                 </motion.div>
@@ -544,9 +522,15 @@ export default function AboutPage() {
         <FadeUp>
           <div className="relative w-full max-w-[1400px] mx-auto bg-gradient-to-b from-[#f4f7fb] to-white border border-[#eef3fb] rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl shadow-[#5984c4]/10 px-6 py-24 lg:py-40 flex flex-col items-center justify-center text-center">
             
-            {/* Ambient Glows */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] md:w-[800px] h-[400px] bg-[#5984c4]/10 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-sky-200/20 rounded-full blur-[100px] pointer-events-none" />
+            {/* Ambient Glows (Optimized: Using radial gradients instead of expensive CSS blurs) */}
+            <div 
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] md:w-[800px] h-[400px] pointer-events-none"
+              style={{ background: 'radial-gradient(circle, rgba(89,132,196,0.15) 0%, rgba(89,132,196,0) 70%)' }}
+            />
+            <div 
+              className="absolute bottom-0 right-0 w-[400px] h-[400px] pointer-events-none"
+              style={{ background: 'radial-gradient(circle, rgba(186,230,253,0.2) 0%, rgba(186,230,253,0) 70%)' }}
+            />
             
             {/* Background Vials & Tech Elements */}
             <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
@@ -558,7 +542,8 @@ export default function AboutPage() {
               <motion.div
                 animate={{ y: [-15, 15, -15], rotate: [10, 15, 10] }}
                 transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -left-[5%] md:left-[5%] top-[10%] w-[300px] md:w-[400px] h-[400px] md:h-[500px] opacity-[0.25] mix-blend-multiply"
+                className="absolute -left-[5%] md:left-[5%] top-[10%] w-[300px] md:w-[400px] h-[400px] md:h-[500px] opacity-[0.15] pointer-events-none"
+                style={{ willChange: 'transform' }}
               >
                 <Image src="/temp-homepage/hero-vial-image.webp" alt="Vial Watermark" fill className="object-contain" />
               </motion.div>
@@ -567,7 +552,8 @@ export default function AboutPage() {
               <motion.div
                 animate={{ y: [15, -15, 15], rotate: [-15, -20, -15] }}
                 transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute -right-[10%] md:-right-[5%] bottom-[5%] w-[400px] md:w-[500px] h-[500px] md:h-[600px] opacity-[0.2] mix-blend-multiply"
+                className="absolute -right-[10%] md:-right-[5%] bottom-[5%] w-[400px] md:w-[500px] h-[500px] md:h-[600px] opacity-[0.1] pointer-events-none"
+                style={{ willChange: 'transform' }}
               >
                 <Image src="/temp-homepage/hero-vial-image.webp" alt="Vial Watermark" fill className="object-contain" />
               </motion.div>
@@ -577,11 +563,13 @@ export default function AboutPage() {
                 animate={{ rotate: 360 }}
                 transition={{ duration: 200, repeat: Infinity, ease: "linear" }}
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] md:w-[800px] md:h-[800px] border-[1px] border-[#5984c4]/10 rounded-full"
+                style={{ willChange: 'transform' }}
               />
               <motion.div 
                 animate={{ rotate: -360 }}
                 transition={{ duration: 250, repeat: Infinity, ease: "linear" }}
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] md:w-[1000px] md:h-[1000px] border-[1px] border-[#5984c4]/10 rounded-full border-dashed"
+                style={{ willChange: 'transform' }}
               />
             </div>
 

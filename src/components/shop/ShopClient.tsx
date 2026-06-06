@@ -6,37 +6,34 @@ import { Container } from '@/components/ui/container'
 import { FilterSidebar } from '@/components/shop/FilterSidebar'
 import { FeaturedProductCard, Product } from '@/components/shop/FeaturedProductCard'
 import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import { X, ChevronRight, Filter, Search } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet'
 
-const GENERATE_PRODUCTS = (count: number, startIndex: number = 0) => {
-  return Array.from({ length: count }).map((_, i) => ({
-    name: `Compound ${startIndex + i + 1}`,
-    slug: `test-compound-${startIndex + i + 1}`,
-    image: '/temp-products/product-image.png',
-    shortDescription: 'Highly purified research compound for laboratory use.',
-    priceRange: '$' + ((((startIndex + i) * 17) % 150) + 50) + '.00',
-    category: 'Research'
-  })) as Product[]
+import { Category } from '@/components/shop/FilterSidebar'
+import { getShopProducts } from '@/app/(frontend)/[locale]/(shop)/actions'
+
+export interface ShopClientProps {
+  initialProducts: Product[]
+  totalPages: number
+  categories: Category[]
 }
 
-const INITIAL_PRODUCTS = GENERATE_PRODUCTS(24)
-const MORE_PRODUCTS = GENERATE_PRODUCTS(23, 24)
-
-function ShopClientInner() {
+function ShopClientInner({ initialProducts, totalPages, categories }: ShopClientProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   
-  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS)
+  const [products, setProducts] = useState<Product[]>(initialProducts)
+  const [currentPage, setCurrentPage] = useState(1)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
-  const [hasMore, setHasMore] = useState(true)
+  const [hasMore, setHasMore] = useState(totalPages > 1)
   const [isScrollingDown, setIsScrollingDown] = useState(false)
   const [lastScrollY, setLastScrollY] = useState(0)
 
@@ -59,24 +56,69 @@ function ShopClientInner() {
   const loadMoreRef = React.useRef<HTMLDivElement>(null)
   const isInView = useInView(loadMoreRef, { margin: "400px" })
 
+  // Hero Parallax
+  const { scrollYProgress: heroScroll } = useScroll({
+    offset: ["start start", "end start"]
+  });
+  const heroImageY = useTransform(heroScroll, [0, 1], ["0%", "100%"]);
+
+  // Filter update trigger
+  useEffect(() => {
+    // When searchParams change, reset to page 1 and fetch new products
+    const fetchFiltered = async () => {
+      const categoriesParam = searchParams.getAll('category')
+      const minP = searchParams.get('minPrice')
+      const maxP = searchParams.get('maxPrice')
+      
+      const res = await getShopProducts({
+        page: 1,
+        categories: categoriesParam.length > 0 ? categoriesParam : undefined,
+        inStock: searchParams.get('inStock') === 'true',
+        onSale: searchParams.get('onSale') === 'true',
+        minPrice: minP ? parseInt(minP) : undefined,
+        maxPrice: maxP ? parseInt(maxP) : undefined,
+      })
+
+      if (res.success) {
+        setProducts(res.products as Product[])
+        setCurrentPage(1)
+        setHasMore(res.hasNextPage || false)
+      }
+    }
+    fetchFiltered()
+  }, [searchParams])
+
   // Infinite scroll trigger
   useEffect(() => {
     if (isInView && hasMore && !isLoadingMore) {
       setIsLoadingMore(true)
-      setTimeout(() => {
-        const nextBatch = MORE_PRODUCTS.slice(products.length - 24, products.length - 24 + 8)
-        if (nextBatch.length > 0) {
-          setProducts(prev => [...prev, ...nextBatch])
-          if (products.length + nextBatch.length >= 47) {
-            setHasMore(false)
-          }
+      const fetchMore = async () => {
+        const nextPage = currentPage + 1
+        const categoriesParam = searchParams.getAll('category')
+        const minP = searchParams.get('minPrice')
+        const maxP = searchParams.get('maxPrice')
+
+        const res = await getShopProducts({
+          page: nextPage,
+          categories: categoriesParam.length > 0 ? categoriesParam : undefined,
+          inStock: searchParams.get('inStock') === 'true',
+          onSale: searchParams.get('onSale') === 'true',
+          minPrice: minP ? parseInt(minP) : undefined,
+          maxPrice: maxP ? parseInt(maxP) : undefined,
+        })
+
+        if (res.success && res.products) {
+          setProducts(prev => [...prev, ...(res.products as Product[])])
+          setCurrentPage(nextPage)
+          setHasMore(res.hasNextPage || false)
         } else {
           setHasMore(false)
         }
         setIsLoadingMore(false)
-      }, 1000)
+      }
+      fetchMore()
     }
-  }, [isInView, hasMore, isLoadingMore, products.length])
+  }, [isInView, hasMore, isLoadingMore, currentPage, searchParams])
 
   // Active chips extraction
   const getActiveChips = () => {
@@ -105,23 +147,83 @@ function ShopClientInner() {
   const activeChips = getActiveChips()
 
   return (
-    <div className="w-full bg-[#F5F5F7] min-h-screen">
-      <Container size="page" className="pt-32 pb-12 md:pt-40">
-        {/* Breadcrumbs */}
-        <div className="flex items-center space-x-2 text-label-sm uppercase tracking-wider text-ink/60 mb-8">
-          <Link href="/" className="hover:text-ink transition-colors">Home</Link>
-          <ChevronRight size={14} />
-          <span className="text-ink">Shop</span>
+    <div className="w-full bg-[#f3f4f6] min-h-screen">
+      {/* 1. Interactive Window Hero Section */}
+      <section className="relative min-h-[90vh] lg:min-h-[100dvh] flex flex-col items-center justify-center pt-24 lg:pt-32 pb-16 overflow-hidden bg-white mb-12">
+        
+        {/* Background Marquee */}
+        <div className="absolute bottom-4 left-0 w-full overflow-hidden whitespace-nowrap flex z-0 pointer-events-none">
+          <div className="animate-marquee flex items-center whitespace-nowrap w-max opacity-[0.04]">
+              {Array(4).fill(0).map((_, i) => (
+                <span key={i} className="text-[12vw] lg:text-[7vw] xl:text-[5vw] font-serif uppercase tracking-tighter mx-8 text-ink">
+                  PEPTIDES &bull; COMPOUNDS &bull; PURITY &bull; 
+                </span>
+             ))}
+          </div>
         </div>
 
-        {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-display-md font-display text-ink mb-4">All compounds</h1>
-          <p className="text-body-lg text-ink/70 max-w-2xl">
+        {/* Foreground Content */}
+        <div className="relative z-10 w-full flex flex-col items-center justify-center px-4 h-full flex-1">
+          
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="text-label-md uppercase tracking-widest text-[#5984c4] mb-4 sm:mb-8 font-bold"
+          >
+            Our Catalog
+          </motion.h2>
+
+          {/* The Interactive Window */}
+          <motion.div 
+            initial={{ width: '90%', height: '40vh', borderRadius: '3rem' }}
+            whileHover={{ width: '98%', height: '60vh', borderRadius: '1.5rem' }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="relative overflow-hidden shadow-2xl cursor-pointer group my-8 md:my-12 max-w-[1600px] w-full transform-gpu"
+            style={{ width: '85%' }}
+          >
+             <motion.div 
+               className="w-full relative transform-gpu"
+               style={{ height: '150%', top: '-25%', y: heroImageY, willChange: 'transform' }}
+               animate={{ scale: [1, 1.05, 1] }}
+               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+             >
+               <Image 
+                 src="/hero-image.png" 
+                 alt="Research Catalog" 
+                 fill 
+                 className="object-cover object-center"
+                 priority
+               />
+               <div className="absolute inset-0 bg-[#5984c4]/20 group-hover:bg-[#5984c4]/10 transition-colors duration-700" />
+             </motion.div>
+             
+             {/* Center Overlay Text inside Window */}
+             <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-4">
+                <motion.h1 
+                  className="text-center text-[6vw] sm:text-[7vw] md:text-[8vw] lg:text-[6vw] font-serif text-white leading-none tracking-tight mix-blend-overlay opacity-90 whitespace-nowrap transform-gpu"
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 1, delay: 0.4 }}
+                >
+                  THE COMPLETE COLLECTION
+                </motion.h1>
+             </div>
+          </motion.div>
+
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="text-body-lg lg:text-xl text-ink/70 max-w-[720px] mx-auto text-center mt-6 sm:mt-12 leading-relaxed px-6"
+          >
             Explore our complete catalog of research-grade peptides and compounds. Filter by category, purity, and availability to find exactly what your guideline requires.
-          </p>
-        </div>
+          </motion.p>
 
+        </div>
+      </section>
+
+      <Container size="page" className="pb-12">
         {/* Top Toolbar */}
         <div className={`flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 bg-white/95 backdrop-blur-xl border border-ink/10 p-3 sm:p-4 rounded-2xl shadow-sm sticky z-30 transition-all duration-300 ${isScrollingDown ? 'top-4' : 'top-20 sm:top-24'}`}>
           {/* Top Row: Buttons */}
@@ -139,7 +241,7 @@ function ShopClientInner() {
                     <SheetTitle className="text-display-xs font-display text-ink">Filters</SheetTitle>
                   </div>
                   <div className="h-[calc(100vh-80px)] p-6 pt-0 overflow-hidden bg-cream relative z-0">
-                     <FilterSidebar />
+                     <FilterSidebar categories={categories} />
                   </div>
                 </SheetContent>
               </Sheet>
@@ -226,10 +328,10 @@ function ShopClientInner() {
   )
 }
 
-export function ShopClient() {
+export function ShopClient(props: ShopClientProps) {
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#F5F5F7] w-full" />}>
-      <ShopClientInner />
+      <ShopClientInner {...props} />
     </Suspense>
   )
 }
