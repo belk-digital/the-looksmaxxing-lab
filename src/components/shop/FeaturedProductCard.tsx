@@ -133,7 +133,7 @@ export function FeaturedProductCard({ product, size = 'small', id }: FeaturedPro
         
         {/* SALE Badge */}
         {product.originalPrice && (
-          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-auto">
+          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20">
             <span className="bg-red-600 text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-sm shadow-sm">
               Sale
             </span>
@@ -197,18 +197,18 @@ export function FeaturedProductCard({ product, size = 'small', id }: FeaturedPro
       {/* Info Area */}
       <div className="flex flex-col px-1 sm:px-2 flex-1 relative z-20 pointer-events-none">
         {/* Title */}
-        <h3 className="text-base sm:text-xl font-bold text-ink leading-tight tracking-tight mb-1 pointer-events-auto">
+        <h3 className="text-base sm:text-xl font-bold text-ink leading-tight tracking-tight mb-1">
           {product.name}
         </h3>
         
         {/* Description - ALWAYS VISIBLE */}
-        <p className="text-[11px] sm:text-sm text-ink/60 line-clamp-2 mb-3 sm:mb-4 font-light leading-relaxed pointer-events-auto">
+        <p className="text-[11px] sm:text-sm text-ink/60 line-clamp-2 mb-3 sm:mb-4 font-light leading-relaxed">
           {product.shortDescription || `Experience the pure benefits of ${product.name}.`}
         </p>
         
         {/* Price Area - Pushed to bottom above slider */}
-        <div className="flex items-center justify-between mt-auto mb-3 sm:mb-4 pointer-events-auto">
-          <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center justify-between mt-auto mb-3 sm:mb-4 overflow-hidden">
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
             {product.originalPrice && (
               <span className="text-xs sm:text-sm font-medium text-ink/40 line-through">
                 {product.originalPrice}
