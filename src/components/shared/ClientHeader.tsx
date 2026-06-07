@@ -9,7 +9,9 @@ import { ShoppingBag, Menu, Search, X, User } from 'lucide-react'
 import { MobileMenu } from './MobileMenu'
 import { useCartStore } from '@/lib/cart/store'
 import { useWishlistStore } from '@/lib/wishlist/store'
-import { CartDrawer } from '@/components/cart/CartDrawer'
+import dynamic from 'next/dynamic'
+
+const CartDrawer = dynamic(() => import('@/components/cart/CartDrawer').then(mod => mod.CartDrawer), { ssr: false })
 
 const ANNOUNCEMENTS = [
   "FREE SHIPPING ON ORDERS OVER $150",
@@ -17,8 +19,9 @@ const ANNOUNCEMENTS = [
   "SUBSCRIBE FOR 15% OFF YOUR FIRST ORDER"
 ]
 
-export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLoggedIn = false, categories: initialCategories = [], initialWishlistItems = [] }: any) {
+export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLoggedIn = false, categories: initialCategories = [], initialWishlistItems = [], initialCartItems = [] }: any) {
   const cartStore = useCartStore()
+  const setCartItems = useCartStore((state) => state.setItems)
   const setWishlistItems = useWishlistStore((state) => state.setItems)
   const activeCartCount = cartStore.items.reduce((acc: any, i: any) => acc + i.quantity, 0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -43,6 +46,13 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
       })
     }
   }, [initialCategories])
+
+  // Sync Cart with Backend
+  useEffect(() => {
+    if (isLoggedIn && initialCartItems.length > 0 && cartStore.items.length === 0) {
+      setCartItems(initialCartItems)
+    }
+  }, [isLoggedIn, initialCartItems, setCartItems, cartStore.items.length])
 
   // Sync Wishlist with Backend
   useEffect(() => {

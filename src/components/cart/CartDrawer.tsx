@@ -10,19 +10,24 @@ import { QuantityStepper } from '@/components/shop/QuantityStepper'
 import { useCartStore } from '@/lib/cart/store'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ShoppingBag } from 'lucide-react'
+import { useLenis } from 'lenis/react'
 
 export function CartDrawer() {
   const { isOpen, closeCart, items, removeItem, updateQuantity } = useCartStore()
+  const lenis = useLenis()
 
   // Lock body scroll when open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
+      document.documentElement.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = 'unset'
+      document.documentElement.style.overflow = 'unset'
     }
     return () => {
       document.body.style.overflow = 'unset'
+      document.documentElement.style.overflow = 'unset'
     }
   }, [isOpen])
 
@@ -112,7 +117,7 @@ export function CartDrawer() {
                 </div>
 
                 {/* Items List */}
-                <div className="flex-1 overflow-y-auto px-6 md:px-8 py-2">
+                <div className="flex-1 overflow-y-auto px-6 md:px-8 py-2" data-lenis-prevent="true">
                   <div className="flex flex-col gap-4 pb-4">
                     <AnimatePresence>
                       {items.map((item) => (

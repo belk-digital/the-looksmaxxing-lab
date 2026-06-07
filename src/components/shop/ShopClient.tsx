@@ -298,13 +298,20 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
         {products.length > 0 ? (
           <>
             {/* Product Grid - Full Width */}
-            <StaggerChildren staggerDelay={0.05} className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
-              {products.map((product) => (
-                <motion.div variants={staggerItemVariants} key={product.slug} className="flex h-full w-full">
+            <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
+              {products.map((product, index) => (
+                <motion.div 
+                  key={product.slug} 
+                  className="flex h-full w-full"
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '0px 0px -50px 0px' }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: (index % 12) * 0.05 }}
+                >
                   <FeaturedProductCard product={product} />
                 </motion.div>
               ))}
-            </StaggerChildren>
+            </div>
 
             {/* Infinite Scroll Trigger & Loader */}
             {hasMore && (

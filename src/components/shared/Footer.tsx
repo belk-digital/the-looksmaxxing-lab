@@ -158,7 +158,7 @@ export function Footer() {
   }, [])
 
   return (
-    <footer className="w-full relative z-[99999] bg-ink" style={{ pointerEvents: 'auto' }}>
+    <footer className="w-full relative z-40 bg-ink" style={{ pointerEvents: 'auto' }}>
       <FooterContent />
     </footer>
   )

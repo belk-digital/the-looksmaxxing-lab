@@ -3,8 +3,9 @@
 import React, { useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Heart, ShoppingCart, ChevronRight, Check } from 'lucide-react'
+import { Heart, ShoppingCart, ChevronRight, Check, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useAuth } from '@clerk/nextjs'
 import { useWishlistStore } from '@/lib/wishlist/store'
 import { useCartStore } from '@/lib/cart/store'
 import { toast } from 'sonner'
@@ -82,13 +83,28 @@ export function FeaturedProductCard({ product, size = 'small', id }: FeaturedPro
   
   const addItem = useWishlistStore(state => state.addItem)
   const removeItem = useWishlistStore(state => state.removeItem)
-  const inWishlist = useWishlistStore(state => product.id ? state.hasItem(product.id) : false)
+  const isWishlistedGlobal = useWishlistStore(state => product.id ? state.hasItem(product.id) : false)
+  const { isSignedIn } = useAuth()
+  
+  const [inWishlist, setInWishlist] = useState(false)
   const [showParticles, setShowParticles] = useState(false)
+  const [isPending, setIsPending] = useState(false)
 
-  const handleWishlistClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  React.useEffect(() => {
+    setInWishlist(isWishlistedGlobal)
+  }, [isWishlistedGlobal])
+
+  const handleWishlistClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     e.stopPropagation()
     
+    if (!isSignedIn) {
+      toast.error('Sign in required', {
+        description: 'Please log in to add items to your wishlist.',
+      })
+      return
+    }
+
     if (!product.id) {
       toast.error('Product ID missing', {
         description: 'Unable to add this product to wishlist.',
@@ -96,30 +112,40 @@ export function FeaturedProductCard({ product, size = 'small', id }: FeaturedPro
       return
     }
 
-    if (inWishlist) {
-      removeItem(product.id)
-      toast('Removed from wishlist', {
-        id: `wishlist-${product.id}`,
-        description: `${product.name} has been removed.`,
+    setIsPending(true)
+
+    try {
+      if (inWishlist) {
+        await removeItem(product.id)
+        toast('Removed from wishlist', {
+          id: `wishlist-${product.id}`,
+          description: `${product.name} has been removed.`,
+        })
+      } else {
+        await addItem({
+          id: product.id,
+          name: product.name,
+          slug: product.slug,
+          image: product.image,
+          priceRange: product.priceRange || ''
+        })
+        setShowParticles(true)
+        setTimeout(() => setShowParticles(false), 1000)
+        toast.success('Added to wishlist', {
+          id: `wishlist-${product.id}`,
+          description: `${product.name} is now in your wishlist.`,
+          action: {
+            label: 'View Wishlist',
+            onClick: () => window.location.href = '/en/account/wishlist',
+          },
+        })
+      }
+    } catch (error: any) {
+      toast.error('Failed to update wishlist', {
+        description: error.message || 'An unexpected error occurred.',
       })
-    } else {
-      addItem({
-        id: product.id,
-        name: product.name,
-        slug: product.slug,
-        image: product.image,
-        priceRange: product.priceRange || ''
-      })
-      setShowParticles(true)
-      setTimeout(() => setShowParticles(false), 1000)
-      toast.success('Added to wishlist', {
-        id: `wishlist-${product.id}`,
-        description: `${product.name} is now in your wishlist.`,
-        action: {
-          label: 'View Wishlist',
-          onClick: () => window.location.href = '/en/account/wishlist',
-        },
-      })
+    } finally {
+      setIsPending(false)
     }
   }
 
@@ -150,10 +176,11 @@ export function FeaturedProductCard({ product, size = 'small', id }: FeaturedPro
         
         {/* Wishlist Button */}
         <motion.button 
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.9 }}
+          disabled={isPending}
+          whileHover={isPending ? {} : { scale: 1.05 }}
+          whileTap={isPending ? {} : { scale: 0.9 }}
           onClick={handleWishlistClick}
-          className={`absolute top-3 right-3 sm:top-4 sm:right-4 p-1.5 sm:p-2.5 rounded-full backdrop-blur-xl transition-colors z-20 shadow-[0_4px_16px_rgba(0,0,0,0.05)] border flex items-center justify-center ${
+          className={`absolute top-3 right-3 sm:top-4 sm:right-4 p-1.5 sm:p-2.5 rounded-full backdrop-blur-xl transition-colors z-20 shadow-[0_4px_16px_rgba(0,0,0,0.05)] border flex items-center justify-center disabled:opacity-70 ${
             inWishlist 
               ? 'bg-red-500/15 text-red-500 border-red-500/20 hover:bg-red-500/25' 
               : 'bg-white/30 text-[#8A95A5] border-white/40 hover:text-red-500 hover:bg-white/50'
@@ -186,10 +213,14 @@ export function FeaturedProductCard({ product, size = 'small', id }: FeaturedPro
 
           <motion.div
             initial={false}
-            animate={inWishlist ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+            animate={inWishlist && !isPending ? { scale: [1, 1.3, 1] } : { scale: 1 }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
           >
-            <Heart strokeWidth={inWishlist ? 2 : 1.5} className={`w-4 h-4 sm:w-5 sm:h-5 ${inWishlist ? 'fill-current' : ''}`} />
+            {isPending ? (
+              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+            ) : (
+              <Heart strokeWidth={inWishlist ? 2 : 1.5} className={`w-4 h-4 sm:w-5 sm:h-5 ${inWishlist ? 'fill-current' : ''}`} />
+            )}
           </motion.div>
         </motion.button>
       </div>

@@ -12,10 +12,17 @@ export interface WishlistItem {
 
 interface WishlistState {
   items: WishlistItem[]
-  addItem: (item: WishlistItem) => void
-  removeItem: (id: string | number) => void
+  addItem: (item: WishlistItem) => Promise<void>
+  removeItem: (id: string | number) => Promise<void>
   hasItem: (id: string | number) => boolean
   setItems: (items: WishlistItem[]) => void
+}
+
+const withTimeout = <T>(promise: Promise<T>, ms: number = 10000): Promise<T> => {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error('Server action timed out after 10s')), ms))
+  ])
 }
 
 export const useWishlistStore = create<WishlistState>()(
@@ -23,18 +30,18 @@ export const useWishlistStore = create<WishlistState>()(
     (set, get) => ({
       items: [],
       setItems: (items) => set({ items }),
-      addItem: (item) => {
+      addItem: async (item) => {
         const currentItems = get().items
         if (!currentItems.find((i) => i.id === item.id)) {
-          set({ items: [...currentItems, item] })
-          // Fire and forget server sync
-          toggleWishlistInPayload(item.id, true).catch(console.error)
+          const res = await withTimeout(toggleWishlistInPayload(item.id, true))
+          if (res && !res.success) throw new Error(res.error || 'Failed to sync with server')
+          set({ items: [...get().items, item] })
         }
       },
-      removeItem: (id) => {
+      removeItem: async (id) => {
+        const res = await withTimeout(toggleWishlistInPayload(id, false))
+        if (res && !res.success) throw new Error(res.error || 'Failed to sync with server')
         set({ items: get().items.filter((i) => i.id !== id) })
-        // Fire and forget server sync
-        toggleWishlistInPayload(id, false).catch(console.error)
       },
       hasItem: (id) => get().items.some((i) => i.id === id)
     }),

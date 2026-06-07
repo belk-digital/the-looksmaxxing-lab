@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { syncCartToPayload } from '@/app/(frontend)/actions/cart'
 
 export type MinimalProduct = {
   id: string
@@ -21,6 +22,7 @@ interface CartState {
   couponCode: string | null
   isOpen: boolean
 
+  setItems: (items: CartLine[]) => void
   addItem: (
     product: MinimalProduct,
     variantSku: string | null,
@@ -43,6 +45,8 @@ export const useCartStore = create<CartState>()(
       couponCode: null,
       isOpen: false,
 
+      setItems: (items) => set({ items }),
+
       addItem: (product, variantSku, quantity, priceSnapshot) => {
         set((state) => {
           const existingItemIndex = state.items.findIndex(
@@ -54,6 +58,8 @@ export const useCartStore = create<CartState>()(
             newItems[existingItemIndex].quantity += quantity
             // Update price snapshot to the latest when adding more
             newItems[existingItemIndex].priceSnapshot = priceSnapshot
+            // Sync in background
+            syncCartToPayload(newItems).catch(console.error)
             return { items: newItems, isOpen: true } // Auto open drawer on add
           }
 
@@ -75,24 +81,35 @@ export const useCartStore = create<CartState>()(
             ],
             isOpen: true, // Auto open drawer on add
           }
+          
+          // Sync new state in background
+          syncCartToPayload(newState.items).catch(console.error)
+          return newState
         })
       },
 
       removeItem: (lineId) => {
-        set((state) => ({
-          items: state.items.filter((item) => item.lineId !== lineId),
-        }))
+        set((state) => {
+          const newItems = state.items.filter((item) => item.lineId !== lineId)
+          syncCartToPayload(newItems).catch(console.error)
+          return { items: newItems }
+        })
       },
 
       updateQuantity: (lineId, quantity) => {
-        set((state) => ({
-          items: state.items.map((item) =>
+        set((state) => {
+          const newItems = state.items.map((item) =>
             item.lineId === lineId ? { ...item, quantity: Math.max(1, quantity) } : item,
-          ),
-        }))
+          )
+          syncCartToPayload(newItems).catch(console.error)
+          return { items: newItems }
+        })
       },
 
-      clear: () => set({ items: [], couponCode: null }),
+      clear: () => {
+        set({ items: [], couponCode: null })
+        syncCartToPayload([]).catch(console.error)
+      },
 
       setCoupon: (code) => set({ couponCode: code }),
 

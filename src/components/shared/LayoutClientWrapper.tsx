@@ -23,7 +23,7 @@ export function LayoutClientWrapper({
       <main className="flex-1 flex flex-col relative">
         {children}
       </main>
-      <div className="relative z-[99999] isolate">
+      <div className="relative z-40 isolate">
         {isCheckout ? <MinimalFooter /> : footer}
       </div>
     </div>

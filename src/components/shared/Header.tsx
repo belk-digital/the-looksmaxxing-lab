@@ -10,6 +10,7 @@ export async function Header() {
   let cartItemCount = 0
   let wishlistItemCount = 0
   let initialWishlistItems: any[] = []
+  let initialCartItems: any[] = []
 
   if (userId) {
     const payload = await getPayload({ config: configPromise })
@@ -32,6 +33,21 @@ export async function Header() {
       })
       if (carts.docs[0]?.items) {
         cartItemCount = carts.docs[0].items.reduce((sum, item) => sum + (item.quantity || 1), 0)
+        initialCartItems = carts.docs[0].items.map((item: any) => {
+          const prod = item.product || {}
+          return {
+            lineId: item.id || Math.random().toString(36).substring(2, 15),
+            productId: prod.id || item.product,
+            variantSku: item.variantSku || 'default',
+            quantity: item.quantity || 1,
+            priceSnapshot: item.priceSnapshot || 0,
+            product: {
+              id: prod.id || item.product,
+              name: prod.name || '',
+              imageUrl: prod.images?.[0]?.image?.url || null,
+            }
+          }
+        })
       }
       
       const wishlists = await payload.find({
@@ -58,5 +74,5 @@ export async function Header() {
     }
   }
 
-  return <ClientHeader cartItemCount={cartItemCount} wishlistItemCount={wishlistItemCount} isLoggedIn={!!userId} categories={[]} initialWishlistItems={initialWishlistItems} />
+  return <ClientHeader cartItemCount={cartItemCount} wishlistItemCount={wishlistItemCount} isLoggedIn={!!userId} categories={[]} initialWishlistItems={initialWishlistItems} initialCartItems={initialCartItems} />
 }
