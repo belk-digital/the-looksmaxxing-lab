@@ -163,6 +163,19 @@ export default function AboutPage() {
             We are a premier, US-based supplier dedicated to providing the global research community with uncompromising quality, rigorous third-party testing, and absolute transparency in peptide synthesis.
           </motion.p>
 
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="mt-10"
+          >
+            <Link href="/shop">
+              <Button size="lg" className="h-14 px-10 rounded-full bg-ink text-white hover:bg-[#1a1a1a] hover:shadow-lg transition-all duration-300 font-bold tracking-wider uppercase text-sm border-none">
+                Explore Our Catalog
+              </Button>
+            </Link>
+          </motion.div>
+
         </div>
       </section>
 

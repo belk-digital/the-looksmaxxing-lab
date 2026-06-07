@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Spinner } from '@/components/ui/spinner'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '@/components/ui/dropdown-menu'
 
 import { Category } from '@/components/shop/FilterSidebar'
 import { getShopProducts } from '@/app/(frontend)/[locale]/(shop)/actions'
@@ -77,6 +77,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
         onSale: searchParams.get('onSale') === 'true',
         minPrice: minP ? parseInt(minP) : undefined,
         maxPrice: maxP ? parseInt(maxP) : undefined,
+        sort: searchParams.get('sort') || undefined,
       })
 
       if (res.success) {
@@ -105,6 +106,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
           onSale: searchParams.get('onSale') === 'true',
           minPrice: minP ? parseInt(minP) : undefined,
           maxPrice: maxP ? parseInt(maxP) : undefined,
+          sort: searchParams.get('sort') || undefined,
         })
 
         if (res.success && res.products) {
@@ -126,9 +128,6 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
     searchParams.getAll('category').forEach(cat => chips.push({ key: `category-${cat}`, label: cat, value: cat }))
     if (searchParams.get('inStock') === 'true') chips.push({ key: 'inStock', label: 'In Stock', value: 'true' })
     if (searchParams.get('onSale') === 'true') chips.push({ key: 'onSale', label: 'On Sale', value: 'true' })
-    if (searchParams.get('backorder') === 'true') chips.push({ key: 'backorder', label: 'Available to Backorder', value: 'true' })
-    const purity = searchParams.get('purity')
-    if (purity) chips.push({ key: 'purity', label: `Purity: ${purity}`, value: purity })
     return chips
   }
 
@@ -225,42 +224,55 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
 
       <Container size="page" className="pb-12">
         {/* Top Toolbar */}
-        <div className={`flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 bg-white/95 backdrop-blur-xl border border-ink/10 p-3 sm:p-4 rounded-2xl shadow-sm sticky z-30 transition-all duration-300 ${isScrollingDown ? 'top-4' : 'top-20 sm:top-24'}`}>
+        <div className={`flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 bg-white/95 backdrop-blur-xl border border-ink/10 p-3 sm:p-4 rounded-2xl shadow-sm sticky z-30 transition-all duration-300 ${isScrollingDown ? 'top-4 sm:top-6' : 'top-[110px] sm:top-[120px]'}`}>
           {/* Top Row: Buttons */}
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-4">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline" className="rounded-full px-4 sm:px-6 gap-2 border-border-subtle hover:bg-ink/5 text-sm sm:text-base">
+          <div className="flex items-center justify-start md:justify-between gap-3 sm:gap-4 w-full">
+            <div className="flex items-center gap-3 sm:gap-4 w-auto">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-auto rounded-full px-4 sm:px-6 gap-2 border-border-subtle hover:bg-ink/5 text-sm sm:text-base">
                     <Filter size={16} />
                     Filters {activeChips.length > 0 && `(${activeChips.length})`}
                   </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-full sm:max-w-md p-0 border-l border-border-subtle bg-cream">
-                  <div className="p-6 border-b border-border-subtle bg-cream z-10 relative">
-                    <SheetTitle className="text-display-xs font-display text-ink">Filters</SheetTitle>
-                  </div>
-                  <div className="h-[calc(100vh-80px)] p-6 pt-0 overflow-hidden bg-cream relative z-0">
+                </DropdownMenuTrigger>
+                <DropdownMenuContent 
+                  align="start" 
+                  sideOffset={8} 
+                  className="w-[95vw] sm:w-[90vw] md:max-w-[900px] p-0 rounded-2xl border border-ink/10 ring-0 shadow-2xl bg-white/75 overflow-hidden"
+                  style={{ backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)' }}
+                >
+                  {/* Noise Texture Overlay */}
+                  <div 
+                    className="absolute inset-0 z-0 opacity-[0.06] pointer-events-none" 
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
+                  />
+                  <div className="relative z-10 max-h-[75vh] p-6 md:p-10 lg:p-12 overflow-y-auto custom-scrollbar">
                      <FilterSidebar categories={categories} />
                   </div>
-                </SheetContent>
-              </Sheet>
+                </DropdownMenuContent>
+              </DropdownMenu>
               
               <span className="text-body-sm text-ink/60 hidden md:inline-block whitespace-nowrap">
                 {products.length} Products
               </span>
             </div>
 
-            <Select defaultValue="featured">
-              <SelectTrigger className="w-auto min-w-[140px] sm:w-[180px] bg-transparent border-none focus:ring-0 shadow-none hover:bg-ink/5 rounded-full px-2 sm:px-4 h-10 text-sm sm:text-base justify-end sm:justify-between gap-2">
+            <Select 
+              defaultValue={searchParams.get('sort') || 'newest'}
+              onValueChange={(val) => {
+                const params = new URLSearchParams(searchParams.toString())
+                params.set('sort', val)
+                router.push(`${pathname}?${params.toString()}`, { scroll: false })
+              }}
+            >
+              <SelectTrigger className="w-auto min-w-[140px] bg-white/75 backdrop-blur-xl border border-ink/10 focus:ring-0 shadow-sm hover:bg-white/90 rounded-full px-3 sm:px-4 h-10 text-sm sm:text-base justify-between gap-2 transition-all">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="featured">Featured</SelectItem>
-                <SelectItem value="newest">Newest</SelectItem>
-                <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                <SelectItem value="rating">Best Rated</SelectItem>
+              <SelectContent className="bg-white/75 backdrop-blur-xl border-ink/10 rounded-2xl shadow-2xl p-2">
+                <SelectItem value="newest" className="rounded-xl cursor-pointer">Newest</SelectItem>
+                <SelectItem value="price-asc" className="rounded-xl cursor-pointer">Price: Low to High</SelectItem>
+                <SelectItem value="price-desc" className="rounded-xl cursor-pointer">Price: High to Low</SelectItem>
+                <SelectItem value="name-asc" className="rounded-xl cursor-pointer">Alphabetical A-Z</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -286,7 +298,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
         {products.length > 0 ? (
           <>
             {/* Product Grid - Full Width */}
-            <StaggerChildren staggerDelay={0.05} className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+            <StaggerChildren staggerDelay={0.05} className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
               {products.map((product) => (
                 <motion.div variants={staggerItemVariants} key={product.slug} className="flex h-full w-full">
                   <FeaturedProductCard product={product} />

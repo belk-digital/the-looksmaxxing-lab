@@ -9,6 +9,7 @@ import { resendAdapter } from '@payloadcms/email-resend'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { Documents } from './collections/Documents'
 import { Addresses } from './collections/Addresses'
 import { Categories } from './collections/Categories'
 import { Products } from './collections/Products'
@@ -49,6 +50,7 @@ export default buildConfig({
   collections: [
     Users,
     Media,
+    Documents,
     Addresses,
     Categories,
     Products,
@@ -77,7 +79,7 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || process.env.DATABASE_URL || '',
-      max: 5,
+      max: process.env.NODE_ENV === 'production' ? 10 : 2,
       ssl: {
         rejectUnauthorized: false,
       },
@@ -91,6 +93,17 @@ export default buildConfig({
           media: {
             disableLocalStorage: true,
             disablePayloadAccessControl: true,
+            prefix: 'Product Images',
+            generateFileURL: ({ filename, prefix }) => {
+              const publicUrl = process.env.R2_PUBLIC_URL || ''
+              const base = publicUrl.replace(/\/$/, '')
+              return prefix ? `${base}/${prefix}/${filename}` : `${base}/${filename}`
+            },
+          },
+          documents: {
+            disableLocalStorage: true,
+            disablePayloadAccessControl: true,
+            prefix: 'COA',
             generateFileURL: ({ filename, prefix }) => {
               const publicUrl = process.env.R2_PUBLIC_URL || ''
               const base = publicUrl.replace(/\/$/, '')

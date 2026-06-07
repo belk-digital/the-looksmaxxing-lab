@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Heart } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { toast } from 'sonner'
+import { useWishlistStore } from '@/lib/wishlist/store'
 
 export interface StandardProduct {
   id: string
@@ -18,6 +20,39 @@ export interface StandardProduct {
 }
 
 export function ProductCard({ product }: { product: StandardProduct }) {
+  const addItem = useWishlistStore(state => state.addItem)
+  const removeItem = useWishlistStore(state => state.removeItem)
+  const inWishlist = useWishlistStore(state => product.id ? state.hasItem(product.id) : false)
+
+  const handleWishlistClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    if (!product.id) return
+
+    if (inWishlist) {
+      removeItem(product.id)
+      toast('Removed from wishlist', {
+        description: `${product.name} has been removed.`,
+      })
+    } else {
+      addItem({
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        image: product.image,
+        priceRange: product.price || ''
+      })
+      toast.success('Added to wishlist', {
+        description: `${product.name} is now in your wishlist.`,
+        action: {
+          label: 'View Wishlist',
+          onClick: () => window.location.href = '/en/account/wishlist',
+        },
+      })
+    }
+  }
+
   return (
     <motion.div
       whileHover="hover"
@@ -72,14 +107,10 @@ export function ProductCard({ product }: { product: StandardProduct }) {
           >
             {/* The button catches the click so it doesn't navigate */}
             <button 
-              onClick={(e) => {
-                e.preventDefault()
-                // Stub for wishlist functionality
-                console.log('Added to wishlist', product.id)
-              }}
-              className="p-2 text-ink hover:text-gold transition-colors"
+              onClick={handleWishlistClick}
+              className={`p-2 transition-colors ${inWishlist ? 'text-red-500' : 'text-ink hover:text-red-500'}`}
             >
-              <Heart size={24} strokeWidth={1.5} />
+              <Heart size={24} strokeWidth={1.5} fill={inWishlist ? 'currentColor' : 'none'} />
             </button>
           </motion.div>
         </div>

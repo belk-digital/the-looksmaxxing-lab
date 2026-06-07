@@ -37,7 +37,7 @@ const FooterContent = () => {
           </div>
 
           <h2 className="text-sm font-medium mb-1 tracking-wide text-cream/90">
-            Research uninterrupted.
+            Research uninterrupted — Stay Ahead of New Compounds
           </h2>
           <p className="text-xs text-cream/50 mb-6 max-w-[280px] leading-relaxed">
             Quiet updates on new compounds, lab notes, and exclusive availability.
@@ -45,7 +45,7 @@ const FooterContent = () => {
           <form className="flex w-full max-w-[280px] gap-0 border-b border-cream/20 hover:border-cream transition-colors pb-2" onSubmit={(e) => e.preventDefault()}>
             <input 
               type="email" 
-              placeholder="Email address" 
+              placeholder="Enter your research email address" 
               required
               className="bg-transparent border-none text-cream placeholder:text-cream/30 focus:outline-none flex-1 px-0 h-6 text-xs"
             />
@@ -108,7 +108,7 @@ const FooterContent = () => {
         
         <div className="w-full lg:w-1/2 text-left">
           <p className="text-[10px] text-cream/40 leading-relaxed max-w-[500px]">
-            <strong className="text-cream/60">FDA Disclaimer:</strong> These statements have not been evaluated by the FDA. Products are strictly for laboratory and research use only. Not intended to diagnose, treat, cure, or prevent any disease, and not for human or animal consumption.
+            <strong className="text-cream/60">FDA Disclaimer:</strong> These statements have not been evaluated by the Food and Drug Administration. These products are not intended to diagnose, treat, cure, or prevent any disease. All products offered are for laboratory and research use only. They are not intended for human consumption.
           </p>
         </div>
 
@@ -137,7 +137,7 @@ const FooterContent = () => {
         aria-hidden="true"
         className="text-[14vw] font-sans font-bold text-cream/20 tracking-tighter whitespace-nowrap m-0 p-0"
       >
-        The LooksMaxxing Lab. &bull; The LooksMaxxing Lab. &bull; The LooksMaxxing Lab.
+        The Looksmaxxing Lab. Precision. Purity. Performance. &bull; The Looksmaxxing Lab. Precision. Purity. Performance.
       </motion.div>
     </div>
   </div>

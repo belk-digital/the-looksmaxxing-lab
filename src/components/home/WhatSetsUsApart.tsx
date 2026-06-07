@@ -9,20 +9,20 @@ import Image from 'next/image'
 
 const PILLARS = [
   {
-    title: "US-Based Synthesis",
-    description: "Every compound is strictly synthesized in US-based, ISO-certified laboratories. We do not source raw, untested powders from overseas. Our closed-loop supply chain ensures absolute traceability.",
+    title: "US-Based Synthesis — Zero Overseas Powders",
+    description: "Every compound is synthesized in US-based, ISO-certified peptide laboratories using closed-loop solid-phase peptide synthesis (SPPS). We do not purchase raw, untested powders from overseas suppliers or third-party bulk brokers. Our closed-loop supply chain ensures complete molecular traceability from synthesis to shipping.",
     icon: Dna,
     image: "/temp-products/growth-factor.png"
   },
   {
-    title: "99%+ Purity Floor",
-    description: "We enforce a strict 99% purity minimum. Any batch testing below this threshold is immediately discarded. Every single vial is backed by independent LC-MS and HPLC testing.",
+    title: "99%+ Purity Floor — Any Batch Below This Gets Discarded",
+    description: "We enforce a non-negotiable 99% purity minimum across our entire catalog. Every single batch is independently tested by third-party laboratories using both HPLC chromatography and LC-MS mass spectrometry. If a batch fails to meet this threshold — for any reason — it is discarded immediately and never fulfilled.",
     icon: ShieldCheck,
     image: "/temp-products/bpc-157.png"
   },
   {
-    title: "Cold-Chain Logistics",
-    description: "Peptides are fragile. We store all inventory in climate-controlled, medical-grade refrigeration units and utilize specialized packaging to maintain molecular integrity during transit.",
+    title: "Cold-Chain Logistics — Molecular Integrity, Guaranteed",
+    description: "Peptides are structurally fragile molecules. Thermal degradation begins at room temperature and accelerates over time. We store all inventory in climate-controlled, medical-grade refrigeration and ship using validated cold-chain packaging specifically designed to maintain peptide integrity from our facility to your bench — regardless of transit conditions.",
     icon: Snowflake,
     image: "/temp-products/tb-500.png"
   }
@@ -55,7 +55,7 @@ export function WhatSetsUsApart() {
       {/* ----------------------------- */}
       {/* DESKTOP LAYOUT (Sticky Scroll) */}
       {/* ----------------------------- */}
-      <div className="hidden lg:flex sticky top-0 h-screen w-full flex-col justify-center overflow-hidden">
+      <div className="hidden xl:flex sticky top-0 h-screen w-full flex-col justify-center overflow-hidden">
         <Container size="wide">
           <div className="flex flex-row gap-16 xl:gap-24 items-center">
             
@@ -67,13 +67,13 @@ export function WhatSetsUsApart() {
                 </span>
               </FadeUp>
               <FadeUp delay={0.1}>
-                <h2 className="text-[4rem] font-display text-ink leading-[0.9] tracking-tight mb-6">
-                  Not all compounds<br/>are created equal.
+                <h2 className="text-[clamp(2rem,5vh,3.5rem)] font-display text-ink leading-[0.9] tracking-tight mb-4 lg:mb-6">
+                  The Looksmaxxing Standard: Why Purity Matters
                 </h2>
               </FadeUp>
               <FadeUp delay={0.2}>
-                <p className="text-body-md text-ink/70 leading-relaxed mb-8 max-w-md">
-                  We operate at the bleeding edge of aesthetic science. Our commitment to uncompromised quality translates into repeatable, verifiable research results.
+                <p className="text-[clamp(0.875rem,1.5vh,1.125rem)] text-ink/70 leading-relaxed mb-4 lg:mb-8 max-w-md">
+                  Purity is not a marketing claim — it is a measurable, verifiable fact. Impure compounds produce unreliable research results. We operate at the intersection of aesthetic science and analytical chemistry so that every batch you receive is exactly what it claims to be.
                 </p>
               </FadeUp>
 
@@ -102,7 +102,7 @@ export function WhatSetsUsApart() {
                   return (
                     <div 
                       key={idx}
-                      className={`relative text-left flex items-center py-5 pl-8 transition-all duration-500 ${isActive ? 'text-ink' : 'text-ink/20'}`}
+                      className={`relative text-left flex items-center py-[clamp(0.5rem,2vh,1.25rem)] pl-8 transition-all duration-500 ${isActive ? 'text-ink' : 'text-ink/20'}`}
                     >
                       {isActive && (
                         <motion.div 
@@ -112,7 +112,7 @@ export function WhatSetsUsApart() {
                           transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         />
                       )}
-                      <h3 className="text-3xl font-display tracking-tight">
+                      <h3 className="text-[clamp(1.25rem,3vh,1.875rem)] font-display tracking-tight">
                         {pillar.title}
                       </h3>
                     </div>
@@ -124,7 +124,7 @@ export function WhatSetsUsApart() {
             {/* Right Column: Dynamic Display Area */}
             <div className="w-7/12">
               <FadeUp delay={0.3} className="w-full h-full">
-                <div className="relative w-full h-[600px] rounded-[2rem] bg-ink overflow-hidden shadow-2xl flex flex-col justify-end">
+                <div className="relative w-full h-[60vh] max-h-[600px] rounded-[2rem] bg-ink overflow-hidden shadow-2xl flex flex-col justify-end">
                   
                   {/* Background Imagery Crossfade */}
                   <AnimatePresence mode="wait">
@@ -183,7 +183,7 @@ export function WhatSetsUsApart() {
       {/* ----------------------------- */}
       {/* MOBILE/TABLET LAYOUT (Static) */}
       {/* ----------------------------- */}
-      <div className="flex lg:hidden flex-col w-full py-16 sm:py-24">
+      <div className="flex xl:hidden flex-col w-full py-16 sm:py-24">
         <Container size="wide">
           
           <div className="flex flex-col mb-12">
@@ -194,12 +194,12 @@ export function WhatSetsUsApart() {
             </FadeUp>
             <FadeUp delay={0.1}>
               <h2 className="text-[10vw] sm:text-display-sm font-display text-ink leading-[0.9] tracking-tight mb-6">
-                Not all compounds<br/>are created equal.
+                The Looksmaxxing Standard: Why Purity Matters
               </h2>
             </FadeUp>
             <FadeUp delay={0.2}>
               <p className="text-body-md text-ink/70 leading-relaxed max-w-md">
-                We operate at the bleeding edge of aesthetic science. Our commitment to uncompromised quality translates into repeatable, verifiable research results.
+                Purity is not a marketing claim — it is a measurable, verifiable fact. Impure compounds produce unreliable research results. We operate at the intersection of aesthetic science and analytical chemistry so that every batch you receive is exactly what it claims to be.
               </p>
             </FadeUp>
           </div>

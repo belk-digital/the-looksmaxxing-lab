@@ -1,37 +1,145 @@
-import React from 'react'
+'use client'
+
+import React, { useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Heart } from 'lucide-react'
+import { Heart, ShoppingCart, ChevronRight, Check } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useWishlistStore } from '@/lib/wishlist/store'
+import { useCartStore } from '@/lib/cart/store'
+import { toast } from 'sonner'
 
 export interface Product {
+  id?: string // added id to support wishlist
   name: string
   slug: string
   image: string
   shortDescription: string
   priceRange: string
+  originalPrice?: string
+  discountPercentage?: number
   category: string
 }
 
 export interface FeaturedProductCardProps {
   product: Product
-  aspectRatio?: '4/5' | '16/10'
+  aspectRatio?: '4/5' | '16/10' | '3/4'
   size?: 'tall' | 'small'
   id?: string
 }
 
+function SlideToAddButton({ product }: { product: Product }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isAdded, setIsAdded] = useState(false)
+  const cartStore = useCartStore()
+
+  const handleAdd = () => {
+    cartStore.addItem(
+      { id: product.id || product.slug, name: product.name, imageUrl: product.image },
+      'Default',
+      1,
+      parseFloat(product.priceRange.replace(/[^0-9.]/g, '')) || 0
+    )
+    setIsAdded(true)
+    toast.success('Added to cart', { 
+      action: { label: 'VIEW', onClick: cartStore.openCart } 
+    })
+    cartStore.openCart()
+    setTimeout(() => setIsAdded(false), 2000)
+  }
+
+  const handleDragEnd = (event: any, info: any) => {
+    if (info.offset.x > 40) {
+      handleAdd()
+    }
+  }
+
+  return (
+    <div ref={containerRef} className="relative w-full h-[40px] sm:h-[52px] bg-[#F1F1F1] rounded-full flex items-center overflow-hidden pointer-events-auto z-20 mt-auto border border-black/5">
+      <div className="absolute inset-0 flex items-center justify-center pl-8 sm:pl-10 text-[9px] sm:text-[12px] lg:text-[13px] font-semibold text-ink/40 pointer-events-none select-none tracking-tight">
+        Slide to add <ChevronRight size={14} className="inline ml-0.5" />
+      </div>
+      
+      <motion.div
+        drag="x"
+        dragConstraints={containerRef}
+        dragElastic={0.05}
+        dragSnapToOrigin={true}
+        onDragEnd={handleDragEnd}
+        whileTap={{ scale: 0.98 }}
+        className={`absolute left-1 w-[32px] h-[32px] sm:w-[44px] sm:h-[44px] rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-10 shadow-sm transition-colors duration-300 ${
+          isAdded ? 'bg-green-600 text-white' : 'bg-[#1A1A1A] text-white'
+        }`}
+      >
+        {isAdded ? <Check size={14} className="sm:w-4 sm:h-4" /> : <ShoppingCart size={14} className="sm:w-4 sm:h-4" />}
+      </motion.div>
+    </div>
+  )
+}
+
 export function FeaturedProductCard({ product, size = 'small', id }: FeaturedProductCardProps) {
-  const imageAspectClass = size === 'tall' ? 'aspect-[4/5]' : 'aspect-[16/10]';
+  const imageAspectClass = size === 'tall' ? 'aspect-[4/5]' : 'aspect-[3/4]';
+  
+  const addItem = useWishlistStore(state => state.addItem)
+  const removeItem = useWishlistStore(state => state.removeItem)
+  const inWishlist = useWishlistStore(state => product.id ? state.hasItem(product.id) : false)
+  const [showParticles, setShowParticles] = useState(false)
+
+  const handleWishlistClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    if (!product.id) {
+      toast.error('Product ID missing', {
+        description: 'Unable to add this product to wishlist.',
+      })
+      return
+    }
+
+    if (inWishlist) {
+      removeItem(product.id)
+      toast('Removed from wishlist', {
+        id: `wishlist-${product.id}`,
+        description: `${product.name} has been removed.`,
+      })
+    } else {
+      addItem({
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        image: product.image,
+        priceRange: product.priceRange || ''
+      })
+      setShowParticles(true)
+      setTimeout(() => setShowParticles(false), 1000)
+      toast.success('Added to wishlist', {
+        id: `wishlist-${product.id}`,
+        description: `${product.name} is now in your wishlist.`,
+        action: {
+          label: 'View Wishlist',
+          onClick: () => window.location.href = '/en/account/wishlist',
+        },
+      })
+    }
+  }
 
   return (
     <div 
-      className="group relative flex flex-col w-full bg-white p-2 sm:p-3 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] cursor-pointer"
+      id={id}
+      className="group relative flex flex-col w-full bg-white p-3 sm:p-4 rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)] transition-shadow duration-300 cursor-pointer"
     >
-      {/* Invisible Spacers for Layout */}
-      <div className={`w-full ${imageAspectClass}`} />
-      <div className="h-[170px] sm:h-[210px] w-full" />
+      {/* Image Area */}
+      <div className={`relative w-full ${imageAspectClass} overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] bg-[#F5F5F7] mb-4 sm:mb-6`}>
+        
+        {/* SALE Badge */}
+        {product.originalPrice && (
+          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-auto">
+            <span className="bg-red-600 text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-sm shadow-sm">
+              Sale
+            </span>
+          </div>
+        )}
 
-      {/* Animated Image Area */}
-      <div id={id} className="absolute top-2 sm:top-3 left-2 sm:left-3 right-2 sm:right-3 bottom-[178px] sm:bottom-[222px] group-hover:bottom-2 sm:group-hover:bottom-3 overflow-hidden bg-[#F5F5F7] rounded-xl sm:rounded-[2rem] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-0">
         <Image
           src={product.image}
           alt={product.name}
@@ -39,30 +147,85 @@ export function FeaturedProductCard({ product, size = 'small', id }: FeaturedPro
           unoptimized
           className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        
+        {/* Wishlist Button */}
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={handleWishlistClick}
+          className={`absolute top-3 right-3 sm:top-4 sm:right-4 p-1.5 sm:p-2.5 rounded-full backdrop-blur-xl transition-colors z-20 shadow-[0_4px_16px_rgba(0,0,0,0.05)] border flex items-center justify-center ${
+            inWishlist 
+              ? 'bg-red-500/15 text-red-500 border-red-500/20 hover:bg-red-500/25' 
+              : 'bg-white/30 text-[#8A95A5] border-white/40 hover:text-red-500 hover:bg-white/50'
+          }`}
+        >
+          {/* Particle Spray */}
+          <AnimatePresence>
+            {showParticles && (
+              <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                {[...Array(8)].map((_, i) => {
+                  const angle = (i * 45 * Math.PI) / 180;
+                  return (
+                    <motion.div
+                      key={i}
+                      className="absolute w-1 h-1 bg-red-400 rounded-full"
+                      initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
+                      animate={{
+                        x: Math.cos(angle) * 35,
+                        y: Math.sin(angle) * 35,
+                        scale: [0, 1.5, 0],
+                        opacity: [1, 1, 0]
+                      }}
+                      transition={{ duration: 0.6, ease: "easeOut" }}
+                    />
+                  )
+                })}
+              </div>
+            )}
+          </AnimatePresence>
+
+          <motion.div
+            initial={false}
+            animate={inWishlist ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+          >
+            <Heart strokeWidth={inWishlist ? 2 : 1.5} className={`w-4 h-4 sm:w-5 sm:h-5 ${inWishlist ? 'fill-current' : ''}`} />
+          </motion.div>
+        </motion.button>
       </div>
 
-      <button className="absolute top-7 right-7 p-2.5 rounded-full bg-white/50 backdrop-blur-sm text-ink opacity-0 transition-opacity duration-300 group-hover:opacity-100 hover:bg-white z-20">
-        <Heart size={20} strokeWidth={1.5} />
-      </button>
-
-      {/* Info Area - Fixed at bottom */}
-      <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 right-2 sm:right-3 h-[170px] sm:h-[210px] flex flex-col px-3 sm:px-4 pt-4 sm:pt-6 pb-2 z-10 pointer-events-none">
-        <span className="text-[9px] sm:text-xs font-semibold tracking-widest uppercase text-ink/50 group-hover:text-white/60 mb-0.5 sm:mb-1 transition-colors duration-500 line-clamp-1">
-          {product.category}
-        </span>
-        <h3 className="text-sm sm:text-2xl font-bold mb-1 sm:mb-2 text-ink group-hover:text-white transition-colors duration-500 leading-tight">{product.name}</h3>
-        <p className="text-[10px] sm:text-sm text-ink/70 group-hover:text-white/80 line-clamp-2 mb-3 sm:mb-6 transition-colors duration-500">
-          {product.shortDescription}
+      {/* Info Area */}
+      <div className="flex flex-col px-1 sm:px-2 flex-1 relative z-20 pointer-events-none">
+        {/* Title */}
+        <h3 className="text-base sm:text-xl font-bold text-ink leading-tight tracking-tight mb-1 pointer-events-auto">
+          {product.name}
+        </h3>
+        
+        {/* Description - ALWAYS VISIBLE */}
+        <p className="text-[11px] sm:text-sm text-ink/60 line-clamp-2 mb-3 sm:mb-4 font-light leading-relaxed pointer-events-auto">
+          {product.shortDescription || `Experience the pure benefits of ${product.name}.`}
         </p>
-        <div className="flex items-center justify-between mt-auto">
-          <span className="text-sm sm:text-xl font-bold text-ink group-hover:text-white transition-colors duration-500">
-            {product.priceRange}
-          </span>
-          <button className="pointer-events-auto px-4 py-1.5 sm:px-6 sm:py-2.5 rounded-full bg-ink text-white group-hover:bg-white group-hover:text-ink hover:bg-ink/80 transition-colors font-medium shadow-md text-xs sm:text-base">
-            Buy
-          </button>
+        
+        {/* Price Area - Pushed to bottom above slider */}
+        <div className="flex items-center justify-between mt-auto mb-3 sm:mb-4 pointer-events-auto">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {product.originalPrice && (
+              <span className="text-xs sm:text-sm font-medium text-ink/40 line-through">
+                {product.originalPrice}
+              </span>
+            )}
+            <span className="text-sm sm:text-lg font-bold text-ink whitespace-nowrap">
+              {product.priceRange}
+            </span>
+            {product.discountPercentage && (
+              <span className="ml-1 px-1.5 py-0.5 rounded-md bg-ink/5 text-ink text-xs font-bold tracking-tight whitespace-nowrap hidden sm:inline-block">
+                -{product.discountPercentage}%
+              </span>
+            )}
+          </div>
         </div>
+        
+        <SlideToAddButton product={product} />
       </div>
 
       {/* Absolute Link overlay so entire card is clickable */}

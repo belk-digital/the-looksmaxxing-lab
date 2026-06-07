@@ -33,6 +33,7 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   isLoading?: boolean
+  asChild?: boolean
 }
 
 const Spinner = () => (
@@ -57,7 +58,16 @@ const Spinner = () => (
 )
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, isLoading, children, disabled, ...props }, ref) => {
+  ({ className, variant, size, isLoading, children, disabled, asChild, ...props }, ref) => {
+    
+    if (asChild && React.isValidElement(children)) {
+      return React.cloneElement(children, {
+        className: cn(buttonVariants({ variant, size, className }), (children.props as any).className),
+        ref,
+        ...props
+      } as any)
+    }
+
     return (
       <button
         className={cn(buttonVariants({ variant, size, className }))}

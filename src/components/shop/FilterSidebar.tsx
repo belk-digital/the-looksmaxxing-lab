@@ -31,8 +31,6 @@ function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500])
   const [inStock, setInStock] = useState(false)
   const [onSale, setOnSale] = useState(false)
-  const [backorder, setBackorder] = useState(false)
-  const [purity, setPurity] = useState<string>('All')
 
   // Sync from URL
   useEffect(() => {
@@ -44,8 +42,6 @@ function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
     
     setInStock(searchParams.get('inStock') === 'true')
     setOnSale(searchParams.get('onSale') === 'true')
-    setBackorder(searchParams.get('backorder') === 'true')
-    setPurity(searchParams.get('purity') || 'All')
   }, [searchParams])
 
   const updateFilters = useCallback((key: string, value: string | string[] | boolean | null) => {
@@ -72,8 +68,10 @@ function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
 
   const handlePriceCommit = (val: number[]) => {
     if (val.length === 2) {
-      updateFilters('minPrice', val[0].toString())
-      updateFilters('maxPrice', val[1].toString())
+      const params = new URLSearchParams(searchParams.toString())
+      params.set('minPrice', val[0].toString())
+      params.set('maxPrice', val[1].toString())
+      router.push(`${pathname}?${params.toString()}`, { scroll: false })
     }
   }
 
@@ -81,11 +79,13 @@ function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
     router.push(pathname, { scroll: false })
   }
 
-  const Content = () => (
-    <div className="flex flex-col gap-8 pb-24 md:pb-0">
+  return (
+    <div className="w-full">
+      <div className="flex flex-col">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-16">
       {/* Category Section */}
       <div className="flex flex-col gap-4">
-        <h4 className="text-label-md uppercase tracking-wider text-ink border-b border-border-subtle pb-2">
+          <h4 className="text-xs font-bold uppercase tracking-widest text-black border-b border-black/10 pb-3">
           Category
         </h4>
         <div className="flex flex-col gap-3">
@@ -96,7 +96,7 @@ function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
                 checked={activeCategories.includes(cat.name)}
                 onCheckedChange={() => toggleCategory(cat.name)}
               />
-              <Label htmlFor={`cat-${cat.slug}`} className="text-body-sm text-ink cursor-pointer leading-none">
+              <Label htmlFor={`cat-${cat.slug}`} className="text-sm font-medium text-black cursor-pointer leading-none">
                 {cat.name}
               </Label>
             </div>
@@ -106,16 +106,16 @@ function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
 
       {/* Price Section */}
       <div className="flex flex-col gap-4">
-        <h4 className="text-label-md uppercase tracking-wider text-ink border-b border-border-subtle pb-2">
+          <h4 className="text-xs font-bold uppercase tracking-widest text-black border-b border-black/10 pb-3">
           Price
         </h4>
         <div className="px-2 pt-4">
           <Slider 
             defaultValue={[0, 500]} 
-            value={[priceRange[0], priceRange[1]]} 
+            value={priceRange} 
             max={500} 
-            step={10} 
-            onValueChange={(val) => setPriceRange([val[0], val[1]])}
+            step={1} 
+            onValueChange={(val) => setPriceRange([val[0] || 0, val[1] || 500])}
             onValueCommit={handlePriceCommit}
           />
           <div className="flex justify-between items-center mt-4 text-body-sm text-ink-muted">
@@ -127,7 +127,7 @@ function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
 
       {/* Availability Section */}
       <div className="flex flex-col gap-4">
-        <h4 className="text-label-md uppercase tracking-wider text-ink border-b border-border-subtle pb-2">
+          <h4 className="text-xs font-bold uppercase tracking-widest text-black border-b border-black/10 pb-3">
           Availability
         </h4>
         <div className="flex flex-col gap-3">
@@ -137,7 +137,7 @@ function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
               checked={inStock}
               onCheckedChange={(c) => updateFilters('inStock', c === true)}
             />
-            <Label htmlFor="instock" className="text-body-sm text-ink cursor-pointer">In stock</Label>
+            <Label htmlFor="instock" className="text-sm font-medium text-black cursor-pointer">In stock</Label>
           </div>
           <div className="flex items-center space-x-3">
             <Checkbox 
@@ -145,51 +145,19 @@ function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
               checked={onSale}
               onCheckedChange={(c) => updateFilters('onSale', c === true)}
             />
-            <Label htmlFor="onsale" className="text-body-sm text-ink cursor-pointer">On sale</Label>
-          </div>
-          <div className="flex items-center space-x-3">
-            <Checkbox 
-              id="backorder" 
-              checked={backorder}
-              onCheckedChange={(c) => updateFilters('backorder', c === true)}
-            />
-            <Label htmlFor="backorder" className="text-body-sm text-ink cursor-pointer">Available to backorder</Label>
+            <Label htmlFor="onsale" className="text-sm font-medium text-black cursor-pointer">On sale</Label>
           </div>
         </div>
       </div>
-
-      {/* Purity Section */}
-      <div className="flex flex-col gap-4">
-        <h4 className="text-label-md uppercase tracking-wider text-ink border-b border-border-subtle pb-2">
-          Purity
-        </h4>
-        <RadioGroup value={purity} onValueChange={(v) => updateFilters('purity', v === 'All' ? null : v)}>
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="All" id="r-all" />
-            <Label htmlFor="r-all" className="text-body-sm text-ink cursor-pointer">All</Label>
-          </div>
-          <div className="flex items-center space-x-3 mt-2">
-            <RadioGroupItem value="≥99%" id="r-99" />
-            <Label htmlFor="r-99" className="text-body-sm text-ink cursor-pointer">≥99%</Label>
-          </div>
-          <div className="flex items-center space-x-3 mt-2">
-            <RadioGroupItem value="≥99.5%" id="r-995" />
-            <Label htmlFor="r-995" className="text-body-sm text-ink cursor-pointer">≥99.5%</Label>
-          </div>
-        </RadioGroup>
       </div>
-
-      <div className="pt-4">
-        <Button variant="link" onClick={clearAll} className="w-full text-ink-muted hover:text-ink px-0">
+      
+      {/* Footer / Clear Button */}
+      <div className="pt-8 mt-8 border-t border-black/10 flex justify-end">
+        <Button variant="link" onClick={clearAll} className="text-black/60 hover:text-black px-4 font-medium">
           Clear all filters
         </Button>
       </div>
     </div>
-  )
-
-  return (
-    <div className="w-full h-full overflow-y-auto pr-4 custom-scrollbar bg-cream">
-      <Content />
     </div>
   )
 }

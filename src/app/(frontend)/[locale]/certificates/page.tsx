@@ -61,9 +61,16 @@ export default function CertificatesPage() {
         <FadeUp>
           <EyebrowHeading gold>Verification</EyebrowHeading>
           <h1 className="text-display-lg font-serif text-ink mt-4 mb-6">Certificates of Analysis</h1>
-          <p className="text-body-lg text-ink-muted max-w-prose">
+          <p className="text-body-lg text-ink-muted max-w-prose mb-8">
             Transparency is not optional. We verify every batch through independent, third-party US laboratories using high-performance liquid chromatography (HPLC) and mass spectrometry (MS).
           </p>
+          <div className="flex gap-4">
+            <Link href="/shop">
+              <Button size="lg" className="h-14 px-8 rounded-full bg-ink text-white hover:bg-[#1a1a1a] hover:shadow-lg transition-all duration-300 font-bold tracking-wider uppercase text-sm border-none">
+                Shop Verified Products
+              </Button>
+            </Link>
+          </div>
         </FadeUp>
       </section>
 

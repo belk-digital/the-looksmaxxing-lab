@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { FeaturedProductCard, Product } from '@/components/shop/FeaturedProductCard'
+import { HomeFeaturedProductCard, Product } from '@/components/home/HomeFeaturedProductCard'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { Container } from '@/components/ui/container'
 import { Space_Grotesk } from 'next/font/google'
@@ -16,7 +16,7 @@ const SAMPLE_PRODUCTS: Product[] = [
     name: 'BPC-157 Blend',
     slug: 'bpc-157-blend',
     image: '/temp-homepage/hero-vial-image.webp',
-    shortDescription: 'The ultimate recovery guideline. Enhanced tissue repair and joint support formulated for maximum bioavailability.',
+    shortDescription: 'The ultimate recovery protocol. Enhanced tissue repair and joint support formulated for maximum bioavailability.',
     priceRange: '$120 - $300',
     category: '5MG'
   },
@@ -32,7 +32,7 @@ const SAMPLE_PRODUCTS: Product[] = [
     name: 'GHK-Cu',
     slug: 'ghk-cu',
     image: '/temp-homepage/hero-vial-image.webp',
-    shortDescription: 'Advanced cellular health and collagen synthesis. A foundational peptide for longevity guidelines.',
+    shortDescription: 'Advanced cellular health and collagen synthesis. A foundational peptide for longevity protocols.',
     priceRange: '$85 - $200',
     category: '50MG'
   },
@@ -88,16 +88,27 @@ export function FeaturedProductsSection() {
       <Container size="wide" className="px-6 md:px-12 lg:px-16">
         
         {/* Header matching reference image */}
-        <div className="flex items-center justify-between w-full mb-12 sm:mb-16 relative">
-          <div className="hidden sm:block flex-1" />
-          <h2 className={`text-center text-[16px] sm:text-[20px] lg:text-[24px] font-bold tracking-[0.2em] uppercase text-black ${spaceGrotesk.className}`}>
-            DISCOVER BEST SELLERS
-          </h2>
-          <div className="sm:flex-1 flex justify-end absolute right-0 sm:relative">
-            <Link href="/shop" className="text-[9px] sm:text-[10px] font-bold tracking-[0.2em] text-[#5984c4] uppercase hover:text-[#3d65a0] transition-colors">
-              VIEW ALL
+        <div className="flex flex-col items-center justify-center w-full mb-12 sm:mb-16 relative text-center">
+          <FadeUp>
+            <span className="text-label-sm sm:text-label-md font-bold tracking-[0.2em] text-[#5984c4] uppercase mb-4 block">
+              DISCOVER BEST SELLERS
+            </span>
+          </FadeUp>
+          <FadeUp delay={0.1}>
+            <h2 className={`text-[2rem] sm:text-[2.5rem] lg:text-[3rem] font-bold tracking-tight text-ink mb-6 leading-tight ${spaceGrotesk.className}`}>
+              Discover Best-Selling Research Peptides
+            </h2>
+          </FadeUp>
+          <FadeUp delay={0.2}>
+            <p className="text-body-md text-ink/70 max-w-2xl mx-auto mb-8">
+              Every compound in our best-seller lineup is independently verified by third-party HPLC and LC-MS analysis. Browse our most-requested research peptides — each shipped from US-based facilities with a lot-specific Certificate of Analysis.
+            </p>
+          </FadeUp>
+          <FadeUp delay={0.3}>
+            <Link href="/shop" className="text-[9px] sm:text-[10px] font-bold tracking-[0.2em] text-[#5984c4] uppercase hover:text-[#3d65a0] transition-colors inline-flex items-center gap-2">
+              VIEW ALL RESEARCH PEPTIDES <span className="text-[14px] leading-none mb-0.5">&rarr;</span>
             </Link>
-          </div>
+          </FadeUp>
         </div>
 
         {/* Carousel */}
@@ -108,7 +119,7 @@ export function FeaturedProductsSection() {
               <div className="flex -ml-4 sm:-ml-8">
                 {CAROUSEL_PRODUCTS.map((product, index) => (
                   <div key={index} className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_25%] pl-4 sm:pl-8">
-                    <FeaturedProductCard product={product} index={index} />
+                    <HomeFeaturedProductCard product={product} index={index} />
                   </div>
                 ))}
               </div>

@@ -15,6 +15,7 @@ export interface FaqCarouselProps {
   title?: string;
   accentTitle?: string;
   description?: string;
+  sectionLabel?: string;
   theme?: 'light' | 'dark';
 }
 
@@ -23,6 +24,7 @@ export function FaqCarousel({
   title = "Frequently", 
   accentTitle = "Asked Questions", 
   description = "Find answers to common questions about our research compounds, laboratory guidelines, and purity standards.",
+  sectionLabel,
   theme = 'light'
 }: FaqCarouselProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -146,7 +148,7 @@ export function FaqCarousel({
         
         {/* Custom Cursor Bubble (Desktop Only) */}
         <motion.div
-          className={`pointer-events-none absolute z-50 hidden md:flex items-center justify-center w-20 h-20 lg:w-24 lg:h-24 rounded-full shadow-xl border border-white/20 ${
+          className={`pointer-events-none absolute z-50 hidden xl:flex items-center justify-center w-20 h-20 lg:w-24 lg:h-24 rounded-full shadow-xl border border-white/20 ${
             isDark ? 'bg-[#5984c4]/90 backdrop-blur-md text-white' : 'bg-white/90 backdrop-blur-md text-[#5984c4]'
           }`}
           style={{
@@ -182,7 +184,12 @@ export function FaqCarousel({
           {/* Header */}
           <div className="mb-12 lg:mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
             <FadeUp className="max-w-2xl">
-              <h2 className={`text-4xl lg:text-6xl font-serif tracking-tight leading-tight ${titleClass}`}>
+              {sectionLabel && (
+                <span className={`text-label-md uppercase tracking-widest mb-4 block font-bold ${isDark ? 'text-gold' : 'text-[#5984c4]'}`}>
+                  {sectionLabel}
+                </span>
+              )}
+              <h2 className={`text-4xl sm:text-5xl xl:text-6xl font-serif tracking-tight leading-[1.1] ${titleClass}`}>
                 {title} <span className={isDark ? 'text-gold' : 'text-[#1c4477]'}>{accentTitle}</span>
               </h2>
             </FadeUp>
@@ -224,10 +231,10 @@ export function FaqCarousel({
         {/* Carousel Track Container (100vw Full Bleed) */}
         {/* We moved this outside the max-w-[1400px] wrapper. This ensures the overflow-x-auto container 
             spans the entire physical screen, meaning shadows can NEVER be clipped by an invisible wrapper edge! */}
-        <div className="w-full relative z-10">
-          <div ref={scrollRef} className="w-full overflow-x-auto hide-scrollbar pb-24 pt-16 -mt-16">
+        <div className="w-full relative z-10 flex-1 min-h-0 flex flex-col">
+          <div ref={scrollRef} className="w-full overflow-x-auto hide-scrollbar pb-24 pt-16 -mt-16 flex-1 min-h-0 flex flex-col">
             <motion.div 
-              className="flex gap-6 items-stretch py-8"
+              className="flex gap-6 py-8 flex-1 min-h-0"
               // We use layout to allow cards to flex smoothly, removing explicit x translation
             >
               {/* Leading Spacer: Mathematically aligns the first card with the px-6 padding of the max-w-[1400px] header */}
@@ -250,7 +257,7 @@ export function FaqCarousel({
                          }
                       }
                     }}
-                    className={`faq-card shrink-0 overflow-hidden rounded-[2rem] p-6 md:p-8 lg:p-12 transition-all duration-500 ease-out flex flex-col cursor-pointer lg:min-h-[480px] ${
+                    className={`faq-card shrink-0 overflow-y-auto hide-scrollbar rounded-[2rem] p-6 md:p-8 lg:p-12 transition-all duration-500 ease-out flex flex-col cursor-pointer min-h-[350px] lg:min-h-[min(480px,60vh)] h-fit max-h-full ${
                       isActive 
                         ? `${activeCardBg} shadow-2xl relative z-10` 
                         : `${inactiveCardBg} hover:opacity-80 relative z-0`
@@ -268,15 +275,15 @@ export function FaqCarousel({
                     
                     {/* Inner wrapper allows text to naturally wrap based on the card's current width */}
                     <div className="w-full h-full flex flex-col relative z-10">
-                      {/* We lock the question to the inactive width so it NEVER reflows when the card expands */}
-                      <h3 className={`text-2xl lg:text-3xl font-serif leading-tight mb-6 md:mb-8 w-full max-w-[216px] lg:max-w-[184px] ${isActive ? '' : 'line-clamp-4'}`}>
+                      {/* Let the question fill the width on active cards, but lock it on inactive cards to prevent reflow during transition */}
+                      <h3 className={`text-2xl lg:text-3xl font-serif leading-tight mb-6 md:mb-8 w-full ${isActive ? 'max-w-none' : 'max-w-[216px] lg:max-w-[184px] line-clamp-4'}`}>
                         {faq.question}
                       </h3>
 
                       {/* We lock the answer to the active width so it doesn't reflow while fading in/out */}
                       <div 
-                        className={`overflow-hidden transition-all duration-500 w-full md:w-[384px] ${
-                          isActive ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+                        className={`transition-all duration-500 w-full md:w-[384px] ${
+                          isActive ? 'max-h-[1000px] opacity-100 mt-6' : 'max-h-0 opacity-0'
                         }`}
                       >
                         <p className={`text-sm lg:text-base leading-relaxed font-light ${

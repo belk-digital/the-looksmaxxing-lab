@@ -599,6 +599,7 @@ export async function getShopProducts(params: {
     if (params.sort === 'price-asc') sortParam = 'price'
     if (params.sort === 'price-desc') sortParam = '-price'
     if (params.sort === 'newest') sortParam = '-createdAt'
+    if (params.sort === 'name-asc') sortParam = 'name'
 
     const limit = params.limit || 24
     const page = params.page || 1
@@ -634,6 +635,12 @@ export async function getShopProducts(params: {
         priceRange: typeof doc.salePrice === 'number' && doc.salePrice > 0 
           ? `$${doc.salePrice}.00` 
           : `$${doc.price}.00`,
+        originalPrice: typeof doc.salePrice === 'number' && doc.salePrice > 0 
+          ? `$${doc.price}.00` 
+          : undefined,
+        discountPercentage: typeof doc.salePrice === 'number' && doc.salePrice > 0 && typeof doc.price === 'number' && doc.price > 0
+          ? Math.round(((doc.price - doc.salePrice) / doc.price) * 100)
+          : undefined,
         category: categoryName
       }
     })

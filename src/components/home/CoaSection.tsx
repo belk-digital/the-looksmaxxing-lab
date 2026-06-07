@@ -9,9 +9,9 @@ import { CheckCircle2, ShieldCheck, FileSearch, ArrowUpRight } from 'lucide-reac
 
 // Desktop Animated HUD Card
 const AnimatedHUDCard = ({
-  icon, title, desc, direction, delay, positionClass
+  icon, title, desc, direction, delay, positionClass, tooltip
 }: {
-  icon: React.ReactNode, title: string, desc: string, direction: 'left' | 'right', delay: number, positionClass: string
+  icon: React.ReactNode, title: string, desc: string, direction: 'left' | 'right', delay: number, positionClass: string, tooltip?: string
 }) => {
   const isLeft = direction === 'left'
   
@@ -63,6 +63,7 @@ const AnimatedHUDCard = ({
           {/* The Box */}
           <motion.div 
             variants={boxVariants}
+            title={tooltip}
             className="relative z-10 shrink-0 mx-0 w-[240px] bg-white/80 border border-[#5984c4]/20 backdrop-blur-md rounded-2xl overflow-hidden shadow-sm"
           >
             {/* Hover Effects */}
@@ -84,7 +85,7 @@ const AnimatedHUDCard = ({
 }
 
 // Mobile Animated Metric Card
-const MobileAnimatedCard = ({ icon, title, desc, delay }: { icon: React.ReactNode, title: string, desc: string, delay: number }) => {
+const MobileAnimatedCard = ({ icon, title, desc, delay, tooltip }: { icon: React.ReactNode, title: string, desc: string, delay: number, tooltip?: string }) => {
   return (
     <motion.div 
       initial="hidden"
@@ -100,6 +101,7 @@ const MobileAnimatedCard = ({ icon, title, desc, delay }: { icon: React.ReactNod
             transition: { duration: 0.6, delay: delay, ease: [0.16, 1, 0.3, 1] as const }
           }
         }}
+        title={tooltip}
         className="relative z-10 w-full bg-white/80 border border-[#5984c4]/20 backdrop-blur-md rounded-2xl overflow-hidden shadow-sm"
       >
         <motion.div 
@@ -166,8 +168,13 @@ export function CoaSection() {
             </FadeUp>
             <FadeUp delay={0.1}>
               <h2 className="text-[12vw] md:text-5xl lg:text-7xl font-display leading-[0.9] tracking-tight text-ink">
-                Verified purity.<br/>Every single batch.
+                Verified Purity.<br/>Every Single Batch.
               </h2>
+            </FadeUp>
+            <FadeUp delay={0.2}>
+              <p className="mt-6 text-body-md text-slate-500 max-w-2xl mx-auto leading-relaxed">
+                Third-party purity verification is the cornerstone of research-grade compounds. Every vial we ship carries an independently verified COA that proves what is inside — not what we claim is inside. Here is exactly what we test for, and why it matters.
+              </p>
             </FadeUp>
          </div>
 
@@ -181,7 +188,7 @@ export function CoaSection() {
             >
                <Image 
                  src="/temp-homepage/hero-vial-image.webp"
-                 alt="Premium Peptide Vial"
+                 alt="Single precision research peptide vial with Certificate of Analysis document — The Looksmaxxing Lab"
                  fill
                  className="object-contain"
                  priority
@@ -195,7 +202,8 @@ export function CoaSection() {
               positionClass="top-[40%] left-[5%] xl:left-[10%] right-[50%]"
               icon={<CheckCircle2 className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
               title="≥99% HPLC Purity"
-              desc="Stringent baseline isolation for all compounds."
+              desc="Stringent chromatographic isolation for every compound — verified before any order ships."
+              tooltip="HPLC separates compound mixtures by molecular polarity, confirming concentration and purity to ≥99%."
             />
 
             {/* Desktop HUD: Metric 2 (Top Right) */}
@@ -204,8 +212,9 @@ export function CoaSection() {
               delay={0.4}
               positionClass="top-[15%] right-[5%] xl:right-[10%] left-[50%]"
               icon={<FileSearch className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
-              title="Mass Spectrometry"
-              desc="Exact molecular weight verification via LC-MS."
+              title="Mass Spectrometry (LC-MS)"
+              desc="Exact molecular weight verification confirms you are receiving the compound on the label."
+              tooltip="LC-MS cross-references molecular mass against known peptide databases. Cannot be faked."
             />
 
             {/* Desktop HUD: Metric 3 (Bottom Right) */}
@@ -214,8 +223,9 @@ export function CoaSection() {
               delay={0.7}
               positionClass="bottom-[20%] right-[5%] xl:right-[10%] left-[50%]"
               icon={<ShieldCheck className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
-              title="Endotoxin Free"
-              desc="Ensuring absolute biological safety and sterility."
+              title="Endotoxin-Free"
+              desc="Limulus Amebocyte Lysate (LAL) testing confirms endotoxin levels below research-safe thresholds."
+              tooltip="Endotoxin contamination invalidates in-vitro research results. We test and confirm absence."
             />
 
          </div>
@@ -226,29 +236,32 @@ export function CoaSection() {
               delay={0.1}
               icon={<CheckCircle2 className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
               title="≥99% HPLC Purity"
-              desc="Stringent baseline isolation for all compounds."
+              desc="Stringent chromatographic isolation for every compound — verified before any order ships."
+              tooltip="HPLC separates compound mixtures by molecular polarity, confirming concentration and purity to ≥99%."
             />
             <MobileAnimatedCard 
               delay={0.4}
               icon={<FileSearch className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
-              title="Mass Spectrometry"
-              desc="Exact molecular weight verification via LC-MS."
+              title="Mass Spectrometry (LC-MS)"
+              desc="Exact molecular weight verification confirms you are receiving the compound on the label."
+              tooltip="LC-MS cross-references molecular mass against known peptide databases. Cannot be faked."
             />
             <MobileAnimatedCard 
               delay={0.7}
               icon={<ShieldCheck className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
-              title="Endotoxin Free"
-              desc="Ensuring absolute biological safety and sterility."
+              title="Endotoxin-Free"
+              desc="Limulus Amebocyte Lysate (LAL) testing confirms endotoxin levels below research-safe thresholds."
+              tooltip="Endotoxin contamination invalidates in-vitro research results. We test and confirm absence."
             />
          </div>
 
          {/* Call to action */}
          <div className="mt-12 lg:mt-16 flex justify-center px-4">
            <FadeUp delay={1.2}>
-             <button className="group bg-transparent border border-[#5984c4]/30 text-ink hover:bg-[#5984c4] hover:border-[#5984c4] hover:text-white rounded-full px-6 lg:px-8 py-4 uppercase tracking-widest text-[10px] md:text-xs font-bold transition-all duration-300 flex items-center gap-3">
+             <a href="/certificates" className="group bg-transparent border border-[#5984c4]/30 text-ink hover:bg-[#5984c4] hover:border-[#5984c4] hover:text-white rounded-full px-6 lg:px-8 py-4 uppercase tracking-widest text-[10px] md:text-xs font-bold transition-all duration-300 flex items-center gap-3">
                VIEW COA LIBRARY
                <ArrowUpRight className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-             </button>
+             </a>
            </FadeUp>
          </div>
 

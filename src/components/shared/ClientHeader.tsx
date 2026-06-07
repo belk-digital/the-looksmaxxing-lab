@@ -3,10 +3,12 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import { ShoppingBag, Menu, Search, X, User } from 'lucide-react'
 import { MobileMenu } from './MobileMenu'
 import { useCartStore } from '@/lib/cart/store'
+import { useWishlistStore } from '@/lib/wishlist/store'
 import { CartDrawer } from '@/components/cart/CartDrawer'
 
 const ANNOUNCEMENTS = [
@@ -15,15 +17,39 @@ const ANNOUNCEMENTS = [
   "SUBSCRIBE FOR 15% OFF YOUR FIRST ORDER"
 ]
 
-export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLoggedIn = false }) {
+export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLoggedIn = false, categories: initialCategories = [], initialWishlistItems = [] }: any) {
   const cartStore = useCartStore()
-  const activeCartCount = cartStore.items.reduce((acc, i) => acc + i.quantity, 0)
+  const setWishlistItems = useWishlistStore((state) => state.setItems)
+  const activeCartCount = cartStore.items.reduce((acc: any, i: any) => acc + i.quantity, 0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [announcementIndex, setAnnouncementIndex] = useState(0)
   const [announcementClosed, setAnnouncementClosed] = useState(true)
   const [mounted, setMounted] = useState(false)
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false)
+  
+  const [categoriesData, setCategoriesData] = useState<any[]>(initialCategories)
+  const [isLoadingMenu, setIsLoadingMenu] = useState(initialCategories.length === 0)
+
+  useEffect(() => {
+    if (initialCategories.length === 0) {
+      import('@/app/(frontend)/actions/megaMenu').then(module => {
+        module.getMegaMenuData().then(data => {
+          setCategoriesData(data)
+          setIsLoadingMenu(false)
+        })
+      })
+    }
+  }, [initialCategories])
+
+  // Sync Wishlist with Backend
+  useEffect(() => {
+    if (isLoggedIn) {
+      setWishlistItems(initialWishlistItems)
+    }
+  }, [isLoggedIn, initialWishlistItems, setWishlistItems])
 
   const pathname = usePathname()
   const isHome = pathname === '/' || pathname === '/en'
@@ -63,7 +89,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
   })
 
   const isTransparent = !isScrolled && isHome;
-  const headerClasses = `w-full h-[72px] flex items-center justify-between px-6 md:px-12 lg:px-16 pointer-events-auto transition-all duration-300 ${
+  const headerClasses = `w-full h-[72px] flex items-center justify-between px-6 md:px-12 lg:px-16 pointer-events-auto transition-all duration-300 relative ${
     isTransparent
       ? 'bg-transparent border-transparent'
       : 'bg-white/95 backdrop-blur-md border-b border-black/10 shadow-sm'
@@ -116,14 +142,14 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
 
           <header className={headerClasses}>
           {/* Mobile Hamburger */}
-          <div className="flex md:hidden flex-1">
+          <div className="flex xl:hidden flex-1">
             <button onClick={() => setMobileMenuOpen(true)} className={`p-2 -ml-2 ${textColor}`}>
               <Menu size={20} />
             </button>
           </div>
 
           {/* Left: Logo (Mimicking the reference swirl) */}
-          <div className="flex-1 md:flex-none flex justify-center md:justify-start">
+          <div className="flex-1 xl:flex-none flex justify-center xl:justify-start">
             <Link href="/en" className="flex items-center hover:opacity-80 transition-opacity">
               <svg width="48" height="24" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 15 C15 7, 45 7, 45 15 C45 23, 20 23, 20 15 C20 11, 40 11, 40 15 C40 19, 25 19, 25 15" stroke={iconColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -134,34 +160,46 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
           </div>
 
           {/* Center: Nav (Restored original site links) */}
-          <nav className="hidden lg:flex items-center justify-center gap-6 xl:gap-8 flex-1">
-            <Link href="/en/shop" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+          <nav className="hidden xl:flex items-center justify-center gap-4 xl:gap-8 flex-1 h-full">
+            <Link href="/en/shop" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
               SHOP
             </Link>
-            <Link href="/en/peptide-calculator" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+            
+            <div 
+              className="h-full flex items-center cursor-pointer"
+              onMouseEnter={() => setIsMegaMenuOpen(true)}
+              onMouseLeave={() => setIsMegaMenuOpen(false)}
+            >
+              <Link href="/en/shop" className={`flex items-center gap-1 text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full ${textColor} ${textHoverColor}`}>
+                CATEGORIES
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-70 group-hover:opacity-100 transition-opacity"><path d="m6 9 6 6 6-6"/></svg>
+              </Link>
+            </div>
+            
+            <Link href="/en/peptide-calculator" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
               CALCULATOR
             </Link>
-            <Link href="/en/about" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+            <Link href="/en/about" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
               ABOUT
             </Link>
-            <Link href="/en/journal" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+            <Link href="/en/journal" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
               JOURNAL
             </Link>
-            <Link href="/en/faq" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+            <Link href="/en/faqs" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
               FAQ
             </Link>
-            <Link href="/en/contact" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+            <Link href="/en/contact" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
               CONTACT
             </Link>
-            <Link href="/en/affiliates" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors ${textColor} ${textHoverColor}`}>
+            <Link href="/en/affiliates" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
               AFFILIATES
             </Link>
           </nav>
 
           {/* Right: Search, SHOP NOW Button & Cart */}
-          <div className="flex items-center justify-end gap-4 lg:gap-5 flex-1 lg:flex-none">
+          <div className="flex items-center justify-end gap-4 xl:gap-5 flex-1 xl:flex-none">
             {/* Search Bar */}
-            <form className="hidden lg:flex items-center relative" onSubmit={(e) => { e.preventDefault(); /* TODO: Implement search */ }}>
+            <form className="hidden xl:flex items-center relative" onSubmit={(e) => { e.preventDefault(); /* TODO: Implement search */ }}>
               <input 
                 type="text" 
                 placeholder="Search..." 
@@ -209,6 +247,158 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
           </header>
         </motion.div>
 
+      </div>
+
+      {/* Render the Mega Menu OUTSIDE the motion.div wrapper so backdrop-filter is NOT broken by the stacking context! */}
+      {/* Dynamic top calculation: 72px base header height + 32px announcement bar if open */}
+      <div 
+        className="fixed inset-x-0 z-[45] transition-transform duration-300 ease-out"
+        style={{ 
+          top: announcementClosed ? '72px' : '104px',
+          transform: hidden ? 'translateY(-100px)' : 'translateY(0)'
+        }}
+      >
+        {/* Background Blur Overlay for Mega Menu */}
+        <div 
+          className={`fixed inset-0 bg-black/10 transition-opacity duration-300 ${isMegaMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+          style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+          onMouseEnter={() => setIsMegaMenuOpen(false)}
+        />
+
+        {/* Full-Width Mega Menu Dropdown */}
+        <div 
+          className={`absolute left-0 right-0 w-full bg-white/75 border-b border-gray-100 shadow-xl transition-all duration-300 overflow-hidden ${isMegaMenuOpen ? 'opacity-100 pointer-events-auto translate-y-0' : 'opacity-0 pointer-events-none -translate-y-2'}`}
+          style={{ backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)' }}
+          onMouseEnter={() => setIsMegaMenuOpen(true)}
+          onMouseLeave={() => setIsMegaMenuOpen(false)}
+        >
+          {/* Noise Texture Overlay */}
+          <div 
+            className="absolute inset-0 z-0 opacity-[0.06] pointer-events-none" 
+            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
+          />
+
+          <div className="max-w-[1600px] mx-auto w-full px-6 md:px-12 lg:px-16 pt-8 pb-10 flex gap-12 xl:gap-20 relative z-10">
+              
+              {/* Left: Category List */}
+              <div className="w-1/4 flex flex-col gap-2">
+                <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">Explore</h4>
+                {isLoadingMenu ? (
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="py-4 border-b border-gray-100 flex items-center justify-between">
+                      <div className="h-4 w-48 bg-gray-100 animate-pulse rounded-sm" />
+                    </div>
+                  ))
+                ) : categoriesData.map((cat: any, index: number) => {
+                  const isActive = activeCategory === cat.id || (activeCategory === null && index === 0);
+                  return (
+                    <Link 
+                      key={cat.id ? `${cat.id}-${index}` : index} 
+                      href={`/en/shop?category=${encodeURIComponent(cat.name)}`}
+                      onMouseEnter={() => setActiveCategory(cat.id)}
+                      className={`group/link flex items-center justify-between py-3 border-b border-gray-100 transition-colors ${isActive ? 'text-black border-black' : 'text-gray-400 hover:text-black hover:border-gray-300'}`}
+                    >
+                      <span className="text-[14px] xl:text-[16px] font-light uppercase tracking-[0.15em]">{cat.name}</span>
+                      <svg 
+                        width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" 
+                        className={`transition-transform duration-300 ${isActive ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0 group-hover/link:translate-x-0 group-hover/link:opacity-50'}`}
+                      >
+                        <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                      </svg>
+                    </Link>
+                  )
+                })}
+              </div>
+
+              {/* Right: Products Area */}
+              <div className="w-3/4 flex flex-col relative min-h-[400px]">
+                {isLoadingMenu ? (
+                  <div className="flex flex-col w-full h-full">
+                    <div className="flex justify-between items-end mb-8">
+                      <div>
+                        <div className="h-6 w-64 bg-gray-100 animate-pulse rounded-sm mb-3" />
+                        <div className="h-3 w-32 bg-gray-50 animate-pulse rounded-sm" />
+                      </div>
+                      <div className="h-4 w-24 bg-gray-100 animate-pulse rounded-sm" />
+                    </div>
+                    <div className="grid grid-cols-3 gap-8 xl:gap-12 flex-1">
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="flex flex-col gap-4">
+                          <div className="w-full aspect-[3/4] bg-gray-100 animate-pulse rounded-sm" />
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="h-4 w-32 bg-gray-100 animate-pulse rounded-sm" />
+                            <div className="h-3 w-16 bg-gray-50 animate-pulse rounded-sm" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : categoriesData.map((cat: any, index: number) => {
+                  const isActive = activeCategory === cat.id || (activeCategory === null && index === 0);
+                  return (
+                    <div 
+                      key={cat.id ? `${cat.id}-${index}` : index} 
+                      className={`absolute inset-0 transition-opacity duration-300 flex flex-col ${isActive ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none z-0'}`}
+                    >
+                      <div className="flex justify-between items-end mb-8">
+                        <div>
+                          <h3 className="text-2xl font-light text-black mb-2">{cat.name} Collection</h3>
+                          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Featured Selections</p>
+                        </div>
+                        <Link 
+                          href={`/en/shop?category=${encodeURIComponent(cat.name)}`}
+                          className="text-[10px] font-bold text-black uppercase tracking-[0.2em] border-b border-black pb-1 hover:text-gray-600 hover:border-gray-600 transition-colors"
+                        >
+                          Shop All {cat.name} &rarr;
+                        </Link>
+                      </div>
+                      
+                      {cat.products && cat.products.length > 0 ? (
+                        <div className="grid grid-cols-3 gap-8 xl:gap-12 flex-1">
+                          {cat.products.slice(0, 3).map((prod: any, prodIndex: number) => (
+                            <Link 
+                              key={prod.id ? `${prod.id}-${prodIndex}` : prodIndex} 
+                              href={`/en/shop/products/${prod.slug}`}
+                              className="group/product flex flex-col cursor-pointer"
+                            >
+                              <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden relative mb-5 mix-blend-multiply bg-transparent transition-transform duration-700 group-hover/product:-translate-y-2">
+                                {/* Subtle glowing aura behind bottle on hover */}
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] aspect-square rounded-full bg-white opacity-0 group-hover/product:opacity-50 blur-2xl transition-opacity duration-700 z-0" />
+                                
+                                <Image 
+                                  src={prod.image} 
+                                  alt={prod.name} 
+                                  fill 
+                                  className="object-cover transition-all duration-700 group-hover/product:scale-105 z-10" 
+                                />
+                              </div>
+                              <div className="flex flex-col items-start px-1 border-l border-transparent group-hover/product:border-black transition-colors duration-300 pl-3">
+                                <h5 className="text-[11px] xl:text-[12px] font-bold text-black uppercase tracking-[0.15em] mb-1.5 line-clamp-1">{prod.name}</h5>
+                                <div className="flex items-center gap-3">
+                                  <p className="text-[10px] font-bold text-gray-500 tracking-widest">${prod.price}</p>
+                                  <span className="text-[10px] text-black opacity-0 -translate-x-2 group-hover/product:opacity-100 group-hover/product:translate-x-0 transition-all duration-300">&rarr;</span>
+                                </div>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex-1 flex flex-col items-center justify-center bg-[#F5F5F7] border border-dashed border-gray-300">
+                          <span className="text-[12px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">New formulations arriving soon</span>
+                          <Link 
+                            href={`/en/shop?category=${encodeURIComponent(cat.name)}`} 
+                            className="px-8 py-3 bg-black text-white text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-gray-800 transition-colors"
+                          >
+                            View Catalog
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
       </div>
       <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
       <CartDrawer />

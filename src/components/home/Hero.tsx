@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
@@ -16,7 +17,16 @@ const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', 
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const MagneticButton = ({ children, className, variant = "default", size = "default" }: any) => {
+const MagneticButton = ({ children, className, variant = "default", size = "default", href }: any) => {
+  if (href) {
+    return (
+      <div className="inline-block">
+        <Button variant={variant} size={size} className={className} asChild>
+          <Link href={href}>{children}</Link>
+        </Button>
+      </div>
+    )
+  }
   return (
     <div className="inline-block">
       <Button variant={variant} size={size} className={className}>
@@ -67,7 +77,7 @@ export function Hero() {
   }, [isReady])
 
   return (
-    <section className="relative w-full min-h-[100dvh] lg:h-[100dvh] overflow-hidden z-[50]">
+    <section className="relative w-full h-[100dvh] min-h-[600px] lg:min-h-[min(800px,100dvh)] overflow-hidden bg-black">
       
       {/* Background Image Carousel */}
       <div className="absolute inset-0 w-full h-full z-0 bg-ink">
@@ -82,7 +92,7 @@ export function Hero() {
           >
             <Image 
               src={backgroundImages[currentImageIndex]} 
-              alt="Hero Background" 
+              alt="Dark blue laboratory environment with premium glass peptide vials — The Looksmaxxing Lab research peptides" 
               fill 
               className="object-cover object-center"
               priority={currentImageIndex === 0}
@@ -100,33 +110,33 @@ export function Hero() {
       <div className="relative w-full h-full px-6 md:px-12 lg:px-16 flex flex-col items-center lg:items-start justify-center pt-32 lg:pt-0 pb-16 lg:pb-0 z-20">
         
         {/* Text & CTA */}
-        <div ref={textContainerRef} className="w-full lg:w-[50%] flex flex-col items-center lg:items-start text-center lg:text-left mt-4 lg:mt-0 drop-shadow-md">
+        <div ref={textContainerRef} className="w-full lg:w-[55%] xl:w-[50%] flex flex-col items-center lg:items-start text-center lg:text-left mt-4 lg:mt-0 drop-shadow-md">
           
           <div className="gsap-reveal overflow-hidden mb-6 lg:mb-8">
-            <h2 className="text-label-md font-bold text-white tracking-[0.2em] uppercase">
+            <span className="block text-label-md font-bold text-white tracking-[0.2em] uppercase">
               PRECISION. PURITY. PERFORMANCE.
-            </h2>
+            </span>
           </div>
 
           <div className="gsap-reveal overflow-hidden mb-5 lg:mb-8">
-            <h1 className={`text-[44px] sm:text-[56px] lg:text-[72px] xl:text-[84px] leading-[1.05] font-bold tracking-tighter text-white ${spaceGrotesk.className}`}>
-              The Future of <br className="hidden lg:block" />
-              Precision Wellness
+            <h1 className={`text-[clamp(2.75rem,8vw,3.5rem)] lg:text-[clamp(3.5rem,4.5vw,5.25rem)] leading-[1.05] font-bold tracking-tighter text-white ${spaceGrotesk.className}`}>
+              Research-Grade Peptides <br className="hidden lg:block" />
+              for Peak Performance
             </h1>
           </div>
 
           <div className="gsap-reveal overflow-hidden mb-8 lg:mb-12">
             <p className="text-body-md lg:text-body-lg text-white/90 max-w-[480px]">
-              Clinical-grade peptide research designed with luxury, purity, and modern longevity in mind.
+              US-synthesized research peptides verified at ≥99% HPLC purity — with a full Certificate of Analysis on every order. Built for researchers who refuse to compromise on quality.
             </p>
           </div>
 
           <div className="gsap-reveal flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-            <MagneticButton variant="ghost" className="group w-full sm:w-auto px-9 py-6 rounded-none uppercase text-[10px] tracking-[0.25em] font-bold bg-white text-black hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all duration-300 flex items-center justify-center gap-3">
-              SHOP PEPTIDES
+            <MagneticButton href="/shop" variant="ghost" className="group w-full sm:w-auto px-9 py-6 rounded-none uppercase text-[10px] tracking-[0.25em] font-bold bg-white text-black hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all duration-300 flex items-center justify-center gap-3">
+              SHOP RESEARCH PEPTIDES
               <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1.5" />
             </MagneticButton>
-            <MagneticButton variant="ghost" className="group w-full sm:w-auto px-9 py-6 rounded-none uppercase text-[10px] tracking-[0.25em] font-bold border border-white/50 text-white hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-md bg-white/5 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] flex items-center justify-center gap-3">
+            <MagneticButton href="/about" variant="ghost" className="group w-full sm:w-auto px-9 py-6 rounded-none uppercase text-[10px] tracking-[0.25em] font-bold border border-white/50 text-white hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-md bg-white/5 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] flex items-center justify-center gap-3">
               DISCOVER THE LAB
               <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1.5" />
             </MagneticButton>

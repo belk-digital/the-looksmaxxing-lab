@@ -32,7 +32,7 @@ async function fixMedia() {
     
     // Also check the sizes object
     if (doc.sizes) {
-      const updatedSizes = { ...doc.sizes }
+      const updatedSizes: any = { ...doc.sizes }
       let sizesChanged = false
       for (const key of Object.keys(updatedSizes)) {
         if (updatedSizes[key] && updatedSizes[key].filename && updatedSizes[key].filename.includes('-1.')) {

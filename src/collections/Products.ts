@@ -222,7 +222,7 @@ export const Products: CollectionConfig = {
     {
       name: 'coaFile',
       type: 'upload',
-      relationTo: 'media',
+      relationTo: 'documents',
       admin: {
         description: 'Upload the Certificate of Analysis (COA) document (PDF/Image)',
       },

@@ -30,6 +30,16 @@ async function run() {
     } catch (e) {}
   }
 
+  console.log('Cleaning up old media...')
+  const oldMedia = await payload.find({ collection: 'media', limit: 1000 })
+  for (const m of oldMedia.docs) {
+    try {
+      await payload.delete({ collection: 'media', id: m.id })
+    } catch (e: any) {
+      console.warn(`Could not delete media ${m.id}: ${e.message}`)
+    }
+  }
+
   const imagesDir = path.resolve(process.cwd(), 'public/Temp Product Images')
   const files = fs.readdirSync(imagesDir).filter(f => f.endsWith('.jpg') || f.endsWith('.png') || f.endsWith('.webp'))
 

@@ -15,14 +15,23 @@ function Skeleton({ className, ...props }: React.ComponentProps<'div'>) {
 // 1. ProductCard Skeleton
 export function ProductCardSkeleton() {
   return (
-    <div className="flex flex-col gap-4 w-full">
-      {/* Image placeholder */}
-      <Skeleton className="w-full aspect-[4/5] md:aspect-square rounded-sm" />
-      {/* Content placeholders */}
-      <div className="space-y-2">
-        <Skeleton className="h-5 w-3/4" />
-        <Skeleton className="h-4 w-1/2" />
-        <Skeleton className="h-4 w-1/4 mt-4" />
+    <div className="block relative w-full h-[460px] sm:h-[500px] rounded-[32px] bg-white p-2 sm:p-3 shadow-sm border border-border-subtle">
+      <div className="relative w-full h-full rounded-[24px] overflow-hidden bg-cream">
+        {/* Image Area Skeleton */}
+        <div className="absolute inset-0 bg-cream-warm animate-pulse" />
+        
+        {/* Bottom Content Area Skeleton */}
+        <div className="absolute bottom-0 left-0 right-0 z-30 p-4 sm:p-5 bg-white rounded-b-[24px]">
+          <Skeleton className="h-5 w-3/4 mb-1" />
+          <div className="h-[36px] flex flex-col justify-center gap-1.5 mt-1">
+            <Skeleton className="h-3 w-full" />
+            <Skeleton className="h-3 w-5/6" />
+          </div>
+          <div className="flex items-center justify-between mt-2">
+            <Skeleton className="h-6 w-16" />
+            <Skeleton className="h-9 w-20 rounded-full" />
+          </div>
+        </div>
       </div>
     </div>
   )

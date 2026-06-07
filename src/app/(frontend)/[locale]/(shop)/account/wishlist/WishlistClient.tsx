@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, ShoppingBag, Heart } from 'lucide-react'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Space_Grotesk } from 'next/font/google'
+import { useWishlistStore } from '@/lib/wishlist/store'
+import { useEffect, useState } from 'react'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
@@ -23,7 +25,16 @@ export interface AccountWishlistProps {
   items: WishlistItem[];
 }
 
-export function WishlistClient({ items }: AccountWishlistProps) {
+export function WishlistClient({ items: serverItems }: AccountWishlistProps) {
+  const { items: localItems, removeItem } = useWishlistStore()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const displayItems = mounted ? localItems : []
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -38,7 +49,7 @@ export function WishlistClient({ items }: AccountWishlistProps) {
           <h1 className={`text-4xl text-black font-bold tracking-tighter ${spaceGrotesk.className}`}>
             My Wishlist
           </h1>
-          <p className="text-sm text-gray-500">You have {items.length} items saved for later.</p>
+          <p className="text-sm text-gray-500">You have {displayItems.length} items saved for later.</p>
         </div>
         
         <button className="flex items-center justify-center gap-2 bg-black hover:bg-gray-800 text-white rounded-full px-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.15em] transition-all w-full sm:w-auto shadow-lg">
@@ -48,7 +59,7 @@ export function WishlistClient({ items }: AccountWishlistProps) {
       </div>
 
       <AnimatePresence>
-        {items.length > 0 ? (
+        {displayItems.length > 0 ? (
           <motion.div 
             key="grid"
             initial={{ opacity: 0 }}
@@ -56,7 +67,7 @@ export function WishlistClient({ items }: AccountWishlistProps) {
             exit={{ opacity: 0 }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {items.map((product, i) => (
+            {displayItems.map((product, i) => (
               <motion.div 
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -84,7 +95,13 @@ export function WishlistClient({ items }: AccountWishlistProps) {
                   </Link>
 
                   {/* Remove Button Overlay */}
-                  <button className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/90 backdrop-blur-md text-gray-400 hover:text-red-500 hover:bg-white flex items-center justify-center rounded-full shadow-lg opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                  <button 
+                    onClick={(e) => {
+                      e.preventDefault()
+                      removeItem(product.id)
+                    }}
+                    className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/90 backdrop-blur-md text-gray-400 hover:text-red-500 hover:bg-white flex items-center justify-center rounded-full shadow-lg opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300"
+                  >
                     <X size={16} />
                   </button>
                 </div>
@@ -93,7 +110,8 @@ export function WishlistClient({ items }: AccountWishlistProps) {
                 <div className="flex flex-col flex-1 p-6">
                   <Link href={`/products/${product.slug}`}>
                     <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-2 block">
-                      {product.descriptor}
+                      {/* @ts-ignore */}
+                      {product.descriptor || 'Product'}
                     </span>
                     <h3 className={`text-2xl font-bold text-black mb-1 transition-colors duration-300 group-hover:text-purple-600 tracking-tight ${spaceGrotesk.className}`}>
                       {product.name}
@@ -102,7 +120,8 @@ export function WishlistClient({ items }: AccountWishlistProps) {
                   
                   <div className="mt-6 flex items-center justify-between gap-4 pt-4 border-t border-gray-50">
                     <span className={`text-xl font-bold text-black tracking-tighter ${spaceGrotesk.className}`}>
-                      {product.price}
+                      {/* @ts-ignore */}
+                      {product.price || product.priceRange || ''}
                     </span>
                     <button className="bg-gray-50 hover:bg-black text-black hover:text-white rounded-full px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] transition-colors shrink-0">
                       Add to Cart
