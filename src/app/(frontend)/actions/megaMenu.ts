@@ -10,6 +10,7 @@ export async function getMegaMenuData() {
     where: { isVisible: { equals: true } },
     sort: 'sortOrder',
     limit: 100,
+    overrideAccess: true,
   })
   
   const categoriesWithProducts = await Promise.all(
@@ -17,11 +18,12 @@ export async function getMegaMenuData() {
       const productsRes = await payload.find({
         collection: 'products',
         where: {
-          categories: { contains: doc.id },
+          categories: { in: [doc.id] },
           status: { equals: 'active' },
           isVisible: { equals: true }
         },
         limit: 3,
+        overrideAccess: true,
       })
 
       return {
