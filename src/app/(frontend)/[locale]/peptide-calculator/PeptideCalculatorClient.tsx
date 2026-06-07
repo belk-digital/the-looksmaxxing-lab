@@ -6,6 +6,38 @@ import { FadeUp } from '@/components/motion/FadeUp'
 import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
 import { ArrowLeft, ShieldCheck, Info, Beaker, Thermometer, Syringe, Droplets, FlaskConical, AlertTriangle, BookOpen, Calculator, ChevronDown } from 'lucide-react'
 import Link from 'next/link'
+import { FaqCarousel, FaqItem } from '@/components/shared/FaqCarousel'
+
+const CALCULATOR_FAQS: FaqItem[] = [
+  {
+    question: "How do I calculate how many IU to draw for my peptide dose?",
+    answer: "Use the three-step formula built into the calculator above: (1) Divide your peptide amount in mcg by the BAC water volume in ml to get the concentration in mcg/ml. (2) Divide your target dose in mcg by that concentration to get the draw volume in ml. (3) Multiply the draw volume by 100 to convert to IU on a U-100 insulin syringe. Example: a 250 mcg dose from a 5mg vial with 2ml BAC water = 10 IU draw."
+  },
+  {
+    question: "How much bacteriostatic water should I add to a 5mg peptide vial?",
+    answer: "The most common research choices are 1ml, 2ml, or 3ml. Adding 2ml to a 5mg vial produces a standard 2,500 mcg/ml concentration — giving you 10 IU per 250 mcg dose on a U-100 syringe. More water lowers concentration (larger, easier-to-read draws); less water raises concentration (smaller, more precise draws). Use the calculator above to instantly see how any water volume affects your dose IU."
+  },
+  {
+    question: "How long can reconstituted peptides be stored in the refrigerator?",
+    answer: "Most reconstituted research peptides remain stable for 2 to 4 weeks when stored upright in a refrigerator at 2–8°C. Bacteriostatic water (containing 0.9% benzyl alcohol) significantly extends stability by inhibiting microbial growth. Never freeze a reconstituted solution; instead, store unreconstituted lyophilized peptides in a freezer at −20°C until you are ready to reconstitute."
+  },
+  {
+    question: "What is the difference between mcg and mg in peptide dosing?",
+    answer: "1 milligram (mg) equals 1,000 micrograms (mcg). Research peptide vials are typically labeled in mg (e.g., 5mg) while individual research doses are often specified in mcg (e.g., 250 mcg). To convert: divide mg by 1,000 to get mcg. The calculator above handles this conversion automatically when you use the mg/mcg toggle — enter whichever unit your label shows."
+  },
+  {
+    question: "Should I shake or swirl a peptide vial after adding bacteriostatic water?",
+    answer: "Always swirl gently — never shake. Vigorous shaking forces air into the solution and can denature (structurally unfold) the peptide chains, compromising the compound. Instead, inject BAC water slowly along the inner glass wall, then gently roll or swirl the vial until the lyophilized powder fully dissolves. Stubborn powder may need 1–2 minutes of gentle rotation."
+  },
+  {
+    question: "Can I use sterile water instead of bacteriostatic water?",
+    answer: "Sterile water is technically usable for single-use reconstitution in laboratory research, but bacteriostatic water (BAC water) is the research standard for multi-use vials. BAC water contains 0.9% benzyl alcohol, which inhibits bacterial and fungal growth between extractions, significantly extending the stable research window of the reconstituted solution. For multi-draw vials, BAC water is always the preferred diluent."
+  },
+  {
+    question: "What does the Required Draw (IU) output mean?",
+    answer: "The Required Draw (IU) is the exact number on the tick-mark scale of your U-100 insulin syringe to pull the plunger back to. On any U-100 syringe, the scale runs from 0 to 100 IU, where 100 IU equals 1 ml of total volume. If the calculator shows 10 IU, draw the plunger to the '10' mark on your syringe. This is your entire dose volume for that administration in a research protocol."
+  }
+]
 
 type SyringeVolume = 0.3 | 0.5 | 1.0;
 type MassUnit = 'mg' | 'mcg';
@@ -18,7 +50,6 @@ export default function PeptideCalculatorPage() {
   
   const [desiredDose, setDesiredDose] = useState('250')
   const [doseUnit, setDoseUnit] = useState<MassUnit>('mcg')
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
 
   const [syringeVolume, setSyringeVolume] = useState<SyringeVolume>(1.0)
 
@@ -1009,67 +1040,14 @@ export default function PeptideCalculatorPage() {
       {/* ============================================
           SECTION 7: FAQ
           ============================================ */}
-      <section className="py-24 lg:py-36 px-6 bg-[#F9F9F9] relative">
-        <div className="max-w-[800px] mx-auto relative z-10">
-          <FadeUp className="text-center mb-16 lg:mb-24">
-            <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-gold mb-6 font-bold">FAQ</h2>
-            <h3 className="text-4xl lg:text-6xl font-serif text-ink tracking-tight mb-6">Frequently Asked Questions About Peptide Reconstitution</h3>
-          </FadeUp>
-          
-          <div className="flex flex-col gap-4">
-            {[
-              {
-                q: "How do I calculate how many IU to draw for my peptide dose?",
-                a: "Use the three-step formula built into the calculator above: (1) Divide your peptide amount in mcg by the BAC water volume in ml to get the concentration in mcg/ml. (2) Divide your target dose in mcg by that concentration to get the draw volume in ml. (3) Multiply the draw volume by 100 to convert to IU on a U-100 insulin syringe. Example: a 250 mcg dose from a 5mg vial with 2ml BAC water = 10 IU draw."
-              },
-              {
-                q: "How much bacteriostatic water should I add to a 5mg peptide vial?",
-                a: "The most common research choices are 1ml, 2ml, or 3ml. Adding 2ml to a 5mg vial produces a standard 2,500 mcg/ml concentration — giving you 10 IU per 250 mcg dose on a U-100 syringe. More water lowers concentration (larger, easier-to-read draws); less water raises concentration (smaller, more precise draws). Use the calculator above to instantly see how any water volume affects your dose IU."
-              },
-              {
-                q: "How long can reconstituted peptides be stored in the refrigerator?",
-                a: "Most reconstituted research peptides remain stable for 2 to 4 weeks when stored upright in a refrigerator at 2–8°C. Bacteriostatic water (containing 0.9% benzyl alcohol) significantly extends stability by inhibiting microbial growth. Never freeze a reconstituted solution; instead, store unreconstituted lyophilized peptides in a freezer at −20°C until you are ready to reconstitute."
-              },
-              {
-                q: "What is the difference between mcg and mg in peptide dosing?",
-                a: "1 milligram (mg) equals 1,000 micrograms (mcg). Research peptide vials are typically labeled in mg (e.g., 5mg) while individual research doses are often specified in mcg (e.g., 250 mcg). To convert: divide mg by 1,000 to get mcg. The calculator above handles this conversion automatically when you use the mg/mcg toggle — enter whichever unit your label shows."
-              },
-              {
-                q: "Should I shake or swirl a peptide vial after adding bacteriostatic water?",
-                a: "Always swirl gently — never shake. Vigorous shaking forces air into the solution and can denature (structurally unfold) the peptide chains, compromising the compound. Instead, inject BAC water slowly along the inner glass wall, then gently roll or swirl the vial until the lyophilized powder fully dissolves. Stubborn powder may need 1–2 minutes of gentle rotation."
-              },
-              {
-                q: "Can I use sterile water instead of bacteriostatic water?",
-                a: "Sterile water is technically usable for single-use reconstitution in laboratory research, but bacteriostatic water (BAC water) is the research standard for multi-use vials. BAC water contains 0.9% benzyl alcohol, which inhibits bacterial and fungal growth between extractions, significantly extending the stable research window of the reconstituted solution. For multi-draw vials, BAC water is always the preferred diluent."
-              },
-              {
-                q: "What does the Required Draw (IU) output mean?",
-                a: "The Required Draw (IU) is the exact number on the tick-mark scale of your U-100 insulin syringe to pull the plunger back to. On any U-100 syringe, the scale runs from 0 to 100 IU, where 100 IU equals 1 ml of total volume. If the calculator shows 10 IU, draw the plunger to the '10' mark on your syringe. This is your entire dose volume for that administration in a research protocol."
-              }
-            ].map((faq, idx) => (
-              <div key={idx} className="bg-white border border-ink/10 rounded-2xl overflow-hidden transition-all duration-300 shadow-sm">
-                <button
-                  onClick={() => setOpenFaqIndex(openFaqIndex === idx ? null : idx)}
-                  className="w-full px-6 lg:px-8 py-6 flex justify-between items-center text-left focus:outline-none"
-                >
-                  <span className="font-serif text-xl lg:text-2xl text-ink pr-8">{faq.q}</span>
-                  <ChevronDown className={`w-6 h-6 text-ink/40 shrink-0 transition-transform duration-300 ${openFaqIndex === idx ? 'rotate-180' : ''}`} />
-                </button>
-                <motion.div
-                  initial={false}
-                  animate={{ height: openFaqIndex === idx ? 'auto' : 0, opacity: openFaqIndex === idx ? 1 : 0 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="overflow-hidden"
-                >
-                  <p className="px-6 lg:px-8 pb-8 text-ink/60 font-light leading-relaxed text-lg border-t border-ink/5 pt-6 mt-2">
-                    {faq.a}
-                  </p>
-                </motion.div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FaqCarousel 
+        faqs={CALCULATOR_FAQS} 
+        sectionLabel="FAQ"
+        title="Frequently Asked Questions"
+        accentTitle="About Reconstitution"
+        description="Find answers to common questions about calculating peptide dosages, reconstitution guidelines, and safe storage practices for research compounds."
+        theme="light"
+      />
 
       {/* ============================================
           SECTION 8: SHOP CTA STRIP
