@@ -48,7 +48,7 @@ function CategoryCard({ category, index }: { category: typeof CATEGORIES[0], ind
   const bgColor = CARD_COLORS[index % CARD_COLORS.length]
 
   return (
-    <Link href={`/shop/${category.slug}`} className="group relative flex flex-col w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[9/14] overflow-hidden rounded-[1rem] sm:rounded-[1.5rem] bg-white cursor-pointer shadow-md hover:shadow-xl border border-slate-100 transition-all duration-500">
+    <Link href={`/shop?category=${encodeURIComponent(category.name)}`} className="group relative flex flex-col w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[9/14] overflow-hidden rounded-[1rem] sm:rounded-[1.5rem] bg-white cursor-pointer shadow-md hover:shadow-xl border border-slate-100 transition-all duration-500">
       
       {/* Top Half - Text Area */}
       <div className={`relative flex flex-col justify-between p-4 sm:p-6 lg:p-8 h-[45%] transition-colors duration-500 ${bgColor}`}>

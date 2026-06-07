@@ -229,7 +229,7 @@ export function FeaturedProductCard({ product, size = 'small', id }: FeaturedPro
       </div>
 
       {/* Absolute Link overlay so entire card is clickable */}
-      <Link href={`/shop/${product.slug}`} className="absolute inset-0 z-10">
+      <Link href={`/products/${product.slug}`} className="absolute inset-0 z-10">
         <span className="sr-only">View {product.name}</span>
       </Link>
     </div>
