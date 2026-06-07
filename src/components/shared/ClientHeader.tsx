@@ -170,7 +170,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
               onMouseEnter={() => setIsMegaMenuOpen(true)}
               onMouseLeave={() => setIsMegaMenuOpen(false)}
             >
-              <Link href="/en/shop" className={`flex items-center gap-1 text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full ${textColor} ${textHoverColor}`}>
+              <Link href="/en/shop" onClick={() => setIsMegaMenuOpen(false)} className={`flex items-center gap-1 text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full ${textColor} ${textHoverColor}`}>
                 CATEGORIES
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-70 group-hover:opacity-100 transition-opacity"><path d="m6 9 6 6 6-6"/></svg>
               </Link>
@@ -294,7 +294,8 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                   return (
                     <Link 
                       key={cat.id ? `${cat.id}-${index}` : index} 
-                      href={`/en/shop?category=${encodeURIComponent(cat.name)}`}
+                      href={`/en/shop?category=${encodeURIComponent(cat.name)}#products-grid`}
+                      onClick={() => setIsMegaMenuOpen(false)}
                       onMouseEnter={() => setActiveCategory(cat.id)}
                       className={`group/link flex items-center justify-between py-3 border-b border-gray-100 transition-colors ${isActive ? 'text-black border-black' : 'text-gray-400 hover:text-black hover:border-gray-300'}`}
                     >
@@ -341,12 +342,17 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                       className={`absolute inset-0 transition-opacity duration-300 flex flex-col ${isActive ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none z-0'}`}
                     >
                       <div className="flex justify-between items-end mb-8">
-                        <div>
-                          <h3 className="text-2xl font-light text-black mb-2">{cat.name} Collection</h3>
-                          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Featured Selections</p>
-                        </div>
                         <Link 
-                          href={`/en/shop?category=${encodeURIComponent(cat.name)}`}
+                          href={`/en/shop?category=${encodeURIComponent(cat.name)}#products-grid`}
+                          onClick={() => setIsMegaMenuOpen(false)}
+                          className="group/collection-title block"
+                        >
+                          <h3 className="text-2xl font-light text-black mb-2 group-hover/collection-title:text-gray-600 transition-colors">{cat.name} Collection</h3>
+                          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Featured Selections</p>
+                        </Link>
+                        <Link 
+                          href={`/en/shop?category=${encodeURIComponent(cat.name)}#products-grid`}
+                          onClick={() => setIsMegaMenuOpen(false)}
                           className="text-[10px] font-bold text-black uppercase tracking-[0.2em] border-b border-black pb-1 hover:text-gray-600 hover:border-gray-600 transition-colors"
                         >
                           Shop All {cat.name} &rarr;
@@ -358,7 +364,8 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                           {cat.products.slice(0, 3).map((prod: any, prodIndex: number) => (
                             <Link 
                               key={prod.id ? `${prod.id}-${prodIndex}` : prodIndex} 
-                              href={`/en/shop/products/${prod.slug}`}
+                              href={`/en/products/${prod.slug}`}
+                              onClick={() => setIsMegaMenuOpen(false)}
                               className="group/product flex flex-col cursor-pointer"
                             >
                               <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden relative mb-5 mix-blend-multiply bg-transparent transition-transform duration-700 group-hover/product:-translate-y-2">
@@ -386,7 +393,8 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                         <div className="flex-1 flex flex-col items-center justify-center bg-[#F5F5F7] border border-dashed border-gray-300">
                           <span className="text-[12px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">New formulations arriving soon</span>
                           <Link 
-                            href={`/en/shop?category=${encodeURIComponent(cat.name)}`} 
+                            href={`/en/shop?category=${encodeURIComponent(cat.name)}#products-grid`}
+                            onClick={() => setIsMegaMenuOpen(false)}
                             className="px-8 py-3 bg-black text-white text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-gray-800 transition-colors"
                           >
                             View Catalog

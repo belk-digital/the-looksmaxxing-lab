@@ -222,7 +222,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
         </div>
       </section>
 
-      <Container size="page" className="pb-12">
+      <Container size="page" className="pb-12" id="products-grid">
         {/* Top Toolbar */}
         <div className={`flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 bg-white/95 backdrop-blur-xl border border-ink/10 p-3 sm:p-4 rounded-2xl shadow-sm sticky z-30 transition-all duration-300 ${isScrollingDown ? 'top-4 sm:top-6' : 'top-[110px] sm:top-[120px]'}`}>
           {/* Top Row: Buttons */}
