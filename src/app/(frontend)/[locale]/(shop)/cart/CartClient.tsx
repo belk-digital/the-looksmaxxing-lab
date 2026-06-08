@@ -405,7 +405,7 @@ export function CartClient() {
                   }}
                 />
                 <button 
-                  onClick={activeCoupon ? handleRemoveCoupon : handleApplyCoupon}
+                  onClick={activeCoupon ? handleRemoveCoupon : () => handleApplyCoupon()}
                   disabled={(!couponCode && !activeCoupon) || couponState === 'loading'}
                   className={`absolute right-2 top-2 bottom-2 px-5 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all ${
                     activeCoupon 
