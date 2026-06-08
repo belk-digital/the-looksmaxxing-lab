@@ -61,7 +61,7 @@ export function CheckoutClient() {
       if (userAddresses && userAddresses.length > 0) {
         setAddresses(userAddresses)
         const defaultAddr = userAddresses.find((a: any) => a.isDefaultShipping) || userAddresses[0]
-        setSelectedAddressId(defaultAddr.id)
+        setSelectedAddressId(String(defaultAddr.id))
         
         setFormData(prev => ({
           ...prev,
@@ -404,13 +404,13 @@ export function CheckoutClient() {
                 {user && addresses.length > 0 && (
                   <div className="flex flex-col gap-3 mb-4">
                     {addresses.map((addr) => (
-                      <label key={addr.id} className={`flex items-start gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${selectedAddressId === addr.id ? 'border-ink bg-ink/5' : 'border-ink/10 bg-white hover:border-ink/30'}`}>
+                      <label key={addr.id} className={`flex items-start gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${selectedAddressId === String(addr.id) ? 'border-ink bg-ink/5' : 'border-ink/10 bg-white hover:border-ink/30'}`}>
                         <input 
                           type="radio" 
                           name="addressSelection" 
                           value={addr.id} 
-                          checked={selectedAddressId === addr.id}
-                          onChange={() => setSelectedAddressId(addr.id)}
+                          checked={selectedAddressId === String(addr.id)}
+                          onChange={() => setSelectedAddressId(String(addr.id))}
                           className="mt-0.5 w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0 shrink-0" 
                         />
                         <div className="flex flex-col flex-1">
