@@ -624,6 +624,10 @@ export interface Order {
    */
   subtotal?: number | null;
   discountTotal?: number | null;
+  /**
+   * Purity Points used in this order ($1 per point)
+   */
+  redeemedPoints?: number | null;
   shippingTotal?: number | null;
   taxTotal: number;
   /**
@@ -1585,6 +1589,7 @@ export interface OrdersSelect<T extends boolean = true> {
       };
   subtotal?: T;
   discountTotal?: T;
+  redeemedPoints?: T;
   shippingTotal?: T;
   taxTotal?: T;
   feeTotal?: T;

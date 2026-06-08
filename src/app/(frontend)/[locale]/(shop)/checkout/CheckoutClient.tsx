@@ -4,22 +4,30 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Check, ChevronDown, ChevronUp, Lock, Loader2, ArrowRight, ShieldCheck, Tag, ShoppingCart } from 'lucide-react'
+import { Check, ChevronDown, ChevronUp, Lock, Loader2, ArrowRight, ShieldCheck, Tag, ShoppingCart, Sparkles } from 'lucide-react'
 import { Container } from '@/components/ui/container'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useCartStore } from '@/lib/cart/store'
-import { verifyCoupon, getUserDefaultAddress } from '../actions'
+import { verifyCoupon, getUserDefaultAddress, getUserPurityPoints, getUserAddresses } from '../actions'
 import { toast } from 'sonner'
 import { useUser } from '@clerk/nextjs'
 
 export function CheckoutClient() {
-  const { items } = useCartStore()
+  const { items, couponCode: storedCouponCode, setCoupon } = useCartStore()
   const { user } = useUser()
   
   // Mobile summary toggle
-  const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false)
+  const [mobileSummaryOpen, setMobileSummaryOpen] = useState(true)
+
+  // Purity Points State
+  const [availablePoints, setAvailablePoints] = useState(0)
+  const [isRedeemingPoints, setIsRedeemingPoints] = useState(false)
+
+  // Address Selection State
+  const [addresses, setAddresses] = useState<any[]>([])
+  const [selectedAddressId, setSelectedAddressId] = useState<string | 'new'>('new')
 
   // Form State
   const [formData, setFormData] = useState({
@@ -49,20 +57,28 @@ export function CheckoutClient() {
       }))
 
       // Fetch saved address from Payload DB
-      const savedAddress = await getUserDefaultAddress()
-      if (savedAddress) {
+      const userAddresses = await getUserAddresses()
+      if (userAddresses && userAddresses.length > 0) {
+        setAddresses(userAddresses)
+        const defaultAddr = userAddresses.find((a: any) => a.isDefaultShipping) || userAddresses[0]
+        setSelectedAddressId(defaultAddr.id)
+        
         setFormData(prev => ({
           ...prev,
-          firstName: savedAddress.firstName || prev.firstName,
-          lastName: savedAddress.lastName || prev.lastName,
-          address: savedAddress.line1 || prev.address,
-          apartment: savedAddress.line2 || prev.apartment,
-          city: savedAddress.city || prev.city,
-          state: savedAddress.state || prev.state,
-          zip: savedAddress.postalCode || prev.zip,
-          phone: savedAddress.phone || prev.phone,
+          firstName: defaultAddr.firstName || prev.firstName,
+          lastName: defaultAddr.lastName || prev.lastName,
+          address: defaultAddr.line1 || prev.address,
+          apartment: defaultAddr.line2 || prev.apartment,
+          city: defaultAddr.city || prev.city,
+          state: defaultAddr.state || prev.state,
+          zip: defaultAddr.postalCode || prev.zip,
+          phone: defaultAddr.phone || prev.phone,
         }))
       }
+
+      // Fetch purity points
+      const points = await getUserPurityPoints()
+      setAvailablePoints(points)
     }
     
     prefillData()
@@ -83,7 +99,10 @@ export function CheckoutClient() {
   const discountAmount = appliedCoupon ? appliedCoupon.discount : 0
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)
   const tax = subtotalAfterDiscount * 0.08
-  const total = subtotalAfterDiscount + finalShipping + tax
+  const totalBeforePoints = subtotalAfterDiscount + finalShipping + tax
+  
+  const pointsToRedeem = isRedeemingPoints ? Math.min(availablePoints, totalBeforePoints) : 0
+  const total = totalBeforePoints - pointsToRedeem
 
   // Handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,27 +113,30 @@ export function CheckoutClient() {
     }))
   }
 
-  const handleApplyCoupon = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!couponCode.trim()) return
+  const handleApplyCoupon = async (e?: React.FormEvent, codeToApply?: string) => {
+    if (e) e.preventDefault()
+    const code = codeToApply || couponCode
+    if (!code || !code.trim()) return
 
     setIsVerifyingCoupon(true)
     try {
-      const result = await verifyCoupon(couponCode.trim(), subtotal)
+      const result = await verifyCoupon(code.trim(), subtotal, items)
       if (result.valid) {
         setAppliedCoupon({
-          code: result.code || couponCode.trim(),
+          code: result.code || code.trim(),
           discount: result.discount || 0,
           freeShipping: result.freeShipping || false,
           description: result.description || 'Coupon applied'
         })
         setCouponCode('')
-        toast.success(result.description || 'Coupon applied successfully')
+        setCoupon(result.code || code.trim())
+        if (!codeToApply) toast.success(result.description || 'Coupon applied successfully')
       } else {
-        toast.error(result.error || 'Invalid coupon code')
+        if (!codeToApply) toast.error(result.error || 'Invalid coupon code')
+        if (codeToApply) setCoupon(null)
       }
     } catch (err) {
-      toast.error('Failed to verify coupon')
+      if (!codeToApply) toast.error('Failed to verify coupon')
     } finally {
       setIsVerifyingCoupon(false)
     }
@@ -122,8 +144,15 @@ export function CheckoutClient() {
 
   const handleRemoveCoupon = () => {
     setAppliedCoupon(null)
+    setCoupon(null)
     toast.info('Coupon removed')
   }
+
+  useEffect(() => {
+    if (storedCouponCode && !appliedCoupon && !isVerifyingCoupon) {
+      handleApplyCoupon(undefined, storedCouponCode)
+    }
+  }, [storedCouponCode])
 
   if (items.length === 0) {
     return (
@@ -142,7 +171,7 @@ export function CheckoutClient() {
   }
 
   return (
-    <div className="pt-24 pb-16 md:pt-32 md:pb-24 bg-white min-h-screen">
+    <div className="pt-32 pb-16 md:pt-36 md:pb-24 bg-white min-h-screen">
       <Container size="page">
         
         {/* Mobile Summary Accordion */}
@@ -169,24 +198,144 @@ export function CheckoutClient() {
                 exit={{ height: 0, opacity: 0 }}
                 className="overflow-hidden"
               >
-                <div className="p-4 border-t border-ink/5 flex flex-col gap-4">
-                  {items.map((item) => (
-                    <div key={item.lineId} className="flex gap-4">
-                      <div className="relative w-16 h-16 bg-cream shrink-0 rounded-2xl overflow-hidden border border-ink/5">
-                        <Image src={item.product?.imageUrl || '/placeholder.png'} alt={item.product?.name || 'Product'} fill className="object-cover" />
-                        <div className="absolute -top-2 -right-2 w-5 h-5 bg-ink text-cream rounded-full flex items-center justify-center text-[10px] font-bold z-10">
-                          {item.quantity}
+                <div className="p-4 border-t border-ink/5 flex flex-col gap-6 bg-[#fafafa]/50">
+                  
+                  {/* Items */}
+                  <div className="flex flex-col gap-4 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
+                    {items.map((item) => (
+                      <div key={item.lineId} className="flex gap-4 group">
+                        <div className="relative w-16 h-16 bg-cream shrink-0 rounded-xl overflow-hidden border border-ink/5">
+                          <Image src={item.product?.imageUrl || '/placeholder.png'} alt={item.product?.name || 'Product'} fill className="object-cover" />
+                          <div className="absolute -top-2 -right-2 w-5 h-5 bg-ink text-cream rounded-full flex items-center justify-center text-[10px] font-bold z-10">
+                            {item.quantity}
+                          </div>
                         </div>
+                        <div className="flex flex-col flex-1 justify-center py-1">
+                          <span className="text-sm font-bold text-ink leading-tight">{item.product?.name}</span>
+                          <span className="text-[10px] uppercase tracking-widest text-ink/40 mt-1">{item.variantSku}</span>
+                        </div>
+                        <span className="text-sm text-ink font-bold self-center">
+                          ${(item.priceSnapshot * item.quantity).toFixed(2)}
+                        </span>
                       </div>
-                      <div className="flex flex-col flex-1 justify-center">
-                        <span className="text-sm font-bold text-ink leading-tight">{item.product?.name}</span>
-                        <span className="text-xs uppercase tracking-wider text-ink/60 mt-0.5">{item.variantSku}</span>
+                    ))}
+                  </div>
+
+                  {/* Promo Code */}
+                  <div className="flex flex-col gap-3">
+                    {appliedCoupon ? (
+                      <div className="flex items-center justify-between p-4 bg-green-50 border border-green-500/20 rounded-2xl">
+                        <div className="flex items-center gap-3">
+                          <Tag size={16} className="text-green-600" />
+                          <div className="flex flex-col">
+                            <span className="text-sm font-bold text-green-700">{appliedCoupon.code}</span>
+                            <span className="text-xs font-medium text-green-600/70">{appliedCoupon.description}</span>
+                          </div>
+                        </div>
+                        <button onClick={handleRemoveCoupon} className="text-xs font-bold text-green-700 hover:text-green-800 uppercase tracking-widest transition-colors">
+                          Remove
+                        </button>
                       </div>
-                      <span className="text-sm text-ink font-bold self-center">
-                        ${(item.priceSnapshot * item.quantity).toFixed(2)}
-                      </span>
+                    ) : (
+                      <form onSubmit={handleApplyCoupon} className="flex gap-2">
+                        <Input 
+                          value={couponCode}
+                          onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                          placeholder="Discount code or gift card" 
+                          className="flex-1 h-12 rounded-2xl border-ink/10 bg-white focus-visible:ring-ink shadow-sm" 
+                        />
+                        <Button 
+                          type="submit" 
+                          variant="dark" 
+                          disabled={!couponCode.trim() || isVerifyingCoupon}
+                          className="h-12 px-6 rounded-2xl text-xs uppercase tracking-widest disabled:opacity-100 disabled:bg-ink/5 disabled:text-ink/40 disabled:border-transparent transition-colors"
+                        >
+                          {isVerifyingCoupon ? <Loader2 size={16} className="animate-spin text-ink/40" /> : 'Apply'}
+                        </Button>
+                      </form>
+                    )}
+                  </div>
+
+                  {/* Purity Points */}
+                  {availablePoints > 0 && (
+                    <div className={`flex flex-col gap-3 p-4 rounded-2xl border transition-all ${isRedeemingPoints ? 'bg-amber-50 border-amber-200/60 shadow-inner-sm' : 'bg-white border-ink/10 shadow-sm'}`}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isRedeemingPoints ? 'bg-amber-100 text-amber-600' : 'bg-cream text-ink/40'}`}>
+                            <Sparkles size={14} />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className={`text-sm font-bold ${isRedeemingPoints ? 'text-amber-700' : 'text-ink'}`}>Purity Points</span>
+                            <span className="text-xs font-medium text-ink/50">You have {availablePoints} points</span>
+                          </div>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            className="sr-only peer"
+                            checked={isRedeemingPoints}
+                            onChange={() => setIsRedeemingPoints(!isRedeemingPoints)}
+                          />
+                          <div className="w-11 h-6 bg-ink/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                        </label>
+                      </div>
                     </div>
-                  ))}
+                  )}
+
+                  <div className="w-full h-px bg-ink/5" />
+
+                  {/* Totals */}
+                  <div className="flex flex-col gap-3">
+                    <div className="flex justify-between items-center text-sm font-medium text-ink/70">
+                      <span>Subtotal</span>
+                      <span className="text-ink font-bold">${subtotal.toFixed(2)}</span>
+                    </div>
+                    
+                    <AnimatePresence>
+                      {appliedCoupon && (
+                        <motion.div 
+                          initial={{ height: 0, opacity: 0 }} 
+                          animate={{ height: 'auto', opacity: 1 }} 
+                          exit={{ height: 0, opacity: 0 }}
+                          className="flex justify-between items-center text-sm font-medium text-green-600 overflow-hidden"
+                        >
+                          <span className="py-1">Discount ({appliedCoupon.code})</span>
+                          <span className="py-1 font-bold">-${appliedCoupon.discount.toFixed(2)}</span>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <AnimatePresence>
+                      {isRedeemingPoints && pointsToRedeem > 0 && (
+                        <motion.div 
+                          initial={{ height: 0, opacity: 0 }} 
+                          animate={{ height: 'auto', opacity: 1 }} 
+                          exit={{ height: 0, opacity: 0 }}
+                          className="flex justify-between items-center text-sm font-medium text-amber-600 overflow-hidden"
+                        >
+                          <span className="py-1 flex items-center gap-1.5"><Sparkles size={14} /> Points Applied</span>
+                          <span className="py-1 font-bold">-${pointsToRedeem.toFixed(2)}</span>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <div className="flex justify-between items-center text-sm font-medium text-ink/70">
+                      <span>Shipping</span>
+                      <span className="text-ink font-bold">{finalShipping === 0 ? 'Free' : `$${finalShipping.toFixed(2)}`}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm font-medium text-ink/70">
+                      <span>Estimated Tax</span>
+                      <span className="text-ink font-bold">${tax.toFixed(2)}</span>
+                    </div>
+                  </div>
+
+                  <div className="w-full h-px bg-ink/5" />
+
+                  <div className="flex justify-between items-end mb-2">
+                    <span className="text-base font-bold text-ink">Total</span>
+                    <span className="text-2xl font-display font-bold text-ink tracking-tight">${total.toFixed(2)}</span>
+                  </div>
+
                 </div>
               </motion.div>
             )}
@@ -199,13 +348,13 @@ export function CheckoutClient() {
           <div className="flex flex-col gap-10">
             
             {/* Express Checkout */}
-            <div className="flex flex-col gap-4 p-8 bg-white rounded-3xl border border-ink/10 shadow-sm items-center">
-              <span className="text-xs font-bold uppercase tracking-widest text-ink/40">Express Checkout</span>
-              <div className="flex w-full gap-3">
-                <Button variant="dark" className="flex-1 h-12 rounded-full bg-[#000] text-white hover:bg-black/80 transition-colors shadow-sm">
+            <div className="flex flex-col gap-4 p-6 sm:p-8 bg-white rounded-3xl border border-ink/10 shadow-sm items-center">
+              <span className="text-xs font-bold uppercase tracking-widest text-ink/40 text-center">Express Checkout</span>
+              <div className="flex flex-col sm:flex-row w-full gap-3">
+                <Button variant="dark" className="flex-1 h-12 rounded-full bg-[#000] text-white hover:bg-black/80 transition-colors shadow-sm whitespace-nowrap">
                   Apple Pay
                 </Button>
-                <Button variant="outline" className="flex-1 h-12 rounded-full bg-white text-ink border-ink/20 hover:border-ink/40 transition-colors shadow-sm">
+                <Button variant="outline" className="flex-1 h-12 rounded-full bg-white text-ink border-ink/20 hover:border-ink/40 transition-colors shadow-sm whitespace-nowrap">
                   Google Pay
                 </Button>
               </div>
@@ -219,6 +368,8 @@ export function CheckoutClient() {
 
             {/* Continuous Form */}
             <form className="flex flex-col gap-10" onSubmit={(e) => e.preventDefault()}>
+              <input type="hidden" name="redeemPoints" value={isRedeemingPoints ? 'true' : 'false'} />
+              <input type="hidden" name="couponCode" value={appliedCoupon?.code || ''} />
               
               {/* Contact */}
               <section className="flex flex-col gap-4">
@@ -249,18 +400,71 @@ export function CheckoutClient() {
               {/* Delivery */}
               <section className="flex flex-col gap-4">
                 <h2 className="text-xl font-display font-bold text-ink mb-2">Delivery Address</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  <Input name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="First Name" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required />
-                  <Input name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Last Name" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required />
-                </div>
-                <Input name="address" value={formData.address} onChange={handleInputChange} placeholder="Address" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required />
-                <Input name="apartment" value={formData.apartment} onChange={handleInputChange} placeholder="Apartment, suite, etc. (optional)" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" />
-                <div className="grid grid-cols-6 gap-4">
-                  <Input name="city" value={formData.city} onChange={handleInputChange} placeholder="City" className="col-span-3 sm:col-span-2 h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required />
-                  <Input name="state" value={formData.state} onChange={handleInputChange} placeholder="State" className="col-span-3 sm:col-span-2 h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required />
-                  <Input name="zip" value={formData.zip} onChange={handleInputChange} placeholder="ZIP Code" className="col-span-6 sm:col-span-2 h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required />
-                </div>
-                <Input name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone (for delivery updates)" type="tel" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required />
+                
+                {user && addresses.length > 0 && (
+                  <div className="flex flex-col gap-3 mb-4">
+                    {addresses.map((addr) => (
+                      <label key={addr.id} className={`flex items-start gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${selectedAddressId === addr.id ? 'border-ink bg-ink/5' : 'border-ink/10 bg-white hover:border-ink/30'}`}>
+                        <input 
+                          type="radio" 
+                          name="addressSelection" 
+                          value={addr.id} 
+                          checked={selectedAddressId === addr.id}
+                          onChange={() => setSelectedAddressId(addr.id)}
+                          className="mt-0.5 w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0 shrink-0" 
+                        />
+                        <div className="flex flex-col flex-1">
+                          <div className="flex items-start justify-between w-full">
+                            <span className="text-sm font-bold text-ink leading-tight">
+                              {addr.firstName} {addr.lastName}
+                            </span>
+                            {addr.isDefaultShipping && (
+                              <span className="text-[10px] font-bold uppercase tracking-widest text-ink/60 bg-white border border-ink/10 shadow-sm px-2 py-0.5 rounded-md shrink-0">
+                                Default
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-xs text-ink/70 mt-1.5">{addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}</span>
+                          <span className="text-xs text-ink/70 mt-0.5">{addr.city}, {addr.state} {addr.postalCode}</span>
+                        </div>
+                      </label>
+                    ))}
+
+                    <label className={`flex items-center gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${selectedAddressId === 'new' ? 'border-ink bg-ink/5' : 'border-ink/10 bg-white hover:border-ink/30'}`}>
+                      <input 
+                        type="radio" 
+                        name="addressSelection" 
+                        value="new" 
+                        checked={selectedAddressId === 'new'}
+                        onChange={() => {
+                          setSelectedAddressId('new')
+                          setFormData(prev => ({ ...prev, address: '', apartment: '', city: '', state: '', zip: '', phone: '' }))
+                        }}
+                        className="w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0" 
+                      />
+                      <span className="text-sm font-bold text-ink">+ Add New Address</span>
+                    </label>
+                  </div>
+                )}
+
+                <input type="hidden" name="addressId" value={selectedAddressId} />
+
+                {(!user || selectedAddressId === 'new') && (
+                  <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="grid grid-cols-2 gap-4">
+                      <Input name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="First Name" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                      <Input name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Last Name" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                    </div>
+                    <Input name="address" value={formData.address} onChange={handleInputChange} placeholder="Address" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                    <Input name="apartment" value={formData.apartment} onChange={handleInputChange} placeholder="Apartment, suite, etc. (optional)" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" />
+                    <div className="grid grid-cols-6 gap-4">
+                      <Input name="city" value={formData.city} onChange={handleInputChange} placeholder="City" className="col-span-3 sm:col-span-2 h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                      <Input name="state" value={formData.state} onChange={handleInputChange} placeholder="State" className="col-span-3 sm:col-span-2 h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                      <Input name="zip" value={formData.zip} onChange={handleInputChange} placeholder="ZIP Code" className="col-span-6 sm:col-span-2 h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                    </div>
+                    <Input name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone (for delivery updates)" type="tel" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                  </div>
+                )}
               </section>
 
               {/* Shipping Method */}
@@ -275,7 +479,7 @@ export function CheckoutClient() {
                         value="standard" 
                         checked={shippingMethod === 'standard'} 
                         onChange={() => setShippingMethod('standard')}
-                        className="w-4 h-4 text-ink border-ink/20 focus:ring-ink focus:ring-offset-0" 
+                        className="w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0" 
                       />
                       <div className="flex flex-col">
                         <span className="text-sm font-bold text-ink">Standard Secured Shipping</span>
@@ -293,7 +497,7 @@ export function CheckoutClient() {
                         value="express" 
                         checked={shippingMethod === 'express'} 
                         onChange={() => setShippingMethod('express')}
-                        className="w-4 h-4 text-ink border-ink/20 focus:ring-ink focus:ring-offset-0" 
+                        className="w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0" 
                       />
                       <div className="flex flex-col">
                         <span className="text-sm font-bold text-ink">Priority Overnight</span>
@@ -389,6 +593,32 @@ export function CheckoutClient() {
                 )}
               </div>
 
+              {/* Purity Points */}
+              {availablePoints > 0 && (
+                <div className={`flex flex-col gap-3 p-5 rounded-2xl border transition-all ${isRedeemingPoints ? 'bg-amber-50 border-amber-200/60 shadow-inner-sm' : 'bg-white border-ink/10 shadow-sm'}`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isRedeemingPoints ? 'bg-amber-100 text-amber-600' : 'bg-cream text-ink/40'}`}>
+                        <Sparkles size={18} />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className={`text-sm font-bold ${isRedeemingPoints ? 'text-amber-700' : 'text-ink'}`}>Purity Points</span>
+                        <span className="text-xs font-medium text-ink/50">You have {availablePoints} points (${availablePoints}.00)</span>
+                      </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer"
+                        checked={isRedeemingPoints}
+                        onChange={() => setIsRedeemingPoints(!isRedeemingPoints)}
+                      />
+                      <div className="w-11 h-6 bg-ink/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                    </label>
+                  </div>
+                </div>
+              )}
+
               <div className="w-full h-px bg-ink/5" />
 
               {/* Totals */}
@@ -408,6 +638,20 @@ export function CheckoutClient() {
                     >
                       <span className="py-1">Discount ({appliedCoupon.code})</span>
                       <span className="py-1 font-bold">-${appliedCoupon.discount.toFixed(2)}</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <AnimatePresence>
+                  {isRedeemingPoints && pointsToRedeem > 0 && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }} 
+                      animate={{ height: 'auto', opacity: 1 }} 
+                      exit={{ height: 0, opacity: 0 }}
+                      className="flex justify-between items-center text-sm font-medium text-amber-600 overflow-hidden"
+                    >
+                      <span className="py-1 flex items-center gap-1.5"><Sparkles size={14} /> Points Applied</span>
+                      <span className="py-1 font-bold">-${pointsToRedeem.toFixed(2)}</span>
                     </motion.div>
                   )}
                 </AnimatePresence>

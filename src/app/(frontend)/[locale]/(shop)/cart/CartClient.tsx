@@ -19,7 +19,7 @@ const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
 
 
 export function CartClient() {
-  const { items, removeItem, updateQuantity } = useCartStore()
+  const { items, removeItem, updateQuantity, couponCode: storedCouponCode, setCoupon } = useCartStore()
 
   // Dynamic Data States
   const [shippingCost, setShippingCost] = useState<number | null>(null)
@@ -143,18 +143,19 @@ export function CartClient() {
   }, [subtotal])
 
   // Handle Coupon Application
-  const handleApplyCoupon = async () => {
-    if (!couponCode) return
+  const handleApplyCoupon = async (codeToApply?: string) => {
+    const code = typeof codeToApply === 'string' ? codeToApply : couponCode;
+    if (!code) return
     
     setCouponState('loading')
     setCouponMessage('')
     
     try {
       // Use 'like' for case-insensitive partial match from payload, then strict exact match on the client
-      const res = await fetch(`/api/coupons?where[code][like]=${couponCode.trim()}`)
+      const res = await fetch(`/api/coupons?where[code][like]=${code.trim()}`)
       const data = await res.json()
       
-      const coupon = data?.docs?.find((c: any) => c.code.toLowerCase() === couponCode.trim().toLowerCase())
+      const coupon = data?.docs?.find((c: any) => c.code.toLowerCase() === code.trim().toLowerCase())
       
       if (coupon) {
         
@@ -182,6 +183,7 @@ export function CartClient() {
         setActiveCoupon(coupon)
         setCouponState('success')
         setCouponMessage('Coupon applied successfully!')
+        setCoupon(coupon.code)
       } else {
         setCouponState('error')
         setCouponMessage('Invalid coupon code.')
@@ -197,7 +199,16 @@ export function CartClient() {
     setCouponCode('')
     setCouponState('idle')
     setCouponMessage('')
+    setCoupon(null)
   }
+
+  // Pre-fill stored coupon
+  useEffect(() => {
+    if (storedCouponCode && !activeCoupon && couponState === 'idle') {
+      setCouponCode(storedCouponCode)
+      handleApplyCoupon(storedCouponCode)
+    }
+  }, [storedCouponCode])
 
   // Calculate Discounts
   let discountAmount = 0

@@ -235,7 +235,7 @@ async function calculateCartTotals(cartItems: any[], payload: any, coupon?: any)
   return { discount, description, eligibleSubtotal, totalSubtotal, freeShipping };
 }
 
-export async function verifyCoupon(couponCode: string, subtotal: number) {
+export async function verifyCoupon(couponCode: string, subtotal: number, clientCartItems?: any[]) {
   try {
     const user = await getPayloadUser()
 
@@ -266,7 +266,12 @@ export async function verifyCoupon(couponCode: string, subtotal: number) {
 
     // Verify actual items
     let cartItems: any[] = []
-    if (user) {
+    if (clientCartItems && clientCartItems.length > 0) {
+      cartItems = clientCartItems.map((item: any) => ({
+        product: item.productId || item.product?.id || item.product,
+        quantity: item.quantity || 1
+      }))
+    } else if (user) {
       const carts = await payload.find({
         collection: 'carts',
         where: { user: { equals: user.id } },
@@ -353,41 +358,91 @@ export async function processCheckout(formData: FormData) {
     const firstName = formData.get('firstName') as string
     const lastName = formData.get('lastName') as string
     const phone = formData.get('phone') as string
-    const addressLine1 = formData.get('line1') as string
+    const addressLine1 = formData.get('address') as string
+    const apartment = formData.get('apartment') as string
     const city = formData.get('city') as string
     const state = formData.get('state') as string
-    const postalCode = formData.get('postalCode') as string
-    const country = formData.get('country') as string
+    const postalCode = formData.get('zip') as string
+    const country = formData.get('country') as string || 'US'
+    const addressIdFromForm = formData.get('addressId') as string
     
     const couponCode = formData.get('couponCode') as string
     const paymentMethod = formData.get('paymentMethod') as string
+    const redeemPoints = formData.get('redeemPoints') === 'true'
 
-    // Auto-save address and phone to user profile (ONLY if logged in)
+    // Fetch user purity points securely
+    let userPurityPoints = 0
     if (user) {
-      let addressId = typeof user.defaultShippingAddress === 'object' ? user.defaultShippingAddress?.id : user.defaultShippingAddress;
-      
-      if (addressId) {
-        await payload.update({
+      const payloadUser = await payload.findByID({ collection: 'users', id: user.id as any })
+      if (payloadUser && typeof payloadUser.purityPoints === 'number') {
+        userPurityPoints = payloadUser.purityPoints
+      }
+    }
+
+    let finalAddress = {
+      line1: addressLine1,
+      line2: apartment,
+      city,
+      state,
+      postalCode,
+      country
+    }
+    let finalFirstName = firstName
+    let finalLastName = lastName
+    let finalPhone = phone
+
+    // Address handling logic
+    if (user) {
+      if (addressIdFromForm && addressIdFromForm !== 'new') {
+        const existingAddress = await payload.findByID({
           collection: 'addresses',
-          id: addressId as any,
-          data: { firstName, lastName, line1: addressLine1, city, state, postalCode, country, phone },
+          id: addressIdFromForm as any,
           overrideAccess: true,
         })
-      } else {
+        if (existingAddress) {
+          finalAddress = {
+            line1: existingAddress.line1,
+            line2: existingAddress.line2 || '',
+            city: existingAddress.city,
+            state: existingAddress.state,
+            postalCode: existingAddress.postalCode,
+            country: existingAddress.country || 'US'
+          }
+          finalFirstName = existingAddress.firstName
+          finalLastName = existingAddress.lastName
+          finalPhone = existingAddress.phone
+        }
+      } else if (addressLine1 && city && state && postalCode) {
+        // Create new address
+        const hasDefault = !!user.defaultShippingAddress
         const newAddress = await payload.create({
           collection: 'addresses',
-          data: { user: user.id, label: 'Default Shipping', firstName: firstName || 'Customer', lastName: lastName || 'User', line1: addressLine1, city, state, postalCode, country, phone, isDefaultShipping: true },
+          data: { 
+            user: user.id, 
+            label: 'Saved Address', 
+            firstName: firstName || 'Customer', 
+            lastName: lastName || 'User', 
+            line1: addressLine1, 
+            line2: apartment || '',
+            city, 
+            state, 
+            postalCode, 
+            country: country || 'US', 
+            phone, 
+            isDefaultShipping: !hasDefault 
+          },
           overrideAccess: true,
         })
-        addressId = newAddress.id
-      }
 
-      await payload.update({
-        collection: 'users',
-        id: user.id,
-        data: { firstName, lastName, phone, defaultShippingAddress: addressId as any },
-        overrideAccess: true,
-      })
+        if (!hasDefault) {
+          await payload.update({
+            collection: 'users',
+            id: user.id,
+            data: { defaultShippingAddress: newAddress.id as any },
+            overrideAccess: true,
+          })
+        }
+      }
     }
 
     let validCoupon = null
@@ -459,7 +514,14 @@ export async function processCheckout(formData: FormData) {
     }
 
     const taxTotal = 0
-    const total = Math.max(0, subtotal - discountTotal) + shippingTotal + taxTotal + feeTotal
+    const totalBeforePoints = Math.max(0, subtotal - discountTotal) + shippingTotal + taxTotal + feeTotal
+
+    let pointsToRedeem = 0
+    if (redeemPoints && userPurityPoints > 0) {
+      pointsToRedeem = Math.min(userPurityPoints, totalBeforePoints)
+    }
+
+    const total = totalBeforePoints - pointsToRedeem
 
     // Create Order
     const order = await payload.create({
@@ -467,14 +529,15 @@ export async function processCheckout(formData: FormData) {
       data: {
         owner: user ? user.id : null,
         guestEmail: user ? user.email : guestEmail,
-        customerFirstName: firstName,
-        customerLastName: lastName,
-        customerPhone: phone,
+        customerFirstName: finalFirstName,
+        customerLastName: finalLastName,
+        customerPhone: finalPhone,
         status: 'pending',
         paymentStatus: paymentMethod === 'online' ? 'captured' : 'unpaid',
         fulfillmentStatus: 'unfulfilled',
         subtotal,
         discountTotal,
+        redeemedPoints: pointsToRedeem,
         shippingTotal,
         taxTotal,
         feeTotal,
@@ -486,13 +549,7 @@ export async function processCheckout(formData: FormData) {
           product: typeof item.product === 'object' ? item.product.id : item.product,
           quantity: item.quantity
         })) as any,
-        shippingAddress: {
-          line1: addressLine1,
-          city,
-          state,
-          postalCode,
-          country
-        }
+        shippingAddress: finalAddress
       },
       overrideAccess: true,
     })
@@ -503,6 +560,16 @@ export async function processCheckout(formData: FormData) {
         collection: 'carts',
         id: cartId,
         data: { items: [] },
+        overrideAccess: true,
+      })
+    }
+
+    // Deduct redeemed points
+    if (pointsToRedeem > 0 && user) {
+      await payload.update({
+        collection: 'users',
+        id: user.id,
+        data: { purityPoints: userPurityPoints - pointsToRedeem },
         overrideAccess: true,
       })
     }
@@ -723,5 +790,41 @@ export async function getUserDefaultAddress() {
     return anyAddress.docs.length > 0 ? anyAddress.docs[0] : null
   } catch (err) {
     return null
+  }
+}
+
+export async function getUserPurityPoints() {
+  try {
+    const user = await getPayloadUser()
+    if (!user) return 0
+
+    const payload = await getPayload({ config: configPromise })
+    const payloadUser = await payload.findByID({
+      collection: 'users',
+      id: user.id as any,
+    })
+
+    return typeof payloadUser?.purityPoints === 'number' ? payloadUser.purityPoints : 0
+  } catch (err) {
+    return 0
+  }
+}
+
+export async function getUserAddresses() {
+  try {
+    const user = await getPayloadUser()
+    if (!user) return []
+
+    const payload = await getPayload({ config: configPromise })
+    const addresses = await payload.find({
+      collection: 'addresses',
+      where: { user: { equals: user.id } },
+      limit: 50,
+      overrideAccess: true,
+    })
+
+    return addresses.docs || []
+  } catch (err) {
+    return []
   }
 }
