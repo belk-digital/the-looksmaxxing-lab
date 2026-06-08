@@ -135,7 +135,7 @@ export default function AboutPage() {
                  src="/hero-image.png" 
                  alt="Laboratory environment" 
                  fill 
-                 className="object-cover object-center"
+                 className="object-cover object-[75%_center] md:object-center"
                  priority
                />
                <div className="absolute inset-0 bg-[#5984c4]/20 group-hover:bg-[#5984c4]/10 transition-colors duration-700" />

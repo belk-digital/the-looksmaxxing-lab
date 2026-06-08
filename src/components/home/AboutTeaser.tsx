@@ -36,17 +36,17 @@ export function AboutTeaser() {
           className="absolute inset-[-20%] w-[140%] h-[140%] z-0"
         >
           <Image 
-            src="/temp-products/about-lifestyle.png"
+            src="/Featured Images/IMG_5955.webp"
             alt="US-based peptide synthesis facility — ISO-certified laboratory where Looksmaxxing Lab compounds are produced"
             fill
             className="object-cover opacity-100"
           />
           {/* Light color overlay to soften the image */}
-          <div className="absolute inset-0 bg-white/40" />
+          <div className="absolute inset-0 bg-white/10" />
           {/* Sky blue color tint overlay */}
           <div className="absolute inset-0 bg-[#5984c4]/20 mix-blend-color" />
           {/* Vignette & Gradient for readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-white/20 to-transparent" />
         </motion.div>
 
         {/* 4. Extreme Foreground Blur Layer (Left Side, huge scale, blurred, placed BEHIND text for depth) */}

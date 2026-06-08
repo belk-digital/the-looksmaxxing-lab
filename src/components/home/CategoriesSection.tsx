@@ -20,15 +20,15 @@ const CATEGORIES = [
 ]
 
 // Re-using the premium generated images as placeholders
-const TEMP_IMAGES = [
-  '/temp-products/bpc-157.png',
-  '/temp-products/tb-500.png',
-  '/temp-products/ghk-cu.png',
-  '/temp-products/semaglutide.png',
-  '/temp-products/growth-factor.png',
-  '/temp-products/metabolic.png',
-  '/temp-products/receptor.png',
-  '/temp-products/essentials.png'
+const CATEGORY_IMAGES = [
+  '/Featured Images/0FAD42EB-B955-47D5-8497-45F868AB6702.webp',
+  '/Featured Images/2501F9A4-48CF-4B3B-8559-CD53440A0146.webp',
+  '/Featured Images/26B39D3E-AC5B-4260-803E-160D4181C8B5.webp',
+  '/Featured Images/2792BBC4-6875-4F9D-93AD-1E2E47252B36.webp',
+  '/Featured Images/876174E8-B594-4346-91A7-CC2D85E102A5.webp',
+  '/Featured Images/87F4AFA0-80AF-4EA5-B549-668F05102F65.webp',
+  '/Featured Images/88CF4102-CC8B-4D68-9F62-4A367C8C4EFA.webp',
+  '/Featured Images/A1D17400-50FC-42E0-A2D1-18D379B97E04.webp'
 ]
 
 const CARD_COLORS = [
@@ -43,7 +43,7 @@ const CARD_COLORS = [
 ]
 
 function CategoryCard({ category, index }: { category: typeof CATEGORIES[0], index: number }) {
-  const imageSrc = TEMP_IMAGES[index % TEMP_IMAGES.length]
+  const imageSrc = CATEGORY_IMAGES[index % CATEGORY_IMAGES.length]
   const num = parseInt(category.number, 10)
   const bgColor = CARD_COLORS[index % CARD_COLORS.length]
 

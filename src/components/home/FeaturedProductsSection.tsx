@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { HomeFeaturedProductCard, Product } from '@/components/home/HomeFeaturedProductCard'
+import { PrimaryProductCard, Product } from '@/components/shop/PrimaryProductCard'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { Container } from '@/components/ui/container'
 import { Space_Grotesk } from 'next/font/google'
@@ -11,44 +11,10 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
-const SAMPLE_PRODUCTS: Product[] = [
-  {
-    name: 'BPC-157 Blend',
-    slug: 'bpc-157-blend',
-    image: '/temp-homepage/hero-vial-image.webp',
-    shortDescription: 'The ultimate recovery protocol. Enhanced tissue repair and joint support formulated for maximum bioavailability.',
-    priceRange: '$120 - $300',
-    category: '5MG'
-  },
-  {
-    name: 'TB-500',
-    slug: 'tb-500',
-    image: '/temp-homepage/hero-vial-image.webp',
-    shortDescription: 'Systemic healing and inflammation modulation. Frequently stacked with BPC-157 for synergistic effects.',
-    priceRange: '$140 - $350',
-    category: '5MG'
-  },
-  {
-    name: 'GHK-Cu',
-    slug: 'ghk-cu',
-    image: '/temp-homepage/hero-vial-image.webp',
-    shortDescription: 'Advanced cellular health and collagen synthesis. A foundational peptide for longevity protocols.',
-    priceRange: '$85 - $200',
-    category: '50MG'
-  },
-  {
-    name: 'Semaglutide',
-    slug: 'semaglutide',
-    image: '/temp-homepage/hero-vial-image.webp',
-    shortDescription: 'GLP-1 receptor agonist for optimized metabolic function and lean mass preservation.',
-    priceRange: '$200 - $500',
-    category: '5MG'
-  }
-]
+export function FeaturedProductsSection({ products = [] }: { products?: Product[] }) {
+  // Use provided products or fallback to empty array
+  const CAROUSEL_PRODUCTS = products.length > 0 ? products : []
 
-const CAROUSEL_PRODUCTS = [...SAMPLE_PRODUCTS, ...SAMPLE_PRODUCTS]
-
-export function FeaturedProductsSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ 
     align: 'start',
     loop: false,
@@ -82,6 +48,8 @@ export function FeaturedProductsSection() {
     emblaApi.on('reInit', onSelect)
     emblaApi.on('select', onSelect)
   }, [emblaApi, onInit, onSelect])
+
+  if (CAROUSEL_PRODUCTS.length === 0) return null;
 
   return (
     <section className="w-full bg-white relative z-20 py-24 sm:py-32">
@@ -118,8 +86,8 @@ export function FeaturedProductsSection() {
             <div className="overflow-hidden" ref={emblaRef}>
               <div className="flex -ml-4 sm:-ml-8">
                 {CAROUSEL_PRODUCTS.map((product, index) => (
-                  <div key={index} className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_25%] pl-4 sm:pl-8">
-                    <HomeFeaturedProductCard product={product} index={index} />
+                  <div key={index} className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_25%] pl-4 sm:pl-8 p-4">
+                    <PrimaryProductCard product={product} />
                   </div>
                 ))}
               </div>
