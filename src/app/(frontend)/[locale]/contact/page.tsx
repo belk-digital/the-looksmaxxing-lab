@@ -19,7 +19,6 @@ import { FaqCarousel } from '@/components/shared/FaqCarousel'
 const CONTACT_FAQS = [
   { question: 'When will my order ship?', answer: 'Orders placed before 2:00 PM EST Monday through Friday are shipped the same day. Orders placed after the cutoff or on weekends will ship the following business day.' },
   { question: 'Where is my tracking number?', answer: 'Tracking numbers are automatically emailed as soon as your shipping label is created. You can also view your tracking status by logging into your account dashboard.' },
-  { question: 'What is your return policy?', answer: 'Due to the strict quality control guidelines required for our research materials, we cannot accept returns on any open or reconstituted products. This ensures the integrity of every compound we distribute.' },
   { question: 'My package was damaged in transit, what do I do?', answer: 'If your vials arrive compromised, please use the contact form above to reach out within 48 hours of delivery. Include your order number and we will request photos of the damaged items to expedite a replacement.' },
   { question: 'How can I get a copy of my batch COA?', answer: 'Certificates of Analysis (COAs) are included with every shipment and are also available digitally. You can download past COAs directly from your Order History in your account dashboard, or request them via the Quality & COAs contact email.' },
   { question: 'Do you offer wholesale pricing for laboratories?', answer: 'Yes, we offer special pricing tiers for bulk acquisition by licensed laboratories and academic institutions. Please select "Wholesale" in the contact form department dropdown or email wholesale@looksmaxxinglab.com directly.' },
@@ -197,7 +196,7 @@ export default function ContactPage() {
           faqs={CONTACT_FAQS} 
           title="Quick" 
           accentTitle="Answers" 
-          description="Find answers to common questions about orders, shipping, and returns." 
+          description="Find answers to common questions about orders, shipping, and quality control." 
         />
       </div>
     </main>

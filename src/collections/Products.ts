@@ -157,21 +157,19 @@ export const Products: CollectionConfig = {
       ],
       // hide when hasVariants is false – handled in admin UI via custom component if needed
     },
+
     {
-      name: 'isBundle',
-      type: 'checkbox',
-      defaultValue: false,
-      admin: { position: 'sidebar', description: 'Enable to sell multiple products together as a kit.' },
-    },
-    {
-      name: 'bundleItems',
+      name: 'bulkBundles',
       type: 'array',
       admin: {
-        condition: (data) => data.isBundle === true,
+        description: 'Offer multi-kit bulk bundles of THIS product (e.g., 5 Kits, 10 Kits) directly on the product page.',
       },
       fields: [
-        { name: 'product', type: 'relationship', relationTo: 'products', required: true },
-        { name: 'quantity', type: 'number', required: true, min: 1, defaultValue: 1 },
+        { name: 'name', type: 'text', required: true, admin: { description: 'e.g. 5 Kits' } },
+        { name: 'quantity', type: 'number', required: true, min: 2, admin: { description: 'Number of items in this bundle' } },
+        { name: 'price', type: 'number', required: true, min: 0 },
+        { name: 'salePrice', type: 'number', min: 0 },
+        { name: 'image', type: 'upload', relationTo: 'media', admin: { description: 'Optional image for this specific bundle.' } },
       ],
     },
     {

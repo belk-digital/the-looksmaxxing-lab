@@ -22,21 +22,6 @@ body {
     animation-play-state: paused;
   }
 
-  @keyframes shimmer {
-    0%   { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-
-  .skeleton {
-    background: linear-gradient(
-      90deg,
-      rgba(236, 229, 216, 0) 0%,
-      rgba(229, 216, 184, 0.5) 50%,
-      rgba(236, 229, 216, 0) 100%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.5s ease-in-out infinite;
-  }
   /* Hide scrollbar */
   .hide-scrollbar::-webkit-scrollbar {
     display: none;

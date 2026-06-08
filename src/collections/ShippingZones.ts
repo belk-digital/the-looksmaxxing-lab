@@ -7,8 +7,7 @@ export const ShippingZones: CollectionConfig = {
     description: 'Geographic shipping zones with sample shipping methods.',
   },
   access: {
-    // Only admins can manage shipping zones
-    read: ({ req }) => req.user?.role === 'admin',
+    read: () => true,
     create: ({ req }) => req.user?.role === 'admin',
     update: ({ req }) => req.user?.role === 'admin',
     delete: ({ req }) => req.user?.role === 'admin',

@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { Container } from '@/components/ui/container'
 import { FilterSidebar } from '@/components/shop/FilterSidebar'
-import { FeaturedProductCard, Product } from '@/components/shop/FeaturedProductCard'
+import { PrimaryProductCard, Product } from '@/components/shop/PrimaryProductCard'
 import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
 import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import { X, ChevronRight, Filter, Search } from 'lucide-react'
@@ -308,7 +308,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
                   viewport={{ once: true, margin: '0px 0px -50px 0px' }}
                   transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: (index % 12) * 0.05 }}
                 >
-                  <FeaturedProductCard product={product} />
+                  <PrimaryProductCard product={product} />
                 </motion.div>
               ))}
             </div>

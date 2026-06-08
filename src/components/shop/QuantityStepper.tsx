@@ -33,27 +33,27 @@ export function QuantityStepper({
   }
 
   return (
-    <div className={cn("inline-flex items-center gap-3", className)}>
+    <div className={cn("inline-flex items-center justify-between border border-ink/10 rounded-full bg-white h-12 px-1 w-[120px] shadow-sm transition-all hover:border-ink/20", className)}>
       <button 
         onClick={handleDecrement}
         disabled={value <= min}
-        className="w-8 h-8 flex items-center justify-center bg-ink text-white rounded-sm hover:bg-ink/80 transition-colors disabled:opacity-40"
+        className="w-10 h-10 flex items-center justify-center text-ink/60 hover:text-ink hover:bg-ink/5 rounded-full transition-colors disabled:opacity-30 flex-shrink-0"
         aria-label="Decrease quantity"
       >
-        <Minus size={14} strokeWidth={2} />
+        <Minus size={16} strokeWidth={2} />
       </button>
       
-      <div className="w-4 flex items-center justify-center font-medium text-body-md select-none text-ink">
+      <div className="flex-1 flex items-center justify-center font-bold text-base select-none text-ink">
         {value}
       </div>
       
       <button 
         onClick={handleIncrement}
         disabled={value >= max}
-        className="w-8 h-8 flex items-center justify-center bg-ink text-white rounded-sm hover:bg-ink/80 transition-colors disabled:opacity-40"
+        className="w-10 h-10 flex items-center justify-center text-ink/60 hover:text-ink hover:bg-ink/5 rounded-full transition-colors disabled:opacity-30 flex-shrink-0"
         aria-label="Increase quantity"
       >
-        <Plus size={14} strokeWidth={2} />
+        <Plus size={16} strokeWidth={2} />
       </button>
     </div>
   )

@@ -36,11 +36,6 @@ export default async function ProductsPage() {
                       {product.name}
                     </Link>
                   </h3>
-                  {product.isBundle && (
-                    <span className="inline-flex items-center rounded-md bg-indigo-400/10 px-2 py-1 text-xs font-medium text-indigo-400 ring-1 ring-inset ring-indigo-400/30 mt-1">
-                      Bundle Kit
-                    </span>
-                  )}
                 </div>
                 <p className="text-sm font-bold text-white">
                   ${((product.salePrice || product.price) / 100).toFixed(2)}

@@ -249,6 +249,8 @@ export async function verifyCoupon(couponCode: string, subtotal: number) {
       overrideAccess: true,
     })
 
+
+
     const coupon = coupons.docs[0]
     if (!coupon) return { valid: false, error: 'Coupon code not found' }
 
@@ -616,9 +618,15 @@ export async function getShopProducts(params: {
 
     const uiProducts = results.docs.map(doc => {
       let imageUrl = '/temp-products/product-image.png'
-      if (doc.images && doc.images.length > 0 && typeof doc.images[0].image === 'object' && doc.images[0].image !== null) {
-        const imageDoc = doc.images[0].image as any
-        imageUrl = imageDoc.url || imageUrl
+      let hoverImageUrl: string | undefined = undefined
+
+      if (doc.images && doc.images.length > 0) {
+        if (typeof doc.images[0].image === 'object' && doc.images[0].image !== null) {
+          imageUrl = (doc.images[0].image as any).url || imageUrl
+        }
+        if (doc.images.length > 1 && typeof doc.images[1].image === 'object' && doc.images[1].image !== null) {
+          hoverImageUrl = (doc.images[1].image as any).url
+        }
       }
 
       let categoryName = 'Research'
@@ -626,20 +634,48 @@ export async function getShopProducts(params: {
         categoryName = (doc.categories[0] as any).name || categoryName
       }
 
+
+      let displayPrice = typeof doc.price === 'number' ? doc.price : 0
+      let displaySalePrice = typeof doc.salePrice === 'number' && doc.salePrice > 0 ? doc.salePrice : undefined
+      let isFrom = false
+
+      if (doc.hasVariants && doc.variants && doc.variants.length > 0) {
+        const prices = doc.variants.map((v: any) => typeof v.salePrice === 'number' && v.salePrice > 0 ? v.salePrice : v.price).filter(Boolean)
+        if (prices.length > 0) {
+          const minVariantPrice = Math.min(...prices)
+          // If the variants have different prices, we can add "From " prefix
+          const maxVariantPrice = Math.max(...prices)
+          if (minVariantPrice !== maxVariantPrice) {
+            isFrom = true
+          }
+          displayPrice = minVariantPrice
+          
+          // Try to find the original price of the cheapest variant to show the discount
+          const cheapestVariant = doc.variants.find((v: any) => (v.salePrice || v.price) === minVariantPrice)
+          if (cheapestVariant && typeof cheapestVariant.salePrice === 'number' && cheapestVariant.salePrice > 0) {
+             displaySalePrice = cheapestVariant.salePrice
+             displayPrice = cheapestVariant.price
+          } else {
+             displaySalePrice = undefined
+          }
+        }
+      }
+
       return {
         id: doc.id as number,
         name: doc.name,
         slug: doc.slug || '',
         image: imageUrl,
+        hoverImage: hoverImageUrl,
         shortDescription: doc.description || '',
-        priceRange: typeof doc.salePrice === 'number' && doc.salePrice > 0 
-          ? `$${doc.salePrice}.00` 
-          : `$${doc.price}.00`,
-        originalPrice: typeof doc.salePrice === 'number' && doc.salePrice > 0 
-          ? `$${doc.price}.00` 
+        priceRange: displaySalePrice 
+          ? `${isFrom ? 'From ' : ''}$${displaySalePrice.toFixed(2)}` 
+          : `${isFrom ? 'From ' : ''}$${displayPrice.toFixed(2)}`,
+        originalPrice: (displaySalePrice && !isFrom)
+          ? `$${displayPrice.toFixed(2)}` 
           : undefined,
-        discountPercentage: typeof doc.salePrice === 'number' && doc.salePrice > 0 && typeof doc.price === 'number' && doc.price > 0
-          ? Math.round(((doc.price - doc.salePrice) / doc.price) * 100)
+        discountPercentage: (displaySalePrice && displayPrice > 0)
+          ? Math.round(((displayPrice - displaySalePrice) / displayPrice) * 100)
           : undefined,
         category: categoryName
       }
@@ -654,5 +690,38 @@ export async function getShopProducts(params: {
     }
   } catch (err: any) {
     return { success: false, error: err.message, products: [], totalPages: 0 }
+  }
+}
+
+export async function getUserDefaultAddress() {
+  try {
+    const user = await getPayloadUser()
+    if (!user) return null
+
+    const payload = await getPayload({ config: configPromise })
+    const addresses = await payload.find({
+      collection: 'addresses',
+      where: { 
+        user: { equals: user.id },
+        isDefaultShipping: { equals: true }
+      },
+      limit: 1,
+      overrideAccess: true,
+    })
+
+    if (addresses.docs.length > 0) {
+      return addresses.docs[0]
+    }
+
+    const anyAddress = await payload.find({
+      collection: 'addresses',
+      where: { user: { equals: user.id } },
+      limit: 1,
+      overrideAccess: true,
+    })
+
+    return anyAddress.docs.length > 0 ? anyAddress.docs[0] : null
+  } catch (err) {
+    return null
   }
 }

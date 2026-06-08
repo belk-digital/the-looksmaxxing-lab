@@ -15,6 +15,7 @@ export interface Product {
   name: string
   slug: string
   image: string
+  hoverImage?: string
   shortDescription: string
   priceRange: string
   originalPrice?: string
@@ -22,7 +23,7 @@ export interface Product {
   category: string
 }
 
-export interface FeaturedProductCardProps {
+export interface PrimaryProductCardProps {
   product: Product
   aspectRatio?: '4/5' | '16/10' | '3/4'
   size?: 'tall' | 'small'
@@ -78,7 +79,7 @@ function SlideToAddButton({ product }: { product: Product }) {
   )
 }
 
-export function FeaturedProductCard({ product, size = 'small', id }: FeaturedProductCardProps) {
+export function PrimaryProductCard({ product, size = 'small', id }: PrimaryProductCardProps) {
   const imageAspectClass = size === 'tall' ? 'aspect-[4/5]' : 'aspect-[3/4]';
   
   const addItem = useWishlistStore(state => state.addItem)
@@ -158,7 +159,7 @@ export function FeaturedProductCard({ product, size = 'small', id }: FeaturedPro
       <div className={`relative w-full ${imageAspectClass} overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] bg-[#F5F5F7] mb-4 sm:mb-6`}>
         
         {/* SALE Badge */}
-        {product.originalPrice && (
+        {(product.originalPrice || product.discountPercentage) && (
           <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20">
             <span className="bg-red-600 text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-sm shadow-sm">
               Sale
@@ -171,8 +172,17 @@ export function FeaturedProductCard({ product, size = 'small', id }: FeaturedPro
           alt={product.name}
           fill
           unoptimized
-          className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+          className={`object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${product.hoverImage ? 'group-hover:-translate-x-full' : 'group-hover:scale-105'}`}
         />
+        {product.hoverImage && (
+          <Image
+            src={product.hoverImage}
+            alt={`${product.name} alternate view`}
+            fill
+            unoptimized
+            className="object-cover absolute inset-0 translate-x-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0"
+          />
+        )}
         
         {/* Wishlist Button */}
         <motion.button 

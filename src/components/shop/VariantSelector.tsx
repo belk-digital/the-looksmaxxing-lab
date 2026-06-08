@@ -19,13 +19,13 @@ interface VariantSelectorProps {
   theme?: 'light' | 'dark'
 }
 
-export function VariantSelector({ variants, value, onChange, label = 'Size', theme = 'light' }: VariantSelectorProps) {
+export function VariantSelector({ variants, value, onChange, label = '', theme = 'light' }: VariantSelectorProps) {
   if (!variants || variants.length === 0) return null
 
   return (
     <div className="flex flex-col gap-3">
       {label && (
-        <span className="text-label-md uppercase tracking-wider text-ink-muted">
+        <span className="text-xs font-bold uppercase tracking-widest text-ink/50">
           {label}
         </span>
       )}
@@ -38,7 +38,7 @@ export function VariantSelector({ variants, value, onChange, label = 'Size', the
               onClick={() => variant.inStock && onChange(variant.id)}
               disabled={!variant.inStock}
               className={cn(
-                "flex flex-col items-center justify-center w-full px-4 py-3 border rounded-sm transition-all duration-300 text-center",
+                "flex flex-col items-center justify-center w-full px-4 py-3 border rounded-xl transition-all duration-300 text-center",
                 isSelected 
                   ? theme === 'dark' ? "border-white bg-white text-ink" : "border-ink bg-ink text-cream" 
                   : theme === 'dark' ? "border-white/20 bg-transparent text-white hover:border-white" : "border-border-default bg-transparent text-ink hover:border-ink",
@@ -46,13 +46,24 @@ export function VariantSelector({ variants, value, onChange, label = 'Size', the
               )}
             >
               <span className={cn(
-                "text-label-md uppercase tracking-wider mb-1",
+                "text-[11px] sm:text-xs font-bold uppercase tracking-widest mb-1 opacity-90",
                 !variant.inStock && "line-through"
               )}>
-                {variant.title}
+                {variant.title || `Option`}
               </span>
-              <span className="text-body-sm font-medium opacity-80">
-                {variant.inStock ? variant.price : 'OUT OF STOCK'}
+              <span className="text-body-sm font-medium opacity-80 flex items-center gap-1.5 justify-center">
+                {variant.inStock ? (
+                  variant.salePrice ? (
+                    <>
+                      <span className="line-through opacity-50 text-xs">{variant.price}</span>
+                      <span>{variant.salePrice}</span>
+                    </>
+                  ) : (
+                    <span>{variant.price}</span>
+                  )
+                ) : (
+                  'OUT OF STOCK'
+                )}
               </span>
             </button>
           )

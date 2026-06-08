@@ -13,34 +13,34 @@ export async function getMegaMenuData() {
     overrideAccess: true,
   })
   
-  const categoriesWithProducts = await Promise.all(
-    categoriesRes.docs.map(async (doc) => {
-      const productsRes = await payload.find({
-        collection: 'products',
-        where: {
-          categories: { in: [doc.id] },
-          status: { equals: 'active' },
-          isVisible: { equals: true }
-        },
-        limit: 3,
-        overrideAccess: true,
-      })
-
-      return {
-        id: doc.id,
-        name: doc.name,
-        slug: doc.slug,
-        products: productsRes.docs.map(prod => ({
-          name: prod.name,
-          slug: prod.slug,
-          image: typeof prod.images?.[0]?.image === 'object' && prod.images[0].image?.url 
-            ? prod.images[0].image.url 
-            : '/placeholder.jpg',
-          price: prod.price
-        }))
-      }
+  const categoriesWithProducts = [];
+  
+  for (const doc of categoriesRes.docs) {
+    const productsRes = await payload.find({
+      collection: 'products',
+      where: {
+        categories: { in: [doc.id] },
+        status: { equals: 'active' },
+        isVisible: { equals: true }
+      },
+      limit: 3,
+      overrideAccess: true,
     })
-  )
+
+    categoriesWithProducts.push({
+      id: doc.id,
+      name: doc.name,
+      slug: doc.slug,
+      products: productsRes.docs.map(prod => ({
+        name: prod.name,
+        slug: prod.slug,
+        image: typeof prod.images?.[0]?.image === 'object' && prod.images[0].image?.url 
+          ? prod.images[0].image.url 
+          : '/placeholder.jpg',
+        price: prod.price
+      }))
+    })
+  }
 
   return categoriesWithProducts;
 }

@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { Heart, Activity, Thermometer, TestTube } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { StandardProduct } from './ProductCard'
+import { StandardProduct } from './CompactProductCard'
 
 export function HolographicProductCard({ product }: { product: StandardProduct }) {
   const cardRef = useRef<HTMLDivElement>(null)

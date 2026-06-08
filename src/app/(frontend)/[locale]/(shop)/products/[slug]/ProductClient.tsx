@@ -3,14 +3,16 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useMotionValueEvent, useMotionValue, useSpring } from 'framer-motion'
 import useEmblaCarousel from 'embla-carousel-react'
-import { Heart, ChevronRight, ChevronLeft, Download, Star, Check } from 'lucide-react'
+import { Heart, ChevronRight, ChevronLeft, Download, Star, Check, ShieldCheck, FlaskConical, MapPin, Zap, ShoppingCart, Truck, Sparkles, Loader2 } from 'lucide-react'
 import { Container } from '@/components/ui/container'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { StockIndicator } from '@/components/ui/stock-indicator'
 import { useCartStore } from '@/lib/cart/store'
+import { useWishlistStore } from '@/lib/wishlist/store'
+import { useAuth } from '@clerk/nextjs'
 import { toast } from 'sonner'
 
 import { ImageGallery } from '@/components/shop/ImageGallery'
@@ -20,7 +22,8 @@ import { ProductTabs, Tab } from '@/components/shop/ProductTabs'
 import { FaqCarousel, FaqItem } from '@/components/shared/FaqCarousel'
 import { TrustBadges } from '@/components/shared/TrustBadges'
 import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
-import { ProductCard } from '@/components/shop/ProductCard'
+import { CompactProductCard } from '@/components/shop/CompactProductCard'
+import { PrimaryProductCard } from '@/components/shop/PrimaryProductCard'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { Space_Grotesk } from 'next/font/google'
 
@@ -34,8 +37,7 @@ interface ProductData {
   categories?: string[]
   averageRating?: number
   reviewCount?: number
-  isBundle?: boolean
-  bundleItems?: { product: { name: string }; quantity: number }[]
+
   sku?: string
   weight?: number
   dimensions?: {
@@ -44,6 +46,14 @@ interface ProductData {
     height?: number
   }
   badges?: string[]
+  bulkBundles?: {
+    id?: string
+    name: string
+    quantity: number
+    price: number
+    salePrice?: number
+    image?: string
+  }[]
   description: string
   shortDescription?: string
   images: string[]
@@ -59,15 +69,70 @@ interface ProductClientProps {
   product: ProductData
 }
 
+function SlideToCartButton({ onAdd, disabled, isAdded }: { onAdd: () => void, disabled: boolean, isAdded: boolean }) {
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  
+  const handleDragEnd = (event: any, info: any) => {
+    if (disabled || isAdded) return
+    // threshold to trigger add to cart
+    if (info.offset.x > 60) {
+      onAdd()
+    }
+  }
+
+  return (
+    <div ref={containerRef} className={`relative flex-1 h-16 bg-white border border-ink/10 rounded-full flex items-center overflow-hidden z-10 transition-colors hover:border-ink/30 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+      <div className="absolute inset-0 flex items-center justify-center pl-10 text-[13px] font-bold text-ink uppercase tracking-widest pointer-events-none select-none">
+        {isAdded ? 'Added to Cart' : <>Slide to Add <ChevronRight size={16} className="inline ml-1 opacity-50" /></>}
+      </div>
+      
+      <motion.div
+        drag={disabled || isAdded ? false : "x"}
+        dragConstraints={containerRef}
+        dragElastic={0.05}
+        dragSnapToOrigin={true}
+        onDragEnd={handleDragEnd}
+        whileTap={disabled || isAdded ? {} : { scale: 0.95 }}
+        className={`absolute left-2 w-12 h-12 rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-20 shadow-sm transition-colors duration-300 ${
+          isAdded ? 'bg-green-600 text-white' : 'bg-ink text-white'
+        }`}
+      >
+        {isAdded ? <Check size={20} /> : <ShoppingCart size={20} />}
+      </motion.div>
+    </div>
+  )
+}
+
 export function ProductClient({ product }: ProductClientProps) {
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0]?.id || '')
   const [quantity, setQuantity] = useState(1)
   const [descOpen, setDescOpen] = useState(true)
   const [deliveryOpen, setDeliveryOpen] = useState(true)
 
+  React.useEffect(() => {
+    // Force scroll to top on mount to fix Next.js scroll restoration issues
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [product.id])
+
   // Mobile Sticky Bar Logic
   const [showMobileBar, setShowMobileBar] = useState(false)
   const { scrollY } = useScroll()
+
+  // Swipe Cursor Logic
+  const [isHoveringSlider, setIsHoveringSlider] = useState(false)
+  const [isSliderAtEnd, setIsSliderAtEnd] = useState(false)
+  const cursorX = useMotionValue(-100)
+  const cursorY = useMotionValue(-100)
+  const springConfig = { damping: 25, stiffness: 400, mass: 0.5 }
+  const cursorXSpring = useSpring(cursorX, springConfig)
+  const cursorYSpring = useSpring(cursorY, springConfig)
+
+  const handleSliderMouseMove = (e: React.MouseEvent) => {
+    cursorX.set(e.clientX - 36)
+    cursorY.set(e.clientY - 36)
+  }
+
+
 
   useEffect(() => {
     // Show initially on mobile
@@ -96,9 +161,35 @@ export function ProductClient({ product }: ProductClientProps) {
 
   const [relatedEmblaRef, relatedEmblaApi] = useEmblaCarousel({ 
     align: 'start',
-    containScroll: 'trimSnaps',
-    dragFree: true
+    containScroll: 'trimSnaps'
   })
+
+  useEffect(() => {
+    if (!relatedEmblaApi) return
+    
+    let isDragging = false
+    
+    const checkEnd = () => {
+      if (isDragging) {
+        setIsSliderAtEnd(!relatedEmblaApi.canScrollNext())
+      }
+    }
+
+    const onPointerDown = () => {
+      isDragging = true
+      checkEnd()
+    }
+    
+    const onPointerUp = () => {
+      isDragging = false
+      setIsSliderAtEnd(false) // Instantly reset to SWIPE when they let go
+    }
+
+    relatedEmblaApi.on('pointerDown', onPointerDown)
+    relatedEmblaApi.on('pointerUp', onPointerUp)
+    relatedEmblaApi.on('scroll', checkEnd)
+    relatedEmblaApi.on('select', checkEnd)
+  }, [relatedEmblaApi])
 
 
 
@@ -107,6 +198,68 @@ export function ProductClient({ product }: ProductClientProps) {
 
   const [justAdded, setJustAdded] = useState(false)
   const cartStore = useCartStore()
+  
+  const addItemToWishlist = useWishlistStore(state => state.addItem)
+  const removeItemFromWishlist = useWishlistStore(state => state.removeItem)
+  const isWishlistedGlobal = useWishlistStore(state => state.hasItem(product.id))
+  const { isSignedIn } = useAuth()
+  
+  const [inWishlist, setInWishlist] = useState(false)
+  const [isWishlistPending, setIsWishlistPending] = useState(false)
+  const [showParticles, setShowParticles] = useState(false)
+
+  useEffect(() => {
+    setInWishlist(isWishlistedGlobal)
+  }, [isWishlistedGlobal])
+
+  const handleWishlistClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    
+    if (!isSignedIn) {
+      toast.error('Sign in required', {
+        description: 'Please log in to add items to your wishlist.',
+      })
+      return
+    }
+
+    setIsWishlistPending(true)
+
+    try {
+      if (inWishlist) {
+        await removeItemFromWishlist(product.id)
+        toast('Removed from wishlist', {
+          id: `wishlist-${product.id}`,
+          description: `${product.name} has been removed.`,
+        })
+      } else {
+        await addItemToWishlist({
+          id: product.id,
+          name: product.name,
+          slug: product.id, // Or product.slug if we had it
+          image: product.images[0],
+          priceRange: selectedVariant?.price || ''
+        })
+        
+        setShowParticles(true)
+        setTimeout(() => setShowParticles(false), 1000)
+
+        toast.success('Added to wishlist', {
+          id: `wishlist-${product.id}`,
+          description: `${product.name} is now in your wishlist.`,
+          action: {
+            label: 'View Wishlist',
+            onClick: () => window.location.href = '/en/account/wishlist',
+          },
+        })
+      }
+    } catch (error: any) {
+      toast.error('Failed to update wishlist', {
+        description: error.message || 'An unexpected error occurred.',
+      })
+    } finally {
+      setIsWishlistPending(false)
+    }
+  }
 
   const handleAddToCart = () => {
     if (!selectedVariant?.inStock) return
@@ -148,72 +301,48 @@ export function ProductClient({ product }: ProductClientProps) {
         <div className="flex flex-col lg:flex-row gap-16 xl:gap-24 items-start relative z-10">
           
           {/* Left Column (Massive Cinematic Gallery) */}
-          <div className="w-full lg:w-7/12 relative">
+          <div className="w-full lg:w-[45%] relative lg:sticky lg:top-32 lg:mt-6">
             <ImageGallery images={product.images} />
           </div>
 
-          {/* Right Column (Product Info) */}
-          <div className="w-full lg:w-5/12 flex flex-col lg:sticky lg:top-8 pt-4">
+          {/* Right Column (Clean Flow) */}
+          <div className="w-full lg:w-[50%] flex flex-col pt-4 pb-12">
             
-            <div className="flex items-center gap-2 mb-4">
+            {/* Header Info */}
+            <div className="flex items-center gap-3 mb-6">
               {product.categories ? (
                 product.categories.map(cat => (
-                  <span key={cat} className="text-xs uppercase tracking-wider text-gray-500 font-bold">{cat}</span>
+                  <span key={cat} className="text-[10px] uppercase tracking-widest text-ink/50 font-bold bg-white/50 px-3 py-1 rounded-full border border-ink/5">{cat}</span>
                 ))
               ) : (
-                <span className="text-xs uppercase tracking-wider text-gray-500 font-bold">{product.category}</span>
+                <span className="text-[10px] uppercase tracking-widest text-ink/50 font-bold bg-white/50 px-3 py-1 rounded-full border border-ink/5">{product.category}</span>
               )}
               {product.badges?.map(badge => (
-                <Badge key={badge} variant="new" className="bg-ink text-white border-none px-2 py-0.5 shadow-sm text-[10px]">{badge}</Badge>
+                <Badge key={badge} variant="new" className="bg-ink text-white border-none px-3 py-1 shadow-sm text-[10px] tracking-wider uppercase rounded-full">{badge}</Badge>
               ))}
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-bold text-ink mb-4 tracking-tight">
+            <h1 className={`text-4xl md:text-5xl lg:text-[52px] leading-[1.05] font-semibold text-ink mb-6 tracking-tight ${spaceGrotesk.className}`}>
               {product.name}
             </h1>
             
-            <div className="text-2xl font-semibold text-ink mb-8">
+            <div className="text-[32px] font-medium text-ink mb-10 flex items-center">
               {selectedVariant?.salePrice ? (
                 <>
-                  <span className="text-gray-400 line-through mr-3">{selectedVariant.price}</span>
-                  <span>{selectedVariant.salePrice}</span>
+                  <span className="text-ink/30 line-through mr-4 text-2xl font-light">{selectedVariant.price}</span>
+                  <span className="text-ink">{selectedVariant.salePrice}</span>
+                  <span className="ml-4 px-2.5 py-1 rounded-md bg-ink/5 text-ink text-sm font-bold tracking-tight flex items-center h-8">
+                    -{Math.round(((parseFloat(selectedVariant.price.replace(/[^0-9.]/g, '')) - parseFloat(selectedVariant.salePrice.replace(/[^0-9.]/g, ''))) / parseFloat(selectedVariant.price.replace(/[^0-9.]/g, ''))) * 100)}%
+                  </span>
                 </>
               ) : (
                 <span>{selectedVariant?.price}</span>
               )}
             </div>
 
-            {/* Description Accordion */}
-            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden mb-8">
-              <button 
-                className="w-full flex justify-between items-center p-6 bg-transparent focus:outline-none"
-                onClick={() => setDescOpen(!descOpen)}
-              >
-                <h3 className="font-bold text-ink text-lg">Description</h3>
-                <motion.div animate={{ rotate: descOpen ? -90 : 90 }} transition={{ duration: 0.2 }}>
-                  <ChevronRight className="text-ink" size={20} />
-                </motion.div>
-              </button>
-              <AnimatePresence initial={false}>
-                {descOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="px-6"
-                  >
-                    <p className="text-gray-500 leading-relaxed text-sm pb-6">
-                      {product.description || product.shortDescription}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
             {/* Variants */}
-            {product.variants && product.variants.length > 0 && (
-              <div className="mb-8">
+            {product.variants.length > 1 && (
+            <div className="mb-8 sm:mb-10 animate-fade-up" style={{ animationDelay: '0.2s' }}>
                 <VariantSelector 
                   variants={product.variants}
                   value={selectedVariantId}
@@ -222,138 +351,277 @@ export function ProductClient({ product }: ProductClientProps) {
               </div>
             )}
 
-            {/* Quantity */}
-            <div className="mb-8">
-              <QuantityStepper value={quantity} onChange={setQuantity} />
-            </div>
+            {/* Bulk Bundles */}
+            {product.bulkBundles && product.bulkBundles.length > 0 && (
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-bold uppercase tracking-widest text-ink">Bulk Bundles</span>
+                  {(() => {
+                    let maxDiscount = 0
+                    product.bulkBundles.forEach((bundle) => {
+                      const pNum = typeof bundle.price === 'number' ? bundle.price : parseFloat(String(bundle.price).replace(/[^0-9.]/g, ''))
+                      const sNum = bundle.salePrice ? (typeof bundle.salePrice === 'number' ? bundle.salePrice : parseFloat(String(bundle.salePrice).replace(/[^0-9.]/g, ''))) : null
+                      if (sNum && pNum > 0) {
+                        const discount = Math.round(((pNum - sNum) / pNum) * 100)
+                        if (discount > maxDiscount) maxDiscount = discount
+                      }
+                    })
+                    return maxDiscount > 0 ? (
+                      <span className="text-xs font-semibold text-ink/50 bg-ink/5 px-2 py-0.5 rounded-md">Save up to {maxDiscount}%</span>
+                    ) : null
+                  })()}
+                </div>
+                <div className="flex flex-col gap-3">
+                  {product.bulkBundles.map((bundle, idx) => {
+                    const priceNum = typeof bundle.price === 'number' ? bundle.price : parseFloat(String(bundle.price).replace(/[^0-9.]/g, ''))
+                    const salePriceNum = bundle.salePrice ? (typeof bundle.salePrice === 'number' ? bundle.salePrice : parseFloat(String(bundle.salePrice).replace(/[^0-9.]/g, ''))) : null
+                    const discount = salePriceNum ? Math.round(((priceNum - salePriceNum) / priceNum) * 100) : 0
 
-            {/* Actions */}
-            <div className="flex gap-4 mb-8">
-              <Button 
-                variant="outline" 
-                className="w-14 h-14 p-0 flex-shrink-0 rounded-full font-bold text-ink border-2 border-ink hover:bg-ink hover:text-white transition-colors duration-300 flex items-center justify-center group"
-                aria-label="Add to Wishlist"
-              >
-                <Heart size={24} className="group-hover:fill-white transition-colors duration-300" />
-              </Button>
-              <Button 
-                variant="dark" 
-                className="flex-1 h-14 rounded-full font-bold text-white bg-[#1a1a1a] hover:bg-black hover:shadow-lg transition-all duration-300 text-base border-none"
-                onClick={handleAddToCart}
-                disabled={!selectedVariant?.inStock || justAdded}
-              >
-                {justAdded ? 'Added' : 'Add to Cart'}
-              </Button>
-            </div>
-
-            {/* Delivery Options */}
-            <div className="bg-[#f8f9fa] border border-gray-200 rounded-2xl overflow-hidden mb-8 mt-4">
-              <button 
-                className="w-full flex justify-between items-center p-6 bg-transparent focus:outline-none"
-                onClick={() => setDeliveryOpen(!deliveryOpen)}
-              >
-                <h3 className="font-bold text-ink text-lg">Delivery Options</h3>
-                <motion.div animate={{ rotate: deliveryOpen ? -90 : 90 }} transition={{ duration: 0.2 }}>
-                  <ChevronRight className="text-ink" size={20} />
-                </motion.div>
-              </button>
-              <AnimatePresence initial={false}>
-                {deliveryOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="px-6 pb-6"
-                  >
-                    <div className="grid grid-cols-2 gap-y-6 gap-x-4">
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 border border-gray-200 text-gray-600">%</div>
-                        <div className="flex flex-col">
-                          <span className="text-xs text-gray-500">Discount</span>
-                          <span className="text-sm font-bold text-ink">Disc 15%</span>
+                    return (
+                      <button
+                        key={bundle.id || idx}
+                        onClick={() => {
+                          cartStore.addItem(
+                            { id: product.id, name: product.name, imageUrl: product.images[0] },
+                            bundle.name,
+                            1,
+                            salePriceNum || priceNum
+                          )
+                          setJustAdded(true)
+                          toast.success('Added bundle to cart', { action: { label: 'VIEW', onClick: cartStore.openCart } })
+                          setTimeout(() => setJustAdded(false), 1500)
+                        }}
+                        className="w-full flex items-center justify-between p-4 rounded-xl border border-ink/10 hover:border-ink hover:shadow-md transition-all duration-300 group bg-white text-left"
+                      >
+                        <div className="flex items-center gap-4">
+                          {bundle.image && (
+                            <img src={bundle.image} alt={bundle.name} className="w-12 h-12 rounded-lg object-cover bg-ink/5" />
+                          )}
+                          <div className="flex flex-col">
+                            <span className="font-bold text-ink">{bundle.name}</span>
+                            <span className="text-xs font-medium text-ink/50 mt-1">{bundle.quantity}x items included</span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 border border-gray-200 text-gray-600">💰</div>
-                        <div className="flex flex-col">
-                          <span className="text-xs text-gray-500">Payment</span>
-                          <span className="text-sm font-bold text-ink">Cash on Delivery Available</span>
+                        <div className="flex flex-col items-end">
+                          {salePriceNum ? (
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs line-through text-ink/40">${priceNum.toFixed(2)}</span>
+                              <span className="font-bold text-ink">${salePriceNum.toFixed(2)}</span>
+                            </div>
+                          ) : (
+                            <span className="font-bold text-ink">${priceNum.toFixed(2)}</span>
+                          )}
+                          {discount > 0 && <span className="text-[10px] font-bold text-red-500 mt-1 uppercase tracking-wider">{discount}% OFF</span>}
                         </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 border border-gray-200 text-gray-600">🚚</div>
-                        <div className="flex flex-col">
-                          <span className="text-xs text-gray-500">Delivery Time</span>
-                          <span className="text-sm font-bold text-ink">3-4 Working Days</span>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 border border-gray-200 text-gray-600">🛡️</div>
-                        <div className="flex flex-col">
-                          <span className="text-xs text-gray-500">Return & Warranty</span>
-                          <span className="text-sm font-bold text-ink">7 Days easy return</span>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Trust Badges Mini Row */}
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.6 }} className="grid grid-cols-3 gap-4 py-8 border-y border-blue-100/50 mb-8">
-              <div className="flex flex-col items-center text-center gap-2 group cursor-default">
-                <div className="w-8 h-8 rounded-full border border-[#5984c4]/30 flex items-center justify-center text-[#5984c4] transition-all duration-500 group-hover:scale-110 group-hover:bg-[#5984c4] group-hover:text-white bg-white shadow-sm">✓</div>
-                <span className="text-label-sm uppercase tracking-wider text-ink transition-colors duration-300 group-hover:text-[#5984c4]">≥99% Purity</span>
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
-              <div className="flex flex-col items-center text-center gap-2 group cursor-default">
-                <div className="w-8 h-8 rounded-full border border-[#5984c4]/30 flex items-center justify-center text-[#5984c4] transition-all duration-500 group-hover:scale-110 group-hover:bg-[#5984c4] group-hover:text-white bg-white shadow-sm">✓</div>
-                <span className="text-label-sm uppercase tracking-wider text-ink transition-colors duration-300 group-hover:text-[#5984c4]">LC-MS Verified</span>
-              </div>
-              <div className="flex flex-col items-center text-center gap-2 group cursor-default">
-                <div className="w-8 h-8 rounded-full border border-[#5984c4]/30 flex items-center justify-center text-[#5984c4] transition-all duration-500 group-hover:scale-110 group-hover:bg-[#5984c4] group-hover:text-white bg-white shadow-sm">✓</div>
-                <span className="text-label-sm uppercase tracking-wider text-ink transition-colors duration-300 group-hover:text-[#5984c4]">US Based</span>
-              </div>
-            </motion.div>
-
-            {/* Product Specifications */}
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.7 }} className="flex gap-6 mb-8 text-body-sm text-ink-muted">
-              {product.sku && (
-                <div className="flex flex-col gap-1">
-                  <span className="text-label-sm uppercase tracking-wider text-ink">SKU</span>
-                  <span>{product.sku}</span>
-                </div>
-              )}
-              {product.weight && (
-                <div className="flex flex-col gap-1">
-                  <span className="text-label-sm uppercase tracking-wider text-ink">Weight</span>
-                  <span>{product.weight} kg</span>
-                </div>
-              )}
-              {product.dimensions?.length && product.dimensions?.width && product.dimensions?.height && (
-                <div className="flex flex-col gap-1">
-                  <span className="text-label-sm uppercase tracking-wider text-ink">Dimensions</span>
-                  <span>{product.dimensions.length} x {product.dimensions.width} x {product.dimensions.height} cm</span>
-                </div>
-              )}
-            </motion.div>
-
-            {product.coaFile && (
-              <motion.a 
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.8 }}
-                href={product.coaFile} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 border border-blue-100 rounded-xl group hover:border-[#5984c4] hover:bg-[#f2f6fc] transition-all shadow-sm bg-white"
-              >
-                <div className="flex flex-col">
-                  <span className="text-label-md uppercase tracking-wider text-[#5984c4]">Certificate of Analysis</span>
-                  <span className="text-body-sm text-ink-muted">Verified third-party testing results</span>
-                </div>
-                <Download size={20} className="text-[#5984c4]/60 group-hover:text-[#5984c4] transition-colors" />
-              </motion.a>
             )}
+
+            {/* Action Zone (Quantity & Buttons) */}
+            <div className="flex flex-col gap-4 mb-12 relative z-10">
+              
+              {/* Row 1: Quantity & Wishlist */}
+              <div className="flex items-center gap-4">
+                <div className="flex-1">
+                  <QuantityStepper value={quantity} onChange={setQuantity} className="w-full h-16 rounded-[1.25rem] px-2 shadow-none" />
+                </div>
+                <motion.button 
+                  whileHover={isWishlistPending ? {} : { scale: 1.05 }}
+                  whileTap={isWishlistPending ? {} : { scale: 0.95 }}
+                  className={`relative w-16 h-16 p-0 flex-shrink-0 rounded-[1.25rem] font-bold border transition-colors duration-300 flex items-center justify-center group outline-none disabled:opacity-70 ${
+                    inWishlist 
+                      ? 'border-red-500 bg-red-50 text-red-500 shadow-sm' 
+                      : 'border-ink/10 bg-white hover:border-ink/30 hover:bg-gray-50 text-ink/60 hover:text-ink'
+                  }`}
+                  aria-label="Toggle Wishlist"
+                  onClick={handleWishlistClick}
+                  disabled={isWishlistPending}
+                >
+                  <AnimatePresence>
+                    {showParticles && (
+                      <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                        {[...Array(8)].map((_, i) => {
+                          const angle = (i * 45 * Math.PI) / 180;
+                          return (
+                            <motion.div
+                              key={i}
+                              className="absolute w-1.5 h-1.5 bg-red-400 rounded-full"
+                              initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
+                              animate={{
+                                x: Math.cos(angle) * 45,
+                                y: Math.sin(angle) * 45,
+                                scale: [0, 1.5, 0],
+                                opacity: [1, 1, 0]
+                              }}
+                              transition={{ duration: 0.6, ease: "easeOut" }}
+                            />
+                          )
+                        })}
+                      </div>
+                    )}
+                  </AnimatePresence>
+                  <motion.div
+                    animate={inWishlist && !isWishlistPending ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                  >
+                    {isWishlistPending ? (
+                      <Loader2 size={24} className={`animate-spin ${inWishlist ? 'text-red-500' : 'text-ink/60'}`} />
+                    ) : (
+                      <Heart 
+                        size={24} 
+                        className={`transition-colors duration-300 ${inWishlist ? 'fill-current' : ''}`} 
+                        strokeWidth={inWishlist ? 2.5 : 2} 
+                      />
+                    )}
+                  </motion.div>
+                </motion.button>
+              </div>
+
+              {/* Row 2: Main Actions */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <SlideToCartButton 
+                    onAdd={handleAddToCart}
+                    disabled={!selectedVariant?.inStock}
+                    isAdded={justAdded}
+                  />
+                </div>
+                <Button 
+                  variant="dark" 
+                  className="flex-1 h-16 rounded-full font-bold text-white bg-gradient-to-r from-ink to-gray-800 hover:from-black hover:to-ink transition-all duration-500 text-sm uppercase tracking-widest border-none shadow-[0_8px_20px_rgb(0,0,0,0.15)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)] hover:-translate-y-0.5"
+                  onClick={() => {
+                    handleAddToCart()
+                    setTimeout(() => window.location.href = '/checkout', 300)
+                  }}
+                  disabled={!selectedVariant?.inStock}
+                >
+                  Buy Now
+                </Button>
+              </div>
+            </div>
+
+            {/* Trust Badges Inline Flow */}
+            <div className="flex flex-wrap gap-x-8 gap-y-6 mb-12 pt-6 border-t border-ink/10">
+              <div className="flex items-center gap-3 group">
+                <div className="w-10 h-10 rounded-full border border-ink/10 text-ink flex items-center justify-center font-bold text-lg group-hover:scale-110 group-hover:border-ink/30 transition-all duration-300">
+                  <ShieldCheck size={18} strokeWidth={1.5} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase tracking-widest text-ink/40 font-bold">Purity</span>
+                  <span className="text-sm font-semibold text-ink">≥99% Tested</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 group">
+                <div className="w-10 h-10 rounded-full border border-ink/10 text-ink flex items-center justify-center font-bold text-lg group-hover:scale-110 group-hover:border-ink/30 transition-all duration-300">
+                  <FlaskConical size={18} strokeWidth={1.5} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase tracking-widest text-ink/40 font-bold">Testing</span>
+                  <span className="text-sm font-semibold text-ink">LC-MS Verified</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 group">
+                <div className="w-10 h-10 rounded-full border border-ink/10 text-ink flex items-center justify-center font-bold text-lg group-hover:scale-110 group-hover:border-ink/30 transition-all duration-300">
+                  <MapPin size={18} strokeWidth={1.5} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase tracking-widest text-ink/40 font-bold">Location</span>
+                  <span className="text-sm font-semibold text-ink">US Based</span>
+                </div>
+              </div>
+              {product.coaFile && (
+                <a href={product.coaFile} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group hover:opacity-80 transition-opacity">
+                  <div className="w-10 h-10 rounded-full bg-ink text-white flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                    <Download size={16} strokeWidth={1.5} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] uppercase tracking-widest text-ink/40 font-bold">Download</span>
+                    <span className="text-sm font-semibold text-ink border-b border-ink/20">COA File</span>
+                  </div>
+                </a>
+              )}
+            </div>
+
+            {/* Accordions (Clean Line Style) */}
+            <div className="border-t border-ink/10">
+              
+              {/* Description */}
+              <div className="border-b border-ink/10">
+                <button 
+                  className="w-full flex justify-between items-center py-6 bg-transparent focus:outline-none group"
+                  onClick={() => setDescOpen(!descOpen)}
+                >
+                  <h3 className="text-sm uppercase tracking-[0.2em] font-bold text-ink group-hover:text-ink/70 transition-colors">Description</h3>
+                  <motion.div animate={{ rotate: descOpen ? -90 : 90 }} transition={{ duration: 0.2 }}>
+                    <ChevronRight className="text-ink/50" size={18} strokeWidth={2} />
+                  </motion.div>
+                </button>
+                <AnimatePresence initial={false}>
+                  {descOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      <p className="text-ink/70 leading-[1.8] text-[15px] pb-8 pr-4 font-medium">
+                        {product.description || product.shortDescription}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Delivery Options */}
+              <div className="border-b border-ink/10">
+                <button 
+                  className="w-full flex justify-between items-center py-6 bg-transparent focus:outline-none group"
+                  onClick={() => setDeliveryOpen(!deliveryOpen)}
+                >
+                  <h3 className="text-sm uppercase tracking-[0.2em] font-bold text-ink group-hover:text-ink/70 transition-colors">Delivery Options</h3>
+                  <motion.div animate={{ rotate: deliveryOpen ? -90 : 90 }} transition={{ duration: 0.2 }}>
+                    <ChevronRight className="text-ink/50" size={18} strokeWidth={2} />
+                  </motion.div>
+                </button>
+                <AnimatePresence initial={false}>
+                  {deliveryOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden pb-8"
+                    >
+                      <div className="flex flex-col gap-6">
+                        <div className="flex items-center gap-4 group">
+                          <div className="w-10 h-10 rounded-full border border-ink/10 text-ink flex items-center justify-center font-bold text-lg shrink-0 group-hover:scale-110 group-hover:border-ink/30 transition-all duration-300">
+                            <Truck size={18} strokeWidth={1.5} />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[10px] uppercase tracking-wider text-ink/40 font-bold">Standard Delivery</span>
+                            <span className="text-sm font-semibold text-ink">3-4 Working Days</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4 group">
+                          <div className="w-10 h-10 rounded-full border border-ink/10 text-ink flex items-center justify-center font-bold text-lg shrink-0 group-hover:scale-110 group-hover:border-ink/30 transition-all duration-300">
+                            <Sparkles size={18} strokeWidth={1.5} />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[10px] uppercase tracking-wider text-ink/40 font-bold">Free Shipping</span>
+                            <span className="text-sm font-semibold text-ink">On all orders above $300</span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+            </div>
 
           </div>
         </div>
@@ -396,12 +664,17 @@ export function ProductClient({ product }: ProductClientProps) {
             </div>
           </div>
 
-          <div className="relative -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div 
+            className="relative -mx-4 px-4 sm:mx-0 sm:px-0 md:cursor-none md:[&_*]:!cursor-none"
+            onMouseEnter={() => setIsHoveringSlider(true)}
+            onMouseLeave={() => setIsHoveringSlider(false)}
+            onMouseMove={handleSliderMouseMove}
+          >
             <div className="overflow-hidden" ref={relatedEmblaRef}>
-              <div className="flex gap-6 lg:gap-8 pb-12 cursor-grab active:cursor-grabbing">
+              <div className="flex gap-6 lg:gap-8 pb-12">
                 {product.relatedProducts.map((p) => (
-                  <div key={p.id} className="flex-[0_0_85%] sm:flex-[0_0_45%] lg:flex-[0_0_28%] min-w-0">
-                    <ProductCard product={p} />
+                  <div key={p.id} className="flex-[0_0_100%] sm:flex-[0_0_45%] lg:flex-[0_0_calc(25%-1.5rem)] min-w-0">
+                    <PrimaryProductCard product={p as any} aspectRatio="4/5" />
                   </div>
                 ))}
               </div>
@@ -431,31 +704,117 @@ export function ProductClient({ product }: ProductClientProps) {
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/90 backdrop-blur-xl border-t border-gray-200 flex items-center gap-3 lg:hidden shadow-[0_-8px_30px_rgba(0,0,0,0.05)] pb-safe"
           >
+            <motion.button 
+              whileHover={isWishlistPending ? {} : { scale: 1.05 }}
+              whileTap={isWishlistPending ? {} : { scale: 0.9 }}
+              className={`relative w-11 h-11 p-0 flex-shrink-0 rounded-full font-bold border transition-colors duration-300 flex items-center justify-center group outline-none disabled:opacity-70 ${
+                inWishlist ? 'border-red-500 bg-red-50 text-red-500 shadow-sm' : 'border-ink/10 bg-white text-ink/60 hover:text-ink hover:bg-gray-50'
+              }`}
+              aria-label="Toggle Wishlist"
+              onClick={handleWishlistClick}
+              disabled={isWishlistPending}
+            >
+              <AnimatePresence>
+                {showParticles && (
+                  <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                    {[...Array(8)].map((_, i) => {
+                      const angle = (i * 45 * Math.PI) / 180;
+                      return (
+                        <motion.div
+                          key={i}
+                          className="absolute w-1.5 h-1.5 bg-red-400 rounded-full"
+                          initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
+                          animate={{
+                            x: Math.cos(angle) * 35,
+                            y: Math.sin(angle) * 35,
+                            scale: [0, 1.5, 0],
+                            opacity: [1, 1, 0]
+                          }}
+                          transition={{ duration: 0.6, ease: "easeOut" }}
+                        />
+                      )
+                    })}
+                  </div>
+                )}
+              </AnimatePresence>
+              <motion.div
+                animate={inWishlist && !isWishlistPending ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+              >
+                {isWishlistPending ? (
+                  <Loader2 size={18} className={`animate-spin ${inWishlist ? 'text-red-500' : 'text-ink/60'}`} />
+                ) : (
+                  <Heart size={18} className={`transition-colors duration-300 ${inWishlist ? 'fill-current' : ''}`} strokeWidth={inWishlist ? 2.5 : 2} />
+                )}
+              </motion.div>
+            </motion.button>
+
             <Button 
               variant="outline" 
-              className="w-14 h-14 p-0 flex-shrink-0 rounded-full font-bold text-ink border-2 border-gray-200 bg-white hover:bg-ink hover:text-white transition-colors duration-300 flex items-center justify-center group"
-              aria-label="Add to Wishlist"
-            >
-              <Heart size={24} className="group-hover:fill-white transition-colors duration-300" />
-            </Button>
-            <Button 
-              variant="dark" 
-              className="flex-1 h-14 rounded-full font-bold text-white bg-[#1a1a1a] hover:bg-black transition-all duration-300 text-base border-none relative overflow-hidden group"
+              className="w-11 h-11 p-0 flex-shrink-0 rounded-full font-bold text-ink border border-ink bg-white hover:bg-ink hover:text-white transition-all duration-300 flex items-center justify-center group"
+              aria-label="Add to Cart"
               onClick={handleAddToCart}
               disabled={!selectedVariant?.inStock || justAdded}
             >
               <AnimatePresence mode="wait">
                 {justAdded ? (
-                  <motion.span key="check" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute inset-0 flex items-center justify-center text-white">
-                    <Check size={20} strokeWidth={2} />
-                  </motion.span>
+                  <motion.div key="check" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                    <Check size={18} strokeWidth={2.5} />
+                  </motion.div>
                 ) : (
-                  <motion.span key="text" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute inset-0 flex items-center justify-center">
-                    {selectedVariant?.inStock ? 'Add to Cart' : 'Out of Stock'}
-                  </motion.span>
+                  <motion.div key="cart" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                    <ShoppingCart size={18} strokeWidth={1.5} className="group-hover:text-white" />
+                  </motion.div>
                 )}
               </AnimatePresence>
             </Button>
+
+            <Button 
+              variant="dark" 
+              className="flex-1 h-11 rounded-full font-bold text-white bg-gradient-to-r from-ink to-gray-800 hover:from-black hover:to-ink transition-all duration-300 text-[11px] uppercase tracking-widest border-none shadow-[0_4px_14px_rgba(0,0,0,0.1)] hover:-translate-y-0.5"
+              onClick={() => {
+                handleAddToCart()
+                setTimeout(() => window.location.href = '/checkout', 300)
+              }}
+              disabled={!selectedVariant?.inStock}
+            >
+              Buy Now
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Custom Swipe Cursor */}
+      <AnimatePresence>
+        {isHoveringSlider && (
+          <motion.div
+            initial={{ scale: 0, opacity: 0, padding: '0px' }}
+            animate={{ 
+              scale: 1, 
+              opacity: 1,
+              padding: isSliderAtEnd ? '0 24px' : '0px'
+            }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            className="fixed top-0 left-0 h-[72px] bg-white/90 backdrop-blur-md text-ink rounded-full flex items-center justify-center pointer-events-none z-[100] text-[10px] font-bold tracking-[0.2em] shadow-[0_8px_32px_rgba(0,0,0,0.1)] border border-ink/10 hidden md:flex overflow-hidden"
+            style={{
+              x: cursorXSpring,
+              y: cursorYSpring,
+              minWidth: '72px',
+            }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={isSliderAtEnd ? 'end' : 'swipe'}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.15, ease: 'easeOut' }}
+                className="whitespace-nowrap"
+              >
+                {isSliderAtEnd ? "AH, THAT'S IT" : "SWIPE"}
+              </motion.span>
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>

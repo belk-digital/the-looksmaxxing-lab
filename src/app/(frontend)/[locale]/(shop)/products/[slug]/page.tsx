@@ -5,9 +5,12 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  console.log('--- STARTING SERVER RENDER FOR PRODUCT PAGE ---')
   const { slug } = await params
+  console.log(`Resolved slug: ${slug}, Initializing Payload...`)
   
   const payload = await getPayload({ config: configPromise })
+  console.log('Payload initialized, querying product...')
   
   const { docs } = await payload.find({
     collection: 'products',
@@ -133,10 +136,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     shortDescription: rawProduct.seoDescription || rawProduct.description?.substring(0, 100) || '',
     averageRating: rawProduct.averageRating || 5.0,
     reviewCount: rawProduct.reviewCount || 0,
-    isBundle: rawProduct.isBundle || false,
-    bundleItems: rawProduct.bundleItems?.map((item: any) => ({
-      product: { name: typeof item.product === 'object' ? item.product.name : 'Unknown Item' },
-      quantity: item.quantity
+
+    bulkBundles: rawProduct.bulkBundles?.map((b: any) => ({
+      id: b.id,
+      name: b.name,
+      quantity: b.quantity,
+      price: b.price,
+      salePrice: b.salePrice,
+      image: typeof b.image === 'object' && b.image?.url ? b.image.url : undefined
     })) || [],
     images: mappedImages,
     variants: mappedVariants,
@@ -179,8 +186,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
       productData.relatedProducts = relatedDocs.map((p: any) => {
         let imageUrl = '/temp-products/product-image.png'
+        let hoverImageUrl = undefined
         if (p.images && p.images.length > 0 && typeof p.images[0].image === 'object' && p.images[0].image?.url) {
           imageUrl = p.images[0].image.url
+        }
+        if (p.images && p.images.length > 1 && typeof p.images[1].image === 'object' && p.images[1].image?.url) {
+          hoverImageUrl = p.images[1].image.url
         }
 
         return {
@@ -188,8 +199,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           name: p.name,
           slug: p.slug,
           image: imageUrl,
-          descriptor: p.seoDescription || p.category || '',
-          price: `$${p.price.toFixed(2)}`,
+          hoverImage: hoverImageUrl,
+          shortDescription: p.seoDescription || 'High-purity research peptide for laboratory use.',
+          category: typeof p.categories?.[0] === 'object' ? p.categories[0].title : '',
+          priceRange: `$${p.price?.toFixed(2) || '0.00'}`,
+          originalPrice: p.salePrice ? `$${p.salePrice.toFixed(2)}` : undefined,
+          isFrom: p.bulkBundles && p.bulkBundles.length > 0,
         }
       })
     }
@@ -214,8 +229,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
     productData.relatedProducts = recentDocs.map((p: any) => {
       let imageUrl = '/temp-products/product-image.png'
+      let hoverImageUrl = undefined
       if (p.images && p.images.length > 0 && typeof p.images[0].image === 'object' && p.images[0].image?.url) {
         imageUrl = p.images[0].image.url
+      }
+      if (p.images && p.images.length > 1 && typeof p.images[1].image === 'object' && p.images[1].image?.url) {
+        hoverImageUrl = p.images[1].image.url
       }
 
       return {
@@ -223,11 +242,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         name: p.name,
         slug: p.slug,
         image: imageUrl,
-        descriptor: p.seoDescription || p.category || '',
-        price: `$${p.price.toFixed(2)}`,
+        hoverImage: hoverImageUrl,
+        shortDescription: p.seoDescription || 'High-purity research peptide for laboratory use.',
+        category: typeof p.categories?.[0] === 'object' ? p.categories[0].title : '',
+        priceRange: `$${p.price?.toFixed(2) || '0.00'}`,
+        originalPrice: p.salePrice ? `$${p.salePrice.toFixed(2)}` : undefined,
+        isFrom: p.bulkBundles && p.bulkBundles.length > 0,
       }
     })
   }
+
+  console.log('--- FINISHED SERVER RENDER FOR PRODUCT PAGE ---')
 
   return (
     <div className="flex flex-col min-h-screen">

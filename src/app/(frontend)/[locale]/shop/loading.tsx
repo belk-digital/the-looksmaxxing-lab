@@ -11,8 +11,8 @@ export default function ShopLoading() {
           {/* Hero Banner Skeleton */}
           <Skeleton className="h-[300px] sm:h-[400px] md:h-[500px] w-full rounded-[48px] mx-auto" />
           {/* Hero Text Skeleton */}
-          <Skeleton className="h-6 w-3/4 max-w-[720px] mx-auto mt-6 sm:mt-12 bg-cream-warm" />
-          <Skeleton className="h-6 w-1/2 max-w-[500px] mx-auto mt-3 bg-cream-warm" />
+          <Skeleton className="h-6 w-3/4 max-w-[720px] mx-auto mt-6 sm:mt-12" />
+          <Skeleton className="h-6 w-1/2 max-w-[500px] mx-auto mt-3" />
         </div>
       </section>
 
@@ -21,26 +21,25 @@ export default function ShopLoading() {
         <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 bg-white/95 border border-border-subtle p-3 sm:p-4 rounded-2xl shadow-sm">
           {/* Top Row: Buttons */}
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-4">
-              {/* Filter Button */}
-              <Skeleton className="h-10 w-24 rounded-full bg-cream-warm" />
-              {/* Product Count */}
-              <Skeleton className="h-5 w-24 hidden md:block bg-cream-warm" />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <Skeleton className="h-10 w-24 rounded-full" />
+              <div className="flex items-center gap-4">
+                <Skeleton className="h-5 w-24 hidden md:block" />
+              </div>
             </div>
-            
             <div className="flex items-center gap-2">
-              {/* Search Bar */}
-              <Skeleton className="h-10 w-[240px] rounded-full hidden sm:block bg-cream-warm" />
-              {/* Sort Select */}
-              <Skeleton className="h-10 w-[140px] rounded-full bg-cream-warm" />
+              <Skeleton className="h-10 w-[240px] rounded-full hidden sm:block" />
+              <div className="relative">
+                <Skeleton className="h-10 w-[140px] rounded-full" />
+              </div>
             </div>
           </div>
           
           {/* Active Filters Row */}
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-8 w-24 rounded-full bg-cream-warm" />
-            <Skeleton className="h-8 w-20 rounded-full bg-cream-warm" />
-            <Skeleton className="h-8 w-32 rounded-full bg-cream-warm" />
+          <div className="flex flex-wrap gap-3">
+            <Skeleton className="h-8 w-24 rounded-full" />
+            <Skeleton className="h-8 w-20 rounded-full" />
+            <Skeleton className="h-8 w-32 rounded-full" />
           </div>
         </div>
 

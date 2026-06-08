@@ -389,13 +389,24 @@ export interface Product {
       }[]
     | null;
   /**
-   * Enable to sell multiple products together as a kit.
+   * Offer multi-kit bulk bundles of THIS product (e.g., 5 Kits, 10 Kits) directly on the product page.
    */
-  isBundle?: boolean | null;
-  bundleItems?:
+  bulkBundles?:
     | {
-        product: number | Product;
+        /**
+         * e.g. 5 Kits
+         */
+        name: string;
+        /**
+         * Number of items in this bundle
+         */
         quantity: number;
+        price: number;
+        salePrice?: number | null;
+        /**
+         * Optional image for this specific bundle.
+         */
+        image?: (number | null) | Media;
         id?: string | null;
       }[]
     | null;
@@ -1411,12 +1422,14 @@ export interface ProductsSelect<T extends boolean = true> {
             };
         id?: T;
       };
-  isBundle?: T;
-  bundleItems?:
+  bulkBundles?:
     | T
     | {
-        product?: T;
+        name?: T;
         quantity?: T;
+        price?: T;
+        salePrice?: T;
+        image?: T;
         id?: T;
       };
   averageRating?: T;

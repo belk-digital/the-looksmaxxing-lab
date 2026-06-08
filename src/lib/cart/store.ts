@@ -67,24 +67,26 @@ export const useCartStore = create<CartState>()(
             typeof crypto !== 'undefined' && crypto.randomUUID
               ? crypto.randomUUID()
               : Math.random().toString(36).substring(2, 15)
+
+          const newItems = [
+            ...state.items,
+            {
+              lineId,
+              productId: product.id,
+              variantSku,
+              quantity,
+              priceSnapshot,
+              product,
+            },
+          ]
+
+          // Sync new state in background
+          syncCartToPayload(newItems).catch(console.error)
+
           return {
-            items: [
-              ...state.items,
-              {
-                lineId,
-                productId: product.id,
-                variantSku,
-                quantity,
-                priceSnapshot,
-                product,
-              },
-            ],
+            items: newItems,
             isOpen: true, // Auto open drawer on add
           }
-          
-          // Sync new state in background
-          syncCartToPayload(newState.items).catch(console.error)
-          return newState
         })
       },
 

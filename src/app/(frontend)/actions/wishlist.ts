@@ -57,9 +57,8 @@ export async function toggleWishlistInPayload(productId: string | number, isAddi
         req: { payload } as any,
         data: {
           user: payloadUser.id,
-          // @ts-ignore
           items: [{
-            product: productId as number,
+            product: (!isNaN(Number(productId)) ? Number(productId) : productId) as any,
             variantSku: 'default',
             quantity: 1,
             addedAt: new Date().toISOString(),
@@ -83,8 +82,7 @@ export async function toggleWishlistInPayload(productId: string | number, isAddi
       
       if (!exists) {
         newItems.push({
-          // @ts-ignore
-          product: productId as number,
+          product: (!isNaN(Number(productId)) ? Number(productId) : productId) as any,
           variantSku: 'default',
           quantity: 1,
           addedAt: new Date().toISOString(),

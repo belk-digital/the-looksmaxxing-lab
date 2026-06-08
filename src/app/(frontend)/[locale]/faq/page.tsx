@@ -29,13 +29,7 @@ const FAQ_DATA = [
       { q: 'Is a signature required for delivery?', a: 'To ensure the secure chain of custody for research materials, all orders exceeding $500 automatically require a signature upon delivery.' }
     ]
   },
-  {
-    title: 'Returns',
-    items: [
-      { q: 'Can I return an open vial?', a: 'Due to the strict quality control guidelines required for research materials, we absolutely cannot accept returns on open or reconstituted products. This ensures that every researcher receives pristine, untampered compounds.' },
-      { q: 'My order arrived damaged, what should I do?', a: 'If your vials arrive compromised, please contact our support team within 48 hours of delivery. Include high-resolution photos of the damaged items and the packaging. We will expedite a replacement.' }
-    ]
-  },
+
   {
     title: 'Research Use',
     items: [

@@ -33,6 +33,7 @@ export function FaqCarousel({
 
   // Custom Cursor state
   const [isHovered, setIsHovered] = useState(false);
+  const [isHoveringButton, setIsHoveringButton] = useState(false);
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
   
@@ -161,8 +162,8 @@ export function FaqCarousel({
           }}
           initial={{ scale: 0, opacity: 0 }}
           animate={{ 
-            scale: isHovered ? 1 : 0, 
-            opacity: isHovered ? 1 : 0 
+            scale: isHovered && !isHoveringButton ? 1 : 0, 
+            opacity: isHovered && !isHoveringButton ? 1 : 0 
           }}
           transition={{ duration: 0.2 }}
         >
@@ -198,30 +199,34 @@ export function FaqCarousel({
               <p className={`text-sm lg:text-base leading-relaxed mb-6 ${descClass}`}>
                 {description}
               </p>
-              <div className="flex items-center md:justify-end gap-4">
+              <div 
+                className="flex items-center md:justify-end gap-4"
+                onMouseEnter={() => setIsHoveringButton(true)}
+                onMouseLeave={() => setIsHoveringButton(false)}
+              >
                 <button 
                   onClick={() => scrollWindow('left')}
                   disabled={activeIndex === 0}
                   aria-label="Previous question"
-                  className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors group disabled:opacity-30 disabled:cursor-not-allowed ${
+                  className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors group disabled:opacity-30 disabled:cursor-not-allowed !cursor-default ${
                     isDark 
                       ? 'border-cream/20 hover:bg-cream/10 text-cream' 
                       : 'border-slate-300 hover:bg-slate-100 text-slate-500 bg-white shadow-sm'
                   }`}
                 >
-                  <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                  <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform pointer-events-none" />
                 </button>
                 <button 
                   onClick={() => scrollWindow('right')}
                   disabled={activeIndex === faqs.length - 1}
                   aria-label="Next question"
-                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors group disabled:opacity-30 disabled:cursor-not-allowed shadow-md ${
+                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors group disabled:opacity-30 disabled:cursor-not-allowed shadow-md !cursor-default ${
                     isDark 
                       ? 'bg-cream text-ink hover:bg-cream/90' 
                       : 'bg-ink text-white hover:bg-ink/90'
                   }`}
                 >
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform pointer-events-none" />
                 </button>
               </div>
             </FadeUp>
@@ -231,7 +236,7 @@ export function FaqCarousel({
         {/* Carousel Track Container (100vw Full Bleed) */}
         {/* We moved this outside the max-w-[1400px] wrapper. This ensures the overflow-x-auto container 
             spans the entire physical screen, meaning shadows can NEVER be clipped by an invisible wrapper edge! */}
-        <div className="w-full relative z-10 flex-1 min-h-0 flex flex-col">
+        <div className="w-full relative z-10 flex-1 min-h-0 flex flex-col md:[&_*]:!cursor-none">
           <div ref={scrollRef} className="w-full overflow-x-auto hide-scrollbar pb-24 pt-16 -mt-16 flex-1 min-h-0 flex flex-col">
             <motion.div 
               className="flex gap-6 py-8 flex-1 min-h-0"

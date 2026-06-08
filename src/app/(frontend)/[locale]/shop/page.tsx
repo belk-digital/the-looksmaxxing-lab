@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: 'Browse our complete catalog of research-grade peptides and compounds. Filter by purity, category, and availability.',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function ShopPage() {
   let categories: any[] = []
   let dbError = null

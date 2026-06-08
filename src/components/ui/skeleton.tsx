@@ -6,7 +6,7 @@ function Skeleton({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="skeleton"
-      className={cn('skeleton rounded-sm bg-cream-warm', className)}
+      className={cn('skeleton rounded-sm animate-pulse bg-ink/5', className)}
       {...props}
     />
   )
@@ -18,7 +18,7 @@ export function ProductCardSkeleton() {
     <div className="block relative w-full h-[460px] sm:h-[500px] rounded-[32px] bg-white p-2 sm:p-3 shadow-sm border border-border-subtle">
       <div className="relative w-full h-full rounded-[24px] overflow-hidden bg-cream">
         {/* Image Area Skeleton */}
-        <div className="absolute inset-0 bg-cream-warm animate-pulse" />
+        <div className="absolute inset-0 bg-ink/5 animate-pulse" />
         
         {/* Bottom Content Area Skeleton */}
         <div className="absolute bottom-0 left-0 right-0 z-30 p-4 sm:p-5 bg-white rounded-b-[24px]">
@@ -89,11 +89,11 @@ export function OrderRowSkeleton() {
 // 4. Stat Card Skeleton
 export function StatCardSkeleton() {
   return (
-    <div className="bg-cream-warm border border-border-subtle rounded-md p-6 flex flex-col items-center text-center">
+    <div className="bg-white border border-border-subtle rounded-md p-6 flex flex-col items-center text-center">
       {/* Large number placeholder */}
-      <Skeleton className="h-10 w-24 mb-3 bg-cream/50" />
+      <Skeleton className="h-10 w-24 mb-3" />
       {/* Label placeholder */}
-      <Skeleton className="h-4 w-32 bg-cream/50" />
+      <Skeleton className="h-4 w-32" />
     </div>
   )
 }

@@ -32,7 +32,7 @@ export const useWishlistStore = create<WishlistState>()(
       setItems: (items) => set({ items }),
       addItem: async (item) => {
         const currentItems = get().items
-        if (!currentItems.find((i) => i.id === item.id)) {
+        if (!currentItems.find((i) => String(i.id) === String(item.id))) {
           const res = await withTimeout(toggleWishlistInPayload(item.id, true))
           if (res && !res.success) throw new Error(res.error || 'Failed to sync with server')
           set({ items: [...get().items, item] })
@@ -41,9 +41,9 @@ export const useWishlistStore = create<WishlistState>()(
       removeItem: async (id) => {
         const res = await withTimeout(toggleWishlistInPayload(id, false))
         if (res && !res.success) throw new Error(res.error || 'Failed to sync with server')
-        set({ items: get().items.filter((i) => i.id !== id) })
+        set({ items: get().items.filter((i) => String(i.id) !== String(id)) })
       },
-      hasItem: (id) => get().items.some((i) => i.id === id)
+      hasItem: (id) => get().items.some((i) => String(i.id) === String(id))
     }),
     {
       name: 'wishlist-storage',

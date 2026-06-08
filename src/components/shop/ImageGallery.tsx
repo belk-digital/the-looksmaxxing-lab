@@ -15,7 +15,6 @@ export interface ImageGalleryProps {
 
 export function ImageGallery({ images }: ImageGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [lightboxOpen, setLightboxOpen] = useState(false)
   
   // Embla for mobile swipe
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false })
@@ -72,18 +71,17 @@ export function ImageGallery({ images }: ImageGalleryProps) {
   if (!images || images.length === 0) return null
 
   return (
-    <div className="flex flex-col w-full gap-4 lg:gap-6">
+    <div className="flex flex-col w-full gap-4 lg:gap-6 relative">
       {/* Main Large Image */}
       <div 
-        className="relative w-full aspect-square lg:aspect-[4/5] bg-white rounded-[2rem] overflow-hidden" 
+        className="relative w-full aspect-[4/5] bg-white rounded-[2.5rem] overflow-hidden shadow-[0_8px_40px_rgb(0,0,0,0.06)] border border-ink/5" 
         ref={emblaRef}
       >
         <div className="flex h-full">
           {images.map((img, idx) => (
             <div 
               key={idx} 
-              className="relative min-w-0 shrink-0 grow-0 basis-full h-full cursor-none group overflow-hidden"
-              onClick={() => setLightboxOpen(true)}
+              className="relative min-w-0 shrink-0 grow-0 basis-full h-full group overflow-hidden"
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
             >
@@ -96,38 +94,28 @@ export function ImageGallery({ images }: ImageGalleryProps) {
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
 
-              {/* Custom Modern Cursor */}
-              <motion.div
-                className="pointer-events-none absolute left-0 top-0 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] text-ink opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{
-                  x: cursorXSpring,
-                  y: cursorYSpring,
-                  translateX: '-50%',
-                  translateY: '-50%',
-                }}
-              >
-                <Maximize2 size={18} strokeWidth={2.5} />
-              </motion.div>
+
             </div>
           ))}
         </div>
       </div>
 
-      {/* Thumbnails Row */}
+      {/* Thumbnails Row (Glassmorphic Pill) */}
       {images.length > 1 && (
-        <div className="flex bg-white rounded-3xl p-3 gap-3 overflow-x-auto scrollbar-none self-start max-w-full">
-          {images.map((img, idx) => {
-            const isActive = activeIndex === idx
-            return (
-              <button
-                key={idx}
-                onClick={() => scrollTo(idx)}
-                className={cn(
-                  "relative w-20 h-20 shrink-0 bg-gray-50 rounded-2xl overflow-hidden transition-all duration-300",
-                  isActive 
-                    ? "ring-2 ring-ink ring-offset-2 ring-offset-white" 
-                    : "opacity-60 hover:opacity-100"
-                )}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20">
+          <div className="flex gap-2 bg-white/80 backdrop-blur-xl border border-white/50 shadow-[0_4px_24px_rgb(0,0,0,0.1)] rounded-full p-2 overflow-x-auto scrollbar-none max-w-[90vw]">
+            {images.map((img, idx) => {
+              const isActive = activeIndex === idx
+              return (
+                <button
+                  key={idx}
+                  onClick={() => scrollTo(idx)}
+                  className={cn(
+                    "relative w-14 h-14 shrink-0 bg-white rounded-full overflow-hidden transition-all duration-500",
+                    isActive 
+                      ? "ring-2 ring-ink ring-offset-2 ring-offset-white opacity-100" 
+                      : "opacity-50 hover:opacity-100 hover:scale-105"
+                  )}
                 aria-label={`View image ${idx + 1}`}
               >
                 <Image 
@@ -140,27 +128,10 @@ export function ImageGallery({ images }: ImageGalleryProps) {
               </button>
             )
           })}
+          </div>
         </div>
       )}
 
-      {/* Lightbox Modal */}
-      <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
-        <DialogContent className="max-w-[90vw] md:max-w-7xl w-full h-[90vh] bg-ink/95 border-none p-0 flex items-center justify-center [&>button]:hidden">
-          <DialogTitle className="sr-only">Image Lightbox</DialogTitle>
-          <div className="relative w-full h-full flex items-center justify-center p-8">
-            <Image 
-              src={images[activeIndex]}
-              alt={`Fullscreen view`}
-              fill
-              className="object-contain"
-              sizes="100vw"
-            />
-          </div>
-          <DialogClose className="absolute top-4 right-4 p-2 z-50 text-cream hover:text-gold transition-colors focus:outline-none">
-            <X size={24} />
-          </DialogClose>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

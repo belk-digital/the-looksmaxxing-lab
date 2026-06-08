@@ -14,12 +14,15 @@ export interface StandardProduct {
   name: string
   slug: string
   image: string
+  hoverImage?: string
   descriptor: string
   price: string
+  originalPrice?: string
+  discountPercentage?: number
   badge?: 'sale' | 'new' | 'bestseller'
 }
 
-export function ProductCard({ product }: { product: StandardProduct }) {
+export function CompactProductCard({ product }: { product: StandardProduct }) {
   const addItem = useWishlistStore(state => state.addItem)
   const removeItem = useWishlistStore(state => state.removeItem)
   const inWishlist = useWishlistStore(state => product.id ? state.hasItem(product.id) : false)
@@ -78,14 +81,50 @@ export function ProductCard({ product }: { product: StandardProduct }) {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="w-full h-full relative"
           >
-            <Image
-              src={product.image}
-              alt={product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
+            <motion.div
+              variants={
+                product.hoverImage
+                  ? { rest: { x: 0 }, hover: { x: '-100%' } }
+                  : { rest: { x: 0 }, hover: { x: 0 } }
+              }
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-0"
+            >
+              <Image
+                src={product.image}
+                alt={product.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+            </motion.div>
+
+            {product.hoverImage && (
+              <motion.div
+                variants={{
+                  rest: { x: '100%' },
+                  hover: { x: 0 },
+                }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={product.hoverImage}
+                  alt={`${product.name} alternate view`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </motion.div>
+            )}
           </motion.div>
+
+          {/* DEBUG INDICATOR - Temporary */}
+          {product.hoverImage && (
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/80 text-white px-3 py-1 rounded text-xs z-50 font-mono pointer-events-none shadow-xl border border-white/20 whitespace-nowrap">
+              DEBUG: HOVER IMAGE LOADED
+            </div>
+          )}
 
           {/* Optional Badge */}
           {product.badge && (
@@ -123,10 +162,26 @@ export function ProductCard({ product }: { product: StandardProduct }) {
           <span className="text-label-md uppercase tracking-wider text-ink-muted mb-4 line-clamp-1">
             {product.descriptor}
           </span>
-          <div className="mt-auto">
-            <span className="text-body-lg font-medium text-ink">
-              {product.price}
-            </span>
+          <div className="mt-auto flex items-center gap-2">
+            {product.originalPrice ? (
+              <>
+                <span className="text-body-sm text-ink/30 line-through">
+                  {product.originalPrice}
+                </span>
+                <span className="text-body-lg font-medium text-ink">
+                  {product.price}
+                </span>
+                {product.discountPercentage && (
+                  <span className="ml-auto text-[10px] font-bold tracking-widest px-2 py-1 bg-ink/5 text-ink rounded-md">
+                    -{product.discountPercentage}%
+                  </span>
+                )}
+              </>
+            ) : (
+              <span className="text-body-lg font-medium text-ink">
+                {product.price}
+              </span>
+            )}
           </div>
         </div>
         

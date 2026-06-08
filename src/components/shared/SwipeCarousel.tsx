@@ -100,7 +100,7 @@ export function SwipeCarousel({ title, description, cards }: SwipeCarouselProps)
         {/* Carousel Container */}
         <div 
           ref={containerRef}
-          className="relative w-full md:cursor-none"
+          className="relative w-full md:cursor-none md:[&_*]:!cursor-none"
           onPointerMove={handlePointerMove}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
@@ -130,7 +130,7 @@ export function SwipeCarousel({ title, description, cards }: SwipeCarouselProps)
             drag={isMobile ? false : "x"}
             dragConstraints={dragConstraints}
             dragElastic={0.1}
-            whileTap={{ cursor: isMobile ? "auto" : "grabbing" }}
+            whileTap={{ cursor: isMobile ? "auto" : "none" }}
             className={`flex gap-4 md:gap-6 items-stretch pb-8 ${isMobile ? 'overflow-x-auto snap-x snap-mandatory' : ''} hide-scrollbar`}
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
