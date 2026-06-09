@@ -1,17 +1,44 @@
-'use client'
-
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ChevronRight, ChevronLeft, Search, Heart, User } from 'lucide-react'
+import { 
+  X, Search, Heart, User, LogIn, ArrowUpRight, 
+  Activity, Dna, Brain, ShieldPlus, Sparkles, Zap, Network, BatteryCharging,
+  ShoppingBag, Calculator, BookOpen, Microscope,
+  HelpCircle, Mail, Users
+} from 'lucide-react'
 import Link from 'next/link'
 
 export interface MobileMenuProps {
   isOpen: boolean
   onClose: () => void
+  isLoggedIn?: boolean
 }
 
-export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
-  const [activeView, setActiveView] = useState<'main' | 'shop'>('main')
+const CATEGORIES = [
+  { name: 'Bioregulators', icon: Activity },
+  { name: 'Cellular Health', icon: Dna },
+  { name: 'Cognitive', icon: Brain },
+  { name: 'Essentials', icon: ShieldPlus },
+  { name: 'Growth Factor', icon: Sparkles },
+  { name: 'Metabolic', icon: Zap },
+  { name: 'Receptor Agonist', icon: Network },
+  { name: 'Recovery', icon: BatteryCharging }
+]
+
+const DISCOVER_LINKS = [
+  { label: 'Shop All Formulations', href: '/shop', icon: ShoppingBag },
+  { label: 'Peptide Calculator', href: '/peptide-calculator', icon: Calculator },
+  { label: 'Scientific Journal', href: '/journal', icon: BookOpen },
+  { label: 'Our Laboratory', href: '/about', icon: Microscope },
+]
+
+const SUPPORT_LINKS = [
+  { label: 'F.A.Q', href: '/faq', icon: HelpCircle },
+  { label: 'Contact Support', href: '/contact', icon: Mail },
+  { label: 'Affiliate Program', href: '/affiliates', icon: Users },
+]
+
+export function MobileMenu({ isOpen, onClose, isLoggedIn = false }: MobileMenuProps) {
 
   useEffect(() => {
     if (isOpen) {
@@ -24,153 +51,156 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         document.body.style.overflow = ''
         window.removeEventListener('keydown', handleEsc)
       }
-    } else {
-      const timer = setTimeout(() => setActiveView('main'), 400)
-      return () => clearTimeout(timer)
     }
   }, [isOpen, onClose])
 
-  const drawerVariants = {
-    closed: { x: '100%', opacity: 1 },
-    open: { x: 0, opacity: 1 },
+  const menuVariants = {
+    closed: { opacity: 0, scale: 0.96, y: 10 },
+    open: { 
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { 
+        duration: 0.5, 
+        ease: [0.22, 1, 0.36, 1],
+        staggerChildren: 0.04,
+        delayChildren: 0.1
+      } 
+    },
+    exit: { opacity: 0, scale: 0.98, y: 5, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }
   }
 
-  const panelVariants = {
-    hidden: { x: '100%', opacity: 0 },
-    visible: { x: 0, opacity: 1 },
-    exit: { x: '-20%', opacity: 0 }
+  const itemVariants = {
+    closed: { y: 15, opacity: 0, scale: 0.98 },
+    open: { y: 0, opacity: 1, scale: 1, transition: { duration: 0.4, ease: "easeOut" } }
   }
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            onClick={onClose}
-            className="fixed inset-0 z-[90] bg-ink/40 backdrop-blur-sm pointer-events-auto"
-          />
-
-          {/* Drawer */}
-          <motion.div
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={drawerVariants}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-0 right-0 bottom-0 w-[90vw] max-w-[420px] z-[100] bg-[#FAF7F2] shadow-2xl flex flex-col overflow-hidden pointer-events-auto"
-          >
-            {/* Top Bar */}
-            <div className="h-20 flex items-center justify-between px-6 border-b border-[#D8CCA9]/30 shrink-0">
-              <span className="font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0A0A0A]">
-                MENU
-              </span>
-              <button onClick={onClose} className="p-2 -mr-2 text-[#0A0A0A] hover:opacity-60 transition-opacity bg-white/50 rounded-full">
+        <motion.div
+          initial="closed"
+          animate="open"
+          exit="exit"
+          variants={menuVariants}
+          className="fixed inset-0 z-[100] bg-white flex flex-col pointer-events-auto"
+        >
+          {/* Header Block - Close button on Right to match new hamburger position! */}
+          <motion.div variants={itemVariants} className="h-[72px] flex items-center justify-between px-6 border-b border-black/5 shrink-0 bg-white">
+            <div className="flex-1" /> {/* Spacer to perfectly center the Directory text */}
+            
+            <span className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-ink flex-1 text-center">
+              Directory
+            </span>
+            
+            <div className="flex flex-1 justify-end">
+              <button onClick={onClose} className="p-2 -mr-2 text-ink hover:bg-black/5 transition-colors rounded-full">
                 <X size={20} strokeWidth={1.5} />
               </button>
             </div>
+          </motion.div>
 
-            {/* Main Content Area */}
-            <div className="relative flex-1 overflow-hidden">
-              <AnimatePresence initial={false} mode="wait">
-                {activeView === 'main' && (
-                  <motion.div
-                    key="main"
-                    initial={{ x: '-10%', opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: '-10%', opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="absolute inset-0 overflow-y-auto flex flex-col px-8 py-10"
+          {/* Scrollable Main Area */}
+          <div className="flex-1 overflow-y-auto overflow-x-hidden bg-[#FAFAFA]">
+            
+            {/* Categories Section */}
+            <motion.div variants={itemVariants} className="flex flex-col border-b border-black/5 bg-white">
+              <div className="px-6 py-4 border-b border-black/5 bg-[#F5F5F5]">
+                <h3 className="text-[9px] font-bold uppercase tracking-widest text-ink/50">Shop by Category</h3>
+              </div>
+              <div className="grid grid-cols-2">
+                {CATEGORIES.map((cat, i) => (
+                  <Link 
+                    key={cat.name}
+                    href={`/en/shop/${cat.name.toLowerCase().replace(' ', '-')}`} 
+                    onClick={onClose}
+                    className={`flex flex-col gap-3 items-start px-6 py-5 hover:bg-black/5 transition-colors border-b border-black/5 ${i % 2 === 0 ? 'border-r' : ''}`}
                   >
-                    <nav className="flex flex-col gap-8 mb-12">
-                      <button 
-                        onClick={() => setActiveView('shop')}
-                        className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group"
-                      >
-                        Shop
-                        <ChevronRight size={24} className="text-[#0A0A0A]/30 group-hover:text-[#0A0A0A] transition-colors" strokeWidth={1} />
-                      </button>
-                      <Link href="/peptide-calculator" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
-                        Calculator
-                      </Link>
-                      <Link href="/about" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
-                        About
-                      </Link>
-                      <Link href="/journal" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
-                        Journal
-                      </Link>
-                      <Link href="/faq" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
-                        FAQ
-                      </Link>
-                      <Link href="/contact" onClick={onClose} className="flex items-center justify-between text-left text-2xl md:text-3xl font-serif text-[#0A0A0A] group">
-                        Contact
-                      </Link>
-                    </nav>
-
-                    <div className="h-px bg-[#D8CCA9]/40 w-full mb-10" />
-
-                    <div className="flex flex-col gap-6">
-                      <button className="flex items-center gap-4 text-[11px] font-sans tracking-[0.15em] uppercase text-[#0A0A0A]/70 hover:text-[#0A0A0A] transition-colors text-left">
-                        <Search size={16} strokeWidth={1.5} /> SEARCH
-                      </button>
-                      <Link href="/account/wishlist" onClick={onClose} className="flex items-center gap-4 text-[11px] font-sans tracking-[0.15em] uppercase text-[#0A0A0A]/70 hover:text-[#0A0A0A] transition-colors">
-                        <Heart size={16} strokeWidth={1.5} /> WISHLIST
-                      </Link>
-                      <Link href="/account" onClick={onClose} className="flex items-center gap-4 text-[11px] font-sans tracking-[0.15em] uppercase text-[#0A0A0A]/70 hover:text-[#0A0A0A] transition-colors">
-                        <User size={16} strokeWidth={1.5} /> ACCOUNT
-                      </Link>
+                    <div className="p-2 rounded-full bg-black/5 text-ink">
+                      <cat.icon size={16} strokeWidth={1.5} />
                     </div>
-                  </motion.div>
-                )}
+                    <span className="text-[12px] font-semibold text-ink">{cat.name}</span>
+                  </Link>
+                ))}
+              </div>
+            </motion.div>
 
-                {activeView === 'shop' && (
-                  <motion.div
-                    key="shop"
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    variants={panelVariants}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="absolute inset-0 bg-[#FAF7F2] overflow-y-auto px-8 py-10 flex flex-col z-10"
+            {/* Discover Section */}
+            <motion.div variants={itemVariants} className="flex flex-col border-b border-black/5 bg-white mt-4">
+              <div className="px-6 py-4 border-b border-black/5 bg-[#F5F5F5]">
+                <h3 className="text-[9px] font-bold uppercase tracking-widest text-ink/50">Discover</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2">
+                {DISCOVER_LINKS.map((link, i) => (
+                  <Link 
+                    key={link.label}
+                    href={link.href} 
+                    onClick={onClose}
+                    className={`flex items-center gap-4 px-6 py-4 hover:bg-black/5 transition-colors border-b border-black/5 ${i % 2 === 0 ? 'sm:border-r' : ''} last:border-b-0 sm:last:border-b`}
                   >
-                    <button 
-                      onClick={() => setActiveView('main')}
-                      className="flex items-center gap-2 text-[10px] font-sans font-semibold uppercase tracking-[0.2em] text-[#0A0A0A]/50 mb-10 hover:text-[#0A0A0A] transition-colors"
-                    >
-                      <ChevronLeft size={16} strokeWidth={1.5} /> BACK
-                    </button>
+                    <div className="p-2 rounded-full bg-black/5 text-ink">
+                      <link.icon size={16} strokeWidth={1.5} />
+                    </div>
+                    <span className="text-[13px] font-medium text-ink flex-1">{link.label}</span>
+                    <ArrowUpRight size={12} className="text-ink/30" strokeWidth={2} />
+                  </Link>
+                ))}
+              </div>
+            </motion.div>
 
-                    <h3 className="font-serif text-3xl text-[#0A0A0A] mb-8 pb-6 border-b border-[#D8CCA9]/30">Shop</h3>
+            {/* Support Section */}
+            <motion.div variants={itemVariants} className="flex flex-col border-b border-black/5 bg-white mt-4 mb-24">
+              <div className="px-6 py-4 border-b border-black/5 bg-[#F5F5F5]">
+                <h3 className="text-[9px] font-bold uppercase tracking-widest text-ink/50">Support</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2">
+                {SUPPORT_LINKS.map((link, i) => (
+                  <Link 
+                    key={link.label}
+                    href={link.href} 
+                    onClick={onClose}
+                    className={`flex items-center gap-4 px-6 py-4 hover:bg-black/5 transition-colors border-b border-black/5 ${i % 2 === 0 ? 'sm:border-r' : ''}`}
+                  >
+                    <link.icon size={16} strokeWidth={1.5} className="text-ink/50" />
+                    <span className="text-[12px] font-medium text-ink/70">{link.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </motion.div>
 
-                    <ul className="flex flex-col gap-6 pb-8">
-                      {['Bioregulators', 'Cellular Health', 'Cognitive', 'Essentials', 'Growth Factor', 'Metabolic', 'Receptor Agonist', 'Recovery'].map(cat => (
-                        <li key={cat}>
-                          <Link 
-                            href={`/en/shop/${cat.toLowerCase().replace(' ', '-')}`} 
-                            onClick={onClose}
-                            className="text-lg font-sans text-[#0A0A0A] hover:text-[#0A0A0A]/60 transition-colors block"
-                          >
-                            {cat}
-                          </Link>
-                        </li>
-                      ))}
-                      <li className="pt-6 mt-4 border-t border-[#D8CCA9]/30">
-                        <Link href="/shop" onClick={onClose} className="text-sm font-sans font-semibold uppercase tracking-wider text-[#0A0A0A] hover:opacity-70 transition-opacity flex items-center justify-between">
-                          View All Products
-                          <ChevronRight size={16} className="text-[#0A0A0A]/30" strokeWidth={1.5} />
-                        </Link>
-                      </li>
-                    </ul>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+          </div>
+
+          {/* Footer Utility Dock */}
+          <motion.div 
+            variants={itemVariants} 
+            className="absolute bottom-0 left-0 right-0 border-t border-black/10 bg-white/95 backdrop-blur-md shadow-[0_-10px_40px_rgba(0,0,0,0.05)] pb-safe"
+          >
+            <div className="grid grid-cols-3 h-[72px]">
+              <button className="flex flex-col items-center justify-center gap-1.5 text-ink/60 hover:text-ink hover:bg-black/5 transition-colors">
+                <Search size={18} strokeWidth={1.5} />
+                <span className="text-[9px] font-bold uppercase tracking-widest">Search</span>
+              </button>
+              
+              <Link href="/account/wishlist" onClick={onClose} className="flex flex-col items-center justify-center gap-1.5 text-ink/60 hover:text-ink hover:bg-black/5 transition-colors border-l border-r border-black/10">
+                <Heart size={18} strokeWidth={1.5} />
+                <span className="text-[9px] font-bold uppercase tracking-widest">Wishlist</span>
+              </Link>
+              
+              {isLoggedIn ? (
+                <Link href="/account" onClick={onClose} className="flex flex-col items-center justify-center gap-1.5 text-ink/60 hover:text-ink hover:bg-black/5 transition-colors">
+                  <User size={18} strokeWidth={1.5} />
+                  <span className="text-[9px] font-bold uppercase tracking-widest">Account</span>
+                </Link>
+              ) : (
+                <Link href="/login" onClick={onClose} className="flex flex-col items-center justify-center gap-1.5 text-ink/60 hover:text-ink hover:bg-black/5 transition-colors">
+                  <LogIn size={18} strokeWidth={1.5} />
+                  <span className="text-[9px] font-bold uppercase tracking-widest">Login</span>
+                </Link>
+              )}
             </div>
           </motion.div>
-        </>
+
+        </motion.div>
       )}
     </AnimatePresence>
   )

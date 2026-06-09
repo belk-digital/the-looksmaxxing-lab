@@ -52,20 +52,20 @@ export function AboutTeaser() {
         {/* 4. Extreme Foreground Blur Layer (Left Side, huge scale, blurred, placed BEHIND text for depth) */}
         <motion.div 
           style={{ y: fgBlurY, willChange: 'transform' }}
-          className="absolute top-[-10%] left-[-30%] sm:left-[-15%] md:left-[-5%] w-[80vw] max-w-[600px] aspect-[1/2.2] z-0 pointer-events-none opacity-40 rotate-12"
+          className="absolute top-[-10%] left-[-30%] sm:left-[-15%] md:left-[-5%] w-[80vw] max-w-[600px] aspect-[1/2.2] z-0 pointer-events-none opacity-40 rotate-12 transform-gpu"
         >
           <Image 
             src="/Featured%20Images/vial-no-bg.webp"
             alt="Foreground Blur Vial"
             fill
-            className="object-contain blur-xl mix-blend-multiply opacity-30"
+            className="object-contain blur-xl opacity-20 transform-gpu"
           />
         </motion.div>
 
         {/* 2. Middle Layer: Huge Typography */}
         <motion.div 
           style={{ y: textY, willChange: 'transform' }}
-          className="relative z-10 w-full flex flex-col items-center justify-center text-center px-6 pointer-events-none"
+          className="relative z-10 w-full flex flex-col items-center justify-center text-center px-6 pointer-events-none transform-gpu"
         >
           <span className="text-label-md uppercase tracking-widest text-[#5984c4] mb-6 md:mb-8 block font-bold">
             THE LAB
@@ -77,7 +77,7 @@ export function AboutTeaser() {
             We synthesize ultra-pure research peptides using advanced solid-phase peptide synthesis (SPPS) in US-based, ISO-certified facilities. Every compound undergoes independent third-party LC-MS and HPLC analysis to verify both molecular identity and ≥99% purity before it reaches your bench. No overseas raw powders. No shortcuts. Just verifiable science.
           </p>
           <div className="pointer-events-auto mt-10">
-            <Button variant="outline" asChild className="border-slate-300 text-ink hover:bg-[#5984c4] hover:text-white hover:border-[#5984c4] rounded-[1.5rem] px-8 py-6 backdrop-blur-md transition-all duration-300 uppercase tracking-widest text-[10px] font-bold shadow-sm">
+            <Button variant="outline" asChild className="border-slate-300 text-ink hover:bg-[#5984c4] hover:text-white hover:border-[#5984c4] rounded-[1.5rem] px-8 py-6 backdrop-blur-md transition-all duration-300 uppercase tracking-widest text-[10px] font-bold shadow-sm transform-gpu">
               <Link href="/about">Read About Us →</Link>
             </Button>
           </div>
@@ -86,13 +86,13 @@ export function AboutTeaser() {
         {/* 3. Foreground Focus Layer (Right Side) */}
         <motion.div 
           style={{ y: fgFocusY, willChange: 'transform' }}
-          className="absolute bottom-[-30%] right-[-10%] sm:right-0 md:right-[5%] lg:right-[10%] w-[50vw] max-w-[400px] aspect-[1/2.2] z-20 pointer-events-none drop-shadow-2xl -rotate-6"
+          className="absolute bottom-[-30%] right-[-10%] sm:right-0 md:right-[5%] lg:right-[10%] w-[50vw] max-w-[400px] aspect-[1/2.2] z-20 pointer-events-none drop-shadow-2xl -rotate-6 transform-gpu"
         >
           <Image 
             src="/Featured%20Images/vial-no-bg.webp"
             alt="Foreground Vial"
             fill
-            className="object-contain mix-blend-multiply drop-shadow-2xl"
+            className="object-contain drop-shadow-xl transform-gpu"
           />
         </motion.div>
 

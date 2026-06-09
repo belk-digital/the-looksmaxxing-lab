@@ -80,13 +80,31 @@ function SlideToCartButton({ onAdd, disabled, isAdded }: { onAdd: () => void, di
     }
   }
 
+  React.useEffect(() => {
+    const node = containerRef.current
+    if (!node) return
+    const stop = (e: Event) => e.stopPropagation()
+    node.addEventListener('pointerdown', stop)
+    node.addEventListener('touchstart', stop, { passive: false })
+    node.addEventListener('mousedown', stop)
+    return () => {
+      node.removeEventListener('pointerdown', stop)
+      node.removeEventListener('touchstart', stop)
+      node.removeEventListener('mousedown', stop)
+    }
+  }, [])
+
   return (
-    <div ref={containerRef} className={`relative flex-1 h-16 bg-white border border-ink/10 rounded-full flex items-center overflow-hidden z-10 transition-colors hover:border-ink/30 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+    <div 
+      ref={containerRef} 
+      className={`relative flex-1 h-16 bg-white border border-ink/10 rounded-full flex items-center overflow-hidden z-10 transition-colors hover:border-ink/30 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
+    >
       <div className="absolute inset-0 flex items-center justify-center pl-10 text-[13px] font-bold text-ink uppercase tracking-widest pointer-events-none select-none">
         {isAdded ? 'Added to Cart' : <>Slide to Add <ChevronRight size={16} className="inline ml-1 opacity-50" /></>}
       </div>
       
-      <motion.div
+      <motion.button
+        type="button"
         drag={disabled || isAdded ? false : "x"}
         dragConstraints={containerRef}
         dragElastic={0.05}
@@ -98,7 +116,7 @@ function SlideToCartButton({ onAdd, disabled, isAdded }: { onAdd: () => void, di
         }`}
       >
         {isAdded ? <Check size={20} /> : <ShoppingCart size={20} />}
-      </motion.div>
+      </motion.button>
     </div>
   )
 }

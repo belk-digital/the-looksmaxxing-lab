@@ -29,6 +29,19 @@ export function HomePreloaderWrapper({ children }: { children: React.ReactNode }
   }, [])
 
   useGSAP(() => {
+    // Check if the preloader has already been shown in this browser session
+    const hasPlayed = sessionStorage.getItem('looksmaxxingPreloaderPlayed')
+    
+    if (hasPlayed === 'true') {
+      // Immediately hide preloader and set ready without animation
+      setIsReady(true)
+      gsap.set(preloaderRef.current, { display: 'none' })
+      return
+    }
+
+    // Mark as played for future navigations
+    sessionStorage.setItem('looksmaxxingPreloaderPlayed', 'true')
+
     const tl = gsap.timeline({
       onComplete: () => {
         setIsReady(true)

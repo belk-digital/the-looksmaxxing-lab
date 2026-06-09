@@ -154,7 +154,7 @@ export function CoaSection() {
     >
        {/* Aesthetic Ambient Background Glow */}
        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
-          <div className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[700px] lg:h-[700px] rounded-full bg-gradient-to-tr from-[#5984c4]/5 to-[#5984c4]/10 blur-[80px] lg:blur-[140px] transform translate-y-16" />
+          <div className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[700px] lg:h-[700px] rounded-full bg-gradient-to-tr from-[#5984c4]/5 to-[#5984c4]/10 blur-[80px] lg:blur-[140px] transform translate-y-16 transform-gpu will-change-transform opacity-60" />
        </div>
        
        <Container size="wide" className="relative z-10">

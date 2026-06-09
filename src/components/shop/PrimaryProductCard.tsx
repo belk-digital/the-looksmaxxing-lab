@@ -56,13 +56,32 @@ function SlideToAddButton({ product }: { product: Product }) {
     }
   }
 
+  React.useEffect(() => {
+    const node = containerRef.current
+    if (!node) return
+    const stop = (e: Event) => e.stopPropagation()
+    // Stop native events from bubbling up to Embla Carousel
+    node.addEventListener('pointerdown', stop)
+    node.addEventListener('touchstart', stop, { passive: false })
+    node.addEventListener('mousedown', stop)
+    return () => {
+      node.removeEventListener('pointerdown', stop)
+      node.removeEventListener('touchstart', stop)
+      node.removeEventListener('mousedown', stop)
+    }
+  }, [])
+
   return (
-    <div ref={containerRef} className="relative w-full h-[40px] sm:h-[52px] bg-[#F1F1F1] rounded-full flex items-center overflow-hidden pointer-events-auto z-20 mt-auto border border-black/5">
+    <div 
+      ref={containerRef} 
+      className="relative w-full h-[40px] sm:h-[52px] bg-[#F1F1F1] rounded-full flex items-center overflow-hidden pointer-events-auto z-20 mt-auto border border-black/5"
+    >
       <div className="absolute inset-0 flex items-center justify-center pl-8 sm:pl-10 text-[9px] sm:text-[12px] lg:text-[13px] font-semibold text-ink/40 pointer-events-none select-none tracking-tight">
         Slide to add <ChevronRight size={14} className="inline ml-0.5" />
       </div>
       
-      <motion.div
+      <motion.button
+        type="button"
         drag="x"
         dragConstraints={containerRef}
         dragElastic={0.05}
@@ -74,7 +93,7 @@ function SlideToAddButton({ product }: { product: Product }) {
         }`}
       >
         {isAdded ? <Check size={14} className="sm:w-4 sm:h-4" /> : <ShoppingCart size={14} className="sm:w-4 sm:h-4" />}
-      </motion.div>
+      </motion.button>
     </div>
   )
 }

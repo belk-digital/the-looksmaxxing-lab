@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     trash: Trash;
+    order_counters: OrderCounter;
     users: User;
     media: Media;
     documents: Document;
@@ -98,6 +99,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     trash: TrashSelect<false> | TrashSelect<true>;
+    order_counters: OrderCountersSelect<false> | OrderCountersSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     documents: DocumentsSelect<false> | DocumentsSelect<true>;
@@ -183,6 +185,16 @@ export interface Trash {
     | number
     | boolean
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "order_counters".
+ */
+export interface OrderCounter {
+  id: number;
+  counter: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -1121,6 +1133,10 @@ export interface PayloadLockedDocument {
         value: number | Trash;
       } | null)
     | ({
+        relationTo: 'order_counters';
+        value: number | OrderCounter;
+      } | null)
+    | ({
         relationTo: 'users';
         value: number | User;
       } | null)
@@ -1259,6 +1275,16 @@ export interface TrashSelect<T extends boolean = true> {
   collectionSlug?: T;
   originalId?: T;
   documentData?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "order_counters_select".
+ */
+export interface OrderCountersSelect<T extends boolean = true> {
+  id?: T;
+  counter?: T;
   updatedAt?: T;
   createdAt?: T;
 }

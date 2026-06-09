@@ -47,17 +47,22 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
     }
   }, [initialCategories])
 
+  const cartHydrated = useRef(false)
+  const wishlistHydrated = useRef(false)
+
   // Sync Cart with Backend
   useEffect(() => {
-    if (isLoggedIn && initialCartItems.length > 0 && cartStore.items.length === 0) {
+    if (isLoggedIn && !cartHydrated.current) {
       setCartItems(initialCartItems)
+      cartHydrated.current = true
     }
-  }, [isLoggedIn, initialCartItems, setCartItems, cartStore.items.length])
+  }, [isLoggedIn, initialCartItems, setCartItems])
 
   // Sync Wishlist with Backend
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && !wishlistHydrated.current) {
       setWishlistItems(initialWishlistItems)
+      wishlistHydrated.current = true
     }
   }, [isLoggedIn, initialWishlistItems, setWishlistItems])
 
@@ -151,15 +156,8 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
           )}
 
           <header className={headerClasses}>
-          {/* Mobile Hamburger */}
-          <div className="flex xl:hidden flex-1">
-            <button onClick={() => setMobileMenuOpen(true)} className={`p-2 -ml-2 ${textColor}`}>
-              <Menu size={20} />
-            </button>
-          </div>
-
           {/* Left: Logo (Mimicking the reference swirl) */}
-          <div className="flex-1 xl:flex-none flex justify-center xl:justify-start">
+          <div className="flex-1 xl:flex-none flex justify-start">
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
               <svg width="48" height="24" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 15 C15 7, 45 7, 45 15 C45 23, 20 23, 20 15 C20 11, 40 11, 40 15 C40 19, 25 19, 25 15" stroke={iconColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -252,7 +250,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
               </AnimatePresence>
             </button>
             
-            <div className="flex items-center min-w-[34px] justify-center">
+            <div className="flex items-center md:min-w-[34px] justify-center">
               {mounted ? (
                 isLoggedIn ? (
                   <Link href="/account" className={`p-1 transition-colors flex items-center justify-center ${textColor} ${textHoverColor}`}>
@@ -269,6 +267,11 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
             <Link href="/shop" className={`hidden md:inline-flex border rounded-none px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase transition-all ${textColor} ${buttonBorder}`}>
               SHOP NOW
             </Link>
+
+            {/* Mobile Hamburger */}
+            <button onClick={() => setMobileMenuOpen(true)} className={`xl:hidden p-1 -mr-1 transition-colors ${textColor}`}>
+              <Menu size={20} strokeWidth={1.5} />
+            </button>
           </div>
           </header>
         </motion.div>
@@ -434,7 +437,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
             </div>
           </div>
       </div>
-      <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+      <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} isLoggedIn={isLoggedIn} />
       <CartDrawer />
     </>
   )
