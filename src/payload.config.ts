@@ -29,6 +29,7 @@ import { AffiliateClicks } from './collections/AffiliateClicks'
 import { AffiliateConversions } from './collections/AffiliateConversions'
 import { AffiliatePayouts } from './collections/AffiliatePayouts'
 import { ProcessingFees } from './collections/ProcessingFees'
+import { Trash } from './collections/Trash'
 import { AffiliateSettings } from './globals/AffiliateSettings'
 
 const filename = fileURLToPath(import.meta.url)
@@ -48,6 +49,7 @@ export default buildConfig({
     AffiliateSettings,
   ],
   collections: [
+    Trash,
     Users,
     Media,
     Documents,
@@ -70,7 +72,41 @@ export default buildConfig({
     AffiliateConversions,
     AffiliatePayouts,
     ProcessingFees,
-  ],
+  ].map((collection) => {
+    if (collection.slug === 'trash') return collection
+
+    collection.hooks = collection.hooks || {}
+    collection.hooks.beforeDelete = collection.hooks.beforeDelete || []
+    
+    collection.hooks.beforeDelete.push(async ({ req, id, doc }) => {
+      try {
+        let fullDoc = doc
+        if (!fullDoc) {
+          fullDoc = await req.payload.findByID({ collection: collection.slug as any, id, req, depth: 0 })
+        }
+        
+        // Dynamically figure out the title of the deleted item
+        const docTitle = fullDoc?.name || fullDoc?.title || fullDoc?.orderNumber || fullDoc?.code || fullDoc?.email || String(id)
+
+        await req.payload.create({
+          collection: 'trash',
+          req,
+          data: {
+            title: String(docTitle),
+            collectionSlug: collection.slug,
+            originalId: String(id),
+            documentData: JSON.parse(JSON.stringify(fullDoc || {})),
+          },
+          overrideAccess: true,
+        })
+      } catch (err: any) {
+        console.error(`Failed to move ${collection.slug} ${id} to trash:`, err)
+        require('fs').appendFileSync('trash-error.log', `\n[${new Date().toISOString()}] Error moving ${collection.slug} ${id}: ${err.message || err.toString()}`)
+      }
+    })
+
+    return collection
+  }),
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

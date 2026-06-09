@@ -8,7 +8,7 @@ export const EmailLogs: CollectionConfig = {
     read: ({ req }) => req.user?.role === 'admin',
     create: () => false,
     update: () => false,
-    delete: () => false,
+    delete: ({ req }) => req.user?.role === 'admin',
   },
   fields: [
     { name: 'to', type: 'text', required: true },

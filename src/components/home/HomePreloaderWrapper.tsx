@@ -109,7 +109,7 @@ export function HomePreloaderWrapper({ children }: { children: React.ReactNode }
              style={{ opacity: 0, willChange: 'transform' }}
            >
              <Image 
-               src="/temp-homepage/hero-vial-image.webp"
+               src="/Featured%20Images/vial-no-bg.webp"
                alt="Vial Preloader"
                fill
                className="object-contain"

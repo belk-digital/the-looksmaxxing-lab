@@ -12,19 +12,19 @@ const PILLARS = [
     title: "US-Based Synthesis — Zero Overseas Powders",
     description: "Every compound is synthesized in US-based, ISO-certified peptide laboratories using closed-loop solid-phase peptide synthesis (SPPS). We do not purchase raw, untested powders from overseas suppliers or third-party bulk brokers. Our closed-loop supply chain ensures complete molecular traceability from synthesis to shipping.",
     icon: Dna,
-    image: "/temp-products/growth-factor.png"
+    image: "/Featured%20Images/us-based-synthesis.webp"
   },
   {
     title: "99%+ Purity Floor — Any Batch Below This Gets Discarded",
     description: "We enforce a non-negotiable 99% purity minimum across our entire catalog. Every single batch is independently tested by third-party laboratories using both HPLC chromatography and LC-MS mass spectrometry. If a batch fails to meet this threshold — for any reason — it is discarded immediately and never fulfilled.",
     icon: ShieldCheck,
-    image: "/temp-products/bpc-157.png"
+    image: "/Featured%20Images/three-floating-vials.webp"
   },
   {
     title: "Cold-Chain Logistics — Molecular Integrity, Guaranteed",
     description: "Peptides are structurally fragile molecules. Thermal degradation begins at room temperature and accelerates over time. We store all inventory in climate-controlled, medical-grade refrigeration and ship using validated cold-chain packaging specifically designed to maintain peptide integrity from our facility to your bench — regardless of transit conditions.",
     icon: Snowflake,
-    image: "/temp-products/tb-500.png"
+    image: "/Featured%20Images/nad-retatrutide-vials-on-ice.webp"
   }
 ]
 

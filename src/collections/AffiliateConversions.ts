@@ -9,7 +9,7 @@ export const AffiliateConversions: CollectionConfig = {
     read: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role),
     create: () => false, // Only created by server
     update: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role),
-    delete: () => false,
+    delete: ({ req }) => req.user?.role === 'admin',
   },
   fields: [
     { name: 'affiliate', type: 'relationship', relationTo: 'affiliates', required: true, index: true },

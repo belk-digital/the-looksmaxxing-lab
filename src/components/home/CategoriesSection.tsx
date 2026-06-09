@@ -21,14 +21,14 @@ const CATEGORIES = [
 
 // Re-using the premium generated images as placeholders
 const CATEGORY_IMAGES = [
-  '/Featured Images/0FAD42EB-B955-47D5-8497-45F868AB6702.webp',
-  '/Featured Images/2501F9A4-48CF-4B3B-8559-CD53440A0146.webp',
-  '/Featured Images/26B39D3E-AC5B-4260-803E-160D4181C8B5.webp',
-  '/Featured Images/2792BBC4-6875-4F9D-93AD-1E2E47252B36.webp',
-  '/Featured Images/876174E8-B594-4346-91A7-CC2D85E102A5.webp',
-  '/Featured Images/87F4AFA0-80AF-4EA5-B549-668F05102F65.webp',
-  '/Featured Images/88CF4102-CC8B-4D68-9F62-4A367C8C4EFA.webp',
-  '/Featured Images/A1D17400-50FC-42E0-A2D1-18D379B97E04.webp'
+  '/Featured%20Images/glass-dna-strand.webp', // Bioregulators
+  '/Featured%20Images/blue-petri-dishes.webp', // Cellular Health
+  '/Featured%20Images/white-blue-dna-helix.webp', // Cognitive Function
+  '/Featured%20Images/mt-2-water-ripple.webp', // Essentials
+  '/Featured%20Images/microscopic-liquid-drops.webp', // Growth Factor
+  '/Featured%20Images/vials-on-magazine.webp', // Metabolic (MOTS-C / NAD+)
+  '/Featured%20Images/clear-dropper-side-profile.webp', // Receptor Agonist
+  '/Featured%20Images/tb-500-water-splash.webp' // Recovery (TB-500)
 ]
 
 const CARD_COLORS = [
@@ -52,28 +52,13 @@ function CategoryCard({ category, index }: { category: typeof CATEGORIES[0], ind
       
       {/* Top Half - Text Area */}
       <div className={`relative flex flex-col justify-between p-4 sm:p-6 lg:p-8 h-[45%] transition-colors duration-500 ${bgColor}`}>
-        {/* Top Row */}
-        <div className="flex justify-between items-start text-[10px] sm:text-xs lg:text-sm font-medium text-ink leading-tight">
-          {/* Left List */}
-          <div className="hidden sm:flex flex-col gap-[2px]">
-            <span className="font-bold">All</span>
-            <span className="opacity-70">Research</span>
-            <span className="opacity-70 group-hover:text-[#5984c4] transition-colors">Peptides</span>
-            <span className="opacity-70">Guidelines</span>
-          </div>
-          {/* Center Circle */}
-          <div className="hidden sm:block w-3 h-3 lg:w-4 lg:h-4 rounded-full border-2 border-ink mt-0.5" />
-          {/* Right Text */}
-          <div className="mt-0.5 font-bold opacity-80 uppercase tracking-wide">
-            Cat ({num})
-          </div>
-        </div>
+        {/* Top: Category Name */}
+        <h3 className="text-xl sm:text-3xl lg:text-4xl xl:text-5xl font-display text-ink tracking-tight leading-[0.9] max-w-[80%]">
+          {category.name}
+        </h3>
         
-        {/* Bottom Row of Top Section */}
-        <div className="flex justify-between items-end mt-auto">
-          <h3 className="text-xl sm:text-3xl lg:text-4xl xl:text-5xl font-display text-ink tracking-tight leading-[0.9] mb-[-2px] sm:mb-[-4px] max-w-[80%]">
-            {category.name}
-          </h3>
+        {/* Bottom: Number */}
+        <div className="flex justify-end items-end">
           <span className="text-2xl sm:text-5xl lg:text-6xl xl:text-[5.5rem] font-display text-ink leading-[0.8] mb-[-2px] sm:mb-[-4px]">
             {num}
           </span>

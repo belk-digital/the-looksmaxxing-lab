@@ -36,7 +36,7 @@ export function AboutTeaser() {
           className="absolute inset-[-20%] w-[140%] h-[140%] z-0"
         >
           <Image 
-            src="/Featured Images/IMG_5955.webp"
+            src="/Featured%20Images/scientist-at-microscope.webp"
             alt="US-based peptide synthesis facility — ISO-certified laboratory where Looksmaxxing Lab compounds are produced"
             fill
             className="object-cover opacity-100"
@@ -55,7 +55,7 @@ export function AboutTeaser() {
           className="absolute top-[-10%] left-[-30%] sm:left-[-15%] md:left-[-5%] w-[80vw] max-w-[600px] aspect-[1/2.2] z-0 pointer-events-none opacity-40 rotate-12"
         >
           <Image 
-            src="/temp-homepage/hero-vial-image.webp"
+            src="/Featured%20Images/vial-no-bg.webp"
             alt="Foreground Blur Vial"
             fill
             className="object-contain blur-xl mix-blend-multiply opacity-30"
@@ -89,7 +89,7 @@ export function AboutTeaser() {
           className="absolute bottom-[-30%] right-[-10%] sm:right-0 md:right-[5%] lg:right-[10%] w-[50vw] max-w-[400px] aspect-[1/2.2] z-20 pointer-events-none drop-shadow-2xl -rotate-6"
         >
           <Image 
-            src="/temp-homepage/hero-vial-image.webp"
+            src="/Featured%20Images/vial-no-bg.webp"
             alt="Foreground Vial"
             fill
             className="object-contain mix-blend-multiply drop-shadow-2xl"

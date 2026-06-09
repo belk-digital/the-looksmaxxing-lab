@@ -187,7 +187,7 @@ export function CoaSection() {
               className="relative w-[140px] sm:w-[180px] lg:w-[300px] aspect-[1/2.2] z-20 pointer-events-none perspective-[1000px]"
             >
                <Image 
-                 src="/temp-homepage/hero-vial-image.webp"
+                 src="/Featured%20Images/vial-no-bg.webp"
                  alt="Single precision research peptide vial with Certificate of Analysis document — The Looksmaxxing Lab"
                  fill
                  className="object-contain"

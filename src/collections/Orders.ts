@@ -16,7 +16,7 @@ export const Orders: CollectionConfig = {
     },
     create: () => false,
     update: ({ req }) => req.user?.role === 'admin',
-    delete: () => false,
+    delete: ({ req }) => req.user?.role === 'admin',
   },
   hooks: {
     beforeChange: [

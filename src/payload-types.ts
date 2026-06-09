@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    trash: Trash;
     users: User;
     media: Media;
     documents: Document;
@@ -96,6 +97,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    trash: TrashSelect<false> | TrashSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     documents: DocumentsSelect<false> | DocumentsSelect<true>;
@@ -160,6 +162,29 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * Deleted documents are stored here. You can restore them or delete them permanently.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "trash".
+ */
+export interface Trash {
+  id: number;
+  title?: string | null;
+  collectionSlug: string;
+  originalId: string;
+  documentData:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1092,6 +1117,10 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'trash';
+        value: number | Trash;
+      } | null)
+    | ({
         relationTo: 'users';
         value: number | User;
       } | null)
@@ -1220,6 +1249,18 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "trash_select".
+ */
+export interface TrashSelect<T extends boolean = true> {
+  title?: T;
+  collectionSlug?: T;
+  originalId?: T;
+  documentData?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

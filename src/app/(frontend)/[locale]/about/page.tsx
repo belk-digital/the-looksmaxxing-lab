@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, useScroll, useTransform, useMotionValueEvent, useMotionValue, useSpring } from 'framer-motion'
@@ -12,6 +12,7 @@ import { CheckCircle2, ShieldCheck, Microscope, Truck, Search, FlaskConical, Arr
 import { FaqCarousel, FaqItem } from '@/components/shared/FaqCarousel'
 import { WhyChooseUs } from '@/components/about/WhyChooseUs'
 import { SwipeCarousel } from '@/components/shared/SwipeCarousel'
+import { getFeaturedProducts } from '@/app/(frontend)/actions/getFeaturedProducts'
 
 const ABOUT_FAQS: FaqItem[] = [
   {
@@ -34,6 +35,18 @@ const ABOUT_FAQS: FaqItem[] = [
 
 export default function AboutPage() {
   const [activeServiceIndex, setActiveServiceIndex] = useState(0);
+  
+  const [dynamicCompounds, setDynamicCompounds] = useState<any[]>([])
+  const [isLoadingCompounds, setIsLoadingCompounds] = useState(true)
+
+  useEffect(() => {
+    getFeaturedProducts().then(products => {
+      if (products && products.length > 0) {
+        setDynamicCompounds(products)
+      }
+      setIsLoadingCompounds(false)
+    })
+  }, [])
 
   // Custom Cursor State for Services
   const [isServicesHovered, setIsServicesHovered] = useState(false);
@@ -48,6 +61,8 @@ export default function AboutPage() {
     offset: ["start start", "end start"]
   });
   const heroImageY = useTransform(heroScroll, [0, 1], ["0%", "100%"]);
+
+  // Capabilities Scroll
   const capabilitiesRef = useRef<HTMLElement>(null);
   
   const { scrollYProgress: capabilitiesScroll } = useScroll({
@@ -72,19 +87,19 @@ export default function AboutPage() {
       id: "01",
       title: "Retail Research Peptides",
       desc: "A comprehensive library of meticulously synthesized peptides available for immediate dispatch in single or multi-vial quantities.",
-      image: "/hero-image.png"
+      image: "/Featured%20Images/three-floating-vials.webp"
     },
     {
       id: "02",
       title: "Wholesale & Bulk Sourcing",
       desc: "Tailored pricing and dedicated supply chains for institutional buyers requiring significant volumes and guaranteed consistency.",
-      image: "/hero-image.png"
+      image: "/Featured%20Images/crushed-white-powder.webp"
     },
     {
       id: "03",
       title: "Custom Synthesis Inquiries",
       desc: "Capabilities to facilitate custom sequence synthesis for specialized or novel research applications upon request.",
-      image: "/hero-image.png"
+      image: "/Featured%20Images/scientist-at-microscope.webp"
     }
   ];
 
@@ -345,33 +360,7 @@ export default function AboutPage() {
       <SwipeCarousel 
         title="Research-Backed Compounds"
         description="Every compound is synthesized with purposeful, high-performance processes to ensure absolute purity and stability for your laboratory research."
-        cards={[
-          {
-            title: 'BPC-157',
-            desc: 'A pentadecapeptide known for its rapid wound healing properties and cytoprotective effects in research environments.',
-            image: '/hero-image.png'
-          },
-          {
-            title: 'TB-500',
-            desc: 'A synthetic fraction of Thymosin Beta-4, crucial for actin upregulation and cellular migration assays.',
-            image: '/temp-homepage/hero-vial-image.webp'
-          },
-          {
-            title: 'GHK-Cu',
-            desc: 'A naturally occurring copper complex used extensively in tissue remodeling and antioxidant pathways.',
-            image: '/hero-image.png'
-          },
-          {
-            title: 'Tirzepatide',
-            desc: 'A dual GIP and GLP-1 receptor agonist studied for robust glycemic control and metabolic shifts.',
-            image: '/temp-homepage/hero-vial-image.webp'
-          },
-          {
-            title: 'Semaglutide',
-            desc: 'A GLP-1 analogue widely researched for its potent effects on appetite regulation and weight management models.',
-            image: '/hero-image.png'
-          }
-        ]}
+        cards={dynamicCompounds}
       />
 
       {/* 4. Our Services Section - Scroll Interactive Index */}
@@ -558,7 +547,7 @@ export default function AboutPage() {
                 className="absolute -left-[5%] md:left-[5%] top-[10%] w-[300px] md:w-[400px] h-[400px] md:h-[500px] opacity-[0.15] pointer-events-none"
                 style={{ willChange: 'transform' }}
               >
-                <Image src="/temp-homepage/hero-vial-image.webp" alt="Vial Watermark" fill className="object-contain" />
+                <Image src="/Featured%20Images/vial-no-bg.webp" alt="Vial Watermark" fill className="object-contain" />
               </motion.div>
 
               {/* Floating Transparent Vial 2 */}
@@ -568,7 +557,7 @@ export default function AboutPage() {
                 className="absolute -right-[10%] md:-right-[5%] bottom-[5%] w-[400px] md:w-[500px] h-[500px] md:h-[600px] opacity-[0.1] pointer-events-none"
                 style={{ willChange: 'transform' }}
               >
-                <Image src="/temp-homepage/hero-vial-image.webp" alt="Vial Watermark" fill className="object-contain" />
+                <Image src="/Featured%20Images/vial-no-bg.webp" alt="Vial Watermark" fill className="object-contain" />
               </motion.div>
 
               {/* Scientific Rings */}

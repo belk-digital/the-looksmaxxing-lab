@@ -13,7 +13,7 @@ const SAMPLE_POSTS = [
     category: 'Clinical Review',
     excerpt: 'A detailed review of the mechanism by which BPC-157 modulates growth hormone receptor expression and angiogenic signaling in connective tissue research. Includes analysis of current in-vivo literature and dosing methodologies used in laboratory studies.',
     readTime: '7 min',
-    image: '/temp-products/bpc-157.png'
+    image: '/Featured%20Images/white-powder-swiped.webp'
   },
   {
     title: 'GHK-Cu: Research Applications Beyond Cosmetics',
@@ -21,7 +21,7 @@ const SAMPLE_POSTS = [
     category: 'Research Notes',
     excerpt: 'Glycine-Histidine-Lysine Copper is extensively studied for skin, hair follicle, and wound-healing research — but the literature extends far beyond cosmetic applications. This review covers cellular signalling, collagen synthesis data, and antioxidant properties.',
     readTime: '12 min',
-    image: '/temp-products/ghk-cu.png'
+    image: '/Featured%20Images/pouring-clear-liquid.webp'
   },
   {
     title: 'How to Read an HPLC and LC-MS Purity Report',
@@ -29,7 +29,7 @@ const SAMPLE_POSTS = [
     category: 'Methodology',
     excerpt: 'A practical methodology guide for interpreting third-party peptide purity certificates. Covers peak area percentages, mass-to-charge ratios, retention times, and how to identify certificate red flags.',
     readTime: '5 min',
-    image: '/temp-products/about-lifestyle.png'
+    image: '/Featured%20Images/scientist-at-microscope.webp'
   }
 ]
 

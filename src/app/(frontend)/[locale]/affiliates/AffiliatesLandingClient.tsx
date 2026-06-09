@@ -122,7 +122,7 @@ export function AffiliatesLandingClient({ userStatus }: Props) {
                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
              >
                <Image 
-                 src="/affiliate-hero.webp" 
+                 src="/Featured%20Images/affiliates-hero.webp" 
                  alt="Affiliate Program" 
                  fill 
                  className="object-cover object-center"

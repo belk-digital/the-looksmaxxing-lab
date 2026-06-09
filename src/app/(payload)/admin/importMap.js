@@ -1,3 +1,4 @@
+import { RestoreTrashButton as RestoreTrashButton_ddf671c958abbb78f68eec0a82b4cdee } from '@/components/admin/RestoreTrashButton'
 import { default as default_2268e15cf932e44cda3df092f02d84c5 } from '@/components/admin/NullField'
 import { default as default_e4b9ef8452c8e2c60b692073ae965cbd } from '@/components/admin/TimeAgoCell'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -29,6 +30,7 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 
 /** @type import('payload').ImportMap */
 export const importMap = {
+  "@/components/admin/RestoreTrashButton#RestoreTrashButton": RestoreTrashButton_ddf671c958abbb78f68eec0a82b4cdee,
   "@/components/admin/NullField#default": default_2268e15cf932e44cda3df092f02d84c5,
   "@/components/admin/TimeAgoCell#default": default_e4b9ef8452c8e2c60b692073ae965cbd,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,

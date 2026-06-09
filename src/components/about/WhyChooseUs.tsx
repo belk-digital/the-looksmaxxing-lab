@@ -10,25 +10,25 @@ const PILLARS = [
     id: '01',
     title: 'Independent Testing',
     desc: 'Every single batch is tested by accredited US-based third-party laboratories via HPLC & Mass Spectrometry before it is ever made available for research.',
-    image: '/temp-homepage/hero-vial-image.webp'
+    image: '/Featured%20Images/scientist-at-microscope.webp'
   },
   {
     id: '02',
     title: '≥99% Purity Guarantee',
-    desc: 'We maintain the strictest purity thresholds in the industry. If a batch tests at 98.9%, it is destroyed. Compromise is simply not in our vocabulary.',
-    image: '/hero-image.png'
+    desc: 'We enforce a strict 99% purity floor across our entire catalog. If a batch tests at 98.9%, it is discarded. There are no exceptions to this standard.',
+    image: '/Featured%20Images/clear-glass-dropper.webp'
   },
   {
     id: '03',
     title: 'USA Fulfillment',
-    desc: 'All products are stocked securely in our climate-controlled US facilities, ensuring rapid domestic transit times and eliminating international customs delays.',
-    image: '/temp-homepage/hero-vial-image.webp'
+    desc: 'Our compounds are stocked securely in domestic, climate-controlled facilities. We fulfill and ship all orders directly from the United States for rapid delivery.',
+    image: '/Featured%20Images/three-floating-vials.webp'
   },
   {
     id: '04',
     title: 'Lyophilized Stability',
-    desc: 'Advanced lyophilization techniques guarantee structural integrity during transit and long-term storage, arriving in the exact condition it left the lab.',
-    image: '/hero-image.png'
+    desc: 'Compounds are rigorously lyophilized and vacuum-sealed to prevent degradation, ensuring structural integrity from our laboratory to yours.',
+    image: '/Featured%20Images/crushed-white-powder.webp'
   }
 ]
 

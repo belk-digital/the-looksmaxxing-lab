@@ -171,39 +171,55 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
 
           {/* Center: Nav (Restored original site links) */}
           <nav className="hidden xl:flex items-center justify-center gap-4 xl:gap-8 flex-1 h-full">
-            <Link href="/en/shop" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
-              SHOP
-            </Link>
-            
-            <div 
-              className="h-full flex items-center cursor-pointer"
-              onMouseEnter={() => setIsMegaMenuOpen(true)}
-              onMouseLeave={() => setIsMegaMenuOpen(false)}
-            >
-              <Link href="/en/shop" onClick={() => setIsMegaMenuOpen(false)} className={`flex items-center gap-1 text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full ${textColor} ${textHoverColor}`}>
-                CATEGORIES
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-70 group-hover:opacity-100 transition-opacity"><path d="m6 9 6 6 6-6"/></svg>
-              </Link>
-            </div>
-            
-            <Link href="/en/peptide-calculator" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
-              CALCULATOR
-            </Link>
-            <Link href="/en/about" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
-              ABOUT
-            </Link>
-            <Link href="/en/journal" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
-              JOURNAL
-            </Link>
-            <Link href="/en/faqs" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
-              FAQ
-            </Link>
-            <Link href="/en/contact" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
-              CONTACT
-            </Link>
-            <Link href="/en/affiliates" className={`text-[9px] xl:text-[10px] font-sans font-medium tracking-[0.2em] uppercase transition-colors h-full flex items-center ${textColor} ${textHoverColor}`}>
-              AFFILIATES
-            </Link>
+            {(() => {
+              const getNavLinkClass = (path: string) => {
+                const targetPath = path.replace('/en', '');
+                const isActive = targetPath === '' ? pathname === '/en' || pathname === '/' : pathname.includes(targetPath);
+                return `text-[9px] xl:text-[10px] font-sans tracking-[0.2em] uppercase transition-all h-full flex items-center border-b-[3px] mt-[3px] ${
+                  isActive 
+                    ? `font-bold border-current ${textColor} opacity-100` 
+                    : `font-medium border-transparent ${textColor} opacity-50 hover:opacity-100`
+                }`;
+              };
+
+              return (
+                <>
+                  <Link href="/en/shop" className={getNavLinkClass('/en/shop')}>
+                    SHOP
+                  </Link>
+                  
+                  <div 
+                    className="h-full flex items-center cursor-pointer"
+                    onMouseEnter={() => setIsMegaMenuOpen(true)}
+                    onMouseLeave={() => setIsMegaMenuOpen(false)}
+                  >
+                    <Link href="/en/shop" onClick={() => setIsMegaMenuOpen(false)} className={`flex items-center gap-1 text-[9px] xl:text-[10px] font-sans tracking-[0.2em] uppercase transition-all h-full border-b-[3px] mt-[3px] font-medium border-transparent ${textColor} opacity-50 hover:opacity-100`}>
+                      CATEGORIES
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-70 group-hover:opacity-100 transition-opacity"><path d="m6 9 6 6 6-6"/></svg>
+                    </Link>
+                  </div>
+                  
+                  <Link href="/en/peptide-calculator" className={getNavLinkClass('/en/peptide-calculator')}>
+                    CALCULATOR
+                  </Link>
+                  <Link href="/en/about" className={getNavLinkClass('/en/about')}>
+                    ABOUT
+                  </Link>
+                  <Link href="/en/journal" className={getNavLinkClass('/en/journal')}>
+                    JOURNAL
+                  </Link>
+                  <Link href="/en/faqs" className={getNavLinkClass('/en/faqs')}>
+                    FAQ
+                  </Link>
+                  <Link href="/en/contact" className={getNavLinkClass('/en/contact')}>
+                    CONTACT
+                  </Link>
+                  <Link href="/en/affiliates" className={getNavLinkClass('/en/affiliates')}>
+                    AFFILIATES
+                  </Link>
+                </>
+              )
+            })()}
           </nav>
 
           {/* Right: Search, SHOP NOW Button & Cart */}
