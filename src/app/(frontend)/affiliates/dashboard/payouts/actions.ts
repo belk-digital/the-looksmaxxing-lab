@@ -87,7 +87,7 @@ export async function requestPayout() {
       overrideAccess: true,
     })
 
-    revalidatePath('/[locale]/affiliates/dashboard/payouts', 'page')
+    revalidatePath('/affiliates/dashboard/payouts', 'page')
 
     return { success: true }
   } catch (error: any) {

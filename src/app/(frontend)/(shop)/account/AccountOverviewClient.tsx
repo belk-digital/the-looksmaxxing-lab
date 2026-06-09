@@ -105,7 +105,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
         <motion.div variants={itemVars} className="flex flex-col gap-6">
           <div className="flex items-center justify-between border-b border-gray-200 pb-4">
             <h3 className="text-xs font-bold uppercase tracking-[0.15em] text-black">Recent Orders</h3>
-            <Link href="/en/account/orders" className="text-[10px] font-bold uppercase tracking-[0.1em] text-purple-600 hover:text-purple-700 transition-colors bg-purple-50 px-3 py-1.5 rounded-full hover:bg-purple-100">
+            <Link href="/account/orders" className="text-[10px] font-bold uppercase tracking-[0.1em] text-purple-600 hover:text-purple-700 transition-colors bg-purple-50 px-3 py-1.5 rounded-full hover:bg-purple-100">
               View All
             </Link>
           </div>
@@ -150,7 +150,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
           <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between border-b border-gray-200 pb-4">
               <h3 className="text-xs font-bold uppercase tracking-[0.15em] text-black">Default Address</h3>
-              <Link href="/en/account/addresses" className="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-400 hover:text-black transition-colors">
+              <Link href="/account/addresses" className="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-400 hover:text-black transition-colors">
                 Edit
               </Link>
             </div>
@@ -170,7 +170,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
             ) : (
               <div className="bg-white p-8 rounded-3xl border border-dashed border-gray-200 flex flex-col items-center justify-center text-center gap-4 text-gray-500">
                 <p className="text-sm">You haven't saved any addresses yet.</p>
-                <Link href="/en/account/addresses" className="text-[11px] font-bold uppercase tracking-[0.15em] text-black hover:underline">
+                <Link href="/account/addresses" className="text-[11px] font-bold uppercase tracking-[0.15em] text-black hover:underline">
                   Add Address
                 </Link>
               </div>
@@ -184,7 +184,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
               
               {/* Affiliate Status Cards */}
               {affiliateStatus === 'approved' && (
-                <Link href="/en/affiliates/dashboard" className="flex items-center justify-between p-5 border border-blue-100 rounded-2xl hover:border-blue-200 hover:shadow-lg hover:shadow-blue-500/10 hover:-translate-y-1 transition-all duration-300 group bg-gradient-to-br from-[#f8faff] to-[#eef4ff] relative overflow-hidden">
+                <Link href="/affiliates/dashboard" className="flex items-center justify-between p-5 border border-blue-100 rounded-2xl hover:border-blue-200 hover:shadow-lg hover:shadow-blue-500/10 hover:-translate-y-1 transition-all duration-300 group bg-gradient-to-br from-[#f8faff] to-[#eef4ff] relative overflow-hidden">
                   <div className="flex items-center gap-4 text-black relative z-10">
                     <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center group-hover:bg-blue-600 transition-colors shadow-sm">
                       <BarChart3 size={16} />
@@ -199,7 +199,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
               )}
               
               {affiliateStatus === 'none' && (
-                <Link href="/en/affiliates" className="flex items-center justify-between p-5 border border-amber-100 rounded-2xl hover:border-amber-200 hover:shadow-lg hover:shadow-amber-500/10 hover:-translate-y-1 transition-all duration-300 group bg-gradient-to-br from-amber-50 to-orange-50 relative overflow-hidden">
+                <Link href="/affiliates" className="flex items-center justify-between p-5 border border-amber-100 rounded-2xl hover:border-amber-200 hover:shadow-lg hover:shadow-amber-500/10 hover:-translate-y-1 transition-all duration-300 group bg-gradient-to-br from-amber-50 to-orange-50 relative overflow-hidden">
                   <div className="flex items-center gap-4 text-black relative z-10">
                     <div className="w-10 h-10 rounded-full bg-amber-500 text-white flex items-center justify-center group-hover:bg-amber-600 transition-colors shadow-sm">
                       <Users size={16} />
@@ -227,7 +227,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
                 </div>
               )}
               
-              <Link href="/en/track" className="flex items-center justify-between p-5 border border-gray-100 rounded-2xl hover:border-transparent hover:shadow-lg hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300 group bg-white relative overflow-hidden">
+              <Link href="/track" className="flex items-center justify-between p-5 border border-gray-100 rounded-2xl hover:border-transparent hover:shadow-lg hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300 group bg-white relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-50 to-gray-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 <div className="flex items-center gap-4 text-black relative z-10">
                   <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-white transition-colors shadow-sm">
@@ -238,7 +238,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
                 <ArrowRight size={16} className="text-gray-300 group-hover:text-black transition-all duration-300 group-hover:translate-x-2 relative z-10" />
               </Link>
               
-              <Link href="/en/contact" className="flex items-center justify-between p-5 border border-gray-100 rounded-2xl hover:border-transparent hover:shadow-lg hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300 group bg-white relative overflow-hidden">
+              <Link href="/contact" className="flex items-center justify-between p-5 border border-gray-100 rounded-2xl hover:border-transparent hover:shadow-lg hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300 group bg-white relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-50 to-gray-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 <div className="flex items-center gap-4 text-black relative z-10">
                   <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-white transition-colors shadow-sm">

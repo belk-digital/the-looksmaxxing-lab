@@ -96,7 +96,7 @@ export function AffiliateSidebar({
 
         {/* Back to Shop Link */}
         <Link
-          href="/en/account"
+          href="/account"
           className="relative flex items-center justify-center lg:justify-start gap-3 shrink-0 px-4 py-3.5 rounded-2xl text-[11px] font-bold uppercase tracking-[0.15em] transition-all duration-300 text-gray-500 hover:bg-gray-100 bg-transparent group mt-2"
         >
           <span className="relative z-10 group-hover:text-black">&larr; Back to Account</span>

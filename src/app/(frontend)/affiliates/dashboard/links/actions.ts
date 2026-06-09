@@ -106,7 +106,7 @@ export async function updateCouponCode(newCode: string) {
     }
 
     // Revalidate the links page
-    revalidatePath('/[locale]/affiliates/dashboard/links', 'page')
+    revalidatePath('/affiliates/dashboard/links', 'page')
 
     return { success: true, code: cleanCode }
     

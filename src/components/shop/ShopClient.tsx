@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '@/components/ui/dropdown-menu'
 
 import { Category } from '@/components/shop/FilterSidebar'
-import { getShopProducts } from '@/app/(frontend)/[locale]/(shop)/actions'
+import { getShopProducts } from '@/app/(frontend)/(shop)/actions'
 
 export interface ShopClientProps {
   initialProducts: Product[]

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description: 'US-synthesized research peptides — BPC-157, TB-500, GHK-Cu, Semaglutide. Every batch verified at ≥99% HPLC purity with a full COA. Shop with confidence. 2-day shipping available.',
 }
 
-import { getShopProducts } from '@/app/(frontend)/[locale]/(shop)/actions'
+import { getShopProducts } from '@/app/(frontend)/(shop)/actions'
 
 export default async function Homepage() {
   let products = []

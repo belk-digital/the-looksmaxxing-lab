@@ -160,7 +160,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
 
           {/* Left: Logo (Mimicking the reference swirl) */}
           <div className="flex-1 xl:flex-none flex justify-center xl:justify-start">
-            <Link href="/en" className="flex items-center hover:opacity-80 transition-opacity">
+            <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
               <svg width="48" height="24" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 15 C15 7, 45 7, 45 15 C45 23, 20 23, 20 15 C20 11, 40 11, 40 15 C40 19, 25 19, 25 15" stroke={iconColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M5 15 C5 2, 55 2, 55 15 C55 28, 10 28, 10 15" stroke={iconColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -184,7 +184,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
 
               return (
                 <>
-                  <Link href="/en/shop" className={getNavLinkClass('/en/shop')}>
+                  <Link href="/shop" className={getNavLinkClass('/shop')}>
                     SHOP
                   </Link>
                   
@@ -193,28 +193,28 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                     onMouseEnter={() => setIsMegaMenuOpen(true)}
                     onMouseLeave={() => setIsMegaMenuOpen(false)}
                   >
-                    <Link href="/en/shop" onClick={() => setIsMegaMenuOpen(false)} className={`flex items-center gap-1 text-[9px] xl:text-[10px] font-sans tracking-[0.2em] uppercase transition-all h-full border-b-[3px] mt-[3px] font-medium border-transparent ${textColor} opacity-50 hover:opacity-100`}>
+                    <Link href="/shop" onClick={() => setIsMegaMenuOpen(false)} className={`flex items-center gap-1 text-[9px] xl:text-[10px] font-sans tracking-[0.2em] uppercase transition-all h-full border-b-[3px] mt-[3px] font-medium border-transparent ${textColor} opacity-50 hover:opacity-100`}>
                       CATEGORIES
                       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-70 group-hover:opacity-100 transition-opacity"><path d="m6 9 6 6 6-6"/></svg>
                     </Link>
                   </div>
                   
-                  <Link href="/en/peptide-calculator" className={getNavLinkClass('/en/peptide-calculator')}>
+                  <Link href="/peptide-calculator" className={getNavLinkClass('/peptide-calculator')}>
                     CALCULATOR
                   </Link>
-                  <Link href="/en/about" className={getNavLinkClass('/en/about')}>
+                  <Link href="/about" className={getNavLinkClass('/about')}>
                     ABOUT
                   </Link>
-                  <Link href="/en/journal" className={getNavLinkClass('/en/journal')}>
+                  <Link href="/journal" className={getNavLinkClass('/journal')}>
                     JOURNAL
                   </Link>
-                  <Link href="/en/faqs" className={getNavLinkClass('/en/faqs')}>
+                  <Link href="/faqs" className={getNavLinkClass('/faqs')}>
                     FAQ
                   </Link>
-                  <Link href="/en/contact" className={getNavLinkClass('/en/contact')}>
+                  <Link href="/contact" className={getNavLinkClass('/contact')}>
                     CONTACT
                   </Link>
-                  <Link href="/en/affiliates" className={getNavLinkClass('/en/affiliates')}>
+                  <Link href="/affiliates" className={getNavLinkClass('/affiliates')}>
                     AFFILIATES
                   </Link>
                 </>
@@ -255,18 +255,18 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
             <div className="flex items-center min-w-[34px] justify-center">
               {mounted ? (
                 isLoggedIn ? (
-                  <Link href="/en/account" className={`p-1 transition-colors flex items-center justify-center ${textColor} ${textHoverColor}`}>
+                  <Link href="/account" className={`p-1 transition-colors flex items-center justify-center ${textColor} ${textHoverColor}`}>
                     <User size={18} strokeWidth={1.5} />
                   </Link>
                 ) : (
-                  <Link href="/en/login" className={`hidden md:inline-flex px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase transition-all shadow-md ${isTransparent ? 'bg-white text-black hover:bg-gray-200' : 'bg-black text-white hover:bg-gray-800'}`}>
+                  <Link href="/login" className={`hidden md:inline-flex px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase transition-all shadow-md ${isTransparent ? 'bg-white text-black hover:bg-gray-200' : 'bg-black text-white hover:bg-gray-800'}`}>
                     LOGIN
                   </Link>
                 )
               ) : null}
             </div>
             
-            <Link href="/en/shop" className={`hidden md:inline-flex border rounded-none px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase transition-all ${textColor} ${buttonBorder}`}>
+            <Link href="/shop" className={`hidden md:inline-flex border rounded-none px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase transition-all ${textColor} ${buttonBorder}`}>
               SHOP NOW
             </Link>
           </div>

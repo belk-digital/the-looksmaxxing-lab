@@ -122,7 +122,7 @@ export function DashboardClient({ stats, recentConversions }: DashboardClientPro
         <motion.div variants={itemVars} className="flex flex-col gap-6">
           <div className="flex items-center justify-between border-b border-gray-200 pb-4">
             <h3 className="text-xs font-bold uppercase tracking-[0.15em] text-black">Recent Conversions</h3>
-            <Link href="/en/affiliates/dashboard/conversions" className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#5984c4] hover:text-blue-700 transition-colors bg-blue-50 px-3 py-1.5 rounded-full hover:bg-blue-100">
+            <Link href="/affiliates/dashboard/conversions" className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#5984c4] hover:text-blue-700 transition-colors bg-blue-50 px-3 py-1.5 rounded-full hover:bg-blue-100">
               View All
             </Link>
           </div>

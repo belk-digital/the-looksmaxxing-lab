@@ -104,7 +104,7 @@ export function AccountSidebar({
         {/* Affiliate Link (if approved) */}
         {affiliateStatus === 'approved' && (
           <Link
-            href="/en/affiliates/dashboard"
+            href="/affiliates/dashboard"
             className="relative flex items-center justify-center lg:justify-start gap-3 shrink-0 px-4 py-3.5 rounded-2xl text-[11px] font-bold uppercase tracking-[0.15em] transition-all duration-300 text-[#5984c4] hover:bg-blue-50/50 bg-blue-50 lg:bg-transparent group"
           >
             <BarChart3 size={16} className="relative z-10 transition-colors duration-300 text-[#5984c4] group-hover:text-blue-600" />
@@ -160,7 +160,7 @@ export function AccountSidebar({
               Earn <strong className="text-blue-900 font-bold">15% commission</strong> by referring researchers.
             </p>
           </div>
-          <Link href="/en/affiliates" className="relative z-10 mt-2 bg-white text-[#5984c4] hover:bg-blue-50 hover:text-blue-600 border border-blue-100 rounded-xl px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] transition-all duration-300 text-center shadow-sm">
+          <Link href="/affiliates" className="relative z-10 mt-2 bg-white text-[#5984c4] hover:bg-blue-50 hover:text-blue-600 border border-blue-100 rounded-xl px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] transition-all duration-300 text-center shadow-sm">
             Apply Now
           </Link>
         </div>
