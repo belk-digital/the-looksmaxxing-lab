@@ -31,9 +31,10 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
     if (docs.length > 0) {
       order = docs[0]
     } else {
+      const numericId = parseInt(id, 10)
       order = await payload.findByID({
         collection: 'orders',
-        id,
+        id: isNaN(numericId) ? id : numericId,
         depth: 2,
         overrideAccess: true,
       })

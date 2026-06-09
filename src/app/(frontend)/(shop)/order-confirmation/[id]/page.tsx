@@ -19,9 +19,10 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
   
   let order;
   try {
+     const numericId = parseInt(id, 10)
      order = await payload.findByID({
        collection: 'orders',
-       id: id,
+       id: isNaN(numericId) ? id : numericId,
        depth: 2
      })
   } catch (e) {
