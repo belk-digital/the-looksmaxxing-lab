@@ -38,7 +38,7 @@ export const Trash: CollectionConfig = {
           const { collectionSlug, originalId, documentData } = trashDoc
 
           // 2. Remove standard fields that payload auto-generates so we can re-insert cleanly
-          const dataToRestore = { ...documentData }
+          const dataToRestore = { ...(documentData as Record<string, any>) }
           delete dataToRestore.createdAt
           delete dataToRestore.updatedAt
           // Note: we KEEP the original 'id' if possible, but payload Postgres auto-generates numeric IDs.

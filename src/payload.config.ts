@@ -78,8 +78,9 @@ export default buildConfig({
     collection.hooks = collection.hooks || {}
     collection.hooks.beforeDelete = collection.hooks.beforeDelete || []
     
-    collection.hooks.beforeDelete.push(async ({ req, id, doc }) => {
+    collection.hooks.beforeDelete.push(async (args: any) => {
       try {
+        const { req, id, doc } = args
         let fullDoc = doc
         if (!fullDoc) {
           fullDoc = await req.payload.findByID({ collection: collection.slug as any, id, req, depth: 0 })
