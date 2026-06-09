@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import Stripe from 'stripe'
 import { verifyCoupon, getUserPurityPoints } from '../actions'
+import { cookies } from 'next/headers'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2024-04-10' as any,
@@ -17,9 +18,17 @@ export async function createPaymentIntent(
 ) {
   const payload = await getPayload({ config: configPromise })
 
-  // Validate items and calculate subtotal securely on server
+
+  // Validate items, check stock, and calculate subtotal securely on server
   let subtotal = 0;
   for (const item of items) {
+     const productRes = await payload.findByID({ collection: 'products', id: item.productId, depth: 0 })
+     if (!productRes) {
+        return { error: `Product not found: ${item.productId}` }
+     }
+     if ((productRes.stock || 0) < item.quantity) {
+        return { error: `Insufficient stock for ${productRes.name || 'item'}. Only ${productRes.stock} left.` }
+     }
      subtotal += item.priceSnapshot * item.quantity
   }
 
@@ -53,12 +62,19 @@ export async function createPaymentIntent(
       return { error: 'Order total too low for Stripe processing (minimum $0.50)' }
   }
 
+  // Check for affiliate ref cookie
+  const cookieStore = await cookies()
+  const affiliateRef = cookieStore.get('affiliate_ref')?.value
+
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
       currency: 'usd',
       automatic_payment_methods: {
         enabled: true,
+      },
+      metadata: {
+        affiliateId: affiliateRef || null
       }
     })
 

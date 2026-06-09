@@ -31,6 +31,7 @@ import { AffiliatePayouts } from './collections/AffiliatePayouts'
 import { ProcessingFees } from './collections/ProcessingFees'
 import { Trash } from './collections/Trash'
 import { AffiliateSettings } from './globals/AffiliateSettings'
+import { OrderCounters } from './collections/OrderCounters'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -50,6 +51,7 @@ export default buildConfig({
   ],
   collections: [
     Trash,
+    OrderCounters,
     Users,
     Media,
     Documents,

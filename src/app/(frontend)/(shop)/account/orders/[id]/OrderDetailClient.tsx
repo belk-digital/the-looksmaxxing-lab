@@ -131,8 +131,8 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
             <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-black mb-6 border-b border-gray-100 pb-4">Items Ordered</h2>
             <div className="flex flex-col gap-6">
               {order.items?.map((item: any) => {
-                // Safely extract product data from snapshot or direct relation
-                const product = item.productSnapshot || item.product || {}
+                // Prioritize the live populated product relation to get the actual image media objects
+                const product = item.product || item.productSnapshot || {}
                 const title = product.title || product.name || 'Unknown Product'
                 const price = product.basePrice || product.price || 0
                 const imageUrl = product.images?.[0]?.image?.url || product.images?.[0]?.url || '/temp-products/product-image.png'
@@ -205,14 +205,26 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                 <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
+              {!!order.discountTotal && order.discountTotal > 0 && (
+                <div className="flex justify-between text-red-500">
+                  <span>Discount {order.couponCode ? `(${order.couponCode})` : ''}</span>
+                  <span>-${order.discountTotal.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-gray-500">
                 <span>Shipping</span>
                 <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
               </div>
-              <div className="flex justify-between text-gray-500 border-b border-gray-100 pb-4">
+              <div className={`flex justify-between text-gray-500 ${!order.redeemedPoints ? 'border-b border-gray-100 pb-4' : ''}`}>
                 <span>Tax</span>
                 <span>${tax.toFixed(2)}</span>
               </div>
+              {!!order.redeemedPoints && order.redeemedPoints > 0 && (
+                <div className="flex justify-between text-red-500 border-b border-gray-100 pb-4 mt-1">
+                  <span>Purity Points</span>
+                  <span>-${order.redeemedPoints.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between items-center text-black font-bold mt-2">
                 <span className="text-sm">Total</span>
                 <span className={`text-3xl tracking-tighter ${spaceGrotesk.className}`}>${total.toFixed(2)}</span>

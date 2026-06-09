@@ -24,9 +24,8 @@ export const Orders: CollectionConfig = {
         if (operation === 'create') {
           const year = new Date().getFullYear()
           const db = req.payload.db as any
-          await db.drizzle.execute(sql`CREATE TABLE IF NOT EXISTS "order_counters" ("year" integer PRIMARY KEY, "counter" integer NOT NULL)`)
-          const counterRes: any = await db.drizzle.execute(sql`INSERT INTO "order_counters" ("year", "counter") VALUES (${year}, 1)
-                      ON CONFLICT ("year") DO UPDATE SET "counter" = "order_counters"."counter" + 1
+          const counterRes: any = await db.drizzle.execute(sql`INSERT INTO "order_counters" ("id", "counter", "created_at", "updated_at") VALUES (${year}, 1, now(), now())
+                      ON CONFLICT ("id") DO UPDATE SET "counter" = "order_counters"."counter" + 1, "updated_at" = now()
                       RETURNING "counter"`)
           const counter = (counterRes.rows ? counterRes.rows[0].counter : counterRes[0].counter)
           const padded = String(counter).padStart(5, '0')
