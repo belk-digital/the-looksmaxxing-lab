@@ -140,7 +140,7 @@ export function CartDrawer() {
                           className="flex gap-4 p-4 bg-white rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] border border-white hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-0.5 transition-all duration-300"
                         >
                           <div className="relative w-[88px] h-[88px] bg-[#F8F8FA] rounded-xl shrink-0 overflow-hidden shadow-inner">
-                            <Image src={item.product?.imageUrl || '/placeholder.png'} alt={item.product?.name || 'Product'} fill unoptimized className="object-cover hover:scale-105 transition-transform duration-500" />
+                            <Image src={item.product?.imageUrl || '/placeholder.png'} alt={item.product?.name || 'Product'} fill className="object-cover hover:scale-105 transition-transform duration-500" />
                           </div>
                           <div className="flex flex-col flex-1 justify-between py-0.5">
                             <div className="flex justify-between items-start gap-2">

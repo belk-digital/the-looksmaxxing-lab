@@ -1,5 +1,5 @@
 import { getPayload } from 'payload'
-import configPromise from '@payload-config'
+import configPromise from '../src/payload.config'
 
 async function checkOrders() {
   const payload = await getPayload({ config: configPromise })

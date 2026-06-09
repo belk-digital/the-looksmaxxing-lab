@@ -190,7 +190,6 @@ export function PrimaryProductCard({ product, size = 'small', id }: PrimaryProdu
           src={product.image}
           alt={product.name}
           fill
-          unoptimized
           className={`object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${product.hoverImage ? 'group-hover:-translate-x-full' : 'group-hover:scale-105'}`}
         />
         {product.hoverImage && (

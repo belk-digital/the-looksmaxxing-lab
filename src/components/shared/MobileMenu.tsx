@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, Variants } from 'framer-motion'
 import { 
   X, Search, Heart, User, LogIn, ArrowUpRight, 
   Activity, Dna, Brain, ShieldPlus, Sparkles, Zap, Network, BatteryCharging,
@@ -54,7 +54,7 @@ export function MobileMenu({ isOpen, onClose, isLoggedIn = false }: MobileMenuPr
     }
   }, [isOpen, onClose])
 
-  const menuVariants = {
+  const menuVariants: Variants = {
     closed: { opacity: 0, scale: 0.96, y: 10 },
     open: { 
       opacity: 1,
@@ -70,7 +70,7 @@ export function MobileMenu({ isOpen, onClose, isLoggedIn = false }: MobileMenuPr
     exit: { opacity: 0, scale: 0.98, y: 5, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     closed: { y: 15, opacity: 0, scale: 0.98 },
     open: { y: 0, opacity: 1, scale: 1, transition: { duration: 0.4, ease: "easeOut" } }
   }

@@ -53,7 +53,6 @@ export function HomeFeaturedProductCard({ product, id, index = 0 }: HomeFeatured
               src={product.image}
               alt={product.name}
               fill
-              unoptimized
               className="object-contain mix-blend-multiply drop-shadow-sm"
             />
           </div>
