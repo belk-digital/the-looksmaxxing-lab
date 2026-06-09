@@ -208,7 +208,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                   <Link href="/journal" className={getNavLinkClass('/journal')}>
                     JOURNAL
                   </Link>
-                  <Link href="/faqs" className={getNavLinkClass('/faqs')}>
+                  <Link href="/faq" className={getNavLinkClass('/faq')}>
                     FAQ
                   </Link>
                   <Link href="/contact" className={getNavLinkClass('/contact')}>
