@@ -13,6 +13,12 @@ import { useCartStore } from '@/lib/cart/store'
 import { verifyCoupon, getUserDefaultAddress, getUserPurityPoints, getUserAddresses } from '../actions'
 import { toast } from 'sonner'
 import { useUser } from '@clerk/nextjs'
+import { loadStripe } from '@stripe/stripe-js'
+import { Elements } from '@stripe/react-stripe-js'
+import { StripeCheckoutForm } from './StripeCheckoutForm'
+import { createPaymentIntent } from './actions'
+
+const stripePromise = typeof window !== 'undefined' ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '') : null
 
 export function CheckoutClient() {
   const { items, couponCode: storedCouponCode, setCoupon } = useCartStore()
@@ -20,6 +26,10 @@ export function CheckoutClient() {
   
   // Mobile summary toggle
   const [mobileSummaryOpen, setMobileSummaryOpen] = useState(true)
+
+  // Stripe
+  const [clientSecret, setClientSecret] = useState<string | null>(null)
+  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null)
 
   // Purity Points State
   const [availablePoints, setAvailablePoints] = useState(0)
@@ -32,23 +42,23 @@ export function CheckoutClient() {
   // Form State
   const [formData, setFormData] = useState({
     email: '',
-    marketing: true,
     firstName: '',
     lastName: '',
+    phone: '',
     address: '',
     apartment: '',
     city: '',
     state: '',
     zip: '',
-    phone: '',
+    marketing: false,
+    saveInfo: false
   })
 
-  // Prefill user data
+  // Prefill Data
   useEffect(() => {
-    async function prefillData() {
+    const prefillData = async () => {
       if (!user) return
-
-      // Prefill Clerk basic info
+      
       setFormData(prev => ({
         ...prev,
         email: user.primaryEmailAddress?.emailAddress || prev.email,
@@ -56,27 +66,26 @@ export function CheckoutClient() {
         lastName: user.lastName || prev.lastName,
       }))
 
-      // Fetch saved address from Payload DB
-      const userAddresses = await getUserAddresses()
-      if (userAddresses && userAddresses.length > 0) {
-        setAddresses(userAddresses)
-        const defaultAddr = userAddresses.find((a: any) => a.isDefaultShipping) || userAddresses[0]
-        setSelectedAddressId(String(defaultAddr.id))
-        
-        setFormData(prev => ({
-          ...prev,
-          firstName: defaultAddr.firstName || prev.firstName,
-          lastName: defaultAddr.lastName || prev.lastName,
-          address: defaultAddr.line1 || prev.address,
-          apartment: defaultAddr.line2 || prev.apartment,
-          city: defaultAddr.city || prev.city,
-          state: defaultAddr.state || prev.state,
-          zip: defaultAddr.postalCode || prev.zip,
-          phone: defaultAddr.phone || prev.phone,
-        }))
+      try {
+        const userAddresses = await getUserAddresses()
+        if (userAddresses && userAddresses.length > 0) {
+          setAddresses(userAddresses)
+          const defaultAddress = userAddresses.find((a: any) => a.isDefaultShipping) || userAddresses[0]
+          setSelectedAddressId(String(defaultAddress.id))
+          setFormData(prev => ({
+            ...prev,
+            address: defaultAddress.line1,
+            apartment: defaultAddress.line2 || '',
+            city: defaultAddress.city,
+            state: defaultAddress.state,
+            zip: defaultAddress.postalCode,
+            phone: defaultAddress.phone || ''
+          }))
+        }
+      } catch (err) {
+        console.error('Failed to load user addresses:', err)
       }
 
-      // Fetch purity points
       const points = await getUserPurityPoints()
       setAvailablePoints(points)
     }
@@ -103,6 +112,21 @@ export function CheckoutClient() {
   
   const pointsToRedeem = isRedeemingPoints ? Math.min(availablePoints, totalBeforePoints) : 0
   const total = totalBeforePoints - pointsToRedeem
+
+  // Fetch client secret when order details change
+  useEffect(() => {
+    if (items.length > 0 && total > 0) {
+      createPaymentIntent(items, shippingMethod, appliedCoupon?.code, isRedeemingPoints)
+        .then(res => {
+          if (res.clientSecret && res.paymentIntentId) {
+            setClientSecret(res.clientSecret)
+            setPaymentIntentId(res.paymentIntentId)
+          } else if (res.error) {
+            toast.error(res.error)
+          }
+        })
+    }
+  }, [items, shippingMethod, appliedCoupon, isRedeemingPoints])
 
   // Handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -367,7 +391,7 @@ export function CheckoutClient() {
             </div>
 
             {/* Continuous Form */}
-            <form className="flex flex-col gap-10" onSubmit={(e) => e.preventDefault()}>
+            <div className="flex flex-col gap-10">
               <input type="hidden" name="redeemPoints" value={isRedeemingPoints ? 'true' : 'false'} />
               <input type="hidden" name="couponCode" value={appliedCoupon?.code || ''} />
               
@@ -513,24 +537,29 @@ export function CheckoutClient() {
               <section className="flex flex-col gap-4">
                 <h2 className="text-xl font-display font-bold text-ink mb-2">Payment</h2>
                 <p className="text-xs font-medium text-ink/50 mb-2 flex items-center gap-1.5"><Lock size={12} /> All transactions are 256-bit encrypted and secure.</p>
-                <div className="w-full h-56 bg-white border border-ink/10 rounded-3xl flex items-center justify-center flex-col gap-3 shadow-sm relative overflow-hidden">
-                  <ShieldCheck size={32} className="text-ink/20" />
-                  <span className="text-sm font-bold text-ink/40">Secure Stripe Element Loader</span>
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent to-ink/[0.02] pointer-events-none" />
-                </div>
+                
+                {clientSecret && stripePromise && paymentIntentId ? (
+                  <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
+                    <StripeCheckoutForm 
+                       amount={total}
+                       items={items}
+                       shippingMethod={shippingMethod}
+                       couponCode={appliedCoupon?.code}
+                       isRedeemingPoints={isRedeemingPoints}
+                       formData={formData}
+                       paymentIntentId={paymentIntentId}
+                       userId={user?.id}
+                    />
+                  </Elements>
+                ) : (
+                  <div className="w-full h-56 bg-white border border-ink/10 rounded-3xl flex items-center justify-center flex-col gap-3 shadow-sm relative overflow-hidden">
+                    <Loader2 size={32} className="text-ink/20 animate-spin" />
+                    <span className="text-sm font-bold text-ink/40">Initializing secure checkout...</span>
+                  </div>
+                )}
               </section>
 
-              {/* Submit */}
-              <section className="flex flex-col gap-6 pt-4">
-                <Button variant="dark" size="lg" className="w-full h-16 rounded-full text-sm tracking-widest uppercase shadow-[0_8px_20px_rgb(0,0,0,0.15)] hover:-translate-y-0.5 transition-all text-white">
-                  Pay Now <ArrowRight size={18} className="ml-2" />
-                </Button>
-                <p className="text-center text-xs text-ink/40 font-medium">
-                  By completing your purchase, you agree to our Terms of Service and strictly acknowledge these products are for Research Use Only.
-                </p>
-              </section>
-
-            </form>
+            </div>
           </div>
 
           {/* Right Column: Sticky Summary (Desktop) */}

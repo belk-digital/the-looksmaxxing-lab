@@ -4,10 +4,10 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Check } from 'lucide-react'
+import { Check, Printer } from 'lucide-react'
 import { Container } from '@/components/ui/container'
 import { FadeUp } from '@/components/motion/FadeUp'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 
 type OrderItem = {
   id: string
@@ -35,124 +35,178 @@ type OrderData = {
   shipping: number
   tax: number
   total: number
+  discountTotal?: number
+  redeemedPoints?: number
+  couponCode?: string
   paymentMethod: string
 }
 
 export function OrderConfirmationClient({ order }: { order: OrderData }) {
   return (
-    <Container size="content" className="py-24 md:py-32 flex flex-col items-center">
-      
-      {/* Animated Checkmark */}
-      <motion.div 
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
-        className="w-24 h-24 rounded-full border-2 border-gold flex items-center justify-center text-gold mb-8 shadow-[0_0_40px_rgba(201,160,80,0.15)]"
-      >
-        <Check size={48} strokeWidth={1.5} />
-      </motion.div>
-
-      <div className="text-center mb-12">
-        <FadeUp delay={0.3}>
-          <h1 className="text-display-md font-display text-ink mb-4">
-            Thank you, {order.customerName}.
-          </h1>
-        </FadeUp>
+    <div className="min-h-screen bg-[#fafafa] pt-24 pb-32 print:bg-white print:pt-0 print:pb-0">
+      <Container size="content" className="flex flex-col items-center px-4 sm:px-6 print:block print:w-full print:px-0">
         
-        <FadeUp delay={0.4}>
-          <p className="text-body-lg text-ink-muted mb-2">
-            Your order is confirmed.
-          </p>
-        </FadeUp>
-        
-        <FadeUp delay={0.5}>
-          <p className="text-body-md text-ink-muted/70 max-w-md mx-auto">
-            Order #{order.id} <br/>
-            We've sent a confirmation email to <span className="text-ink font-medium">{order.email}</span> with your receipt and tracking details.
-          </p>
-        </FadeUp>
-      </div>
-
-      <FadeUp delay={0.6} className="w-full">
-        <div className="w-full h-px bg-border-subtle mb-12" />
-        
-        <div className="w-full max-w-2xl mx-auto flex flex-col gap-12 text-left">
+        {/* Success Header - Hidden on Print */}
+        <div className="text-center mb-10 md:mb-12 flex flex-col items-center print:hidden">
+          <motion.div 
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+            className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-ink text-white flex items-center justify-center mb-6 shadow-lg"
+          >
+            <Check size={28} strokeWidth={2} />
+          </motion.div>
           
-          {/* Items List */}
-          <div>
-            <h2 className="text-label-md uppercase tracking-wider text-ink mb-6 border-b border-border-subtle pb-2">Order Details</h2>
-            <div className="flex flex-col gap-6">
-              {order.items.map(item => (
-                <div key={item.id} className="flex items-center gap-4">
-                  <div className="relative w-16 h-16 bg-cream-warm shrink-0 border border-border-subtle rounded-sm overflow-hidden">
-                    <Image src={item.image} alt={item.name} fill className="object-cover" />
-                    <div className="absolute -top-2 -right-2 w-5 h-5 bg-ink text-cream rounded-full flex items-center justify-center text-[10px] font-bold z-10">
-                      {item.quantity}
+          <FadeUp delay={0.1}>
+            <h1 className="text-3xl md:text-4xl font-display font-bold text-ink mb-3">
+              Payment Successful
+            </h1>
+            <p className="text-ink/60 text-sm md:text-base">
+              Thank you, {order.customerName}. Your order is confirmed.
+            </p>
+          </FadeUp>
+        </div>
+
+        {/* Invoice Card */}
+        <FadeUp delay={0.2} className="w-full max-w-3xl print:max-w-none print:w-full">
+          <div className="bg-white border border-ink/10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden print:shadow-none print:border-none print:rounded-none">
+            
+            {/* Print Branding Header */}
+            <div className="hidden print:flex items-center justify-between p-8 border-b border-ink/10">
+              <h1 className="text-2xl font-display font-bold tracking-tight text-ink uppercase">The Looksmaxxing Lab</h1>
+              <p className="text-sm font-medium text-ink/60">thelooksmaxxinglab.com</p>
+            </div>
+
+            {/* Invoice Header */}
+            <div className="p-6 sm:p-8 md:p-10 border-b border-ink/5 bg-[#fafafa]/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 print:bg-transparent print:p-8">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-ink/40 mb-1">Receipt</p>
+                <h2 className="text-lg sm:text-xl font-bold text-ink tracking-tight break-all">#{order.id}</h2>
+              </div>
+              <div className="text-left sm:text-right text-sm">
+                <p className="text-ink/60 mb-1">A confirmation email has been sent to:</p>
+                <p className="font-medium text-ink break-all">{order.email}</p>
+              </div>
+            </div>
+
+            <div className="p-6 sm:p-8 md:p-10 print:p-8">
+              {/* Shipping & Delivery Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10 md:mb-12">
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-ink/40 mb-4 border-b border-ink/5 pb-2">Shipping Address</h3>
+                  <div className="text-sm text-ink/80 flex flex-col gap-1">
+                    <p className="font-bold text-ink">{order.customerName}</p>
+                    <p>{order.shippingAddress.line1}</p>
+                    <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.postalCode}</p>
+                    <p>{order.shippingAddress.country}</p>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-ink/40 mb-4 border-b border-ink/5 pb-2">Delivery & Payment</h3>
+                  <div className="text-sm text-ink/80 flex flex-col gap-3">
+                    <div>
+                      <p className="text-ink/40 text-[10px] sm:text-xs font-medium uppercase tracking-wider mb-1">Est. Delivery</p>
+                      <p className="font-bold text-ink">{order.estimatedDelivery}</p>
+                    </div>
+                    <div>
+                      <p className="text-ink/40 text-[10px] sm:text-xs font-medium uppercase tracking-wider mb-1">Payment Method</p>
+                      <p className="font-bold text-ink">{order.paymentMethod}</p>
                     </div>
                   </div>
-                  <div className="flex flex-col flex-1">
-                    <span className="text-editorial-sm font-display text-ink leading-tight">{item.name}</span>
-                    <span className="text-label-xs uppercase tracking-wider text-ink-muted mt-0.5">{item.variant}</span>
-                  </div>
-                  <span className="text-body-sm text-ink font-medium">
-                    ${(item.price * item.quantity).toFixed(2)}
-                  </span>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-cream-warm p-8 rounded-sm border border-border-subtle">
-            {/* Shipping Info */}
-            <div className="flex flex-col gap-2 text-body-sm">
-              <span className="text-label-sm uppercase tracking-wider text-ink-muted mb-2">Shipping To</span>
-              <span className="text-ink font-medium">{order.customerName}</span>
-              <span className="text-ink-muted">{order.shippingAddress.line1}</span>
-              <span className="text-ink-muted">{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.postalCode}</span>
-              <span className="text-ink-muted">{order.shippingAddress.country}</span>
-              <div className="mt-4 flex flex-col">
-                <span className="text-label-sm uppercase tracking-wider text-ink-muted mb-1">Estimated Delivery</span>
-                <span className="text-ink font-medium">{order.estimatedDelivery}</span>
+              {/* Items Table - With horizontal scroll on mobile */}
+              <div className="overflow-x-auto -mx-6 sm:mx-0 px-6 sm:px-0 mb-8 custom-scrollbar print:overflow-visible print:px-0 print:mx-0">
+                <table className="w-full text-sm text-left min-w-[500px] print:min-w-full">
+                  <thead>
+                    <tr className="border-b border-ink/10 text-[10px] sm:text-xs uppercase tracking-widest text-ink/40 bg-[#fafafa]/50 print:bg-transparent">
+                      <th className="py-3 px-4 font-medium rounded-tl-lg print:px-0">Product</th>
+                      <th className="py-3 px-4 font-medium text-center">Qty</th>
+                      <th className="py-3 px-4 font-medium text-right">Price</th>
+                      <th className="py-3 px-4 font-medium text-right rounded-tr-lg print:px-0">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-ink/5">
+                    {order.items.map(item => (
+                      <tr key={item.id} className="group hover:bg-[#fafafa]/50 transition-colors print:hover:bg-transparent">
+                        <td className="py-4 sm:py-5 px-4 print:px-0">
+                          <div className="flex items-center gap-3 sm:gap-4">
+                            <div className="relative w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-lg border border-ink/5 overflow-hidden shrink-0 shadow-sm print:hidden">
+                              <Image src={item.image} alt={item.name} fill className="object-cover" />
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="font-bold text-ink whitespace-normal line-clamp-2 print:line-clamp-none">{item.name}</span>
+                              {item.variant && <span className="text-[10px] uppercase tracking-widest font-medium text-ink/50 mt-0.5">{item.variant}</span>}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4 sm:py-5 px-4 text-center text-ink/70 font-medium">{item.quantity}</td>
+                        <td className="py-4 sm:py-5 px-4 text-right text-ink/70">${item.price.toFixed(2)}</td>
+                        <td className="py-4 sm:py-5 px-4 text-right font-bold text-ink print:px-0">${(item.price * item.quantity).toFixed(2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Totals Table */}
+              <div className="flex justify-center sm:justify-end print:justify-end">
+                <div className="w-full sm:max-w-sm bg-[#fafafa]/50 rounded-xl p-5 sm:p-6 border border-ink/5 print:border-none print:bg-transparent print:p-0">
+                  <table className="w-full text-sm text-right">
+                    <tbody className="divide-y divide-transparent">
+                      <tr>
+                        <td className="py-2 text-ink/60">Subtotal</td>
+                        <td className="py-2 text-ink font-medium">${order.subtotal.toFixed(2)}</td>
+                      </tr>
+                      {!!order.discountTotal && order.discountTotal > 0 && (
+                        <tr>
+                          <td className="py-2 text-ink/60">Discount {order.couponCode ? `(${order.couponCode})` : ''}</td>
+                          <td className="py-2 font-medium text-[#D10000] print:text-black">-${order.discountTotal.toFixed(2)}</td>
+                        </tr>
+                      )}
+                      <tr>
+                        <td className="py-2 text-ink/60">Shipping</td>
+                        <td className="py-2 text-ink font-medium">{order.shipping === 0 ? 'Free' : `$${order.shipping.toFixed(2)}`}</td>
+                      </tr>
+                      <tr>
+                        <td className={`py-2 text-ink/60 ${!order.redeemedPoints ? 'pb-3 sm:pb-4' : ''}`}>Tax</td>
+                        <td className={`py-2 text-ink font-medium ${!order.redeemedPoints ? 'pb-3 sm:pb-4' : ''}`}>${order.tax.toFixed(2)}</td>
+                      </tr>
+                      {!!order.redeemedPoints && order.redeemedPoints > 0 && (
+                        <tr>
+                          <td className="py-2 text-ink/60 pb-3 sm:pb-4">Purity Points</td>
+                          <td className="py-2 font-medium text-[#D10000] print:text-black pb-3 sm:pb-4">-${order.redeemedPoints.toFixed(2)}</td>
+                        </tr>
+                      )}
+                      <tr className="border-t border-ink/10">
+                        <td className="pt-3 sm:pt-4 text-base font-bold text-ink">Total USD</td>
+                        <td className="pt-3 sm:pt-4 text-lg sm:text-xl font-bold text-ink">${order.total.toFixed(2)}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
             
-            {/* Payment & Totals */}
-            <div className="flex flex-col gap-3 text-body-sm">
-              <div className="flex flex-col mb-4">
-                <span className="text-label-sm uppercase tracking-wider text-ink-muted mb-2">Payment Method</span>
-                <span className="text-ink">{order.paymentMethod}</span>
-              </div>
-              <div className="flex justify-between text-ink-muted">
-                <span>Subtotal</span>
-                <span>${order.subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-ink-muted">
-                <span>Shipping</span>
-                <span>{order.shipping === 0 ? 'Free' : `$${order.shipping.toFixed(2)}`}</span>
-              </div>
-              <div className="flex justify-between text-ink-muted border-b border-border-subtle pb-3">
-                <span>Tax</span>
-                <span>${order.tax.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-ink font-medium mt-1">
-                <span>Total</span>
-                <span className="text-label-lg">${order.total.toFixed(2)}</span>
-              </div>
+            {/* Action Bar - Hidden on Print */}
+            <div className="bg-[#fafafa] border-t border-ink/5 p-4 px-6 md:px-10 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-ink/60 print:hidden">
+              <button onClick={() => window.print()} className="flex items-center gap-2 hover:text-ink transition-colors font-medium">
+                <Printer size={16} /> Print Receipt
+              </button>
+              <span className="text-center sm:text-left">Questions? <a href="mailto:support@thelooksmaxxinglab.com" className="text-ink underline hover:no-underline font-medium">Contact Support</a></span>
             </div>
           </div>
+        </FadeUp>
 
-        </div>
-      </FadeUp>
-
-      <FadeUp delay={0.7} className="mt-16 w-full flex flex-col sm:flex-row items-center justify-center gap-4">
-        <Link href={`/account/orders/${order.id}`} className={buttonVariants({ variant: 'secondary', size: 'lg', className: 'w-full sm:w-auto min-w-[200px]' })}>
-          VIEW ORDER
-        </Link>
-        <Link href="/shop" className={buttonVariants({ variant: 'dark', size: 'lg', className: 'w-full sm:w-auto min-w-[200px]' })}>
-          CONTINUE BROWSING
-        </Link>
-      </FadeUp>
-      
-    </Container>
+        {/* Footer Actions - Hidden on Print */}
+        <FadeUp delay={0.3} className="mt-10 md:mt-12 w-full flex flex-col items-center print:hidden">
+          <Link href="/shop" className={buttonVariants({ variant: 'dark', size: 'lg', className: 'w-full sm:w-auto min-w-[200px] rounded-full px-8 tracking-widest text-sm uppercase shadow-md hover:-translate-y-0.5 transition-all h-14' })}>
+            Continue Shopping
+          </Link>
+        </FadeUp>
+        
+      </Container>
+    </div>
   )
 }

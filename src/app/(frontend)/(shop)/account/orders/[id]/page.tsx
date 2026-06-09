@@ -17,22 +17,38 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
   const payload = await getPayload({ config })
   
+  let order;
   try {
-    const order = await payload.findByID({
+    const { docs } = await payload.find({
       collection: 'orders',
-      id,
-      depth: 1, // To get basic product info if populated, but we rely on snapshot mostly
+      where: {
+        orderNumber: { equals: id }
+      },
+      depth: 2,
       overrideAccess: true,
     })
 
-    // Verify ownership
+    if (docs.length > 0) {
+      order = docs[0]
+    } else {
+      order = await payload.findByID({
+        collection: 'orders',
+        id,
+        depth: 2,
+        overrideAccess: true,
+      })
+    }
+  } catch (error) {
+    return notFound()
+  }
+
+  if (!order) return notFound()
+
+  // Verify ownership
     const ownerId = typeof order.owner === 'object' ? order.owner?.id : order.owner
     if (ownerId !== user.id) {
       return notFound()
     }
 
     return <OrderDetailClient order={order} />
-  } catch (error) {
-    return notFound()
-  }
 }

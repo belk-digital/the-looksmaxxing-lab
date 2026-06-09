@@ -1,5 +1,9 @@
 import React from 'react'
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
 import { OrderConfirmationClient } from './OrderConfirmationClient'
+import { notFound } from 'next/navigation'
+
 export const metadata = {
   title: 'Order Confirmed | The Looksmaxxing Lab',
 }
@@ -7,47 +11,67 @@ export const metadata = {
 export default async function OrderConfirmationPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
 
-  // Hard-coded sample order for testing visually
-  const mockOrder = {
-    id: id || 'LL-2026-X8F9A',
-    customerName: 'Alex',
-    email: 'alex@example.com',
+  if (!id || id === 'success') {
+    return notFound()
+  }
+
+  const payload = await getPayload({ config: configPromise })
+  
+  let order;
+  try {
+     order = await payload.findByID({
+       collection: 'orders',
+       id: id,
+       depth: 2
+     })
+  } catch (e) {
+     return notFound()
+  }
+
+  if (!order) return notFound()
+
+  // Format order items
+  const formattedItems = (order.items || []).map((item: any, i: number) => {
+     // Use product object since depth > 0 populates relationships
+     const productData = typeof item.product === 'object' ? item.product : item.productSnapshot
+     
+     return {
+        id: item.id || String(i),
+        name: productData?.title || productData?.name || 'Product',
+        variant: 'Standard', 
+        quantity: item.quantity,
+        price: productData?.price || productData?.basePrice || 0,
+        image: productData?.images?.[0]?.image?.url || productData?.images?.[0]?.url || '/temp-products/product-image.png'
+     }
+  })
+
+  // Format OrderData
+  const orderData = {
+    id: order.orderNumber || String(order.id),
+    customerName: `${order.customerFirstName || ''} ${order.customerLastName || ''}`.trim() || 'Customer',
+    email: order.guestEmail || '',
     shippingAddress: {
-      line1: '123 Biohack Way',
-      city: 'Austin',
-      state: 'TX',
-      postalCode: '78701',
-      country: 'USA'
+      line1: order.shippingAddress?.line1 || '',
+      city: order.shippingAddress?.city || '',
+      state: order.shippingAddress?.state || '',
+      postalCode: order.shippingAddress?.postalCode || '',
+      country: order.shippingAddress?.country || 'US'
     },
-    estimatedDelivery: 'May 30, 2026',
-    items: [
-      {
-        id: 'item-1',
-        name: 'TB-500',
-        variant: '5MG',
-        quantity: 1,
-        price: 80.00,
-        image: '/temp-products/tb-500.png'
-      },
-      {
-        id: 'item-2',
-        name: 'NAD+',
-        variant: '500MG',
-        quantity: 2,
-        price: 150.00,
-        image: '/temp-products/product-image.png'
-      }
-    ],
-    subtotal: 380.00,
-    shipping: 0.00,
-    tax: 30.40,
-    total: 410.40,
-    paymentMethod: 'Visa ending in 4242'
+    estimatedDelivery: order.shippingMethod === 'express' ? '1-3 Business Days' : '5-7 Business Days',
+    items: formattedItems,
+    subtotal: order.subtotal || 0,
+    shipping: order.shippingTotal || 0,
+    tax: order.taxTotal || 0,
+    total: order.total || 0,
+    discountTotal: order.discountTotal || 0,
+    redeemedPoints: order.redeemedPoints || 0,
+    couponCode: order.couponCode || '',
+    paymentMethod: 'Credit Card' 
   }
 
   return (
     <div className="pt-20">
-      <OrderConfirmationClient order={mockOrder} />
+      <OrderConfirmationClient order={orderData} />
     </div>
   )
 }

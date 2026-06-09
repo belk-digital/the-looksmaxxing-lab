@@ -113,7 +113,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
 
   return (
     <>
-      <div className="fixed top-0 inset-x-0 z-sticky flex flex-col pointer-events-none">
+      <div className="fixed top-0 inset-x-0 z-sticky flex flex-col pointer-events-none print:hidden">
         
         <motion.div
           variants={{

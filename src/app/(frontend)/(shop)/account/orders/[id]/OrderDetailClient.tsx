@@ -135,7 +135,7 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                 const product = item.productSnapshot || item.product || {}
                 const title = product.title || product.name || 'Unknown Product'
                 const price = product.basePrice || product.price || 0
-                const imageUrl = product.images?.[0]?.image?.url || product.images?.[0]?.url || '/placeholder.png'
+                const imageUrl = product.images?.[0]?.image?.url || product.images?.[0]?.url || '/temp-products/product-image.png'
                 
                 return (
                   <div key={item.id || Math.random()} className="flex items-center gap-6 group">

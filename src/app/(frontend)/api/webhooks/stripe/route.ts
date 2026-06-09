@@ -1,0 +1,55 @@
+import { headers } from 'next/headers'
+import Stripe from 'stripe'
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: '2024-04-10' as any,
+})
+
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.text()
+    const headersList = await headers()
+    const signature = headersList.get('stripe-signature') as string
+
+    let event: Stripe.Event
+
+    try {
+      event = stripe.webhooks.constructEvent(body, signature, webhookSecret as string)
+    } catch (err: any) {
+      console.error(`Webhook signature verification failed.`, err.message)
+      return new Response(`Webhook Error: ${err.message}`, { status: 400 })
+    }
+
+    if (event.type === 'payment_intent.succeeded') {
+      const paymentIntent = event.data.object as Stripe.PaymentIntent
+      console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`)
+      
+      const orderId = paymentIntent.metadata?.orderId
+      if (orderId) {
+         try {
+            const payload = await getPayload({ config: configPromise })
+            await payload.update({
+               collection: 'orders',
+               id: orderId,
+               data: {
+                  status: 'paid',
+                  paymentStatus: 'captured',
+               }
+            })
+            console.log(`Successfully updated order ${orderId} to paid/captured in Payload.`)
+         } catch (updateErr) {
+            console.error(`Failed to update order ${orderId} in Payload:`, updateErr)
+         }
+      }
+    }
+
+    return new Response('Webhook handled successfully', { status: 200 })
+  } catch (error: any) {
+    console.error('Webhook error:', error)
+    return new Response(`Webhook Error: ${error.message}`, { status: 400 })
+  }
+}
