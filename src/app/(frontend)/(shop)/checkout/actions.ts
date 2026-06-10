@@ -75,6 +75,14 @@ export async function createPaymentIntent(
 
   const methods = await getShippingMethods()
   const selectedMethod = methods.find((m: any) => m.method === shippingMethodName) || methods[0]
+  
+  // Validate minOrderAmount for the selected shipping method
+  if (selectedMethod?.minOrderAmount && selectedMethod.minOrderAmount > 0) {
+    if (subtotal < selectedMethod.minOrderAmount) {
+       return { error: `Your cart subtotal must be at least $${selectedMethod.minOrderAmount} to use ${selectedMethod.method}.` }
+    }
+  }
+
   const shippingCost = selectedMethod?.price || 0
 
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)
@@ -161,6 +169,14 @@ export async function createPayloadOrder(
 
   const methods = await getShippingMethods()
   const selectedMethod = methods.find((m: any) => m.method === shippingMethodName) || methods[0]
+
+  // Validate minOrderAmount for the selected shipping method
+  if (selectedMethod?.minOrderAmount && selectedMethod.minOrderAmount > 0) {
+    if (subtotal < selectedMethod.minOrderAmount) {
+       return { error: `Your cart subtotal must be at least $${selectedMethod.minOrderAmount} to use ${selectedMethod.method}.` }
+    }
+  }
+
   const shippingCost = selectedMethod?.price || 0
 
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)

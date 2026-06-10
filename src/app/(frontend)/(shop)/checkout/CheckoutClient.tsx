@@ -118,9 +118,6 @@ export function CheckoutClient() {
       })
   }, [])
 
-  const selectedMethodObj = availableShippingMethods.find(m => m.method === shippingMethod)
-  const shippingCost = selectedMethodObj?.price || 0
-
   // Coupon State
   const [couponCode, setCouponCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; freeShipping: boolean; description: string } | null>(null)
@@ -128,6 +125,25 @@ export function CheckoutClient() {
 
   // Order Calculations
   const subtotal = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
+
+  const visibleShippingMethods = availableShippingMethods.filter((method: any) => {
+    if (method.minOrderAmount && method.minOrderAmount > 0) {
+      return subtotal >= method.minOrderAmount
+    }
+    return true
+  })
+
+  useEffect(() => {
+    if (visibleShippingMethods.length > 0) {
+      const isCurrentValid = visibleShippingMethods.some(m => m.method === shippingMethod)
+      if (!isCurrentValid) {
+        setShippingMethod(visibleShippingMethods[0].method)
+      }
+    }
+  }, [subtotal, availableShippingMethods, shippingMethod])
+
+  const selectedMethodObj = visibleShippingMethods.find(m => m.method === shippingMethod) || visibleShippingMethods[0]
+  const shippingCost = selectedMethodObj?.price || 0
   const finalShipping = appliedCoupon?.freeShipping ? 0 : shippingCost
   const discountAmount = appliedCoupon ? appliedCoupon.discount : 0
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)
@@ -529,7 +545,7 @@ export function CheckoutClient() {
               <section className="flex flex-col gap-4">
                 <h2 className="text-xl font-display font-bold text-ink mb-2">Shipping Method</h2>
                 <div className="flex flex-col gap-3">
-                  {availableShippingMethods.map((method: any) => (
+                  {visibleShippingMethods.map((method: any) => (
                     <label key={method.method} className={`flex items-center justify-between p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${shippingMethod === method.method ? 'border-ink bg-ink/5' : 'border-ink/10 bg-white hover:border-ink/30'}`}>
                       <div className="flex items-center gap-4">
                         <input 
