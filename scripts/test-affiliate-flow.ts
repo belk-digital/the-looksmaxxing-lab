@@ -65,7 +65,7 @@ async function runTest() {
 
     // Wait and manually update to avoid async background hook test runner issues
     const { updateAffiliateStats } = await import('../src/lib/affiliates/stats')
-    await updateAffiliateStats(affiliate.id)
+    await updateAffiliateStats(affiliate.id, payload as any)
     await new Promise(r => setTimeout(r, 1000))
     
     // Check stats updated
@@ -101,7 +101,7 @@ async function runTest() {
     await attributeOrder(order as any, String(affiliate.id), null, String(click.id))
     
     // Wait for the conversion hook to run
-    await updateAffiliateStats(affiliate.id)
+    await updateAffiliateStats(affiliate.id, payload as any)
     await new Promise(r => setTimeout(r, 1000))
 
     // Check stats updated

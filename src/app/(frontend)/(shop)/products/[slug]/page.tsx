@@ -3,6 +3,51 @@ import { ProductClient } from './ProductClient'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { Metadata } from 'next'
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const payload = await getPayload({ config: configPromise })
+  
+  const { docs } = await payload.find({
+    collection: 'products',
+    where: { slug: { equals: slug } },
+    limit: 1,
+    depth: 1, // Need media depth for images
+  })
+
+  if (!docs || docs.length === 0) {
+    return { title: 'Product Not Found' }
+  }
+
+  const product = docs[0]
+  const title = product.seoTitle || product.name || 'Product'
+  const description = product.seoDescription || product.description?.substring(0, 160) || ''
+
+  // Get primary image for open graph
+  let imageUrl = undefined
+  if (product.images && product.images.length > 0 && typeof product.images[0].image === 'object' && product.images[0].image?.url) {
+    imageUrl = product.images[0].image.url
+    // Make sure it's an absolute URL if needed, but often relative works depending on Next.js config
+  }
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+    }
+  }
+}
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   console.log('--- STARTING SERVER RENDER FOR PRODUCT PAGE ---')
