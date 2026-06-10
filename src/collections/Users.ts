@@ -118,6 +118,13 @@ export const Users: CollectionConfig = {
         description: 'Maxx Points ($1 per point). Can be used by users at checkout.',
       },
     },
+    {
+      name: 'purityPoints',
+      type: 'number',
+      admin: {
+        hidden: true,
+      }
+    },
   ],
   hooks: {
     beforeChange: [beforeChangeEmailLowercase],
