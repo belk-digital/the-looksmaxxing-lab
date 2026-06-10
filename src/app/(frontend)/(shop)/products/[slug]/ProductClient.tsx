@@ -429,7 +429,7 @@ export function ProductClient({ product }: ProductClientProps) {
                           ) : (
                             <span className="font-bold text-ink">${priceNum.toFixed(2)}</span>
                           )}
-                          {discount > 0 && <span className="text-[10px] font-bold text-red-500 mt-1 uppercase tracking-wider">{discount}% OFF</span>}
+                          {discount > 0 && <span className="text-[10px] font-bold text-green-500 mt-1 uppercase tracking-wider">{discount}% OFF</span>}
                         </div>
                       </button>
                     )

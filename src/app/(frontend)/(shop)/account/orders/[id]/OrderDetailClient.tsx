@@ -231,7 +231,7 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                 <span>${subtotal.toFixed(2)}</span>
               </div>
               {!!order.discountTotal && order.discountTotal > 0 && (
-                <div className="flex justify-between text-red-500">
+                <div className="flex justify-between text-green-500">
                   <span>Discount {order.couponCode ? `(${order.couponCode})` : ''}</span>
                   <span>-${order.discountTotal.toFixed(2)}</span>
                 </div>
@@ -245,7 +245,7 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                 <span>${processingFee.toFixed(2)}</span>
               </div>
               {!!order.redeemedPoints && order.redeemedPoints > 0 && (
-                <div className="flex justify-between text-red-500 border-b border-gray-100 pb-4 mt-1">
+                <div className="flex justify-between text-green-500 border-b border-gray-100 pb-4 mt-1">
                   <span>Maxx Points</span>
                   <span>-${order.redeemedPoints.toFixed(2)}</span>
                 </div>
@@ -255,11 +255,11 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                 <span className={`text-3xl tracking-tighter ${spaceGrotesk.className}`}>${total.toFixed(2)}</span>
               </div>
               <div className={`text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-2 rounded-lg mt-2 text-center border ${
-                order.paymentStatus === 'captured' ? 'bg-green-50 text-green-600 border-green-100' :
+                ['captured', 'paid', 'succeeded'].includes(order.paymentStatus) ? 'bg-green-50 text-green-600 border-green-100' :
                 order.paymentStatus === 'refunded' ? 'bg-red-50 text-red-600 border-red-100' :
                 'bg-amber-50 text-amber-600 border-amber-100'
               }`}>
-                {order.paymentStatus === 'captured' ? 'Payment Successful' : 
+                {['captured', 'paid', 'succeeded'].includes(order.paymentStatus) ? 'Payment Successful' : 
                  order.paymentStatus === 'refunded' ? 'Refunded' : 
                  'Payment Processing'}
               </div>

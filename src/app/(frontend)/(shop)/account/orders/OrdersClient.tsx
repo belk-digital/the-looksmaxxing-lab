@@ -97,13 +97,19 @@ export function OrdersClient({ orders }: AccountOrdersProps) {
                     <div className="flex items-center gap-2">
                       <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border ${
                         order.status === 'Processing' ? 'bg-amber-50 border-amber-200 text-amber-700' : 
+                        order.status === 'Shipped' ? 'bg-blue-50 border-blue-200 text-blue-700' : 
+                        order.status === 'Placed' ? 'bg-blue-50 border-blue-200 text-blue-700' : 
                         order.status === 'Delivered' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 
-                        'bg-red-50 border-red-200 text-red-700'
+                        ['Cancelled', 'Returned'].includes(order.status) ? 'bg-red-50 border-red-200 text-red-700' :
+                        'bg-gray-50 border-gray-200 text-gray-700'
                       }`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${
                           order.status === 'Processing' ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' : 
+                          order.status === 'Shipped' ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]' : 
+                          order.status === 'Placed' ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]' : 
                           order.status === 'Delivered' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 
-                          'bg-red-500'
+                          ['Cancelled', 'Returned'].includes(order.status) ? 'bg-red-500' :
+                          'bg-gray-500'
                         }`} />
                         <span className="text-[10px] font-bold uppercase tracking-[0.1em]">{order.status}</span>
                       </div>

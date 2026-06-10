@@ -162,7 +162,7 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
                       {!!order.discountTotal && order.discountTotal > 0 && (
                         <tr>
                           <td className="py-2 text-ink/60">Discount {order.couponCode ? `(${order.couponCode})` : ''}</td>
-                          <td className="py-2 font-medium text-[#D10000] print:text-black">-${order.discountTotal.toFixed(2)}</td>
+                          <td className="py-2 font-medium text-green-600 print:text-green-600">-${order.discountTotal.toFixed(2)}</td>
                         </tr>
                       )}
                       <tr>
@@ -176,7 +176,7 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
                       {!!order.redeemedPoints && order.redeemedPoints > 0 && (
                         <tr>
                           <td className="py-2 text-ink/60 pb-3 sm:pb-4">Maxx Points</td>
-                          <td className="py-2 font-medium text-[#D10000] print:text-black pb-3 sm:pb-4">-${order.redeemedPoints.toFixed(2)}</td>
+                          <td className="py-2 font-medium text-green-600 print:text-green-600 pb-3 sm:pb-4">-${order.redeemedPoints.toFixed(2)}</td>
                         </tr>
                       )}
                       <tr className="border-t border-ink/10">

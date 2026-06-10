@@ -385,7 +385,7 @@ export function CheckoutClient() {
                           initial={{ height: 0, opacity: 0 }} 
                           animate={{ height: 'auto', opacity: 1 }} 
                           exit={{ height: 0, opacity: 0 }}
-                          className="flex justify-between items-center text-sm font-medium text-amber-600 overflow-hidden"
+                          className="flex justify-between items-center text-sm font-medium text-green-600 overflow-hidden"
                         >
                           <span className="py-1 flex items-center gap-1.5"><Sparkles size={14} /> Points Applied</span>
                           <span className="py-1 font-bold">-${pointsToRedeem.toFixed(2)}</span>
@@ -713,7 +713,7 @@ export function CheckoutClient() {
                       initial={{ height: 0, opacity: 0 }} 
                       animate={{ height: 'auto', opacity: 1 }} 
                       exit={{ height: 0, opacity: 0 }}
-                      className="flex justify-between items-center text-sm font-medium text-amber-600 overflow-hidden"
+                      className="flex justify-between items-center text-sm font-medium text-green-600 overflow-hidden"
                     >
                       <span className="py-1 flex items-center gap-1.5"><Sparkles size={14} /> Points Applied</span>
                       <span className="py-1 font-bold">-${pointsToRedeem.toFixed(2)}</span>
