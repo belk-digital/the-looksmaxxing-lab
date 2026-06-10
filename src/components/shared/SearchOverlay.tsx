@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, X, Loader2 } from 'lucide-react'
+import { Search, X, Loader2, Zap, Sparkles, BatteryCharging, Dna, ArrowRight, Command } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -10,6 +10,13 @@ interface SearchOverlayProps {
   isOpen: boolean
   onClose: () => void
 }
+
+const QUICK_CATEGORIES = [
+  { name: 'Metabolic Research', icon: Zap, href: '/shop/metabolic' },
+  { name: 'Growth Factor Research', icon: Sparkles, href: '/shop/growth-factor' },
+  { name: 'Recovery Research', icon: BatteryCharging, href: '/shop/recovery' },
+  { name: 'Cellular Health Research', icon: Dna, href: '/shop/cellular-health' },
+]
 
 export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const [query, setQuery] = useState('')
@@ -35,6 +42,8 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [onClose])
+
+  // Cmd+K to open (if we want to add that globally, we'd do it outside, but we can mention it here)
 
   // Debounced search logic
   useEffect(() => {
@@ -65,77 +74,109 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[100] flex flex-col bg-white/95 backdrop-blur-2xl"
-        >
-          {/* Header Bar */}
-          <div className="w-full flex justify-between items-center px-6 h-[72px] border-b border-black/5">
-            <div className="flex-1" />
-            <span className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-ink flex-1 text-center">
-              Search
-            </span>
-            <div className="flex flex-1 justify-end">
-              <button
-                onClick={onClose}
-                className="p-2 -mr-2 text-ink hover:bg-black/5 transition-colors rounded-full"
-              >
-                <X size={20} strokeWidth={1.5} />
-              </button>
-            </div>
-          </div>
+        <div className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center p-4 sm:p-6 pt-20 sm:pt-6 pointer-events-auto">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
+          />
 
-          {/* Search Input Area */}
-          <div className="w-full max-w-4xl mx-auto px-6 mt-12 mb-12">
-            <div className="relative flex items-center border-b border-black/20 focus-within:border-black transition-colors pb-4">
-              <Search className="text-black/40 w-6 h-6 mr-4" strokeWidth={1.5} />
+          {/* Modal Container */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full max-w-3xl bg-white rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col relative z-10"
+          >
+            {/* Search Input Area */}
+            <div className="flex items-center gap-4 p-5 sm:p-6 border-b border-black/5">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white border border-black/10 rounded-2xl flex items-center justify-center shadow-sm shrink-0">
+                {isLoading ? (
+                  <Loader2 className="text-black animate-spin" strokeWidth={1.5} size={24} />
+                ) : (
+                  <Search className="text-black" strokeWidth={1.5} size={24} />
+                )}
+              </div>
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Search formulations..."
+                placeholder="Search compounds..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="w-full bg-transparent text-2xl sm:text-4xl font-light text-black placeholder:text-black/20 focus:outline-none transition-all"
+                className="flex-1 bg-transparent text-xl sm:text-2xl text-black placeholder:text-black/30 focus:outline-none font-medium"
               />
-              {isLoading && (
-                <Loader2 className="text-black/40 w-5 h-5 animate-spin ml-4" strokeWidth={1.5} />
-              )}
+              <button
+                onClick={onClose}
+                className="p-2 text-black/30 hover:text-black hover:bg-black/5 rounded-full transition-colors shrink-0"
+              >
+                <X size={24} strokeWidth={1.5} />
+              </button>
             </div>
-          </div>
 
-          {/* Results Area */}
-          <div className="flex-1 overflow-y-auto px-6 pb-24">
-            <div className="w-full max-w-4xl mx-auto">
+            {/* Content Area */}
+            <div className="flex-1 overflow-y-auto max-h-[60vh]">
               {query && !isLoading && results.length === 0 && (
-                <div className="text-center py-20 animate-in fade-in duration-500">
+                <div className="text-center py-20">
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40 mb-2">0 Results Found</p>
                   <p className="text-sm text-black/40">Try adjusting your search terms.</p>
                 </div>
               )}
 
-              {results.length > 0 && (
-                <div className="flex flex-col animate-in fade-in duration-500">
-                  <div className="flex items-center justify-between border-b border-black/10 pb-4 mb-4">
-                    <p className="text-[10px] font-bold text-black/50 uppercase tracking-[0.2em]">
-                      Products
-                    </p>
-                    <p className="text-[10px] font-bold text-black/50 uppercase tracking-[0.2em]">
-                      {results.length} {results.length === 1 ? 'Result' : 'Results'}
-                    </p>
+              {/* Show Quick Categories if no query */}
+              {!query && (
+                <div className="py-2">
+                  <div className="flex items-center gap-4 px-6 pt-6">
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-black/40 shrink-0">
+                      Quick Categories
+                    </span>
+                    <div className="flex-1 h-px bg-black/5" />
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6">
+                    {QUICK_CATEGORIES.map((cat) => (
+                      <Link
+                        key={cat.name}
+                        href={cat.href}
+                        onClick={onClose}
+                        className="group flex items-center p-4 rounded-2xl bg-[#FAFAFA] border border-black/5 hover:border-black/20 hover:bg-white transition-all shadow-sm hover:shadow-md"
+                      >
+                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm border border-black/5 shrink-0 group-hover:scale-105 transition-transform">
+                          <cat.icon size={18} className="text-black" strokeWidth={1.5} />
+                        </div>
+                        <span className="ml-4 text-sm font-semibold text-black flex-1">
+                          {cat.name}
+                        </span>
+                        <ArrowRight size={16} className="text-black/20 group-hover:text-black/60 transition-colors" />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Show Results if query exists */}
+              {results.length > 0 && (
+                <div className="py-2">
+                  <div className="flex items-center gap-4 px-6 pt-6">
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-black/40 shrink-0">
+                      Search Results ({results.length})
+                    </span>
+                    <div className="flex-1 h-px bg-black/5" />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6">
                     {results.map((product) => (
                       <Link
                         key={product.id}
                         href={`/products/${product.slug}`}
                         onClick={onClose}
-                        className="group flex items-center p-4 hover:bg-black/5 rounded-2xl transition-colors duration-300 -mx-4"
+                        className="group flex items-center p-4 rounded-2xl bg-white border border-black/5 hover:border-black/20 hover:shadow-md transition-all"
                       >
-                        <div className="relative w-16 h-16 bg-[#F5F5F5] rounded-xl overflow-hidden shrink-0 mix-blend-multiply">
+                        <div className="relative w-14 h-14 bg-[#F5F5F5] rounded-xl overflow-hidden shrink-0 mix-blend-multiply border border-black/5">
                           {product.imageUrl ? (
                             <Image
                               src={product.imageUrl}
@@ -148,18 +189,18 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                           )}
                         </div>
                         
-                        <div className="ml-5 flex-1 flex flex-col justify-center">
-                          <h3 className="text-sm font-bold text-black uppercase tracking-[0.1em] group-hover:text-black/70 transition-colors">
+                        <div className="ml-4 flex-1 flex flex-col justify-center min-w-0">
+                          <h3 className="text-sm font-bold text-black uppercase tracking-[0.1em] group-hover:text-black/70 transition-colors truncate">
                             {product.name}
                           </h3>
                           {product.descriptor && (
-                            <p className="text-[11px] text-black/50 mt-1 line-clamp-1 pr-4">
+                            <p className="text-[11px] text-black/50 mt-0.5 truncate">
                               {product.descriptor}
                             </p>
                           )}
                         </div>
 
-                        <div className="ml-4">
+                        <div className="ml-3 shrink-0">
                           <p className="text-xs font-bold text-black tracking-widest">${product.price}</p>
                         </div>
                       </Link>
@@ -168,8 +209,39 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                 </div>
               )}
             </div>
-          </div>
-        </motion.div>
+
+            {/* Bottom Footer Section */}
+            <div className="p-5 sm:p-6 bg-[#FAFAFA] border-t border-black/5 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-black/5 rounded-full flex items-center justify-center shrink-0">
+                  <Command size={18} className="text-black/40" />
+                </div>
+                <div className="hidden sm:block">
+                  <p className="text-[10px] font-bold text-black uppercase tracking-[0.2em] mb-0.5">
+                    Institutional Access
+                  </p>
+                  <p className="text-[10px] text-black/40">
+                    Use <kbd className="font-sans px-1 py-0.5 bg-black/5 rounded mx-1">⌘ + K</kbd> to search from any laboratory module
+                  </p>
+                </div>
+                <div className="block sm:hidden">
+                  <p className="text-[10px] font-bold text-black uppercase tracking-[0.2em]">
+                    Institutional Access
+                  </p>
+                </div>
+              </div>
+              
+              <Link 
+                href="/faq" 
+                onClick={onClose}
+                className="px-4 py-2 border border-black/10 rounded-full text-[9px] font-bold uppercase tracking-widest text-black hover:bg-black hover:text-white transition-colors shrink-0"
+              >
+                Help Center
+              </Link>
+            </div>
+            
+          </motion.div>
+        </div>
       )}
     </AnimatePresence>
   )
