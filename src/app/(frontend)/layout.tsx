@@ -6,6 +6,7 @@ import { Header } from '@/components/shared/Header'
 import { Footer } from '@/components/shared/Footer'
 import { SmoothScroll } from '@/components/shared/SmoothScroll'
 import { Toaster } from '@/components/ui/sonner'
+import { GlobalNavigationSpinner } from '@/components/shared/GlobalNavigationSpinner'
 
 export const metadata = {
   title: 'Looksmaxxing Lab',
@@ -21,6 +22,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
           className="min-h-screen bg-cream text-ink antialiased"
           suppressHydrationWarning
         >
+          <GlobalNavigationSpinner />
           <SmoothScroll>
             <LayoutClientWrapper header={<Header />} footer={<Footer />}>
               {children}

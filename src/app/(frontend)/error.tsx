@@ -18,18 +18,18 @@ export default function GlobalError({
 
   return (
     <main className="min-h-screen bg-cream flex flex-col items-center justify-center text-center px-6 pt-32 pb-24">
-      <h1 className="text-[80px] md:text-[120px] leading-none font-serif text-gold mb-6">500</h1>
-      <h2 className="text-editorial-lg font-serif text-ink mb-6">Something went wrong.</h2>
-      <p className="text-body-lg text-ink-muted max-w-[480px] mx-auto mb-12">
-        We encountered an unexpected error while processing your request. Please try again or return to the home page.
+      <h1 className="text-[80px] md:text-[120px] leading-none font-serif text-gold mb-6 drop-shadow-sm">500</h1>
+      <h2 className="text-display-lg font-serif text-ink mb-6">Server is Looksmaxxing.</h2>
+      <p className="text-body-lg text-ink-muted max-w-[500px] mx-auto mb-12">
+        Something broke on our end. Our developers are currently being punished with 100 extra reps of jawline chewing. Try again while they suffer.
       </p>
       
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-        <Button variant="dark" size="lg" onClick={() => reset()}>
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-sm mx-auto">
+        <Button variant="dark" size="lg" onClick={() => reset()} className="w-full sm:w-auto rounded-full uppercase tracking-widest text-xs h-14 px-8">
           Try Again
         </Button>
-        <Link href="/">
-          <Button variant="secondary" size="lg">Return Home</Button>
+        <Link href="/" className="w-full sm:w-auto">
+          <Button variant="outline" size="lg" className="w-full rounded-full uppercase tracking-widest text-xs h-14 px-8 border-ink/20 hover:border-ink">Return to Base</Button>
         </Link>
       </div>
     </main>
