@@ -77,9 +77,9 @@ export async function createPaymentIntent(
   const selectedMethod = methods.find((m: any) => m.method === shippingMethodName) || methods[0]
   
   // Validate minOrderAmount for the selected shipping method
-  if (selectedMethod?.minOrderAmount && selectedMethod.minOrderAmount > 0) {
-    if (subtotal < selectedMethod.minOrderAmount) {
-       return { error: `Your cart subtotal must be at least $${selectedMethod.minOrderAmount} to use ${selectedMethod.method}.` }
+  if ((selectedMethod as any)?.minOrderAmount && (selectedMethod as any).minOrderAmount > 0) {
+    if (subtotal < (selectedMethod as any).minOrderAmount) {
+       return { error: `Your cart subtotal must be at least $${(selectedMethod as any).minOrderAmount} to use ${selectedMethod.method}.` }
     }
   }
 
@@ -171,9 +171,9 @@ export async function createPayloadOrder(
   const selectedMethod = methods.find((m: any) => m.method === shippingMethodName) || methods[0]
 
   // Validate minOrderAmount for the selected shipping method
-  if (selectedMethod?.minOrderAmount && selectedMethod.minOrderAmount > 0) {
-    if (subtotal < selectedMethod.minOrderAmount) {
-       return { error: `Your cart subtotal must be at least $${selectedMethod.minOrderAmount} to use ${selectedMethod.method}.` }
+  if ((selectedMethod as any)?.minOrderAmount && (selectedMethod as any).minOrderAmount > 0) {
+    if (subtotal < (selectedMethod as any).minOrderAmount) {
+       return { error: `Your cart subtotal must be at least $${(selectedMethod as any).minOrderAmount} to use ${selectedMethod.method}.` }
     }
   }
 
