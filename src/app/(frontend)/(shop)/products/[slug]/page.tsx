@@ -28,7 +28,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   let imageUrl = undefined
   if (product.images && product.images.length > 0 && typeof product.images[0].image === 'object' && product.images[0].image?.url) {
     imageUrl = product.images[0].image.url
-    // Make sure it's an absolute URL if needed, but often relative works depending on Next.js config
+    if (imageUrl.startsWith('/')) {
+      imageUrl = `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${imageUrl}`
+    }
   }
 
   return {

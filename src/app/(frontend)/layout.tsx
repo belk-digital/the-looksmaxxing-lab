@@ -10,6 +10,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { GlobalNavigationSpinner } from '@/components/shared/GlobalNavigationSpinner'
 
 export const metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'),
   title: 'Looksmaxxing Lab',
   description: 'Premium Peptides for Peak Performance',
 }
