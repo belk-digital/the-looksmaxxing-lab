@@ -10,12 +10,12 @@ export const PayoutRequests: CollectionConfig = {
   access: {
     read: ({ req: { user } }) => {
       if (!user) return false
-      if (['admin', 'staff'].includes(user.role)) return true
+      if (user.role && ['admin', 'staff'].includes(user.role as string)) return true
       return { 'affiliate.user': { equals: user.id } }
     },
     create: ({ req: { user } }) => !!user,
-    update: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role),
-    delete: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role),
+    update: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role as string),
+    delete: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role as string),
   },
   fields: [
     { name: 'affiliate', type: 'relationship', relationTo: 'affiliates', required: true, index: true },
