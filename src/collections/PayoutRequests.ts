@@ -5,7 +5,6 @@ export const PayoutRequests: CollectionConfig = {
   slug: 'payout-requests',
   admin: {
     group: 'Affiliate System',
-    useAsTitle: 'id',
   },
   access: {
     read: ({ req: { user } }) => {

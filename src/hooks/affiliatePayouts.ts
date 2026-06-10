@@ -24,7 +24,7 @@ export const afterAffiliatePayoutChange: CollectionAfterChangeHook = async ({ do
 
     const affiliateId = typeof doc.affiliate === 'object' ? doc.affiliate.id : doc.affiliate
     if (affiliateId) {
-      updateAffiliateStats(affiliateId).catch(console.error)
+      updateAffiliateStats(affiliateId, req.payload).catch(console.error)
     }
   }
   return doc

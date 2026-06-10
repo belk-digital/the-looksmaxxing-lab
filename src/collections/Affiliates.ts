@@ -3,7 +3,7 @@ import type { CollectionConfig } from 'payload'
 export const Affiliates: CollectionConfig = {
   slug: 'affiliates',
   admin: {
-    useAsTitle: 'displayName',
+    useAsTitle: 'referralSlug',
     group: 'Affiliate System',
   },
   access: {

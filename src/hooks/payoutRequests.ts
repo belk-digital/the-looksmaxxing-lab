@@ -8,7 +8,7 @@ export const afterPayoutRequestChange: CollectionAfterChangeHook = async ({ doc,
     // If status changed to paid, we could set processedAt, but that's better done in a beforeChange hook.
     // For now, we just update stats so the requested balance adjusts.
     if (affiliateId) {
-      updateAffiliateStats(affiliateId).catch(console.error)
+      updateAffiliateStats(affiliateId, req.payload).catch(console.error)
     }
   }
   return doc
