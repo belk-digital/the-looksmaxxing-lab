@@ -52,10 +52,14 @@ export async function attributeOrder(
 
   let cookieAffiliate: Affiliate | null = null
   if (cookieAffiliateId) {
-    cookieAffiliate = await payload.findByID({
-      collection: 'affiliates',
-      id: cookieAffiliateId,
-    }) as Affiliate
+    try {
+      cookieAffiliate = await payload.findByID({
+        collection: 'affiliates',
+        id: isNaN(Number(cookieAffiliateId)) ? cookieAffiliateId : Number(cookieAffiliateId),
+      }) as Affiliate
+    } catch (e) {
+      console.error('Error finding cookie affiliate:', e)
+    }
   }
 
   const affiliate = couponAffiliate ?? cookieAffiliate
