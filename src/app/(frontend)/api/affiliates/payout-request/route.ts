@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     const payload = await getPayload({ config: configPromise })
     
     // Auth check
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const token = cookieStore.get('payload-token')?.value
     if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
