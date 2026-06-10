@@ -190,7 +190,7 @@ export function DashboardClient({ stats, recentConversions }: DashboardClientPro
                 </Button>
                 <a href={referralUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-500 transition-colors">
                   <ExternalLink size={16} />
-                </Link>
+                </a>
               </div>
             </div>
           </div>
