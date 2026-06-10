@@ -56,7 +56,7 @@ export default async function AccountOverviewPage() {
   const stats = {
     ordersPlaced,
     wishlistCount,
-    purityPoints: user.purityPoints || 0,
+    maxxPoints: user.maxxPoints || 0,
     memberSince: new Date(user.createdAt).getFullYear().toString()
   }
 

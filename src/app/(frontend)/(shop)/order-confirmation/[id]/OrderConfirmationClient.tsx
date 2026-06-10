@@ -175,7 +175,7 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
                       </tr>
                       {!!order.redeemedPoints && order.redeemedPoints > 0 && (
                         <tr>
-                          <td className="py-2 text-ink/60 pb-3 sm:pb-4">Purity Points</td>
+                          <td className="py-2 text-ink/60 pb-3 sm:pb-4">Maxx Points</td>
                           <td className="py-2 font-medium text-[#D10000] print:text-black pb-3 sm:pb-4">-${order.redeemedPoints.toFixed(2)}</td>
                         </tr>
                       )}

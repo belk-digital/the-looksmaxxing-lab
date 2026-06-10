@@ -112,7 +112,7 @@ export function MobileMenu({ isOpen, onClose, isLoggedIn = false }: MobileMenuPr
                 {CATEGORIES.map((cat, i) => (
                   <Link 
                     key={cat.name}
-                    href={`/en/shop/${cat.name.toLowerCase().replace(' ', '-')}`} 
+                    href={`/shop/${cat.name.toLowerCase().replace(' ', '-')}`} 
                     onClick={onClose}
                     className={`flex flex-col gap-3 items-start px-6 py-5 hover:bg-black/5 transition-colors border-b border-black/5 ${i % 2 === 0 ? 'border-r' : ''}`}
                   >

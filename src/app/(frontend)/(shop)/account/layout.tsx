@@ -16,7 +16,7 @@ export const metadata = {
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {
   const user = await getPayloadUser()
   const userName = user?.firstName || user?.email?.split('@')[0] || 'User'
-  const purityPoints = user?.purityPoints || 0
+  const maxxPoints = user?.maxxPoints || 0
 
   let affiliateStatus: 'none' | 'pending' | 'approved' | 'rejected' | 'suspended' = 'none'
   if (user) {
@@ -41,7 +41,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
         
         <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-12 lg:gap-20">
           <div className="h-full relative">
-            <AccountSidebar userName={userName} purityPoints={purityPoints} affiliateStatus={affiliateStatus} />
+            <AccountSidebar userName={userName} maxxPoints={maxxPoints} affiliateStatus={affiliateStatus} />
           </div>
           <div className="w-full">
             {children}

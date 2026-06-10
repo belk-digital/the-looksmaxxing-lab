@@ -24,7 +24,7 @@ export async function getFeaturedProducts() {
         title: p.name,
         desc: shortDesc,
         image: imageUrl,
-        link: `/en/products/${p.slug}`
+        link: `/products/${p.slug}`
       }
     })
   } catch (error) {

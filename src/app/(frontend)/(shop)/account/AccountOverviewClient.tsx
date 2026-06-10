@@ -12,7 +12,7 @@ export interface AccountOverviewProps {
   stats: {
     ordersPlaced: number;
     wishlistCount: number;
-    purityPoints: number;
+    maxxPoints: number;
     memberSince: string;
   };
   recentOrders: {
@@ -63,8 +63,8 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
             <Wallet size={64} />
           </div>
           <div className="relative z-10 flex flex-col h-full justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">Purity Points</span>
-            <span className={`text-5xl text-black leading-none font-bold tracking-tighter ${spaceGrotesk.className}`}>{stats.purityPoints}</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">Maxx Points</span>
+            <span className={`text-5xl text-black leading-none font-bold tracking-tighter ${spaceGrotesk.className}`}>{stats.maxxPoints}</span>
           </div>
         </motion.div>
 
@@ -135,7 +135,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
                   </div>
                 </div>
                 
-                <Link href={`/en/account/orders/${order.id}`} className="bg-black text-white rounded-full px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] hover:bg-gray-800 transition-all duration-300 mt-2 sm:mt-0 whitespace-nowrap text-center shadow-md">
+                <Link href={`/account/orders/${order.id}`} className="bg-black text-white rounded-full px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] hover:bg-gray-800 transition-all duration-300 mt-2 sm:mt-0 whitespace-nowrap text-center shadow-md">
                   View Details
                 </Link>
               </motion.div>

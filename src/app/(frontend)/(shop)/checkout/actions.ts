@@ -3,7 +3,7 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import Stripe from 'stripe'
-import { verifyCoupon, getUserPurityPoints } from '../actions'
+import { verifyCoupon, getUserMaxxPoints } from '../actions'
 import { cookies } from 'next/headers'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
@@ -98,7 +98,7 @@ export async function createPaymentIntent(
 
   let pointsToRedeem = 0;
   if (isRedeemingPoints) {
-    const availablePoints = await getUserPurityPoints()
+    const availablePoints = await getUserMaxxPoints()
     pointsToRedeem = Math.min(availablePoints, totalBeforePoints)
   }
 
@@ -191,7 +191,7 @@ export async function createPayloadOrder(
 
   let pointsToRedeem = 0;
   if (isRedeemingPoints) {
-    const availablePoints = await getUserPurityPoints()
+    const availablePoints = await getUserMaxxPoints()
     pointsToRedeem = Math.min(availablePoints, totalBeforePoints)
   }
 

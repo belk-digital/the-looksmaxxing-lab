@@ -23,11 +23,11 @@ const NAV_ITEMS = [
 
 export function AccountSidebar({ 
   userName = 'User', 
-  purityPoints = 0,
+  maxxPoints = 0,
   affiliateStatus = 'none' 
 }: { 
   userName?: string
-  purityPoints?: number
+  maxxPoints?: number
   affiliateStatus?: 'none' | 'pending' | 'approved' | 'rejected' | 'suspended'
 }) {
   const pathname = usePathname() || ''
@@ -44,7 +44,7 @@ export function AccountSidebar({
         </h2>
       </div>
 
-      {/* Purity Points Widget */}
+      {/* Maxx Points Widget */}
       <div className="flex flex-col gap-3 bg-white border border-amber-200/60 shadow-sm p-5 rounded-2xl w-full relative overflow-hidden group">
         <div className="absolute top-0 right-0 -mt-2 -mr-2 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 text-amber-500 pointer-events-none">
           <Wallet size={80} />
@@ -54,8 +54,8 @@ export function AccountSidebar({
             <Wallet size={18} />
           </div>
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-gray-500">Purity Points</span>
-            <span className="text-xl font-bold text-black leading-none mt-1">{purityPoints} <span className="text-sm font-medium text-gray-400">(${purityPoints})</span></span>
+            <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-gray-500">Maxx Points</span>
+            <span className="text-xl font-bold text-black leading-none mt-1">{maxxPoints} <span className="text-sm font-medium text-gray-400">(${maxxPoints})</span></span>
           </div>
         </div>
         <div className="relative z-10 bg-amber-50/50 rounded-xl p-3.5 border border-amber-100/50 mt-1 shadow-sm">

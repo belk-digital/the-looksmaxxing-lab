@@ -370,12 +370,12 @@ export async function processCheckout(formData: FormData) {
     const paymentMethod = formData.get('paymentMethod') as string
     const redeemPoints = formData.get('redeemPoints') === 'true'
 
-    // Fetch user purity points securely
-    let userPurityPoints = 0
+    // Fetch user maxx points securely
+    let userMaxxPoints = 0
     if (user) {
       const payloadUser = await payload.findByID({ collection: 'users', id: user.id as any })
-      if (payloadUser && typeof payloadUser.purityPoints === 'number') {
-        userPurityPoints = payloadUser.purityPoints
+      if (payloadUser && typeof payloadUser.maxxPoints === 'number') {
+        userMaxxPoints = payloadUser.maxxPoints
       }
     }
 
@@ -517,8 +517,8 @@ export async function processCheckout(formData: FormData) {
     const totalBeforePoints = Math.max(0, subtotal - discountTotal) + shippingTotal + taxTotal + feeTotal
 
     let pointsToRedeem = 0
-    if (redeemPoints && userPurityPoints > 0) {
-      pointsToRedeem = Math.min(userPurityPoints, totalBeforePoints)
+    if (redeemPoints && userMaxxPoints > 0) {
+      pointsToRedeem = Math.min(userMaxxPoints, totalBeforePoints)
     }
 
     const total = totalBeforePoints - pointsToRedeem
@@ -569,7 +569,7 @@ export async function processCheckout(formData: FormData) {
       await payload.update({
         collection: 'users',
         id: user.id,
-        data: { purityPoints: userPurityPoints - pointsToRedeem },
+        data: { maxxPoints: userMaxxPoints - pointsToRedeem },
         overrideAccess: true,
       })
     }
@@ -793,7 +793,7 @@ export async function getUserDefaultAddress() {
   }
 }
 
-export async function getUserPurityPoints() {
+export async function getUserMaxxPoints() {
   try {
     const user = await getPayloadUser()
     if (!user) return 0
@@ -804,7 +804,7 @@ export async function getUserPurityPoints() {
       id: user.id as any,
     })
 
-    return typeof payloadUser?.purityPoints === 'number' ? payloadUser.purityPoints : 0
+    return typeof payloadUser?.maxxPoints === 'number' ? payloadUser.maxxPoints : 0
   } catch (err) {
     return 0
   }

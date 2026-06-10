@@ -83,7 +83,7 @@ export async function POST(req: Request) {
                const userId = typeof order.owner === 'object' ? order.owner.id : order.owner
                const user = await payload.findByID({ collection: 'users', id: userId })
                
-               let currentPoints = user.purityPoints || 0
+               let currentPoints = user.maxxPoints || 0
                // Deduct redeemed
                if (order.redeemedPoints && order.redeemedPoints > 0) {
                   currentPoints = Math.max(0, currentPoints - order.redeemedPoints)
@@ -95,7 +95,7 @@ export async function POST(req: Request) {
                await payload.update({
                   collection: 'users',
                   id: userId,
-                  data: { purityPoints: currentPoints }
+                  data: { maxxPoints: currentPoints }
                })
 
                // Clear Cart

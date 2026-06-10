@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useCartStore } from '@/lib/cart/store'
-import { verifyCoupon, getUserDefaultAddress, getUserPurityPoints, getUserAddresses } from '../actions'
+import { verifyCoupon, getUserDefaultAddress, getUserMaxxPoints, getUserAddresses } from '../actions'
 import { toast } from 'sonner'
 import { useUser } from '@clerk/nextjs'
 import { loadStripe } from '@stripe/stripe-js'
@@ -31,7 +31,7 @@ export function CheckoutClient() {
   const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null)
 
-  // Purity Points State
+  // Maxx Points State
   const [availablePoints, setAvailablePoints] = useState(0)
   const [isRedeemingPoints, setIsRedeemingPoints] = useState(false)
 
@@ -86,7 +86,7 @@ export function CheckoutClient() {
         console.error('Failed to load user addresses:', err)
       }
 
-      const points = await getUserPurityPoints()
+      const points = await getUserMaxxPoints()
       setAvailablePoints(points)
     }
     
@@ -314,7 +314,7 @@ export function CheckoutClient() {
                     )}
                   </div>
 
-                  {/* Purity Points */}
+                  {/* Maxx Points */}
                   {availablePoints > 0 && (
                     <div className={`flex flex-col gap-3 p-4 rounded-2xl border transition-all ${isRedeemingPoints ? 'bg-amber-50 border-amber-200/60 shadow-inner-sm' : 'bg-white border-ink/10 shadow-sm'}`}>
                       <div className="flex items-center justify-between">
@@ -323,7 +323,7 @@ export function CheckoutClient() {
                             <Sparkles size={14} />
                           </div>
                           <div className="flex flex-col">
-                            <span className={`text-sm font-bold ${isRedeemingPoints ? 'text-amber-700' : 'text-ink'}`}>Purity Points</span>
+                            <span className={`text-sm font-bold ${isRedeemingPoints ? 'text-amber-700' : 'text-ink'}`}>Maxx Points</span>
                             <span className="text-xs font-medium text-ink/50">You have {availablePoints} points</span>
                           </div>
                         </div>
@@ -642,7 +642,7 @@ export function CheckoutClient() {
                 )}
               </div>
 
-              {/* Purity Points */}
+              {/* Maxx Points */}
               {availablePoints > 0 && (
                 <div className={`flex flex-col gap-3 p-5 rounded-2xl border transition-all ${isRedeemingPoints ? 'bg-amber-50 border-amber-200/60 shadow-inner-sm' : 'bg-white border-ink/10 shadow-sm'}`}>
                   <div className="flex items-center justify-between">
@@ -651,7 +651,7 @@ export function CheckoutClient() {
                         <Sparkles size={18} />
                       </div>
                       <div className="flex flex-col">
-                        <span className={`text-sm font-bold ${isRedeemingPoints ? 'text-amber-700' : 'text-ink'}`}>Purity Points</span>
+                        <span className={`text-sm font-bold ${isRedeemingPoints ? 'text-amber-700' : 'text-ink'}`}>Maxx Points</span>
                         <span className="text-xs font-medium text-ink/50">You have {availablePoints} points (${availablePoints}.00)</span>
                       </div>
                     </div>

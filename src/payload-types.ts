@@ -227,9 +227,9 @@ export interface User {
     | boolean
     | null;
   /**
-   * Purity Points ($1 per point). Can be used by users at checkout.
+   * Maxx Points ($1 per point). Can be used by users at checkout.
    */
-  purityPoints?: number | null;
+  maxxPoints?: number | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -638,7 +638,7 @@ export interface Order {
   subtotal?: number | null;
   discountTotal?: number | null;
   /**
-   * Purity Points used in this order ($1 per point)
+   * Maxx Points used in this order ($1 per point)
    */
   redeemedPoints?: number | null;
   shippingTotal?: number | null;
@@ -1283,7 +1283,7 @@ export interface UsersSelect<T extends boolean = true> {
   defaultBillingAddress?: T;
   lastLoginAt?: T;
   metadata?: T;
-  purityPoints?: T;
+  maxxPoints?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

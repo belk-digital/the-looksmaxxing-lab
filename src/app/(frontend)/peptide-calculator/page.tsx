@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://the-looksmaxxing-lab.vercel.app/peptide-calculator',
     languages: {
-      'en-US': 'https://the-looksmaxxing-lab.vercel.app/en/peptide-calculator',
+      'en-US': 'https://the-looksmaxxing-lab.vercel.app/peptide-calculator',
     },
   },
 }

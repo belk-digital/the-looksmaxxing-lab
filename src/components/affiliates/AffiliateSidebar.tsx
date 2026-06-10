@@ -71,7 +71,7 @@ export function AffiliateSidebar({
           return (
             <Link
               key={item.href}
-              href={`/en${item.href}`}
+              href={item.href}
               className={`
                 relative flex items-center justify-center lg:justify-start gap-3 shrink-0 px-4 py-3.5 rounded-2xl text-[11px] font-bold uppercase tracking-[0.15em] transition-all duration-300
                 ${isActive 

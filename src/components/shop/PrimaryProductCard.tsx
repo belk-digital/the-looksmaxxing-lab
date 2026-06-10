@@ -156,7 +156,7 @@ export function PrimaryProductCard({ product, size = 'small', id }: PrimaryProdu
           description: `${product.name} is now in your wishlist.`,
           action: {
             label: 'View Wishlist',
-            onClick: () => window.location.href = '/en/account/wishlist',
+            onClick: () => window.location.href = '/account/wishlist',
           },
         })
       }

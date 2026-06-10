@@ -111,11 +111,11 @@ export const Users: CollectionConfig = {
       type: 'json',
     },
     {
-      name: 'purityPoints',
+      name: 'maxxPoints',
       type: 'number',
       defaultValue: 0,
       admin: {
-        description: 'Purity Points ($1 per point). Can be used by users at checkout.',
+        description: 'Maxx Points ($1 per point). Can be used by users at checkout.',
       },
     },
   ],
