@@ -7,10 +7,28 @@ export const PayoutRequests: CollectionConfig = {
     group: 'Affiliate System',
   },
   access: {
-    read: ({ req: { user } }) => {
+    read: async ({ req }) => {
+      const { user, payload } = req
       if (!user) return false
       if (user.role && ['admin', 'staff'].includes(user.role as string)) return true
-      return { 'affiliate.user': { equals: user.id } }
+      
+      try {
+        const userAffiliates = await payload.find({
+          collection: 'affiliates',
+          where: { user: { equals: user.id } },
+          limit: 100,
+          overrideAccess: true,
+        })
+        const affiliateIds = userAffiliates.docs.map(doc => doc.id)
+        
+        return {
+          affiliate: {
+            in: affiliateIds.length > 0 ? affiliateIds : ['none'],
+          }
+        }
+      } catch (e) {
+        return false
+      }
     },
     create: ({ req: { user } }) => !!user,
     update: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role as string),

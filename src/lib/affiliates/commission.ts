@@ -96,7 +96,7 @@ export async function attributeOrder(
       order: order.id,
       customerEmail,
       attributionSource: source,
-      attributionClick: cookieClickId || undefined,
+      attributionClick: cookieClickId ? (isNaN(Number(cookieClickId)) ? cookieClickId : Number(cookieClickId)) : undefined,
       cookieAgeDays: 0, // Should be computed based on click date
       couponCodeUsed: couponCode || '',
       orderSubtotal: order.subtotal,

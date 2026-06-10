@@ -45,7 +45,12 @@ export function DashboardClient({ stats, recentConversions }: DashboardClientPro
 
   // Formatting helpers
   const formatMoney = (cents: number) => `$${(cents / 100).toFixed(2)}`
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://thelooksmaxxinglab.com'
+  const [baseUrl, setBaseUrl] = useState('https://thelooksmaxxinglab.com')
+  
+  React.useEffect(() => {
+    setBaseUrl(window.location.origin)
+  }, [])
+
   const referralUrl = `${baseUrl}/ref/${stats.referralSlug}`
 
   // Animation variants
