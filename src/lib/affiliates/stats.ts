@@ -1,10 +1,12 @@
 import { Payload } from 'payload'
 
 export async function updateAffiliateStats(affiliateId: string | number, payload: Payload) {
+  const numericId = typeof affiliateId === 'string' && !isNaN(Number(affiliateId)) ? Number(affiliateId) : affiliateId;
+
   // 1. Get all clicks
   const clicks = await payload.find({
     collection: 'affiliate-clicks',
-    where: { affiliate: { equals: affiliateId } },
+    where: { affiliate: { equals: numericId } },
     limit: 100000, // For production, you might want to use aggregation queries via db directly, but this is fine for now
     overrideAccess: true,
   })
@@ -18,7 +20,7 @@ export async function updateAffiliateStats(affiliateId: string | number, payload
   // Get last click date
   const lastClick = await payload.find({
     collection: 'affiliate-clicks',
-    where: { affiliate: { equals: affiliateId } },
+    where: { affiliate: { equals: numericId } },
     sort: '-clickedAt',
     limit: 1,
     overrideAccess: true,
@@ -29,7 +31,7 @@ export async function updateAffiliateStats(affiliateId: string | number, payload
   const conversions = await payload.find({
     collection: 'affiliate-conversions',
     where: { 
-      affiliate: { equals: affiliateId },
+      affiliate: { equals: numericId },
       status: { not_equals: 'voided' } // Exclude voided
     },
     limit: 100000,
@@ -64,7 +66,7 @@ export async function updateAffiliateStats(affiliateId: string | number, payload
   // 3. Get Payout Requests to calculate Requested and Paid
   const payoutRequests = await payload.find({
     collection: 'payout-requests',
-    where: { affiliate: { equals: affiliateId } },
+    where: { affiliate: { equals: numericId } },
     limit: 100000,
     overrideAccess: true,
   })
@@ -84,7 +86,7 @@ export async function updateAffiliateStats(affiliateId: string | number, payload
   const lastConv = await payload.find({
     collection: 'affiliate-conversions',
     where: { 
-      affiliate: { equals: affiliateId },
+      affiliate: { equals: numericId },
       status: { not_in: ['voided', 'reversed'] }
     },
     sort: '-createdAt',
@@ -96,7 +98,7 @@ export async function updateAffiliateStats(affiliateId: string | number, payload
   // 4. Update Affiliate record
   await payload.update({
     collection: 'affiliates',
-    id: affiliateId,
+    id: numericId,
     data: {
       totalClicks,
       uniqueClicks,

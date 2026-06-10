@@ -44,7 +44,7 @@ export async function attributeOrder(
   if (couponCode) {
     const res = await payload.find({
       collection: 'affiliates',
-      where: { couponCode: { equals: couponCode } },
+      where: { couponCode: { like: couponCode } },
       limit: 1,
     })
     couponAffiliate = res.docs[0] as unknown as Affiliate || null
