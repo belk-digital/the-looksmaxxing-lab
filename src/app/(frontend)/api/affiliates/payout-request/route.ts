@@ -1,26 +1,19 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken'
+import { getPayloadUser } from '@/lib/auth/getPayloadUser'
 
 export async function POST(request: Request) {
   try {
     const payload = await getPayload({ config: configPromise })
     
     // Auth check
-    const cookieStore = await cookies()
-    const token = cookieStore.get('payload-token')?.value
-    if (!token) {
+    const user = await getPayloadUser()
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const decoded = jwt.verify(token, process.env.PAYLOAD_SECRET as string) as any
-    if (!decoded || !decoded.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const userId = decoded.id
+    const userId = user.id
     
     // Get affiliate profile
     const affiliates = await payload.find({
