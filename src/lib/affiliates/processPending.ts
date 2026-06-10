@@ -50,7 +50,7 @@ export async function processPendingCommissions() {
   // Update stats for all affected affiliates
   for (const affiliateId of updatedAffiliates) {
     try {
-      await updateAffiliateStats(affiliateId)
+      await updateAffiliateStats(affiliateId, payload)
     } catch (error) {
       console.error(`Failed to update stats for affiliate ${affiliateId}:`, error)
     }

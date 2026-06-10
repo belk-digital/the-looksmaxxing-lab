@@ -1,12 +1,6 @@
-import { getPayload } from 'payload'
+import { Payload } from 'payload'
 
-export async function updateAffiliateStats(affiliateId: string | number, reqPayload?: any) {
-  let payload = reqPayload
-  if (!payload) {
-    const configPromise = (await import('@payload-config')).default
-    payload = await getPayload({ config: configPromise })
-  }
-
+export async function updateAffiliateStats(affiliateId: string | number, payload: Payload) {
   // 1. Get all clicks
   const clicks = await payload.find({
     collection: 'affiliate-clicks',
