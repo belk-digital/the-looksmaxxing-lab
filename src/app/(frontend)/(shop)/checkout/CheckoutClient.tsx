@@ -16,7 +16,7 @@ import { useUser } from '@clerk/nextjs'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 import { StripeCheckoutForm } from './StripeCheckoutForm'
-import { createPaymentIntent } from './actions'
+import { createPaymentIntent, getShippingMethods } from './actions'
 
 const stripePromise = typeof window !== 'undefined' ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '') : null
 
@@ -94,8 +94,32 @@ export function CheckoutClient() {
   }, [user])
 
   // Shipping State
-  const [shippingMethod, setShippingMethod] = useState<'standard' | 'express'>('standard')
-  const shippingCost = shippingMethod === 'standard' ? 0 : 25
+  const [availableShippingMethods, setAvailableShippingMethods] = useState<any[]>([])
+  const [shippingMethod, setShippingMethod] = useState<string>('')
+  const [activeFees, setActiveFees] = useState<any[]>([])
+  
+  // Fetch data
+  useEffect(() => {
+    getShippingMethods().then(methods => {
+      setAvailableShippingMethods(methods)
+      if (methods.length > 0) {
+        setShippingMethod(methods[0].method)
+      }
+    })
+    
+    // Fetch processing fees from generic /api to avoid complex server actions import issues
+    fetch('/api/processing-fees')
+      .then(res => res.json())
+      .then(data => {
+         if (data?.docs) {
+           const active = data.docs.filter((f: any) => f.isActive && !f.isOptional)
+           setActiveFees(active)
+         }
+      })
+  }, [])
+
+  const selectedMethodObj = availableShippingMethods.find(m => m.method === shippingMethod)
+  const shippingCost = selectedMethodObj?.price || 0
 
   // Coupon State
   const [couponCode, setCouponCode] = useState('')
@@ -107,8 +131,18 @@ export function CheckoutClient() {
   const finalShipping = appliedCoupon?.freeShipping ? 0 : shippingCost
   const discountAmount = appliedCoupon ? appliedCoupon.discount : 0
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)
-  const tax = subtotalAfterDiscount * 0.08
-  const totalBeforePoints = subtotalAfterDiscount + finalShipping + tax
+  
+  // Calculate dynamic fees
+  let processingFeeAmount = 0
+  activeFees.forEach((fee: any) => {
+    if (fee.type === 'percentage') {
+      processingFeeAmount += subtotalAfterDiscount * (fee.amount / 100)
+    } else if (fee.type === 'fixed_amount') {
+      processingFeeAmount += (fee.amount / 100)
+    }
+  })
+
+  const totalBeforePoints = subtotalAfterDiscount + finalShipping + processingFeeAmount
   
   const pointsToRedeem = isRedeemingPoints ? Math.min(availablePoints, totalBeforePoints) : 0
   const total = totalBeforePoints - pointsToRedeem
@@ -173,10 +207,10 @@ export function CheckoutClient() {
   }
 
   useEffect(() => {
-    if (storedCouponCode && !appliedCoupon && !isVerifyingCoupon) {
+    if (storedCouponCode && !isVerifyingCoupon) {
       handleApplyCoupon(undefined, storedCouponCode)
     }
-  }, [storedCouponCode])
+  }, [storedCouponCode, subtotal])
 
   if (items.length === 0) {
     return (
@@ -348,8 +382,8 @@ export function CheckoutClient() {
                       <span className="text-ink font-bold">{finalShipping === 0 ? 'Free' : `$${finalShipping.toFixed(2)}`}</span>
                     </div>
                     <div className="flex justify-between items-center text-sm font-medium text-ink/70">
-                      <span>Estimated Tax</span>
-                      <span className="text-ink font-bold">${tax.toFixed(2)}</span>
+                      <span>Processing Fee</span>
+                      <span className="text-ink font-bold">${processingFeeAmount.toFixed(2)}</span>
                     </div>
                   </div>
 
@@ -495,41 +529,27 @@ export function CheckoutClient() {
               <section className="flex flex-col gap-4">
                 <h2 className="text-xl font-display font-bold text-ink mb-2">Shipping Method</h2>
                 <div className="flex flex-col gap-3">
-                  <label className={`flex items-center justify-between p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${shippingMethod === 'standard' ? 'border-ink bg-ink/5' : 'border-ink/10 bg-white hover:border-ink/30'}`}>
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="radio" 
-                        name="shipping" 
-                        value="standard" 
-                        checked={shippingMethod === 'standard'} 
-                        onChange={() => setShippingMethod('standard')}
-                        className="w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0" 
-                      />
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold text-ink">Standard Secured Shipping</span>
-                        <span className="text-xs text-ink/60 mt-0.5">3-5 business days</span>
+                  {availableShippingMethods.map((method: any) => (
+                    <label key={method.method} className={`flex items-center justify-between p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${shippingMethod === method.method ? 'border-ink bg-ink/5' : 'border-ink/10 bg-white hover:border-ink/30'}`}>
+                      <div className="flex items-center gap-4">
+                        <input 
+                          type="radio" 
+                          name="shipping" 
+                          value={method.method} 
+                          checked={shippingMethod === method.method} 
+                          onChange={() => setShippingMethod(method.method)}
+                          className="w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0" 
+                        />
+                        <div className="flex flex-col">
+                          <span className="text-sm font-bold text-ink">{method.method}</span>
+                          {method.estimatedDays && (
+                            <span className="text-xs text-ink/60 mt-0.5">{method.estimatedDays} business days</span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <span className="text-sm font-bold text-ink">Free</span>
-                  </label>
-
-                  <label className={`flex items-center justify-between p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${shippingMethod === 'express' ? 'border-ink bg-ink/5' : 'border-ink/10 bg-white hover:border-ink/30'}`}>
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="radio" 
-                        name="shipping" 
-                        value="express" 
-                        checked={shippingMethod === 'express'} 
-                        onChange={() => setShippingMethod('express')}
-                        className="w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0" 
-                      />
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold text-ink">Priority Overnight</span>
-                        <span className="text-xs text-ink/60 mt-0.5">1-2 business days</span>
-                      </div>
-                    </div>
-                    <span className="text-sm font-bold text-ink">$25.00</span>
-                  </label>
+                      <span className="text-sm font-bold text-ink">{method.price === 0 ? 'Free' : `$${method.price.toFixed(2)}`}</span>
+                    </label>
+                  ))}
                 </div>
               </section>
 
@@ -690,8 +710,8 @@ export function CheckoutClient() {
                   <span className="text-ink font-bold">{finalShipping === 0 ? 'Free' : `$${finalShipping.toFixed(2)}`}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm font-medium text-ink/70">
-                  <span>Estimated Tax</span>
-                  <span className="text-ink font-bold">${tax.toFixed(2)}</span>
+                  <span>Processing Fee</span>
+                  <span className="text-ink font-bold">${processingFeeAmount.toFixed(2)}</span>
                 </div>
               </div>
 

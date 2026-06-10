@@ -323,7 +323,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                   return (
                     <Link 
                       key={cat.id ? `${cat.id}-${index}` : index} 
-                      href={`/en/shop?category=${encodeURIComponent(cat.name)}#products-grid`}
+                      href={`/shop?category=${encodeURIComponent(cat.name)}#products-grid`}
                       onClick={() => setIsMegaMenuOpen(false)}
                       onMouseEnter={() => setActiveCategory(cat.id)}
                       className={`group/link flex items-center justify-between py-3 border-b border-gray-100 transition-colors ${isActive ? 'text-black border-black' : 'text-gray-400 hover:text-black hover:border-gray-300'}`}
@@ -372,7 +372,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                     >
                       <div className="flex justify-between items-end mb-8">
                         <Link 
-                          href={`/en/shop?category=${encodeURIComponent(cat.name)}#products-grid`}
+                          href={`/shop?category=${encodeURIComponent(cat.name)}#products-grid`}
                           onClick={() => setIsMegaMenuOpen(false)}
                           className="group/collection-title block"
                         >
@@ -380,7 +380,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                           <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Featured Selections</p>
                         </Link>
                         <Link 
-                          href={`/en/shop?category=${encodeURIComponent(cat.name)}#products-grid`}
+                          href={`/shop?category=${encodeURIComponent(cat.name)}#products-grid`}
                           onClick={() => setIsMegaMenuOpen(false)}
                           className="text-[10px] font-bold text-black uppercase tracking-[0.2em] border-b border-black pb-1 hover:text-gray-600 hover:border-gray-600 transition-colors"
                         >
@@ -393,7 +393,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                           {cat.products.slice(0, 3).map((prod: any, prodIndex: number) => (
                             <Link 
                               key={prod.id ? `${prod.id}-${prodIndex}` : prodIndex} 
-                              href={`/en/products/${prod.slug}`}
+                              href={`/products/${prod.slug}`}
                               onClick={() => setIsMegaMenuOpen(false)}
                               className="group/product flex flex-col cursor-pointer"
                             >
@@ -422,7 +422,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                         <div className="flex-1 flex flex-col items-center justify-center bg-[#F5F5F7] border border-dashed border-gray-300">
                           <span className="text-[12px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">New formulations arriving soon</span>
                           <Link 
-                            href={`/en/shop?category=${encodeURIComponent(cat.name)}#products-grid`}
+                            href={`/shop?category=${encodeURIComponent(cat.name)}#products-grid`}
                             onClick={() => setIsMegaMenuOpen(false)}
                             className="px-8 py-3 bg-black text-white text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-gray-800 transition-colors"
                           >

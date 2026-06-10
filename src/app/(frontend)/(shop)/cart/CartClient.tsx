@@ -202,13 +202,22 @@ export function CartClient() {
     setCoupon(null)
   }
 
-  // Pre-fill stored coupon
+  // Pre-fill stored coupon and re-validate on subtotal change
   useEffect(() => {
-    if (storedCouponCode && !activeCoupon && couponState === 'idle') {
+    if (activeCoupon) {
+      // Re-validate minSpend locally
+      if (activeCoupon.minSpend && (subtotal * 100) < activeCoupon.minSpend) {
+        setActiveCoupon(null)
+        setCouponCode('')
+        setCouponState('error')
+        setCouponMessage(`Minimum spend of $${(activeCoupon.minSpend / 100).toFixed(2)} required.`)
+        setCoupon(null) // Remove from global store
+      }
+    } else if (storedCouponCode && couponState === 'idle') {
       setCouponCode(storedCouponCode)
       handleApplyCoupon(storedCouponCode)
     }
-  }, [storedCouponCode])
+  }, [subtotal, storedCouponCode, activeCoupon, couponState])
 
   // Calculate Discounts
   let discountAmount = 0
@@ -376,7 +385,7 @@ export function CartClient() {
                 </span>
               </div>
               <div className="flex justify-between items-center text-ink/80">
-                <span className="font-light">Estimated Tax</span>
+                <span className="font-light">Processing Fee</span>
                 <span className="font-medium">
                   {isLoadingData ? <Loader2 size={16} className="animate-spin" /> : `$${taxAmount.toFixed(2)}`}
                 </span>

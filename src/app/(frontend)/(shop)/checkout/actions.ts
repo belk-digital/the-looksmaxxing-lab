@@ -10,9 +10,39 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2024-04-10' as any,
 })
 
+export async function getShippingMethods() {
+  const payload = await getPayload({ config: configPromise })
+  const zones = await payload.find({
+    collection: 'shippingzones',
+    limit: 1,
+    depth: 0,
+  })
+
+  if (zones.docs.length > 0 && zones.docs[0].methods) {
+    return zones.docs[0].methods
+  }
+  
+  // Fallback if none exist
+  return [
+    { method: 'Standard Shipping', price: 0, estimatedDays: 5 },
+    { method: 'Express Shipping', price: 25, estimatedDays: 2 }
+  ]
+}
+
+export async function getActiveProcessingFees() {
+  const payload = await getPayload({ config: configPromise })
+  const fees = await payload.find({
+    collection: 'processing-fees',
+    where: { isActive: { equals: true } },
+    depth: 0,
+    overrideAccess: true,
+  })
+  return fees.docs
+}
+
 export async function createPaymentIntent(
   items: any[], 
-  shippingMethod: 'standard' | 'express',
+  shippingMethodName: string,
   couponCode: string | undefined,
   isRedeemingPoints: boolean
 ) {
@@ -43,11 +73,28 @@ export async function createPaymentIntent(
     }
   }
 
+  const methods = await getShippingMethods()
+  const selectedMethod = methods.find((m: any) => m.method === shippingMethodName) || methods[0]
+  const shippingCost = selectedMethod?.price || 0
+
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)
-  const shippingCost = shippingMethod === 'standard' ? 0 : 25
   const finalShipping = freeShipping ? 0 : shippingCost
-  const tax = subtotalAfterDiscount * 0.08
-  const totalBeforePoints = subtotalAfterDiscount + finalShipping + tax
+  
+  // Calculate dynamic processing fees
+  const activeFees = await getActiveProcessingFees()
+  let feeTotal = 0
+  activeFees.forEach((fee: any) => {
+    if (!fee.isOptional) {
+      if (fee.type === 'percentage') {
+        feeTotal += subtotalAfterDiscount * (fee.amount / 100)
+      } else if (fee.type === 'fixed_amount') {
+        feeTotal += (fee.amount / 100)
+      }
+    }
+  })
+
+  const tax = 0 // Statically 0 now, handled by ProcessingFees
+  const totalBeforePoints = subtotalAfterDiscount + finalShipping + tax + feeTotal
 
   let pointsToRedeem = 0;
   if (isRedeemingPoints) {
@@ -87,7 +134,7 @@ export async function createPaymentIntent(
 
 export async function createPayloadOrder(
   items: any[], 
-  shippingMethod: 'standard' | 'express',
+  shippingMethodName: string,
   couponCode: string | undefined,
   isRedeemingPoints: boolean,
   formData: any,
@@ -112,11 +159,35 @@ export async function createPayloadOrder(
     }
   }
 
+  const methods = await getShippingMethods()
+  const selectedMethod = methods.find((m: any) => m.method === shippingMethodName) || methods[0]
+  const shippingCost = selectedMethod?.price || 0
+
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)
-  const shippingCost = shippingMethod === 'standard' ? 0 : 25
   const finalShipping = freeShipping ? 0 : shippingCost
-  const tax = subtotalAfterDiscount * 0.08
-  const totalBeforePoints = subtotalAfterDiscount + finalShipping + tax
+  
+  // Calculate dynamic processing fees
+  const activeFees = await getActiveProcessingFees()
+  let feeTotal = 0
+  const appliedFees: any[] = []
+  
+  activeFees.forEach((fee: any) => {
+    if (!fee.isOptional) {
+      const amount = fee.type === 'percentage' 
+        ? subtotalAfterDiscount * (fee.amount / 100)
+        : (fee.amount / 100)
+      
+      feeTotal += amount
+      appliedFees.push({
+        feeId: fee.id,
+        feeName: fee.name,
+        amount: Math.round(amount * 100) // cents for Payload array
+      })
+    }
+  })
+
+  const tax = 0 // Statically 0 now, handled by ProcessingFees
+  const totalBeforePoints = subtotalAfterDiscount + finalShipping + tax + feeTotal
 
   let pointsToRedeem = 0;
   if (isRedeemingPoints) {
@@ -171,9 +242,10 @@ export async function createPayloadOrder(
         redeemedPoints: pointsToRedeem,
         shippingTotal: finalShipping,
         taxTotal: tax,
-        feeTotal: 0,
+        feeTotal: Math.round(feeTotal * 100),
+        appliedFees,
         total: total,
-        shippingMethod: shippingMethod,
+        shippingMethod: shippingMethodName,
         couponCode: couponCode || '',
       }
     })
@@ -191,3 +263,62 @@ export async function createPayloadOrder(
     return { error: error.message }
   }
 }
+
+export async function syncPaymentStatus(paymentIntentId: string, orderId: string) {
+  try {
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
+    
+    if (paymentIntent.status === 'succeeded') {
+      const payload = await getPayload({ config: configPromise })
+      const numericId = parseInt(orderId, 10)
+      const idToUse = isNaN(numericId) ? orderId : numericId
+
+      const order = await payload.findByID({
+        collection: 'orders',
+        id: idToUse,
+        depth: 0,
+      })
+
+      // Only update if it hasn't been updated by the webhook yet
+      if (order.paymentStatus !== 'captured') {
+        await payload.update({
+          collection: 'orders',
+          id: idToUse,
+          data: {
+            status: 'paid',
+            paymentStatus: 'captured',
+          }
+        })
+
+        // Also decrement stock
+        if (order.items && Array.isArray(order.items)) {
+          for (const item of order.items) {
+            const productId = typeof item.product === 'object' ? item.product.id : item.product;
+            if (productId) {
+              const productDoc = await payload.findByID({ collection: 'products', id: productId });
+              if (productDoc) {
+                const newStock = Math.max(0, (productDoc.stock || 0) - (item.quantity || 1));
+                await payload.update({ collection: 'products', id: productId, data: { stock: newStock } });
+              }
+            }
+          }
+        }
+
+        // Clear user's Payload cart instantly
+        if (order.owner) {
+          const userId = typeof order.owner === 'object' ? order.owner.id : order.owner
+          const carts = await payload.find({ collection: 'carts', where: { user: { equals: userId } } });
+          if (carts.docs.length > 0) {
+            await payload.update({ collection: 'carts', id: carts.docs[0].id, data: { items: [] } });
+          }
+        }
+      }
+      return { success: true }
+    }
+    return { success: false, status: paymentIntent.status }
+  } catch (error: any) {
+    console.error('Failed to sync payment status:', error)
+    return { error: error.message }
+  }
+}
+

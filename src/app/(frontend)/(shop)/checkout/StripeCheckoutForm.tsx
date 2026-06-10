@@ -9,7 +9,7 @@ import { createPayloadOrder } from './actions'
 interface StripeCheckoutFormProps {
   amount: number
   items: any[]
-  shippingMethod: 'standard' | 'express'
+  shippingMethod: string
   couponCode?: string
   isRedeemingPoints: boolean
   formData: any
@@ -61,6 +61,10 @@ export function StripeCheckoutForm({
       setIsProcessing(false)
     } else if (paymentIntent && paymentIntent.status === 'succeeded') {
       toast.success("Payment successful! Redirecting...")
+      
+      // Force sync with backend immediately (fallback for slow webhooks)
+      await import('./actions').then(m => m.syncPaymentStatus(paymentIntent.id, String(orderRes.orderId)))
+      
       useCartStore.getState().clear()
       window.location.href = `/order-confirmation/${orderRes.orderId}`
     } else {

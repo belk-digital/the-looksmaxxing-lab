@@ -9,6 +9,8 @@ export const metadata = {
   title: 'Order History | The Looksmaxxing Lab',
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function OrdersPage() {
   const user = await getPayloadUser()
   if (!user) redirect('/login')

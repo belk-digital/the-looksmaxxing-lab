@@ -62,7 +62,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
     items: formattedItems,
     subtotal: order.subtotal || 0,
     shipping: order.shippingTotal || 0,
-    tax: order.taxTotal || 0,
+    processingFee: (order.feeTotal ? order.feeTotal / 100 : order.taxTotal) || 0,
     total: order.total || 0,
     discountTotal: order.discountTotal || 0,
     redeemedPoints: order.redeemedPoints || 0,

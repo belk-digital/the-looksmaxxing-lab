@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { ArrowLeft, Package, RotateCcw, MapPin, CreditCard, Truck } from 'lucide-react'
 import { Space_Grotesk } from 'next/font/google'
 import { motion } from 'framer-motion'
+import { useCartStore } from '@/lib/cart/store'
+import { useRouter } from 'next/navigation'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
@@ -32,6 +34,30 @@ function getMappedStatus(payloadStatus: string): OrderStatus {
 }
 
 export function OrderDetailClient({ order }: OrderDetailProps) {
+  const router = useRouter()
+  const addItem = useCartStore(state => state.addItem)
+  const openCart = useCartStore(state => state.openCart)
+
+  const handleReorder = () => {
+    if (!order.items) return
+    for (const item of order.items) {
+      const product = item.product || item.productSnapshot || {}
+      if (product.id) {
+        const title = product.title || product.name || 'Unknown Product'
+        const imageUrl = product.images?.[0]?.image?.url || product.images?.[0]?.url || '/temp-products/product-image.png'
+        const price = product.basePrice || product.price || 0
+        addItem(
+          { id: product.id, name: title, imageUrl },
+          null, // variantSku
+          item.quantity || 1,
+          price
+        )
+      }
+    }
+    openCart()
+    router.push('/cart')
+  }
+
   const currentStepIndex = STATUS_STEPS.indexOf(getMappedStatus(order.status))
   
   const formattedDate = new Intl.DateTimeFormat('en-US', {
@@ -42,7 +68,7 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
 
   const subtotal = order.subtotal || 0
   const shipping = order.shippingTotal || 0
-  const tax = order.taxTotal || 0
+  const processingFee = (order.feeTotal ? order.feeTotal / 100 : order.taxTotal) || 0
   const total = order.total || 0
 
   return (
@@ -67,11 +93,10 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 text-black rounded-full px-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.1em] transition-all">
-            <RotateCcw size={14} />
-            Request Return
-          </button>
-          <button className="flex items-center justify-center gap-2 bg-black hover:bg-gray-800 text-white rounded-full px-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.1em] transition-all shadow-lg">
+          <button 
+            onClick={handleReorder}
+            className="flex items-center justify-center gap-2 bg-black hover:bg-gray-800 text-white rounded-full px-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.1em] transition-all shadow-lg"
+          >
             <Package size={14} />
             Reorder All
           </button>
@@ -139,12 +164,12 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                 
                 return (
                   <div key={item.id || Math.random()} className="flex items-center gap-6 group">
-                    <div className="relative w-20 h-20 bg-gray-50 shrink-0 border border-gray-100 rounded-2xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow">
-                      <Image src={imageUrl} alt={title} fill className="object-cover" sizes="80px" />
+                    <Link href={`/products/${product.slug || ''}`} className="relative w-20 h-20 bg-gray-50 shrink-0 border border-gray-100 rounded-2xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow">
+                      <Image src={imageUrl} alt={title} fill className="object-contain p-2" sizes="80px" />
                       <div className="absolute -top-2 -right-2 w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-[10px] font-bold z-10 border-2 border-white shadow-sm">
                         {item.quantity}
                       </div>
-                    </div>
+                    </Link>
                     
                     <div className="flex flex-col flex-1">
                       <Link href={`/products/${product.slug || ''}`}>
@@ -216,8 +241,8 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                 <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
               </div>
               <div className={`flex justify-between text-gray-500 ${!order.redeemedPoints ? 'border-b border-gray-100 pb-4' : ''}`}>
-                <span>Tax</span>
-                <span>${tax.toFixed(2)}</span>
+                <span>Processing Fee</span>
+                <span>${processingFee.toFixed(2)}</span>
               </div>
               {!!order.redeemedPoints && order.redeemedPoints > 0 && (
                 <div className="flex justify-between text-red-500 border-b border-gray-100 pb-4 mt-1">
@@ -229,8 +254,14 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                 <span className="text-sm">Total</span>
                 <span className={`text-3xl tracking-tighter ${spaceGrotesk.className}`}>${total.toFixed(2)}</span>
               </div>
-              <div className="bg-green-50 text-green-600 text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-2 rounded-lg mt-2 text-center border border-green-100">
-                {order.paymentStatus === 'paid' ? 'Payment Successful' : 'Payment Processing'}
+              <div className={`text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-2 rounded-lg mt-2 text-center border ${
+                order.paymentStatus === 'captured' ? 'bg-green-50 text-green-600 border-green-100' :
+                order.paymentStatus === 'refunded' ? 'bg-red-50 text-red-600 border-red-100' :
+                'bg-amber-50 text-amber-600 border-amber-100'
+              }`}>
+                {order.paymentStatus === 'captured' ? 'Payment Successful' : 
+                 order.paymentStatus === 'refunded' ? 'Refunded' : 
+                 'Payment Processing'}
               </div>
             </div>
           </div>

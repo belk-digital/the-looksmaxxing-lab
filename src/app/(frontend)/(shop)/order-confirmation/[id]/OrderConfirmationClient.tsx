@@ -33,7 +33,7 @@ type OrderData = {
   items: OrderItem[]
   subtotal: number
   shipping: number
-  tax: number
+  processingFee: number
   total: number
   discountTotal?: number
   redeemedPoints?: number
@@ -170,8 +170,8 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
                         <td className="py-2 text-ink font-medium">{order.shipping === 0 ? 'Free' : `$${order.shipping.toFixed(2)}`}</td>
                       </tr>
                       <tr>
-                        <td className={`py-2 text-ink/60 ${!order.redeemedPoints ? 'pb-3 sm:pb-4' : ''}`}>Tax</td>
-                        <td className={`py-2 text-ink font-medium ${!order.redeemedPoints ? 'pb-3 sm:pb-4' : ''}`}>${order.tax.toFixed(2)}</td>
+                        <td className={`py-2 text-ink/60 ${!order.redeemedPoints ? 'pb-3 sm:pb-4' : ''}`}>Processing Fee</td>
+                        <td className={`py-2 text-ink font-medium ${!order.redeemedPoints ? 'pb-3 sm:pb-4' : ''}`}>${order.processingFee.toFixed(2)}</td>
                       </tr>
                       {!!order.redeemedPoints && order.redeemedPoints > 0 && (
                         <tr>
