@@ -21,6 +21,8 @@ export async function computeCommission(order: Order, affiliateId: string | numb
     ? (order.subtotal || 0) - affiliateCouponDiscount
     : (order.subtotal || 0)
 
+  const eligibleSubtotalCents = Math.round(eligibleSubtotal * 100)
+
   const rate = affiliate.commissionRate ?? settings?.defaultCommissionRate ?? 10
   const type = affiliate.commissionType ?? settings?.defaultCommissionType ?? 'percentage'
 
@@ -29,7 +31,7 @@ export async function computeCommission(order: Order, affiliateId: string | numb
   }
 
   // Floor to avoid floating point issues (everything in cents)
-  return Math.floor((eligibleSubtotal * rate) / 100)
+  return Math.floor((eligibleSubtotalCents * rate) / 100)
 }
 
 export async function attributeOrder(
@@ -103,9 +105,9 @@ export async function attributeOrder(
       attributionClick: cookieClickId ? (isNaN(Number(cookieClickId)) ? cookieClickId : Number(cookieClickId)) : undefined,
       cookieAgeDays: 0, // Should be computed based on click date
       couponCodeUsed: couponCode || '',
-      orderSubtotal: order.subtotal,
-      orderDiscount: order.discountTotal,
-      eligibleSubtotal: order.subtotal, // simplified
+      orderSubtotal: Math.round((order.subtotal || 0) * 100),
+      orderDiscount: Math.round((order.discountTotal || 0) * 100),
+      eligibleSubtotal: Math.round((order.subtotal || 0) * 100), // simplified
       commissionRate: affiliate.commissionRate ?? settings?.defaultCommissionRate ?? 10,
       commissionAmount: isVoid ? 0 : commissionAmount,
       status,
