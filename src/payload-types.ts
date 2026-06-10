@@ -90,6 +90,7 @@ export interface Config {
     'affiliate-clicks': AffiliateClick;
     'affiliate-conversions': AffiliateConversion;
     'affiliate-payouts': AffiliatePayout;
+    'payout-requests': PayoutRequest;
     'processing-fees': ProcessingFee;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -121,6 +122,7 @@ export interface Config {
     'affiliate-clicks': AffiliateClicksSelect<false> | AffiliateClicksSelect<true>;
     'affiliate-conversions': AffiliateConversionsSelect<false> | AffiliateConversionsSelect<true>;
     'affiliate-payouts': AffiliatePayoutsSelect<false> | AffiliatePayoutsSelect<true>;
+    'payout-requests': PayoutRequestsSelect<false> | PayoutRequestsSelect<true>;
     'processing-fees': ProcessingFeesSelect<false> | ProcessingFeesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -731,8 +733,15 @@ export interface Shippingzone {
   methods?:
     | {
         method: string;
+        /**
+         * Set to 0 for free shipping
+         */
         price: number;
         estimatedDays?: number | null;
+        /**
+         * Minimum subtotal required for this method to appear (e.g., 100 for free shipping over $100)
+         */
+        minOrderAmount?: number | null;
         id?: string | null;
       }[]
     | null;
@@ -930,6 +939,10 @@ export interface Affiliate {
    */
   totalCommissionApproved?: number | null;
   /**
+   * In cents (pending/approved payout requests)
+   */
+  totalCommissionRequested?: number | null;
+  /**
    * In cents
    */
   totalCommissionPaid?: number | null;
@@ -1082,6 +1095,30 @@ export interface AffiliatePayout {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payout-requests".
+ */
+export interface PayoutRequest {
+  id: number;
+  affiliate: number | Affiliate;
+  /**
+   * Amount requested in cents
+   */
+  amountCents: number;
+  payoutMethod: 'zelle' | 'cashapp' | 'applepay';
+  /**
+   * Phone number, CashTag, or ApplePay ID
+   */
+  payoutDetails: string;
+  status: 'pending' | 'approved' | 'paid' | 'rejected';
+  processedAt?: string | null;
+  processedBy?: (number | null) | User;
+  adminNotes?: string | null;
+  rejectionReason?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1195,6 +1232,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'affiliate-payouts';
         value: number | AffiliatePayout;
+      } | null)
+    | ({
+        relationTo: 'payout-requests';
+        value: number | PayoutRequest;
       } | null)
     | ({
         relationTo: 'processing-fees';
@@ -1649,6 +1690,7 @@ export interface ShippingzonesSelect<T extends boolean = true> {
         method?: T;
         price?: T;
         estimatedDays?: T;
+        minOrderAmount?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -1772,6 +1814,7 @@ export interface AffiliatesSelect<T extends boolean = true> {
   totalCommissionEarned?: T;
   totalCommissionPending?: T;
   totalCommissionApproved?: T;
+  totalCommissionRequested?: T;
   totalCommissionPaid?: T;
   minimumPayoutThreshold?: T;
   payoutCurrency?: T;
@@ -1875,6 +1918,23 @@ export interface AffiliatePayoutsSelect<T extends boolean = true> {
   paidAt?: T;
   failedAt?: T;
   failureReason?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payout-requests_select".
+ */
+export interface PayoutRequestsSelect<T extends boolean = true> {
+  affiliate?: T;
+  amountCents?: T;
+  payoutMethod?: T;
+  payoutDetails?: T;
+  status?: T;
+  processedAt?: T;
+  processedBy?: T;
+  adminNotes?: T;
+  rejectionReason?: T;
   updatedAt?: T;
   createdAt?: T;
 }
