@@ -12,6 +12,7 @@ export interface MobileMenuProps {
   isOpen: boolean
   onClose: () => void
   isLoggedIn?: boolean
+  onSearchClick?: () => void
 }
 
 const CATEGORIES = [
@@ -38,7 +39,7 @@ const SUPPORT_LINKS = [
   { label: 'Affiliate Program', href: '/affiliates', icon: Users },
 ]
 
-export function MobileMenu({ isOpen, onClose, isLoggedIn = false }: MobileMenuProps) {
+export function MobileMenu({ isOpen, onClose, isLoggedIn = false, onSearchClick }: MobileMenuProps) {
 
   useEffect(() => {
     if (isOpen) {
@@ -176,7 +177,13 @@ export function MobileMenu({ isOpen, onClose, isLoggedIn = false }: MobileMenuPr
             className="absolute bottom-0 left-0 right-0 border-t border-black/10 bg-white/95 backdrop-blur-md shadow-[0_-10px_40px_rgba(0,0,0,0.05)] pb-safe"
           >
             <div className="grid grid-cols-3 h-[72px]">
-              <button className="flex flex-col items-center justify-center gap-1.5 text-ink/60 hover:text-ink hover:bg-black/5 transition-colors">
+              <button 
+                onClick={() => {
+                  onClose();
+                  onSearchClick?.();
+                }}
+                className="flex flex-col items-center justify-center gap-1.5 text-ink/60 hover:text-ink hover:bg-black/5 transition-colors"
+              >
                 <Search size={18} strokeWidth={1.5} />
                 <span className="text-[9px] font-bold uppercase tracking-widest">Search</span>
               </button>

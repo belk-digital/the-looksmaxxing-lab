@@ -10,6 +10,7 @@ import { MobileMenu } from './MobileMenu'
 import { useCartStore } from '@/lib/cart/store'
 import { useWishlistStore } from '@/lib/wishlist/store'
 import dynamic from 'next/dynamic'
+import { SearchOverlay } from './SearchOverlay'
 
 const CartDrawer = dynamic(() => import('@/components/cart/CartDrawer').then(mod => mod.CartDrawer), { ssr: false })
 
@@ -32,6 +33,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
   const [mounted, setMounted] = useState(false)
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
   
   const [categoriesData, setCategoriesData] = useState<any[]>(initialCategories)
   const [isLoadingMenu, setIsLoadingMenu] = useState(initialCategories.length === 0)
@@ -222,17 +224,14 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
 
           {/* Right: Search, SHOP NOW Button & Cart */}
           <div className="flex items-center justify-end gap-4 xl:gap-5 flex-1 xl:flex-none">
-            {/* Search Bar */}
-            <form className="hidden xl:flex items-center relative" onSubmit={(e) => { e.preventDefault(); /* TODO: Implement search */ }}>
-              <input 
-                type="text" 
-                placeholder="Search..." 
-                className={`border rounded-none py-1.5 pl-4 pr-9 text-[10px] tracking-widest uppercase focus:outline-none transition-colors w-[140px] xl:w-[180px] ${searchBg} ${textColor}`}
-              />
-              <button type="submit" className={`absolute right-3 top-1/2 -translate-y-1/2 transition-colors ${isTransparent ? 'text-white/50 hover:text-white' : 'text-ink/50 hover:text-ink'}`}>
-                <Search size={12} strokeWidth={2} />
-              </button>
-            </form>
+            {/* Search Button */}
+            <button 
+              onClick={() => setIsSearchOpen(true)}
+              className={`p-1 transition-colors relative flex items-center justify-center ${textColor} ${textHoverColor}`}
+              aria-label="Open search"
+            >
+              <Search size={18} strokeWidth={1.5} />
+            </button>
 
             <button onClick={cartStore.openCart} className={`p-1 transition-colors relative flex items-center justify-center ${textColor} ${textHoverColor}`}>
               <ShoppingBag size={18} strokeWidth={1.5} />
@@ -437,8 +436,14 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
             </div>
           </div>
       </div>
-      <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} isLoggedIn={isLoggedIn} />
+      <MobileMenu 
+        isOpen={mobileMenuOpen} 
+        onClose={() => setMobileMenuOpen(false)} 
+        isLoggedIn={isLoggedIn}
+        onSearchClick={() => setIsSearchOpen(true)}
+      />
       <CartDrawer />
+      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   )
 }
