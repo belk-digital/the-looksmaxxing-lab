@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, X, Loader2, Zap, Sparkles, BatteryCharging, Dna, ArrowRight, Command } from 'lucide-react'
+import { Search, X, Loader2, Zap, Sparkles, BatteryCharging, Dna, ArrowRight, Command, Activity, Brain, ShieldPlus, Network } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -16,6 +16,10 @@ const QUICK_CATEGORIES = [
   { name: 'Growth Factor Research', icon: Sparkles, href: '/shop/growth-factor' },
   { name: 'Recovery Research', icon: BatteryCharging, href: '/shop/recovery' },
   { name: 'Cellular Health Research', icon: Dna, href: '/shop/cellular-health' },
+  { name: 'Bioregulators', icon: Activity, href: '/shop/bioregulators' },
+  { name: 'Cognitive Research', icon: Brain, href: '/shop/cognitive' },
+  { name: 'Essentials', icon: ShieldPlus, href: '/shop/essentials' },
+  { name: 'Receptor Agonist', icon: Network, href: '/shop/receptor-agonist' },
 ]
 
 export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
@@ -138,12 +142,14 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                   </div>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6">
-                    {QUICK_CATEGORIES.map((cat) => (
+                    {QUICK_CATEGORIES.map((cat, index) => (
                       <Link
                         key={cat.name}
                         href={cat.href}
                         onClick={onClose}
-                        className="group flex items-center p-4 rounded-2xl bg-[#FAFAFA] border border-black/5 hover:border-black/20 hover:bg-white transition-all shadow-sm hover:shadow-md"
+                        className={`group items-center p-4 rounded-2xl bg-[#FAFAFA] border border-black/5 hover:border-black/20 hover:bg-white transition-all shadow-sm hover:shadow-md ${
+                          index >= 4 ? 'hidden sm:flex' : 'flex'
+                        }`}
                       >
                         <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm border border-black/5 shrink-0 group-hover:scale-105 transition-transform">
                           <cat.icon size={18} className="text-black" strokeWidth={1.5} />
