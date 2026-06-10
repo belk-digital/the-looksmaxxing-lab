@@ -18,7 +18,7 @@ export async function updateAffiliateStats(affiliateId: string | number, reqPayl
   const totalClicks = clicks.totalDocs
   
   // Unique clicks (deduplicated by ipHash)
-  const uniqueIps = new Set(clicks.docs.map(c => c.ipHash).filter(Boolean))
+  const uniqueIps = new Set(clicks.docs.map((c: any) => c.ipHash).filter(Boolean))
   const uniqueClicks = uniqueIps.size
 
   // Get last click date
@@ -43,7 +43,7 @@ export async function updateAffiliateStats(affiliateId: string | number, reqPayl
   })
 
   // Filter out reversed for some stats
-  const activeConversions = conversions.docs.filter(c => c.status !== 'reversed')
+  const activeConversions = conversions.docs.filter((c: any) => c.status !== 'reversed')
   const totalConversions = activeConversions.length
 
   let totalRevenue = 0
