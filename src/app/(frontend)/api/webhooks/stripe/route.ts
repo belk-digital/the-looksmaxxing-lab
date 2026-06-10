@@ -41,6 +41,11 @@ export async function POST(req: Request) {
                depth: 0,
             })
 
+            if (order.paymentStatus === 'captured') {
+               console.log(`Order ${orderId} is already captured. Skipping webhook duplicate processing.`)
+               return new Response('Webhook handled successfully (already processed)', { status: 200 })
+            }
+
             await payload.update({
                collection: 'orders',
                id: idToUse,
