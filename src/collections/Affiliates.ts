@@ -70,6 +70,7 @@ export const Affiliates: CollectionConfig = {
             { name: 'totalCommissionEarned', type: 'number', defaultValue: 0, admin: { readOnly: true, description: 'In cents' } },
             { name: 'totalCommissionPending', type: 'number', defaultValue: 0, admin: { readOnly: true, description: 'In cents' } },
             { name: 'totalCommissionApproved', type: 'number', defaultValue: 0, admin: { readOnly: true, description: 'In cents' } },
+            { name: 'totalCommissionRequested', type: 'number', defaultValue: 0, admin: { readOnly: true, description: 'In cents (pending/approved payout requests)' } },
             { name: 'totalCommissionPaid', type: 'number', defaultValue: 0, admin: { readOnly: true, description: 'In cents' } },
           ]
         },

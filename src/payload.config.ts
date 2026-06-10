@@ -28,6 +28,7 @@ import { Affiliates } from './collections/Affiliates'
 import { AffiliateClicks } from './collections/AffiliateClicks'
 import { AffiliateConversions } from './collections/AffiliateConversions'
 import { AffiliatePayouts } from './collections/AffiliatePayouts'
+import { PayoutRequests } from './collections/PayoutRequests'
 import { ProcessingFees } from './collections/ProcessingFees'
 import { Trash } from './collections/Trash'
 import { AffiliateSettings } from './globals/AffiliateSettings'
@@ -73,6 +74,7 @@ export default buildConfig({
     AffiliateClicks,
     AffiliateConversions,
     AffiliatePayouts,
+    PayoutRequests,
     ProcessingFees,
   ].map((collection) => {
     if (collection.slug === 'trash') return collection

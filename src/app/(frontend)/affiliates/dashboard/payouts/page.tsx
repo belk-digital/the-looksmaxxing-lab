@@ -29,35 +29,33 @@ export default async function AffiliatePayoutsPage() {
   }
 
   const payoutsRes = await payload.find({
-    collection: 'affiliate-payouts',
+    collection: 'payout-requests',
     where: { affiliate: { equals: affiliate.id } },
     sort: '-createdAt',
     overrideAccess: true,
   })
 
-  const mappedPayouts = payoutsRes.docs.map(payout => ({
-    id: String(payout.id),
-    date: new Date(payout.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-    amount: payout.totalAmountCents || 0,
-    currency: payout.currency || 'USD',
-    method: payout.paymentMethod || 'paypal',
-    status: payout.status || 'draft',
-    reference: payout.transactionId || '',
+  const mappedPayouts = payoutsRes.docs.map(req => ({
+    id: String(req.id),
+    date: new Date(req.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    amount: req.amountCents || 0,
+    method: req.payoutMethod,
+    details: req.payoutDetails,
+    status: req.status || 'pending',
   }))
 
-  const availableBalance = affiliate.totalCommissionApproved || 0
+  const totalApproved = affiliate.totalCommissionApproved || 0
+  const totalRequested = affiliate.totalCommissionRequested || 0
+  const totalPendingHold = affiliate.totalCommissionPending || 0
+  const availableBalance = Math.max(0, totalApproved - totalRequested)
   const minimumThreshold = affiliate.minimumPayoutThreshold || 5000 // default $50
-
-  const hasPendingRequest = payoutsRes.docs.some(
-    p => p.status === 'draft' || p.status === 'processing'
-  )
 
   return (
     <PayoutsClient 
-      payouts={mappedPayouts} 
+      payoutRequests={mappedPayouts} 
       availableBalance={availableBalance}
+      totalPendingHold={totalPendingHold}
       minimumThreshold={minimumThreshold}
-      hasPendingRequest={hasPendingRequest}
     />
   )
 }

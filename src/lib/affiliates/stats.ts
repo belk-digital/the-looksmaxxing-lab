@@ -47,7 +47,6 @@ export async function updateAffiliateStats(affiliateId: string | number) {
   let totalCommissionEarned = 0
   let totalCommissionPending = 0
   let totalCommissionApproved = 0
-  let totalCommissionPaid = 0
 
   for (const conv of conversions.docs) {
     if (conv.status === 'reversed') continue
@@ -59,10 +58,28 @@ export async function updateAffiliateStats(affiliateId: string | number) {
 
     if (conv.status === 'pending') {
       totalCommissionPending += (conv.commissionAmount || 0)
-    } else if (conv.status === 'approved') {
+    } else if (conv.status === 'approved' || conv.status === 'paid') {
+      // In the new system, all passed-15-days are considered "approved" pool
       totalCommissionApproved += (conv.commissionAmount || 0)
-    } else if (conv.status === 'paid') {
-      totalCommissionPaid += (conv.commissionAmount || 0)
+    }
+  }
+
+  // 3. Get Payout Requests to calculate Requested and Paid
+  const payoutRequests = await payload.find({
+    collection: 'payout-requests',
+    where: { affiliate: { equals: affiliateId } },
+    limit: 100000,
+    overrideAccess: true,
+  })
+
+  let totalCommissionRequested = 0
+  let totalCommissionPaid = 0
+
+  for (const pr of payoutRequests.docs) {
+    if (pr.status === 'pending' || pr.status === 'approved') {
+      totalCommissionRequested += (pr.amountCents || 0)
+    } else if (pr.status === 'paid') {
+      totalCommissionPaid += (pr.amountCents || 0)
     }
   }
 
@@ -79,7 +96,7 @@ export async function updateAffiliateStats(affiliateId: string | number) {
   })
   const lastConversionAt = lastConv.docs[0]?.createdAt || null
 
-  // 3. Update Affiliate record
+  // 4. Update Affiliate record
   await payload.update({
     collection: 'affiliates',
     id: affiliateId,
@@ -91,6 +108,7 @@ export async function updateAffiliateStats(affiliateId: string | number) {
       totalCommissionEarned,
       totalCommissionPending,
       totalCommissionApproved,
+      totalCommissionRequested,
       totalCommissionPaid,
       lastClickAt,
       lastConversionAt,
