@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react'
 import '@/app/globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
 import { fontDisplay, fontSans } from '@/app/fonts'
@@ -22,7 +23,9 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
           className="min-h-screen bg-cream text-ink antialiased"
           suppressHydrationWarning
         >
-          <GlobalNavigationSpinner />
+          <React.Suspense fallback={null}>
+            <GlobalNavigationSpinner />
+          </React.Suspense>
           <SmoothScroll>
             <LayoutClientWrapper header={<Header />} footer={<Footer />}>
               {children}
