@@ -345,9 +345,6 @@ export async function syncPaymentStatus(paymentIntentId: string, orderId: string
           if (order.redeemedPoints && order.redeemedPoints > 0) {
              currentPoints = Math.max(0, currentPoints - order.redeemedPoints)
           }
-          // Award earned (1 point per $10 spent)
-          const earnedPoints = Math.floor((order.subtotal || 0) / 10)
-          currentPoints += earnedPoints
 
           await payload.update({
              collection: 'users',
