@@ -371,7 +371,7 @@ export async function syncPaymentStatus(paymentIntentId: string, orderId: string
         // 1. Decrement Inventory
         if (order.items && Array.isArray(order.items)) {
           for (const item of order.items) {
-            const productId = typeof item.product === 'object' ? item.product.id : item.product;
+            const productId = item.product && typeof item.product === 'object' ? item.product.id : item.product;
             if (productId) {
               const productDoc = await payload.findByID({ collection: 'products', id: productId });
               if (productDoc) {
