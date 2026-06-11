@@ -188,6 +188,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       id: b.id,
       name: b.name,
       quantity: b.quantity,
+      discountPercentage: b.discountPercentage,
       price: b.price,
       salePrice: b.salePrice,
       image: typeof b.image === 'object' && b.image?.url ? b.image.url : undefined

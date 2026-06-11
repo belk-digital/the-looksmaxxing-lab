@@ -101,9 +101,39 @@ export async function revalidateCartPrices(items: CartLine[]): Promise<CartLine[
 
         // 1. Check Bulk Bundles
         if (product.bulkBundles && product.bulkBundles.length > 0) {
+          let matchedBundlePrice = null;
+
+          // Check dynamic composite SKU first (e.g. "10mg - Kit of 5")
+          if (product.variants) {
+            for (const v of product.variants) {
+              const vTitle = v.options?.map((o: any) => o.value).join(' ') || `Variant ${v.sku}`;
+              for (const b of product.bulkBundles) {
+                if (typeof b.discountPercentage === 'number' && b.discountPercentage > 0) {
+                  const expectedSkuTitle = `${vTitle} - ${b.name}`;
+                  const expectedSkuBase = `${v.sku} - ${b.name}`;
+                  const expectedSkuVariant = `Variant - ${b.name}`;
+                  
+                  if (item.variantSku === expectedSkuTitle || item.variantSku === expectedSkuBase || item.variantSku === expectedSkuVariant) {
+                    const vPrice = typeof v.price === 'number' ? v.price : parseFloat(String(v.price).replace(/[^0-9.]/g, ''));
+                    const vSale = v.salePrice ? (typeof v.salePrice === 'number' ? v.salePrice : parseFloat(String(v.salePrice).replace(/[^0-9.]/g, ''))) : null;
+                    const basePrice = vSale || vPrice;
+                    matchedBundlePrice = (basePrice * b.quantity) * (1 - (b.discountPercentage / 100));
+                    break;
+                  }
+                }
+              }
+              if (matchedBundlePrice !== null) break;
+            }
+          }
+
+          if (matchedBundlePrice !== null) {
+            return { ...item, priceSnapshot: matchedBundlePrice };
+          }
+
+          // Check legacy hardcoded bundles
           const bundle = product.bulkBundles.find(b => b.name === item.variantSku)
           if (bundle) {
-            const bPrice = typeof bundle.price === 'number' ? bundle.price : parseFloat(String(bundle.price).replace(/[^0-9.]/g, ''))
+            const bPrice = typeof bundle.price === 'number' ? bundle.price : parseFloat(String(bundle.price || 0).replace(/[^0-9.]/g, ''))
             const bSale = bundle.salePrice ? (typeof bundle.salePrice === 'number' ? bundle.salePrice : parseFloat(String(bundle.salePrice).replace(/[^0-9.]/g, ''))) : null
             livePrice = bSale || bPrice
             return { ...item, priceSnapshot: livePrice }

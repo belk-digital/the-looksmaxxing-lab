@@ -50,7 +50,8 @@ interface ProductData {
     id?: string
     name: string
     quantity: number
-    price: number
+    discountPercentage?: number
+    price?: number
     salePrice?: number
     image?: string
   }[]
@@ -391,9 +392,24 @@ export function ProductClient({ product }: ProductClientProps) {
                 </div>
                 <div className="flex flex-col gap-3">
                   {product.bulkBundles.map((bundle, idx) => {
-                    const priceNum = typeof bundle.price === 'number' ? bundle.price : parseFloat(String(bundle.price).replace(/[^0-9.]/g, ''))
-                    const salePriceNum = bundle.salePrice ? (typeof bundle.salePrice === 'number' ? bundle.salePrice : parseFloat(String(bundle.salePrice).replace(/[^0-9.]/g, ''))) : null
-                    const discount = salePriceNum ? Math.round(((priceNum - salePriceNum) / priceNum) * 100) : 0
+                    let priceNum = 0;
+                    let salePriceNum = 0;
+                    let discount = 0;
+                    let bundleVariantSku = bundle.name;
+
+                    if (typeof bundle.discountPercentage === 'number' && bundle.discountPercentage > 0) {
+                      // Dynamic variant-based pricing
+                      const basePrice = parseFloat(String(selectedVariant?.salePrice || selectedVariant?.price || 0).replace(/[^0-9.]/g, ''))
+                      priceNum = basePrice * bundle.quantity
+                      salePriceNum = priceNum * (1 - (bundle.discountPercentage / 100))
+                      discount = bundle.discountPercentage
+                      bundleVariantSku = `${selectedVariant?.title || selectedVariant?.sku || 'Variant'} - ${bundle.name}`
+                    } else {
+                      // Legacy hardcoded pricing
+                      priceNum = typeof bundle.price === 'number' ? bundle.price : parseFloat(String(bundle.price || 0).replace(/[^0-9.]/g, ''))
+                      salePriceNum = bundle.salePrice ? (typeof bundle.salePrice === 'number' ? bundle.salePrice : parseFloat(String(bundle.salePrice).replace(/[^0-9.]/g, ''))) : 0
+                      discount = salePriceNum ? Math.round(((priceNum - salePriceNum) / priceNum) * 100) : 0
+                    }
 
                     return (
                       <button
@@ -401,7 +417,7 @@ export function ProductClient({ product }: ProductClientProps) {
                         onClick={() => {
                           cartStore.addItem(
                             { id: product.id, name: product.name, imageUrl: product.images[0] },
-                            bundle.name,
+                            bundleVariantSku,
                             1,
                             salePriceNum || priceNum
                           )
