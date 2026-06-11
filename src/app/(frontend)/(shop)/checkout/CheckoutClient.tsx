@@ -129,35 +129,6 @@ export function CheckoutClient() {
   // Order Calculations
   const subtotal = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
 
-  if (items.length === 0) {
-    return (
-      <div className="pt-32 pb-16 md:pt-36 md:pb-24 bg-white min-h-screen">
-        <Container size="page" className="py-24 md:py-32 flex flex-col items-center justify-center text-center min-h-[60vh]">
-          <motion.div 
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="w-32 h-32 rounded-full bg-[#f4f7fb] flex items-center justify-center mb-8 text-[#5984c4]"
-          >
-            <ShoppingCart size={48} strokeWidth={1} />
-          </motion.div>
-          <h1 className={`text-4xl md:text-5xl font-bold tracking-tight text-ink mb-4 ${spaceGrotesk.className}`}>
-            Your cart is empty
-          </h1>
-          <p className="text-lg text-ink/60 mb-12 max-w-md mx-auto font-light">
-            You haven't added any compounds to your cart yet. Discover our collection of high-purity research materials.
-          </p>
-          <Link 
-            href="/shop" 
-            className="bg-ink text-white px-8 py-4 rounded-full font-medium tracking-wide flex items-center gap-2 hover:bg-ink/90 transition-all hover:scale-105 active:scale-95"
-          >
-            BROWSE PRODUCTS
-            <ArrowRight size={18} />
-          </Link>
-        </Container>
-      </div>
-    )
-  }
 
   const visibleShippingMethods = availableShippingMethods.filter((method: any) => {
     if (method.minOrderAmount && method.minOrderAmount > 0) {

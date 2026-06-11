@@ -463,7 +463,7 @@ export interface Cart {
   user: number | User;
   items?:
     | {
-        product: number | Product;
+        product?: (number | null) | Product;
         variantSku: string;
         quantity: number;
         addedAt: string;
@@ -484,7 +484,7 @@ export interface Wishlist {
   user: number | User;
   items?:
     | {
-        product: number | Product;
+        product?: (number | null) | Product;
         variantSku: string;
         quantity: number;
         addedAt: string;
@@ -590,7 +590,7 @@ export interface Order {
   customerPhone?: string | null;
   items?:
     | {
-        product: number | Product;
+        product?: (number | null) | Product;
         /**
          * The variant or bundle purchased
          */
@@ -601,7 +601,7 @@ export interface Order {
         price?: number | null;
         quantity: number;
         /**
-         * Snapshot of product data at order time.
+         * Snapshot of product data at order time. Collapsed to save space.
          */
         productSnapshot?:
           | {
