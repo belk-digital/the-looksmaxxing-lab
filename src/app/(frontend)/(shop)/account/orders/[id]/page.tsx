@@ -49,7 +49,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
   // Verify ownership
     const ownerId = typeof order.owner === 'object' ? order.owner?.id : order.owner
-    if (ownerId !== user.id) {
+    if (ownerId !== user.id && order.guestEmail !== user.email) {
       return notFound()
     }
 

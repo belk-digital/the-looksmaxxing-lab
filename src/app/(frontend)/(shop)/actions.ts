@@ -190,6 +190,16 @@ async function calculateCartTotals(cartItems: any[], payload: any, coupon?: any)
       if (coupon.excludeSaleItems && typeof product.salePrice === 'number' && product.salePrice > 0) {
         eligible = false;
       }
+
+      // Check applicableProductTypes
+      if (coupon.applicableProductTypes && coupon.applicableProductTypes !== 'all') {
+        const isBulkBundle = typeof item.variantSku === 'string' && item.variantSku.includes(' - ');
+        if (coupon.applicableProductTypes === 'normal_only' && isBulkBundle) {
+          eligible = false;
+        } else if (coupon.applicableProductTypes === 'bulk_only' && !isBulkBundle) {
+          eligible = false;
+        }
+      }
       if (eligible && coupon.appliesTo === 'specific_products') {
         const allowedProductIds = (coupon.products || []).map((p: any) => typeof p.product === 'object' ? p.product.id : p.product);
         if (!allowedProductIds.includes(product.id)) eligible = false;
@@ -818,12 +828,81 @@ export async function getUserMaxxPoints() {
   }
 }
 
+export async function syncGuestOrdersToUser(payload: any, user: any) {
+  try {
+    const guestOrders = await payload.find({
+      collection: 'orders',
+      where: {
+        and: [
+          { guestEmail: { equals: user.email } },
+          { owner: { exists: false } }
+        ]
+      },
+      limit: 100,
+      overrideAccess: true,
+    });
+
+    for (const order of guestOrders.docs) {
+      // 1. Save Address if it exists
+      if (order.shippingAddress && order.shippingAddress.line1) {
+        const existingAddr = await payload.find({
+          collection: 'addresses',
+          where: {
+            and: [
+              { user: { equals: user.id } },
+              { line1: { equals: order.shippingAddress.line1 } },
+              { postalCode: { equals: order.shippingAddress.postalCode } }
+            ]
+          },
+          limit: 1,
+          overrideAccess: true,
+        });
+
+        if (existingAddr.docs.length === 0) {
+          await payload.create({
+            collection: 'addresses',
+            data: {
+              user: user.id,
+              label: 'Imported Address',
+              firstName: order.customerFirstName || 'Customer',
+              lastName: order.customerLastName || 'User',
+              line1: order.shippingAddress.line1,
+              line2: order.shippingAddress.line2 || '',
+              city: order.shippingAddress.city || '',
+              state: order.shippingAddress.state || '',
+              postalCode: order.shippingAddress.postalCode || '',
+              country: order.shippingAddress.country || 'US',
+              phone: order.customerPhone || '',
+              isDefaultShipping: false,
+            },
+            overrideAccess: true,
+          });
+        }
+      }
+
+      // 2. Claim Order
+      await payload.update({
+        collection: 'orders',
+        id: order.id,
+        data: { owner: user.id },
+        overrideAccess: true,
+      });
+    }
+  } catch (e) {
+    console.error('Failed to sync guest orders', e);
+  }
+}
+
 export async function getUserAddresses() {
   try {
     const user = await getPayloadUser()
     if (!user) return []
 
     const payload = await getPayload({ config: configPromise })
+    
+    // Auto-claim any unowned guest orders and import their addresses
+    await syncGuestOrdersToUser(payload, user)
+
     const addresses = await payload.find({
       collection: 'addresses',
       where: { user: { equals: user.id } },

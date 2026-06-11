@@ -651,8 +651,8 @@ export function CheckoutClient() {
                     </div>
                     <div className="flex flex-col flex-1 justify-center py-1">
                       <span className="text-sm font-bold text-ink leading-tight">{item.product?.name}</span>
-                      {item.variantSku && !['DEFAULT', 'DEFAULT TITLE'].includes(item.variantSku.toUpperCase()) && (
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-ink/40 mt-1">{item.variantSku}</span>
+                      {(item.variantTitle || item.variantSku) && !['DEFAULT', 'DEFAULT TITLE'].includes((item.variantTitle || item.variantSku || '').toUpperCase()) && (
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-ink/40 mt-1">{item.variantTitle || item.variantSku}</span>
                       )}
                     </div>
                     <span className="text-sm text-ink font-bold self-center">

@@ -162,6 +162,21 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                 const price = typeof item.price === 'number' ? item.price : (product.basePrice || product.price || 0)
                 const imageUrl = product.images?.[0]?.image?.url || product.images?.[0]?.url || '/temp-products/product-image.png'
                 
+                let displayVariant = item.variant || 'Standard';
+                if (product?.variants?.length) {
+                  for (const v of product.variants) {
+                    const vTitle = v.options?.map((o:any) => o.value).join(' ') || `Variant`;
+                    if (displayVariant === v.sku) {
+                       displayVariant = vTitle;
+                       break;
+                    }
+                    if (displayVariant.startsWith(`${v.sku} - `)) {
+                       displayVariant = displayVariant.replace(`${v.sku} - `, `${vTitle} - `);
+                       break;
+                    }
+                  }
+                }
+                
                 return (
                   <div key={item.id || Math.random()} className="flex items-center gap-6 group">
                     <Link href={`/products/${product.slug || ''}`} className="relative w-20 h-20 bg-gray-50 shrink-0 border border-gray-100 rounded-2xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow">
@@ -177,9 +192,9 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                           {title}
                         </span>
                       </Link>
-                      {item.variant && !['DEFAULT', 'DEFAULT TITLE'].includes(item.variant.toUpperCase()) && (
+                      {displayVariant && !['DEFAULT', 'DEFAULT TITLE'].includes(displayVariant.toUpperCase()) && (
                         <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 mt-1">
-                          {item.variant}
+                          {displayVariant}
                         </span>
                       )}
                     </div>

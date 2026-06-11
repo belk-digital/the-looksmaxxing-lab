@@ -99,6 +99,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   if (rawProduct.hasVariants && rawProduct.variants?.length) {
     mappedVariants = rawProduct.variants.map((v: any, index: number) => ({
       id: v.sku || `v-${index}`,
+      sku: v.sku || '',
       title: v.options?.map((o: any) => o.value).join(' ') || `Variant ${index + 1}`,
       price: `$${Number(v.price || 0).toFixed(2)}`,
       salePrice: v.salePrice ? `$${Number(v.salePrice).toFixed(2)}` : undefined,
@@ -108,6 +109,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     mappedVariants = [
       {
         id: rawProduct.sku || String(rawProduct.id),
+        sku: rawProduct.sku || '',
         title: 'Standard',
         price: `$${Number(rawProduct.price || 0).toFixed(2)}`,
         salePrice: rawProduct.salePrice ? `$${Number(rawProduct.salePrice).toFixed(2)}` : undefined,
@@ -191,7 +193,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       discountPercentage: b.discountPercentage,
       price: b.price,
       salePrice: b.salePrice,
-      image: typeof b.image === 'object' && b.image?.url ? b.image.url : undefined
+      image: typeof b.image === 'object' && b.image?.url ? b.image.url : undefined,
+      variantOverrides: b.variantOverrides?.map((vo: any) => ({
+        variantSku: vo.variantSku,
+        price: vo.price,
+        salePrice: vo.salePrice
+      })) || []
     })) || [],
     images: mappedImages,
     variants: mappedVariants,

@@ -416,12 +416,36 @@ export interface Product {
          * Number of items in this bundle
          */
         quantity: number;
-        price: number;
+        /**
+         * Percentage discount off the total (e.g. 15 for 15% off). If set, the bundle dynamically multiplies the selected variant price!
+         */
+        discountPercentage?: number | null;
+        /**
+         * Legacy hardcoded price (leave empty if using dynamic discount or overrides)
+         */
+        price?: number | null;
+        /**
+         * Legacy hardcoded sale price
+         */
         salePrice?: number | null;
         /**
          * Optional image for this specific bundle.
          */
         image?: (number | null) | Media;
+        /**
+         * Optional: Manually hardcode an exact dollar amount for a specific variant. This bypasses the percentage discount.
+         */
+        variantOverrides?:
+          | {
+              /**
+               * Select the variant this applies to.
+               */
+              variantSku: string;
+              price: number;
+              salePrice?: number | null;
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -550,6 +574,10 @@ export interface Coupon {
    * Percentage (0-100), fixed amount in cents, or ignored for free shipping.
    */
   value?: number | null;
+  /**
+   * Restrict coupon usage to standard variants or bulk bundles.
+   */
+  applicableProductTypes: 'all' | 'normal_only' | 'bulk_only';
   appliesTo: 'all' | 'specific_products' | 'specific_categories';
   products?:
     | {
@@ -1493,9 +1521,18 @@ export interface ProductsSelect<T extends boolean = true> {
     | {
         name?: T;
         quantity?: T;
+        discountPercentage?: T;
         price?: T;
         salePrice?: T;
         image?: T;
+        variantOverrides?:
+          | T
+          | {
+              variantSku?: T;
+              price?: T;
+              salePrice?: T;
+              id?: T;
+            };
         id?: T;
       };
   averageRating?: T;
@@ -1584,6 +1621,7 @@ export interface CouponsSelect<T extends boolean = true> {
   storeCreditAmount?: T;
   remainingBalance?: T;
   value?: T;
+  applicableProductTypes?: T;
   appliesTo?: T;
   products?:
     | T

@@ -222,16 +222,50 @@ export function CartClient() {
   // Calculate Discounts
   let discountAmount = 0
   let isFreeShipping = false
+  let eligibleSubtotal = 0
 
   if (activeCoupon) {
     if (activeCoupon.freeShipping) {
       isFreeShipping = true
     }
     
+    // Calculate eligible subtotal
+    items.forEach(item => {
+      let eligible = true
+      
+      if (activeCoupon.excludeSaleItems && (item.product as any)?.salePrice) {
+        eligible = false
+      }
+      
+      if (activeCoupon.applicableProductTypes && activeCoupon.applicableProductTypes !== 'all') {
+        const isBulkBundle = typeof item.variantSku === 'string' && item.variantSku.includes(' - ')
+        if (activeCoupon.applicableProductTypes === 'normal_only' && isBulkBundle) {
+          eligible = false
+        } else if (activeCoupon.applicableProductTypes === 'bulk_only' && !isBulkBundle) {
+          eligible = false
+        }
+      }
+      
+      if (eligible && activeCoupon.appliesTo === 'specific_products') {
+        const allowedProductIds = (activeCoupon.products || []).map((p: any) => typeof p.product === 'object' ? p.product.id : p.product)
+        if (!allowedProductIds.includes(item.productId)) eligible = false
+      }
+      
+      if (eligible && activeCoupon.appliesTo === 'specific_categories') {
+        // Simple check: we don't have full category data in cart item, but this is a best-effort frontend display.
+        // The backend `actions.ts` will rigorously validate it anyway.
+        // We will assume it's eligible on the frontend unless we explicitly know it's not.
+      }
+      
+      if (eligible) {
+        eligibleSubtotal += item.priceSnapshot * item.quantity
+      }
+    })
+
     if (activeCoupon.type === 'percentage') {
-      discountAmount = subtotal * (activeCoupon.value / 100)
+      discountAmount = eligibleSubtotal * (activeCoupon.value / 100)
     } else if (activeCoupon.type === 'fixed_amount') {
-      discountAmount = (activeCoupon.value / 100)
+      discountAmount = Math.min((activeCoupon.value / 100), eligibleSubtotal)
     }
   }
 
@@ -298,9 +332,9 @@ export function CartClient() {
                       <Link href={`/products/${item.productId}`} className={`text-base sm:text-xl md:text-2xl font-bold text-ink hover:text-[#5984c4] transition-colors leading-tight ${spaceGrotesk.className}`}>
                         {item.product?.name}
                       </Link>
-                      {item.variantSku && !['DEFAULT', 'DEFAULT TITLE'].includes(item.variantSku.toUpperCase()) && (
+                      {(item.variantTitle || item.variantSku) && !['DEFAULT', 'DEFAULT TITLE'].includes((item.variantTitle || item.variantSku || '').toUpperCase()) && (
                         <span className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/50 line-clamp-1">
-                          {item.variantSku}
+                          {item.variantTitle || item.variantSku}
                         </span>
                       )}
                     </div>

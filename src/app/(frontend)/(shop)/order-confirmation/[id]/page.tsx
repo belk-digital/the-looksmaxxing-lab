@@ -36,10 +36,26 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
      // Use product object since depth > 0 populates relationships
      const productData = typeof item.product === 'object' ? item.product : item.productSnapshot
      
+     let displayVariant = item.variant || 'Standard';
+     if (productData?.variants?.length) {
+        for (const v of productData.variants) {
+           const vTitle = v.options?.map((o:any) => o.value).join(' ') || `Variant`;
+           
+           if (displayVariant === v.sku) {
+              displayVariant = vTitle;
+              break;
+           }
+           if (displayVariant.startsWith(`${v.sku} - `)) {
+              displayVariant = displayVariant.replace(`${v.sku} - `, `${vTitle} - `);
+              break;
+           }
+        }
+     }
+
      return {
         id: item.id || String(i),
         name: productData?.title || productData?.name || 'Product',
-        variant: item.variant || 'Standard', 
+        variant: displayVariant, 
         quantity: item.quantity,
         price: typeof item.price === 'number' ? item.price : (productData?.price || productData?.basePrice || 0),
         image: productData?.images?.[0]?.image?.url || productData?.images?.[0]?.url || '/temp-products/product-image.png'

@@ -59,7 +59,7 @@ export async function POST(req: Request) {
             // 1. Decrement Inventory
             if (order.items && Array.isArray(order.items)) {
                for (const item of order.items) {
-                  const productId = typeof item.product === 'object' ? item.product.id : item.product;
+                  const productId = typeof item.product === 'object' && item.product !== null ? item.product.id : item.product;
                   if (productId) {
                      const productDoc = await payload.findByID({ collection: 'products', id: productId });
                      if (productDoc) {

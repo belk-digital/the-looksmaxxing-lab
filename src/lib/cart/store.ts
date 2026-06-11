@@ -12,6 +12,7 @@ export type CartLine = {
   lineId: string
   productId: string
   variantSku: string | null
+  variantTitle?: string | null
   quantity: number
   priceSnapshot: number
   product: MinimalProduct
@@ -28,6 +29,7 @@ interface CartState {
     variantSku: string | null,
     quantity: number,
     priceSnapshot: number,
+    variantTitle?: string | null
   ) => void
   removeItem: (lineId: string) => void
   updateQuantity: (lineId: string, quantity: number) => void
@@ -47,7 +49,7 @@ export const useCartStore = create<CartState>()(
 
       setItems: (items) => set({ items }),
 
-      addItem: (product, variantSku, quantity, priceSnapshot) => {
+      addItem: (product, variantSku, quantity, priceSnapshot, variantTitle) => {
         set((state) => {
           const existingItemIndex = state.items.findIndex(
             (item) => String(item.productId) === String(product.id) && item.variantSku === variantSku,
@@ -56,11 +58,10 @@ export const useCartStore = create<CartState>()(
           if (existingItemIndex > -1) {
             const newItems = [...state.items]
             newItems[existingItemIndex].quantity += quantity
-            // Update price snapshot to the latest when adding more
             newItems[existingItemIndex].priceSnapshot = priceSnapshot
-            // Sync in background
+            if (variantTitle) newItems[existingItemIndex].variantTitle = variantTitle
             syncCartToPayload(newItems).catch(console.error)
-            return { items: newItems, isOpen: true } // Auto open drawer on add
+            return { items: newItems, isOpen: true }
           }
 
           const lineId =
@@ -74,18 +75,18 @@ export const useCartStore = create<CartState>()(
               lineId,
               productId: product.id,
               variantSku,
+              variantTitle: variantTitle || variantSku,
               quantity,
               priceSnapshot,
               product,
             },
           ]
 
-          // Sync new state in background
           syncCartToPayload(newItems).catch(console.error)
 
           return {
             items: newItems,
-            isOpen: true, // Auto open drawer on add
+            isOpen: true,
           }
         })
       },

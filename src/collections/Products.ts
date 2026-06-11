@@ -167,10 +167,30 @@ export const Products: CollectionConfig = {
       fields: [
         { name: 'name', type: 'text', required: true, admin: { description: 'e.g. 5 Kits' } },
         { name: 'quantity', type: 'number', required: true, min: 2, admin: { description: 'Number of items in this bundle' } },
-        { name: 'discountPercentage', type: 'number', min: 0, max: 100, admin: { description: 'NEW: Percentage discount off the total (e.g. 15 for 15% off). If set, the bundle dynamically multiplies the selected variant price!' } },
-        { name: 'price', type: 'number', min: 0, admin: { description: 'Legacy hardcoded price (leave empty if using dynamic discount)' } },
-        { name: 'salePrice', type: 'number', min: 0, admin: { description: 'Legacy hardcoded sale price (leave empty if using dynamic discount)' } },
+        { name: 'discountPercentage', type: 'number', min: 0, max: 100, admin: { description: 'Percentage discount off the total (e.g. 15 for 15% off). If set, the bundle dynamically multiplies the selected variant price!' } },
+        { name: 'price', type: 'number', min: 0, admin: { description: 'Legacy hardcoded price (leave empty if using dynamic discount or overrides)' } },
+        { name: 'salePrice', type: 'number', min: 0, admin: { description: 'Legacy hardcoded sale price' } },
         { name: 'image', type: 'upload', relationTo: 'media', admin: { description: 'Optional image for this specific bundle.' } },
+        {
+          name: 'variantOverrides',
+          type: 'array',
+          admin: { description: 'Optional: Manually hardcode an exact dollar amount for a specific variant. This bypasses the percentage discount.' },
+          fields: [
+            { 
+              name: 'variantSku', 
+              type: 'text', 
+              required: true, 
+              admin: { 
+                description: 'Select the variant this applies to.',
+                components: {
+                  Field: '@/components/admin/VariantSelect#VariantSelect'
+                }
+              } 
+            },
+            { name: 'price', type: 'number', required: true, min: 0 },
+            { name: 'salePrice', type: 'number', min: 0 },
+          ]
+        }
       ],
     },
     {

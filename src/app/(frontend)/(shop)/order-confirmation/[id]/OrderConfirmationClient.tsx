@@ -57,7 +57,7 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
         }
       `}} />
       <div className="min-h-screen bg-[#fafafa] pt-24 pb-32 print:bg-white print:pt-0 print:pb-0 print:min-h-0">
-        <Container size="content" className="flex flex-col items-center px-4 sm:px-6 print:block print:w-full print:px-0 print:m-0 print:h-auto">
+        <Container size="page" className="flex flex-col items-center px-4 sm:px-6 print:block print:w-full print:px-0 print:m-0 print:h-auto">
         
         {/* Success Header - Hidden on Print */}
         <div className="text-center mb-10 md:mb-12 flex flex-col items-center print:hidden">

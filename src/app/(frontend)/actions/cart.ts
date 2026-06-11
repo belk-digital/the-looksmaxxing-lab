@@ -108,12 +108,20 @@ export async function revalidateCartPrices(items: CartLine[]): Promise<CartLine[
             for (const v of product.variants) {
               const vTitle = v.options?.map((o: any) => o.value).join(' ') || `Variant ${v.sku}`;
               for (const b of product.bulkBundles) {
-                if (typeof b.discountPercentage === 'number' && b.discountPercentage > 0) {
-                  const expectedSkuTitle = `${vTitle} - ${b.name}`;
-                  const expectedSkuBase = `${v.sku} - ${b.name}`;
-                  const expectedSkuVariant = `Variant - ${b.name}`;
-                  
-                  if (item.variantSku === expectedSkuTitle || item.variantSku === expectedSkuBase || item.variantSku === expectedSkuVariant) {
+                const expectedSkuTitle = `${vTitle} - ${b.name}`;
+                const expectedSkuBase = `${v.sku} - ${b.name}`;
+                const expectedSkuVariant = `Variant - ${b.name}`;
+
+                if (item.variantSku === expectedSkuTitle || item.variantSku === expectedSkuBase || item.variantSku === expectedSkuVariant) {
+                  // 1st priority: Explicit Variant Overrides
+                  const override = b.variantOverrides?.find((vo: any) => vo.variantSku === v.sku || vo.variantSku === vTitle);
+                  if (override) {
+                    matchedBundlePrice = override.salePrice || override.price;
+                    break;
+                  }
+
+                  // 2nd priority: Dynamic Percentage
+                  if (typeof b.discountPercentage === 'number' && b.discountPercentage > 0) {
                     const vPrice = typeof v.price === 'number' ? v.price : parseFloat(String(v.price).replace(/[^0-9.]/g, ''));
                     const vSale = v.salePrice ? (typeof v.salePrice === 'number' ? v.salePrice : parseFloat(String(v.salePrice).replace(/[^0-9.]/g, ''))) : null;
                     const basePrice = vSale || vPrice;

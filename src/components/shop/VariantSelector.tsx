@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 
 export interface Variant {
   id: string
+  sku?: string
   title: string
   price: string
   salePrice?: string
@@ -29,7 +30,7 @@ export function VariantSelector({ variants, value, onChange, label = '', theme =
           {label}
         </span>
       )}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="flex flex-wrap gap-3">
         {variants.map((variant) => {
           const isSelected = value === variant.id
           return (
@@ -38,33 +39,21 @@ export function VariantSelector({ variants, value, onChange, label = '', theme =
               onClick={() => variant.inStock && onChange(variant.id)}
               disabled={!variant.inStock}
               className={cn(
-                "flex flex-col items-center justify-center w-full px-4 py-3 border rounded-xl transition-all duration-300 text-center",
+                "relative flex flex-col items-center justify-center min-w-[80px] px-6 py-3 border rounded-xl transition-all duration-300",
                 isSelected 
-                  ? theme === 'dark' ? "border-white bg-white text-ink" : "border-ink bg-ink text-cream" 
-                  : theme === 'dark' ? "border-white/20 bg-transparent text-white hover:border-white" : "border-border-default bg-transparent text-ink hover:border-ink",
-                !variant.inStock && (theme === 'dark' ? "opacity-40 cursor-not-allowed bg-transparent text-white/50 border-white/10 hover:border-white/10" : "opacity-40 cursor-not-allowed bg-transparent text-ink-muted border-border-subtle hover:border-border-subtle")
+                  ? theme === 'dark' ? "border-white bg-white text-ink shadow-sm ring-1 ring-white/20" : "border-ink bg-ink text-white shadow-md ring-1 ring-ink/10" 
+                  : theme === 'dark' ? "border-white/20 bg-transparent text-white/80 hover:text-white hover:border-white/50" : "border-ink/10 bg-white text-ink hover:border-ink/30 hover:bg-gray-50",
+                !variant.inStock && "opacity-40 cursor-not-allowed hover:border-inherit hover:bg-inherit"
               )}
             >
               <span className={cn(
-                "text-[11px] sm:text-xs font-bold uppercase tracking-widest mb-1 opacity-90",
+                "text-[13px] font-bold uppercase tracking-widest",
                 !variant.inStock && "line-through"
               )}>
                 {variant.title || `Option`}
               </span>
-              <span className="text-body-sm font-medium opacity-80 flex items-center gap-1.5 justify-center">
-                {variant.inStock ? (
-                  variant.salePrice ? (
-                    <>
-                      <span className="line-through opacity-50 text-xs">{variant.price}</span>
-                      <span>{variant.salePrice}</span>
-                    </>
-                  ) : (
-                    <span>{variant.price}</span>
-                  )
-                ) : (
-                  'OUT OF STOCK'
-                )}
-              </span>
+              
+              {/* Optional tiny price diff indicator - omitted for maximum cleanliness since top price updates */}
             </button>
           )
         })}

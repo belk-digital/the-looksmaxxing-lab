@@ -19,7 +19,12 @@ export default async function OrdersPage() {
 
   const { docs: orders } = await payload.find({
     collection: 'orders',
-    where: { owner: { equals: user.id } },
+    where: {
+      or: [
+        { owner: { equals: user.id } },
+        { guestEmail: { equals: user.email } }
+      ]
+    },
     sort: '-createdAt',
     limit: 100, // Fetch up to 100 orders
     overrideAccess: true,

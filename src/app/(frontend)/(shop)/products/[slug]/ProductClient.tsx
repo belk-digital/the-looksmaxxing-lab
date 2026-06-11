@@ -285,9 +285,10 @@ export function ProductClient({ product }: ProductClientProps) {
 
     cartStore.addItem(
       { id: product.id, name: product.name, imageUrl: product.images[0] },
-      selectedVariant.title,
+      selectedVariant.sku || selectedVariant.title,
       quantity,
-      parseFloat((selectedVariant.salePrice || selectedVariant.price).replace(/[^0-9.]/g, ''))
+      parseFloat((selectedVariant.salePrice || selectedVariant.price).replace(/[^0-9.]/g, '')),
+      selectedVariant.title
     )
 
     setJustAdded(true)
@@ -373,22 +374,28 @@ export function ProductClient({ product }: ProductClientProps) {
             {/* Bulk Bundles */}
             {product.bulkBundles && product.bulkBundles.length > 0 && (
               <div className="mb-8">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-bold uppercase tracking-widest text-ink">Bulk Bundles</span>
-                  {(() => {
-                    let maxDiscount = 0
-                    product.bulkBundles.forEach((bundle) => {
-                      const pNum = typeof bundle.price === 'number' ? bundle.price : parseFloat(String(bundle.price).replace(/[^0-9.]/g, ''))
-                      const sNum = bundle.salePrice ? (typeof bundle.salePrice === 'number' ? bundle.salePrice : parseFloat(String(bundle.salePrice).replace(/[^0-9.]/g, ''))) : null
-                      if (sNum && pNum > 0) {
-                        const discount = Math.round(((pNum - sNum) / pNum) * 100)
+                <div className="flex flex-col mb-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-bold uppercase tracking-widest text-ink">Bulk Bundles</span>
+                    {(() => {
+                      let maxDiscount = 0
+                      product.bulkBundles.forEach((bundle) => {
+                        const pNum = typeof bundle.price === 'number' ? bundle.price : parseFloat(String(bundle.price || 0).replace(/[^0-9.]/g, ''))
+                        const sNum = bundle.salePrice ? (typeof bundle.salePrice === 'number' ? bundle.salePrice : parseFloat(String(bundle.salePrice).replace(/[^0-9.]/g, ''))) : null
+                        let discount = 0
+                        if (typeof bundle.discountPercentage === 'number' && bundle.discountPercentage > 0) {
+                          discount = bundle.discountPercentage
+                        } else if (sNum && pNum > 0) {
+                          discount = Math.round(((pNum - sNum) / pNum) * 100)
+                        }
                         if (discount > maxDiscount) maxDiscount = discount
-                      }
-                    })
-                    return maxDiscount > 0 ? (
-                      <span className="text-xs font-semibold text-ink/50 bg-ink/5 px-2 py-0.5 rounded-md">Save up to {maxDiscount}%</span>
-                    ) : null
-                  })()}
+                      })
+                      return maxDiscount > 0 ? (
+                        <span className="text-xs font-bold text-green-600 bg-green-50 px-2.5 py-1 rounded-full uppercase tracking-wider">Save up to {maxDiscount}%</span>
+                      ) : null
+                    })()}
+                  </div>
+                  <span className="text-[11px] text-ink/50 mt-1.5 font-medium tracking-wide">Please select your dosage above to view accurate bulk pricing.</span>
                 </div>
                 <div className="flex flex-col gap-3">
                   {product.bulkBundles.map((bundle, idx) => {
@@ -396,14 +403,29 @@ export function ProductClient({ product }: ProductClientProps) {
                     let salePriceNum = 0;
                     let discount = 0;
                     let bundleVariantSku = bundle.name;
+                    let bundleVariantTitle = bundle.name;
+                    
+                    const currentVariantSku = selectedVariant?.sku || selectedVariant?.title || 'Variant';
+                    const currentVariantTitle = selectedVariant?.title || 'Variant';
+                    
+                    // Check for hardcoded Variant Overrides first
+                    const override = (bundle as any).variantOverrides?.find((vo: any) => vo.variantSku === currentVariantSku || vo.variantSku === selectedVariant?.sku || vo.variantSku === selectedVariant?.title);
 
-                    if (typeof bundle.discountPercentage === 'number' && bundle.discountPercentage > 0) {
+                    if (override) {
+                      // Manual Override pricing
+                      priceNum = override.price;
+                      salePriceNum = override.salePrice || 0;
+                      discount = salePriceNum ? Math.round(((priceNum - salePriceNum) / priceNum) * 100) : 0;
+                      bundleVariantSku = `${currentVariantSku} - ${bundle.name}`;
+                      bundleVariantTitle = `${currentVariantTitle} - ${bundle.name}`;
+                    } else if (typeof bundle.discountPercentage === 'number' && bundle.discountPercentage > 0) {
                       // Dynamic variant-based pricing
                       const basePrice = parseFloat(String(selectedVariant?.salePrice || selectedVariant?.price || 0).replace(/[^0-9.]/g, ''))
                       priceNum = basePrice * bundle.quantity
                       salePriceNum = priceNum * (1 - (bundle.discountPercentage / 100))
                       discount = bundle.discountPercentage
-                      bundleVariantSku = `${selectedVariant?.title || selectedVariant?.sku || 'Variant'} - ${bundle.name}`
+                      bundleVariantSku = `${currentVariantSku} - ${bundle.name}`
+                      bundleVariantTitle = `${currentVariantTitle} - ${bundle.name}`;
                     } else {
                       // Legacy hardcoded pricing
                       priceNum = typeof bundle.price === 'number' ? bundle.price : parseFloat(String(bundle.price || 0).replace(/[^0-9.]/g, ''))
@@ -419,33 +441,46 @@ export function ProductClient({ product }: ProductClientProps) {
                             { id: product.id, name: product.name, imageUrl: product.images[0] },
                             bundleVariantSku,
                             1,
-                            salePriceNum || priceNum
+                            salePriceNum || priceNum,
+                            bundleVariantTitle
                           )
                           setJustAdded(true)
                           toast.success('Added bundle to cart', { action: { label: 'VIEW', onClick: cartStore.openCart } })
                           setTimeout(() => setJustAdded(false), 1500)
                         }}
-                        className="w-full flex items-center justify-between p-4 rounded-xl border border-ink/10 hover:border-ink hover:shadow-md transition-all duration-300 group bg-white text-left"
+                        className="relative w-full flex items-center justify-between p-4 sm:p-5 rounded-2xl border border-ink/10 hover:border-ink/30 hover:shadow-lg hover:shadow-ink/5 transition-all duration-300 group bg-white text-left overflow-hidden"
                       >
-                        <div className="flex items-center gap-4">
-                          {bundle.image && (
+                        {/* Hover Gradient Effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-ink/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none -translate-x-full group-hover:translate-x-full ease-out" />
+                        
+                        <div className="flex items-center gap-4 relative z-10">
+                          {bundle.image ? (
                             <img src={bundle.image} alt={bundle.name} className="w-12 h-12 rounded-lg object-cover bg-ink/5" />
+                          ) : (
+                            <div className="w-12 h-12 rounded-xl bg-ink/5 flex flex-col items-center justify-center border border-ink/10">
+                              <span className="text-sm font-black text-ink tracking-tighter leading-none">{bundle.quantity}x</span>
+                              <span className="text-[8px] font-bold uppercase tracking-widest text-ink/50 mt-0.5">Kits</span>
+                            </div>
                           )}
                           <div className="flex flex-col">
-                            <span className="font-bold text-ink">{bundle.name}</span>
-                            <span className="text-xs font-medium text-ink/50 mt-1">{bundle.quantity}x items included</span>
+                            <span className="font-bold text-ink text-sm sm:text-base">{bundle.name}</span>
+                            <span className="text-xs font-medium text-ink/50 mt-0.5">{bundle.quantity} vials included</span>
                           </div>
                         </div>
-                        <div className="flex flex-col items-end">
+                        <div className="flex flex-col items-end relative z-10">
                           {salePriceNum ? (
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs line-through text-ink/40">${priceNum.toFixed(2)}</span>
-                              <span className="font-bold text-ink">${salePriceNum.toFixed(2)}</span>
+                            <div className="flex flex-col items-end">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-xs line-through text-ink/40 font-medium">${priceNum.toFixed(2)}</span>
+                                <span className="font-bold text-ink text-lg leading-none">${salePriceNum.toFixed(2)}</span>
+                              </div>
+                              {discount > 0 && (
+                                <span className="text-[10px] font-bold text-white bg-ink px-2 py-0.5 rounded-full uppercase tracking-widest shadow-sm">Save {discount}%</span>
+                              )}
                             </div>
                           ) : (
-                            <span className="font-bold text-ink">${priceNum.toFixed(2)}</span>
+                            <span className="font-bold text-ink text-lg">${priceNum.toFixed(2)}</span>
                           )}
-                          {discount > 0 && <span className="text-[10px] font-bold text-green-500 mt-1 uppercase tracking-wider">{discount}% OFF</span>}
                         </div>
                       </button>
                     )
