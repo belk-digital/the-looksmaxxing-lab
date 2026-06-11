@@ -616,7 +616,14 @@ export function CheckoutClient() {
                           )}
                         </div>
                       </div>
-                      <span className="text-sm font-bold text-ink">{method.price === 0 ? 'Free' : `$${method.price.toFixed(2)}`}</span>
+                      <span className="text-sm font-bold text-ink">
+                        {(() => {
+                          const isExpress = method.method.toLowerCase().includes('express')
+                          const isFreeShipping = appliedCoupon?.freeShipping && !isExpress
+                          if (isFreeShipping || method.price === 0) return 'Free'
+                          return `$${method.price.toFixed(2)}`
+                        })()}
+                      </span>
                     </label>
                   ))}
                 </div>
