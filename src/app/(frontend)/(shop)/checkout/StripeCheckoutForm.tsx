@@ -46,6 +46,9 @@ export function StripeCheckoutForm({
 
     if (orderRes.error || !orderRes.orderId) {
       toast.error(orderRes.error || 'Failed to initialize order in database.')
+      if ((orderRes as any).priceChanged && (orderRes as any).updatedItems) {
+        useCartStore.getState().setItems((orderRes as any).updatedItems)
+      }
       setIsProcessing(false)
       return
     }

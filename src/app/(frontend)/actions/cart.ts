@@ -84,3 +84,58 @@ export async function syncCartToPayload(items: CartLine[]) {
     return { success: false, error: 'Internal Server Error' }
   }
 }
+
+export async function revalidateCartPrices(items: CartLine[]): Promise<CartLine[]> {
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const updatedItems = await Promise.all(items.map(async (item) => {
+      try {
+        const product = await payload.findByID({
+          collection: 'products',
+          id: (!isNaN(Number(item.productId)) ? Number(item.productId) : item.productId) as any,
+          depth: 0,
+        })
+        if (!product) return item
+
+        let livePrice = item.priceSnapshot
+
+        // 1. Check Bulk Bundles
+        if (product.bulkBundles && product.bulkBundles.length > 0) {
+          const bundle = product.bulkBundles.find(b => b.name === item.variantSku)
+          if (bundle) {
+            const bPrice = typeof bundle.price === 'number' ? bundle.price : parseFloat(String(bundle.price).replace(/[^0-9.]/g, ''))
+            const bSale = bundle.salePrice ? (typeof bundle.salePrice === 'number' ? bundle.salePrice : parseFloat(String(bundle.salePrice).replace(/[^0-9.]/g, ''))) : null
+            livePrice = bSale || bPrice
+            return { ...item, priceSnapshot: livePrice }
+          }
+        }
+
+        // 2. Check Variants
+        if (product.variants && product.variants.length > 0) {
+          const variant = product.variants.find(v => v.title === item.variantSku || v.sku === item.variantSku)
+          if (variant) {
+            const vPrice = typeof variant.price === 'number' ? variant.price : parseFloat(String(variant.price).replace(/[^0-9.]/g, ''))
+            const vSale = variant.salePrice ? (typeof variant.salePrice === 'number' ? variant.salePrice : parseFloat(String(variant.salePrice).replace(/[^0-9.]/g, ''))) : null
+            livePrice = vSale || vPrice
+            return { ...item, priceSnapshot: livePrice }
+          }
+        }
+
+        // 3. Fallback to base product price
+        const pPrice = typeof product.price === 'number' ? product.price : parseFloat(String(product.price).replace(/[^0-9.]/g, ''))
+        const pSale = product.salePrice ? (typeof product.salePrice === 'number' ? product.salePrice : parseFloat(String(product.salePrice).replace(/[^0-9.]/g, ''))) : null
+        livePrice = pSale || pPrice
+
+        return { ...item, priceSnapshot: livePrice }
+      } catch (err) {
+        return item
+      }
+    }))
+    
+    return updatedItems
+  } catch (error) {
+    console.error('Error revalidating cart prices:', error)
+    return items
+  }
+}
+

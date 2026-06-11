@@ -206,6 +206,10 @@ export function CheckoutClient() {
             setPaymentIntentId(res.paymentIntentId)
           } else if (res.error) {
             toast.error(res.error)
+            if ((res as any).priceChanged && (res as any).updatedItems) {
+              const { useCartStore } = require('@/lib/cart/store')
+              useCartStore.getState().setItems((res as any).updatedItems)
+            }
           }
         })
     }

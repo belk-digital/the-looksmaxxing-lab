@@ -51,15 +51,34 @@ export async function createPaymentIntent(
 
   // Validate items, check stock, and calculate subtotal securely on server
   let subtotal = 0;
-  for (const item of items) {
-     const productRes = await payload.findByID({ collection: 'products', id: item.productId, depth: 0 })
+  let pricesChanged = false;
+  const { revalidateCartPrices } = await import('@/app/(frontend)/actions/cart')
+  const liveItems = await revalidateCartPrices(items)
+
+  for (let i = 0; i < items.length; i++) {
+     const item = items[i]
+     const liveItem = liveItems[i]
+     
+     if (item.priceSnapshot !== liveItem.priceSnapshot) {
+       pricesChanged = true
+     }
+
+     const productRes = await payload.findByID({ collection: 'products', id: (!isNaN(Number(item.productId)) ? Number(item.productId) : item.productId) as any, depth: 0 })
      if (!productRes) {
         return { error: `Product not found: ${item.productId}` }
      }
      if ((productRes.stock || 0) < item.quantity) {
         return { error: `Insufficient stock for ${productRes.name || 'item'}. Only ${productRes.stock} left.` }
      }
-     subtotal += item.priceSnapshot * item.quantity
+     subtotal += liveItem.priceSnapshot * item.quantity
+  }
+
+  if (pricesChanged) {
+    return { 
+      error: 'Prices for some items have updated since they were added to your cart. We have refreshed your cart with the latest live prices.', 
+      updatedItems: liveItems,
+      priceChanged: true
+    }
   }
 
   let discountAmount = 0;
@@ -154,8 +173,34 @@ export async function createPayloadOrder(
   const payload = await getPayload({ config: configPromise })
 
   let subtotal = 0;
-  for (const item of items) {
-     subtotal += item.priceSnapshot * item.quantity
+  let pricesChanged = false;
+  const { revalidateCartPrices } = await import('@/app/(frontend)/actions/cart')
+  const liveItems = await revalidateCartPrices(items)
+
+  for (let i = 0; i < items.length; i++) {
+     const item = items[i]
+     const liveItem = liveItems[i]
+     
+     if (item.priceSnapshot !== liveItem.priceSnapshot) {
+       pricesChanged = true
+     }
+
+     const productRes = await payload.findByID({ collection: 'products', id: (!isNaN(Number(item.productId)) ? Number(item.productId) : item.productId) as any, depth: 0 })
+     if (!productRes) {
+        return { error: `Product not found: ${item.productId}` }
+     }
+     if ((productRes.stock || 0) < item.quantity) {
+        return { error: `Insufficient stock for ${productRes.name || 'item'}. Only ${productRes.stock} left.` }
+     }
+     subtotal += liveItem.priceSnapshot * item.quantity
+  }
+
+  if (pricesChanged) {
+    return { 
+      error: 'Prices for some items have updated since they were added to your cart. We have refreshed your cart with the latest live prices.', 
+      updatedItems: liveItems,
+      priceChanged: true
+    }
   }
 
   let discountAmount = 0;

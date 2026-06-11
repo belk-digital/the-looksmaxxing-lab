@@ -112,9 +112,18 @@ export const Orders: CollectionConfig = {
         { name: 'price', type: 'number', admin: { description: 'Price paid per unit at the time of order' } },
         { name: 'quantity', type: 'number', required: true },
         {
-          name: 'productSnapshot',
-          type: 'json',
-          admin: { description: 'Snapshot of product data at order time.' },
+          type: 'collapsible',
+          label: 'Product Snapshot Data',
+          admin: {
+            initCollapsed: true,
+          },
+          fields: [
+            {
+              name: 'productSnapshot',
+              type: 'json',
+              admin: { description: 'Snapshot of product data at order time. Collapsed to save space.' },
+            },
+          ]
         },
       ],
     },
