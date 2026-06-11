@@ -247,7 +247,7 @@ export function CheckoutClient() {
       const { createPayloadOrder } = await import('./actions')
       const orderRes = await createPayloadOrder(
         items, shippingMethod, appliedCoupon?.code, isRedeemingPoints, 
-        { ...formData, email: user?.email || formData.email }, 
+        { ...formData, email: user?.primaryEmailAddress?.emailAddress || formData.email }, 
         'free_order', 
         user?.id as string
       )
