@@ -102,7 +102,7 @@ export const Orders: CollectionConfig = {
           type: 'relationship', 
           relationTo: 'products', 
           required: true,
-          validate: (value) => {
+          validate: (value: any) => {
             // Bypass Payload's buggy default relationship validation for duplicate array items
             if (!value) return 'Product is required';
             return true;
