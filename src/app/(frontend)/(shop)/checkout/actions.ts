@@ -446,7 +446,7 @@ export async function syncPaymentStatus(paymentIntentId: string, orderId: string
            }
            if (customerEmail) {
               const { generateOrderInvoiceHtml } = await import('@/lib/emails/generateOrderEmail');
-              const invoiceHtml = generateOrderInvoiceHtml(order);
+              const invoiceHtml = await generateOrderInvoiceHtml(order, payload);
 
               await payload.sendEmail({
                  to: customerEmail,

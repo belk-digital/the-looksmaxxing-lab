@@ -1,4 +1,4 @@
-export function generateOrderInvoiceHtml(order: any): string {
+export async function generateOrderInvoiceHtml(order: any, payload?: any): Promise<string> {
   const orderNumber = order.orderNumber || order.id;
   const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://thelooksmaxxinglab.com';
@@ -16,10 +16,11 @@ export function generateOrderInvoiceHtml(order: any): string {
   const customerName = `${order.customerFirstName || ''} ${order.customerLastName || ''}`.trim() || 'Customer';
   const email = order.guestEmail || 'Customer';
   const shipAddr = order.shippingAddress || {};
+  const billAddr = order.billingAddress || {};
 
   let itemsHtml = '';
   if (order.items && Array.isArray(order.items)) {
-    itemsHtml = order.items.map((item: any) => {
+    const itemPromises = order.items.map(async (item: any) => {
       const product = item.productSnapshot || {};
       const name = product.name || 'Product';
       const variant = item.variant && item.variant !== 'DEFAULT' ? ` - ${item.variant}` : '';
@@ -29,12 +30,21 @@ export function generateOrderInvoiceHtml(order: any): string {
         const imgRef = product.images[0].image;
         if (typeof imgRef === 'object' && imgRef?.url) {
           imageUrl = imgRef.url.startsWith('http') ? imgRef.url : `${serverUrl}${imgRef.url}`;
+        } else if ((typeof imgRef === 'string' || typeof imgRef === 'number') && payload) {
+          try {
+            const mediaDoc = await payload.findByID({ collection: 'media', id: imgRef, depth: 0 });
+            if (mediaDoc && mediaDoc.url) {
+              imageUrl = mediaDoc.url.startsWith('http') ? mediaDoc.url : `${serverUrl}${mediaDoc.url}`;
+            }
+          } catch (e) {
+             console.error('Failed to fetch media for email image', e)
+          }
         }
       }
 
       const imgHtml = imageUrl 
-        ? `<img src="${imageUrl}" alt="${name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;" />` 
-        : `<div style="width: 60px; height: 60px; background-color: #f3f4f6; border-radius: 6px; display: inline-block;"></div>`;
+        ? `<img src="${imageUrl}" alt="${name}" style="width: 60px; height: 85px; object-fit: cover; border-radius: 6px;" />` 
+        : `<div style="width: 60px; height: 85px; background-color: #f3f4f6; border-radius: 6px; display: inline-block;"></div>`;
 
       return `
         <tr>
@@ -56,7 +66,10 @@ export function generateOrderInvoiceHtml(order: any): string {
           </td>
         </tr>
       `;
-    }).join('');
+    });
+    
+    const itemsHtmlArray = await Promise.all(itemPromises);
+    itemsHtml = itemsHtmlArray.join('');
   }
 
   const discountRow = discountTotal > 0 ? `
@@ -156,13 +169,35 @@ export function generateOrderInvoiceHtml(order: any): string {
           <!-- Shipping Info -->
           <tr>
             <td style="padding: 30px 40px; background-color: #f9fafb; border-top: 1px solid #f3f4f6;">
-              <p style="margin: 0 0 12px 0; font-size: 14px; font-weight: 700; color: #111827;">Shipping Address</p>
-              <p style="margin: 0; font-size: 14px; color: #4b5563; line-height: 1.5;">
-                ${customerName}<br>
-                ${shipAddr.line1 || ''} ${shipAddr.line2 || ''}<br>
-                ${shipAddr.city || ''}, ${shipAddr.state || ''} ${shipAddr.postalCode || ''}<br>
-                ${shipAddr.country || ''}
-              </p>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td width="50%" valign="top">
+                    <p style="margin: 0 0 12px 0; font-size: 14px; font-weight: 700; color: #111827;">Shipping Address</p>
+                    <p style="margin: 0; font-size: 14px; color: #4b5563; line-height: 1.5;">
+                      ${customerName}<br>
+                      ${shipAddr.line1 || ''} ${shipAddr.line2 ? `<br>${shipAddr.line2}` : ''}<br>
+                      ${shipAddr.city || ''}, ${shipAddr.state || ''} ${shipAddr.postalCode || ''}<br>
+                      ${shipAddr.country || ''}
+                    </p>
+                  </td>
+                  <td width="50%" valign="top">
+                    <p style="margin: 0 0 12px 0; font-size: 14px; font-weight: 700; color: #111827;">Billing Address</p>
+                    <p style="margin: 0; font-size: 14px; color: #4b5563; line-height: 1.5;">
+                      ${customerName}<br>
+                      ${billAddr.line1 || ''} ${billAddr.line2 ? `<br>${billAddr.line2}` : ''}<br>
+                      ${billAddr.city || ''}, ${billAddr.state || ''} ${billAddr.postalCode || ''}<br>
+                      ${billAddr.country || ''}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- View Order Button -->
+          <tr>
+            <td style="padding: 0 40px 30px 40px; text-align: center; background-color: #f9fafb;">
+              <a href="${serverUrl}/account/orders/${order.id}" style="display: inline-block; padding: 12px 24px; background-color: #000000; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 6px;">View Order Status</a>
             </td>
           </tr>
 
