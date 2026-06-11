@@ -298,9 +298,11 @@ export function CartClient() {
                       <Link href={`/products/${item.productId}`} className={`text-base sm:text-xl md:text-2xl font-bold text-ink hover:text-[#5984c4] transition-colors leading-tight ${spaceGrotesk.className}`}>
                         {item.product?.name}
                       </Link>
-                      <span className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/50 line-clamp-1">
-                        {item.variantSku}
-                      </span>
+                      {item.variantSku && !['DEFAULT', 'DEFAULT TITLE'].includes(item.variantSku.toUpperCase()) && (
+                        <span className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/50 line-clamp-1">
+                          {item.variantSku}
+                        </span>
+                      )}
                     </div>
                     <span className="text-sm sm:text-lg md:text-xl font-medium text-ink mt-1 sm:mt-0 whitespace-nowrap">
                       ${item.priceSnapshot.toFixed(2)}

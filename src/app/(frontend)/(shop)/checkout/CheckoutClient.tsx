@@ -327,7 +327,9 @@ export function CheckoutClient() {
                         </div>
                         <div className="flex flex-col flex-1 justify-center py-1">
                           <span className="text-sm font-bold text-ink leading-tight">{item.product?.name}</span>
-                          <span className="text-[10px] uppercase tracking-widest text-ink/40 mt-1">{item.variantSku}</span>
+                          {item.variantSku && !['DEFAULT', 'DEFAULT TITLE'].includes(item.variantSku.toUpperCase()) && (
+                            <span className="text-[10px] uppercase tracking-widest text-ink/40 mt-1">{item.variantSku}</span>
+                          )}
                         </div>
                         <span className="text-sm text-ink font-bold self-center">
                           ${(item.priceSnapshot * item.quantity).toFixed(2)}
@@ -650,7 +652,7 @@ export function CheckoutClient() {
               </h2>
               
               {/* Items List */}
-              <div className="flex flex-col gap-6 max-h-[40vh] overflow-y-auto pt-3 pr-4 -mt-3 -mr-4 custom-scrollbar">
+              <div className="flex flex-col gap-6 max-h-[40vh] overflow-y-auto pt-4 pr-4 pb-2 custom-scrollbar">
                 {items.map((item) => (
                   <div key={item.lineId} className="flex gap-4 group">
                     <div className="relative w-20 h-20 shrink-0 transition-transform group-hover:scale-105">
@@ -663,7 +665,9 @@ export function CheckoutClient() {
                     </div>
                     <div className="flex flex-col flex-1 justify-center py-1">
                       <span className="text-sm font-bold text-ink leading-tight">{item.product?.name}</span>
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-ink/40 mt-1">{item.variantSku}</span>
+                      {item.variantSku && !['DEFAULT', 'DEFAULT TITLE'].includes(item.variantSku.toUpperCase()) && (
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-ink/40 mt-1">{item.variantSku}</span>
+                      )}
                     </div>
                     <span className="text-sm text-ink font-bold self-center">
                       ${(item.priceSnapshot * item.quantity).toFixed(2)}
