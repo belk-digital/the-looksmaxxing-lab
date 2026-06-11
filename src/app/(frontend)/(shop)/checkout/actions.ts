@@ -105,7 +105,8 @@ export async function createPaymentIntent(
   const shippingCost = selectedMethod?.price || 0
 
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)
-  const finalShipping = freeShipping ? 0 : shippingCost
+  const isExpressShipping = shippingMethodName.toLowerCase().includes('express')
+  const finalShipping = (freeShipping && !isExpressShipping) ? 0 : shippingCost
   
   // Calculate dynamic processing fees
   const activeFees = await getActiveProcessingFees()
@@ -230,7 +231,8 @@ export async function createPayloadOrder(
   const shippingCost = selectedMethod?.price || 0
 
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)
-  const finalShipping = freeShipping ? 0 : shippingCost
+  const isExpressShipping = shippingMethodName.toLowerCase().includes('express')
+  const finalShipping = (freeShipping && !isExpressShipping) ? 0 : shippingCost
   
   // Calculate dynamic processing fees
   const activeFees = await getActiveProcessingFees()
