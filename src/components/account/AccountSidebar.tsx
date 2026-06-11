@@ -55,7 +55,7 @@ export function AccountSidebar({
           </div>
           <div className="flex flex-col">
             <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-gray-500">Maxx Points</span>
-            <span className="text-xl font-bold text-black leading-none mt-1">{maxxPoints} <span className="text-sm font-medium text-gray-400">(${maxxPoints})</span></span>
+            <span className="text-xl font-bold text-black leading-none mt-1">{Number(maxxPoints.toFixed(2))} <span className="text-sm font-medium text-gray-400">(${maxxPoints.toFixed(2)})</span></span>
           </div>
         </div>
         <div className="relative z-10 bg-amber-50/50 rounded-xl p-3.5 border border-amber-100/50 mt-1 shadow-sm">

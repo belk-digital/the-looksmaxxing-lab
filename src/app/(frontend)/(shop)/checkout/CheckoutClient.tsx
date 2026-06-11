@@ -398,7 +398,7 @@ export function CheckoutClient() {
                           </div>
                           <div className="flex flex-col">
                             <span className={`text-sm font-bold ${isRedeemingPoints ? 'text-amber-700' : 'text-ink'}`}>Maxx Points</span>
-                            <span className="text-xs font-medium text-ink/50">You have {availablePoints} points</span>
+                            <span className="text-xs font-medium text-ink/50">You have {Number(availablePoints.toFixed(2))} points</span>
                           </div>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
@@ -753,7 +753,7 @@ export function CheckoutClient() {
                       </div>
                       <div className="flex flex-col">
                         <span className={`text-sm font-bold ${isRedeemingPoints ? 'text-amber-700' : 'text-ink'}`}>Maxx Points</span>
-                        <span className="text-xs font-medium text-ink/50">You have {availablePoints} points (${availablePoints}.00)</span>
+                        <span className="text-xs font-medium text-ink/50">You have {Number(availablePoints.toFixed(2))} points (${availablePoints.toFixed(2)})</span>
                       </div>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
