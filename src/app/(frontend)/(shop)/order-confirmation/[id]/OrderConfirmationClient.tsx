@@ -81,7 +81,7 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
         </div>
 
         {/* Invoice Card */}
-        <FadeUp delay={0.2} className="w-full max-w-3xl print:max-w-none print:w-full">
+        <FadeUp delay={0.2} className="w-full max-w-5xl print:max-w-none print:w-full">
           <div className="bg-white border border-ink/10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden print:shadow-none print:border-none print:rounded-none">
             
             {/* Print Branding Header */}

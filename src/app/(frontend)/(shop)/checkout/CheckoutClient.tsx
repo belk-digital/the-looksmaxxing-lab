@@ -435,7 +435,7 @@ export function CheckoutClient() {
                     </AnimatePresence>
 
                     <div className="flex justify-between items-center text-sm font-medium text-ink/70">
-                      <span>Shipping</span>
+                      <span>Shipping {selectedMethodObj?.method ? `(${selectedMethodObj.method})` : ''}</span>
                       <span className="text-ink font-bold">{finalShipping === 0 ? 'Free' : `$${finalShipping.toFixed(2)}`}</span>
                     </div>
                     <div className="flex justify-between items-center text-sm font-medium text-ink/70">
@@ -641,16 +641,16 @@ export function CheckoutClient() {
             </div>
           </div>
 
-          {/* Right Column: Sticky Summary (Desktop) */}
+          {/* Right Column: Order Summary (Desktop) */}
           <div className="hidden lg:block relative">
-            <div className="sticky top-32 bg-[#F5F5F7]/40 p-8 md:p-10 rounded-[2rem] border border-slate-100 flex flex-col gap-8">
+            <div className="bg-[#F5F5F7]/40 p-8 md:p-10 rounded-[2rem] border border-slate-100 flex flex-col gap-8">
               
               <h2 className={`text-2xl font-bold text-ink ${spaceGrotesk.className}`}>
                 Order Summary
               </h2>
               
               {/* Items List */}
-              <div className="flex flex-col gap-6 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="flex flex-col gap-6 max-h-[40vh] overflow-y-auto pt-3 pr-4 -mt-3 -mr-4 custom-scrollbar">
                 {items.map((item) => (
                   <div key={item.lineId} className="flex gap-4 group">
                     <div className="relative w-20 h-20 shrink-0 transition-transform group-hover:scale-105">
@@ -771,7 +771,7 @@ export function CheckoutClient() {
                 </AnimatePresence>
 
                 <div className="flex justify-between items-center text-sm font-medium text-ink/70">
-                  <span>Shipping</span>
+                  <span>Shipping {selectedMethodObj?.method ? `(${selectedMethodObj.method})` : ''}</span>
                   <span className="text-ink font-bold">{finalShipping === 0 ? 'Free' : `$${finalShipping.toFixed(2)}`}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm font-medium text-ink/70">
