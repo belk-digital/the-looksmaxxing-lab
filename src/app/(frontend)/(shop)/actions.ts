@@ -211,16 +211,18 @@ async function calculateCartTotals(cartItems: any[], payload: any, coupon?: any)
         discount = Math.floor(eligibleSubtotal * (coupon.value / 100));
         description = `${coupon.value}% off eligible items`;
       } else if (coupon.type === 'fixed_amount' && coupon.value) {
-        discount = Math.min(coupon.value, eligibleSubtotal);
-        description = `$${(coupon.value / 100).toFixed(2)} off eligible items`;
+        const discountValueDollars = coupon.value / 100;
+        discount = Math.min(discountValueDollars, eligibleSubtotal);
+        description = `$${discountValueDollars.toFixed(2)} off eligible items`;
       } else if (coupon.type === 'free_shipping') {
         discount = 0;
         description = 'Free shipping';
       } else if (coupon.type === 'buy_one_get_one') {
         description = 'Buy one get one free';
       } else if (coupon.type === 'store_credit' && coupon.remainingBalance) {
-        discount = Math.min(coupon.remainingBalance, eligibleSubtotal);
-        description = `$${(coupon.remainingBalance / 100).toFixed(2)} store credit applied`;
+        const remainingDollars = coupon.remainingBalance / 100;
+        discount = Math.min(remainingDollars, eligibleSubtotal);
+        description = `$${remainingDollars.toFixed(2)} store credit applied`;
       }
     } else {
       description = 'No eligible items for this coupon';
@@ -290,8 +292,8 @@ export async function verifyCoupon(couponCode: string, subtotal: number, clientC
 
     const { discount, description, eligibleSubtotal, totalSubtotal } = await calculateCartTotals(cartItems, payload, coupon)
 
-    // Check minimum spend
-    if (coupon.minSpend && totalSubtotal < coupon.minSpend) {
+    // Check minimum spend (minSpend is in cents, totalSubtotal is in dollars)
+    if (coupon.minSpend && (totalSubtotal * 100) < coupon.minSpend) {
       return { valid: false, error: `Minimum spend of $${(coupon.minSpend / 100).toFixed(2)} required` }
     }
 

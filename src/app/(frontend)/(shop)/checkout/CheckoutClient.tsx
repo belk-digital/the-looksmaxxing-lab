@@ -17,6 +17,9 @@ import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 import { StripeCheckoutForm } from './StripeCheckoutForm'
 import { createPaymentIntent, getShippingMethods } from './actions'
+import { Space_Grotesk } from 'next/font/google'
+
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
 
 const stripePromise = typeof window !== 'undefined' ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '') : null
 
@@ -248,8 +251,14 @@ export function CheckoutClient() {
     <div className="pt-32 pb-16 md:pt-36 md:pb-24 bg-white min-h-screen">
       <Container size="page">
         
+        <div className="flex items-end justify-between mb-12">
+          <h1 className={`text-4xl md:text-5xl font-bold tracking-tight text-ink ${spaceGrotesk.className}`}>
+            Secure Checkout
+          </h1>
+        </div>
+
         {/* Mobile Summary Accordion */}
-        <div className="lg:hidden mb-8 bg-white rounded-3xl p-1 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-ink/5">
+        <div className="lg:hidden mb-8 bg-[#F5F5F7]/40 rounded-3xl p-1 shadow-sm border border-slate-100">
           <button 
             onClick={() => setMobileSummaryOpen(!mobileSummaryOpen)}
             className="w-full p-4 flex items-center justify-between text-ink"
@@ -278,8 +287,10 @@ export function CheckoutClient() {
                   <div className="flex flex-col gap-4 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
                     {items.map((item) => (
                       <div key={item.lineId} className="flex gap-4 group">
-                        <div className="relative w-16 h-16 bg-cream shrink-0 rounded-xl overflow-hidden border border-ink/5">
-                          <Image src={item.product?.imageUrl || '/placeholder.png'} alt={item.product?.name || 'Product'} fill className="object-cover" />
+                        <div className="relative w-16 h-16 shrink-0">
+                          <div className="w-full h-full bg-cream rounded-xl overflow-hidden border border-ink/5 relative">
+                            <Image src={item.product?.imageUrl || '/placeholder.png'} alt={item.product?.name || 'Product'} fill className="object-cover" />
+                          </div>
                           <div className="absolute -top-2 -right-2 w-5 h-5 bg-ink text-cream rounded-full flex items-center justify-center text-[10px] font-bold z-10">
                             {item.quantity}
                           </div>
@@ -322,7 +333,7 @@ export function CheckoutClient() {
                           type="submit" 
                           variant="dark" 
                           disabled={!couponCode.trim() || isVerifyingCoupon}
-                          className="h-12 px-6 rounded-2xl text-xs uppercase tracking-widest disabled:opacity-100 disabled:bg-ink/5 disabled:text-ink/40 disabled:border-transparent transition-colors"
+                          className="h-12 px-6 rounded-2xl text-xs uppercase tracking-widest disabled:opacity-100 disabled:bg-ink/5 disabled:text-ink/40 disabled:border-transparent transition-colors text-white"
                         >
                           {isVerifyingCoupon ? <Loader2 size={16} className="animate-spin text-ink/40" /> : 'Apply'}
                         </Button>
@@ -405,9 +416,11 @@ export function CheckoutClient() {
 
                   <div className="w-full h-px bg-ink/5" />
 
-                  <div className="flex justify-between items-end mb-2">
-                    <span className="text-base font-bold text-ink">Total</span>
-                    <span className="text-2xl font-display font-bold text-ink tracking-tight">${total.toFixed(2)}</span>
+                  <div className="flex justify-between items-end mb-2 mt-4">
+                    <span className="text-sm font-bold uppercase tracking-widest text-ink/60">Total</span>
+                    <span className={`text-4xl font-bold text-ink ${spaceGrotesk.className}`}>
+                      ${total.toFixed(2)}
+                    </span>
                   </div>
 
                 </div>
@@ -422,7 +435,7 @@ export function CheckoutClient() {
           <div className="flex flex-col gap-10">
             
             {/* Express Checkout */}
-            <div className="flex flex-col gap-4 p-6 sm:p-8 bg-white rounded-3xl border border-ink/10 shadow-sm items-center">
+            <div className="flex flex-col gap-4 p-6 sm:p-8 bg-white rounded-3xl border border-slate-100 shadow-sm items-center">
               <span className="text-xs font-bold uppercase tracking-widest text-ink/40 text-center">Express Checkout</span>
               <div className="flex flex-col sm:flex-row w-full gap-3">
                 <Button variant="dark" className="flex-1 h-12 rounded-full bg-[#000] text-white hover:bg-black/80 transition-colors shadow-sm whitespace-nowrap">
@@ -454,7 +467,7 @@ export function CheckoutClient() {
                   onChange={handleInputChange}
                   placeholder="Email Address" 
                   type="email" 
-                  className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-1 focus-visible:ring-ink"
+                  className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-1 focus-visible:ring-ink"
                   required
                 />
                 <div className="flex items-start gap-3 mt-1 px-1">
@@ -478,7 +491,7 @@ export function CheckoutClient() {
                 {user && addresses.length > 0 && (
                   <div className="flex flex-col gap-3 mb-4">
                     {addresses.map((addr) => (
-                      <label key={addr.id} className={`flex items-start gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${selectedAddressId === String(addr.id) ? 'border-ink bg-ink/5' : 'border-ink/10 bg-white hover:border-ink/30'}`}>
+                      <label key={addr.id} className={`flex items-start gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${selectedAddressId === String(addr.id) ? 'border-ink bg-ink/5' : 'border-slate-100 bg-white hover:border-ink/30'}`}>
                         <input 
                           type="radio" 
                           name="addressSelection" 
@@ -493,7 +506,7 @@ export function CheckoutClient() {
                               {addr.firstName} {addr.lastName}
                             </span>
                             {addr.isDefaultShipping && (
-                              <span className="text-[10px] font-bold uppercase tracking-widest text-ink/60 bg-white border border-ink/10 shadow-sm px-2 py-0.5 rounded-md shrink-0">
+                              <span className="text-[10px] font-bold uppercase tracking-widest text-ink/60 bg-white border border-slate-100 shadow-sm px-2 py-0.5 rounded-md shrink-0">
                                 Default
                               </span>
                             )}
@@ -504,7 +517,7 @@ export function CheckoutClient() {
                       </label>
                     ))}
 
-                    <label className={`flex items-center gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${selectedAddressId === 'new' ? 'border-ink bg-ink/5' : 'border-ink/10 bg-white hover:border-ink/30'}`}>
+                    <label className={`flex items-center gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${selectedAddressId === 'new' ? 'border-ink bg-ink/5' : 'border-slate-100 bg-white hover:border-ink/30'}`}>
                       <input 
                         type="radio" 
                         name="addressSelection" 
@@ -526,17 +539,17 @@ export function CheckoutClient() {
                 {(!user || selectedAddressId === 'new') && (
                   <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
                     <div className="grid grid-cols-2 gap-4">
-                      <Input name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="First Name" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
-                      <Input name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Last Name" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                      <Input name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="First Name" className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                      <Input name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Last Name" className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
                     </div>
-                    <Input name="address" value={formData.address} onChange={handleInputChange} placeholder="Address" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
-                    <Input name="apartment" value={formData.apartment} onChange={handleInputChange} placeholder="Apartment, suite, etc. (optional)" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" />
+                    <Input name="address" value={formData.address} onChange={handleInputChange} placeholder="Address" className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                    <Input name="apartment" value={formData.apartment} onChange={handleInputChange} placeholder="Apartment, suite, etc. (optional)" className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" />
                     <div className="grid grid-cols-6 gap-4">
-                      <Input name="city" value={formData.city} onChange={handleInputChange} placeholder="City" className="col-span-3 sm:col-span-2 h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
-                      <Input name="state" value={formData.state} onChange={handleInputChange} placeholder="State" className="col-span-3 sm:col-span-2 h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
-                      <Input name="zip" value={formData.zip} onChange={handleInputChange} placeholder="ZIP Code" className="col-span-6 sm:col-span-2 h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                      <Input name="city" value={formData.city} onChange={handleInputChange} placeholder="City" className="col-span-3 sm:col-span-2 h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                      <Input name="state" value={formData.state} onChange={handleInputChange} placeholder="State" className="col-span-3 sm:col-span-2 h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                      <Input name="zip" value={formData.zip} onChange={handleInputChange} placeholder="ZIP Code" className="col-span-6 sm:col-span-2 h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
                     </div>
-                    <Input name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone (for delivery updates)" type="tel" className="h-14 rounded-2xl border-ink/10 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                    <Input name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone (for delivery updates)" type="tel" className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
                   </div>
                 )}
               </section>
@@ -546,7 +559,7 @@ export function CheckoutClient() {
                 <h2 className="text-xl font-display font-bold text-ink mb-2">Shipping Method</h2>
                 <div className="flex flex-col gap-3">
                   {visibleShippingMethods.map((method: any) => (
-                    <label key={method.method} className={`flex items-center justify-between p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${shippingMethod === method.method ? 'border-ink bg-ink/5' : 'border-ink/10 bg-white hover:border-ink/30'}`}>
+                    <label key={method.method} className={`flex items-center justify-between p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${shippingMethod === method.method ? 'border-ink bg-ink/5' : 'border-slate-100 bg-white hover:border-ink/30'}`}>
                       <div className="flex items-center gap-4">
                         <input 
                           type="radio" 
@@ -600,14 +613,20 @@ export function CheckoutClient() {
 
           {/* Right Column: Sticky Summary (Desktop) */}
           <div className="hidden lg:block relative">
-            <div className="sticky top-32 bg-[#fafafa] p-8 rounded-[2rem] border border-ink/10 shadow-lg flex flex-col gap-8">
+            <div className="sticky top-32 bg-[#F5F5F7]/40 p-8 md:p-10 rounded-[2rem] border border-slate-100 flex flex-col gap-8">
+              
+              <h2 className={`text-2xl font-bold text-ink ${spaceGrotesk.className}`}>
+                Order Summary
+              </h2>
               
               {/* Items List */}
               <div className="flex flex-col gap-6 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
                 {items.map((item) => (
                   <div key={item.lineId} className="flex gap-4 group">
-                    <div className="relative w-20 h-20 bg-cream shrink-0 border border-ink/5 rounded-2xl overflow-hidden transition-transform group-hover:scale-105">
-                      <Image src={item.product?.imageUrl || '/placeholder.png'} alt={item.product?.name || 'Product'} fill className="object-cover" />
+                    <div className="relative w-20 h-20 shrink-0 transition-transform group-hover:scale-105">
+                      <div className="w-full h-full bg-cream border border-ink/5 rounded-2xl overflow-hidden relative">
+                        <Image src={item.product?.imageUrl || '/placeholder.png'} alt={item.product?.name || 'Product'} fill className="object-cover" />
+                      </div>
                       <div className="absolute -top-2 -right-2 w-6 h-6 bg-ink text-cream rounded-full flex items-center justify-center text-[11px] font-bold z-10 shadow-sm border-2 border-white">
                         {item.quantity}
                       </div>
@@ -650,7 +669,7 @@ export function CheckoutClient() {
                       type="submit" 
                       variant="dark" 
                       disabled={!couponCode.trim() || isVerifyingCoupon}
-                      className="h-12 px-6 rounded-2xl text-xs uppercase tracking-widest disabled:opacity-100 disabled:bg-ink/5 disabled:text-ink/40 disabled:border-transparent transition-colors"
+                      className="h-12 px-6 rounded-2xl text-xs uppercase tracking-widest disabled:opacity-100 disabled:bg-ink/5 disabled:text-ink/40 disabled:border-transparent transition-colors text-white"
                     >
                       {isVerifyingCoupon ? <Loader2 size={16} className="animate-spin text-ink/40" /> : 'Apply'}
                     </Button>
@@ -733,9 +752,11 @@ export function CheckoutClient() {
 
               <div className="w-full h-px bg-ink/5" />
 
-              <div className="flex justify-between items-end">
-                <span className="text-lg font-bold text-ink">Total</span>
-                <span className="text-3xl font-display font-bold text-ink tracking-tight">${total.toFixed(2)}</span>
+              <div className="flex justify-between items-end mt-4">
+                <span className="text-sm font-bold uppercase tracking-widest text-ink/60">Total</span>
+                <span className={`text-4xl font-bold text-ink ${spaceGrotesk.className}`}>
+                  ${total.toFixed(2)}
+                </span>
               </div>
               
             </div>

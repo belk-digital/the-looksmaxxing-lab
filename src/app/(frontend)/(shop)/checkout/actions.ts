@@ -324,13 +324,14 @@ export async function syncPaymentStatus(paymentIntentId: string, orderId: string
 
         // 2. Increment Coupon Usage
         if (order.couponCode) {
-           const coupons = await payload.find({ collection: 'coupons', where: { code: { equals: order.couponCode } } })
+           const coupons = await payload.find({ collection: 'coupons', where: { code: { equals: order.couponCode } }, overrideAccess: true })
            if (coupons.docs.length > 0) {
               const coupon = coupons.docs[0]
               await payload.update({
                  collection: 'coupons',
                  id: coupon.id,
-                 data: { usageCount: (coupon.usageCount || 0) + 1 }
+                 data: { usageCount: (coupon.usageCount || 0) + 1 },
+                 overrideAccess: true
               })
            }
         }
