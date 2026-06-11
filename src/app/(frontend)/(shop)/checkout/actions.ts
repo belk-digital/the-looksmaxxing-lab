@@ -59,7 +59,10 @@ export async function createPaymentIntent(
      const item = items[i]
      const liveItem = liveItems[i]
      
-     if (item.priceSnapshot !== liveItem.priceSnapshot) {
+     const itemPrice = Number(item.priceSnapshot)
+     const livePrice = Number(liveItem.priceSnapshot)
+     
+     if (itemPrice !== livePrice && !(Number.isNaN(itemPrice) && Number.isNaN(livePrice))) {
        pricesChanged = true
      }
 

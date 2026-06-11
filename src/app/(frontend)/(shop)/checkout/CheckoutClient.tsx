@@ -244,10 +244,12 @@ export function CheckoutClient() {
         setCoupon(result.code || code.trim())
         if (!codeToApply) toast.success(result.description || 'Coupon applied successfully')
       } else {
+        setAppliedCoupon(null)
         if (!codeToApply) toast.error(result.error || 'Invalid coupon code')
         if (codeToApply) setCoupon(null)
       }
     } catch (err) {
+      setAppliedCoupon(null)
       if (!codeToApply) toast.error('Failed to verify coupon')
     } finally {
       setIsVerifyingCoupon(false)
