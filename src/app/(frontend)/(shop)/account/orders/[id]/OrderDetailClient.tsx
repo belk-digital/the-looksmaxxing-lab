@@ -45,10 +45,10 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
       if (product.id) {
         const title = product.title || product.name || 'Unknown Product'
         const imageUrl = product.images?.[0]?.image?.url || product.images?.[0]?.url || '/temp-products/product-image.png'
-        const price = product.basePrice || product.price || 0
+        const price = typeof item.price === 'number' ? item.price : (product.basePrice || product.price || 0)
         addItem(
           { id: product.id, name: title, imageUrl },
-          null, // variantSku
+          item.variant || null, // variantSku
           item.quantity || 1,
           price
         )

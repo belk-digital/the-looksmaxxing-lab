@@ -178,7 +178,9 @@ async function calculateCartTotals(cartItems: any[], payload: any, coupon?: any)
     if (typeof product !== 'object' || product === null) {
       product = await payload.findByID({ collection: 'products', id: product as number });
     }
-    const itemPrice = typeof product.salePrice === 'number' ? product.salePrice : (typeof product.price === 'number' ? product.price : 0);
+    const itemPrice = typeof item.priceSnapshot === 'number' 
+      ? item.priceSnapshot 
+      : (typeof product.salePrice === 'number' ? product.salePrice : (typeof product.price === 'number' ? product.price : 0));
     const itemQuantity = item.quantity || 1;
     const itemTotal = itemPrice * itemQuantity;
     totalSubtotal += itemTotal;
@@ -549,7 +551,9 @@ export async function processCheckout(formData: FormData) {
         couponCode: validCoupon ? validCoupon.code : undefined,
         items: cartItems.map((item: any) => ({
           product: typeof item.product === 'object' ? item.product.id : item.product,
-          quantity: item.quantity
+          quantity: item.quantity,
+          variant: item.variantSku || 'DEFAULT',
+          price: typeof item.priceSnapshot === 'number' ? item.priceSnapshot : 0
         })) as any,
         shippingAddress: finalAddress
       },
