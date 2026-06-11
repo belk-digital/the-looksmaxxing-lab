@@ -29,22 +29,27 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any): Promi
       if (product.images && product.images.length > 0) {
         const imgRef = product.images[0].image;
         if (typeof imgRef === 'object' && imgRef?.url) {
-          imageUrl = imgRef.url.startsWith('http') ? imgRef.url : `${serverUrl}${imgRef.url}`;
+          imageUrl = imgRef.url.startsWith('http') ? imgRef.url : `${serverUrl}${imgRef.url.startsWith('/') ? '' : '/'}${imgRef.url}`;
         } else if ((typeof imgRef === 'string' || typeof imgRef === 'number') && payload) {
           try {
             const mediaDoc = await payload.findByID({ collection: 'media', id: imgRef, depth: 0 });
             if (mediaDoc && mediaDoc.url) {
-              imageUrl = mediaDoc.url.startsWith('http') ? mediaDoc.url : `${serverUrl}${mediaDoc.url}`;
+              imageUrl = mediaDoc.url.startsWith('http') ? mediaDoc.url : `${serverUrl}${mediaDoc.url.startsWith('/') ? '' : '/'}${mediaDoc.url}`;
             }
           } catch (e) {
              console.error('Failed to fetch media for email image', e)
           }
         }
       }
+      
+      // Fix spaces in URL for email clients (e.g. "Product Images" folder)
+      if (imageUrl) {
+         imageUrl = encodeURI(imageUrl);
+      }
 
       const imgHtml = imageUrl 
-        ? `<img src="${imageUrl}" alt="${name}" style="width: 60px; height: 85px; object-fit: cover; border-radius: 6px;" />` 
-        : `<div style="width: 60px; height: 85px; background-color: #f3f4f6; border-radius: 6px; display: inline-block;"></div>`;
+        ? `<img src="${imageUrl}" alt="${name}" style="width: 60px; height: 90px; object-fit: contain; border-radius: 6px;" />` 
+        : `<div style="width: 60px; height: 90px; background-color: #f3f4f6; border-radius: 6px; display: inline-block;"></div>`;
 
       return `
         <tr>
