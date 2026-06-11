@@ -39,9 +39,9 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
      return {
         id: item.id || String(i),
         name: productData?.title || productData?.name || 'Product',
-        variant: 'Standard', 
+        variant: item.variant || 'Standard', 
         quantity: item.quantity,
-        price: productData?.price || productData?.basePrice || 0,
+        price: typeof item.price === 'number' ? item.price : (productData?.price || productData?.basePrice || 0),
         image: productData?.images?.[0]?.image?.url || productData?.images?.[0]?.url || '/temp-products/product-image.png'
      }
   })

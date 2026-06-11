@@ -150,7 +150,9 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
                             </div>
                             <div className="flex flex-col">
                               <span className="font-bold text-ink whitespace-normal line-clamp-2 print:line-clamp-none">{item.name}</span>
-                              {item.variant && <span className="text-[10px] uppercase tracking-widest font-medium text-ink/50 mt-0.5">{item.variant}</span>}
+                              {item.variant && !['DEFAULT', 'DEFAULT TITLE'].includes(item.variant.toUpperCase()) && (
+                                <span className="text-[10px] uppercase tracking-widest font-medium text-ink/50 mt-0.5">{item.variant}</span>
+                              )}
                             </div>
                           </div>
                         </td>

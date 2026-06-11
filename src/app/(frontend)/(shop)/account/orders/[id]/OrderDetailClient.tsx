@@ -159,7 +159,7 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                 // Prioritize the live populated product relation to get the actual image media objects
                 const product = item.product || item.productSnapshot || {}
                 const title = product.title || product.name || 'Unknown Product'
-                const price = product.basePrice || product.price || 0
+                const price = typeof item.price === 'number' ? item.price : (product.basePrice || product.price || 0)
                 const imageUrl = product.images?.[0]?.image?.url || product.images?.[0]?.url || '/temp-products/product-image.png'
                 
                 return (
@@ -177,9 +177,9 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                           {title}
                         </span>
                       </Link>
-                      {product.descriptor && (
+                      {item.variant && !['DEFAULT', 'DEFAULT TITLE'].includes(item.variant.toUpperCase()) && (
                         <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 mt-1">
-                          {product.descriptor}
+                          {item.variant}
                         </span>
                       )}
                     </div>

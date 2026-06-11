@@ -591,6 +591,14 @@ export interface Order {
   items?:
     | {
         product: number | Product;
+        /**
+         * The variant or bundle purchased
+         */
+        variant?: string | null;
+        /**
+         * Price paid per unit at the time of order
+         */
+        price?: number | null;
         quantity: number;
         /**
          * Snapshot of product data at order time.
@@ -1606,6 +1614,8 @@ export interface OrdersSelect<T extends boolean = true> {
     | T
     | {
         product?: T;
+        variant?: T;
+        price?: T;
         quantity?: T;
         productSnapshot?: T;
         id?: T;
