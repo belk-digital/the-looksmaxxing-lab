@@ -38,12 +38,12 @@ export async function Header() {
             const prod = item.product || {}
             return {
               lineId: item.id || Math.random().toString(36).substring(2, 15),
-              productId: prod.id || item.product,
+              productId: String(prod.id || item.product),
               variantSku: item.variantSku || 'default',
               quantity: item.quantity || 1,
               priceSnapshot: item.priceSnapshot || 0,
               product: {
-                id: prod.id || item.product,
+                id: String(prod.id || item.product),
                 name: prod.name || '',
                 imageUrl: prod.images?.[0]?.image?.url || null,
               }

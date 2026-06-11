@@ -50,7 +50,7 @@ export const useCartStore = create<CartState>()(
       addItem: (product, variantSku, quantity, priceSnapshot) => {
         set((state) => {
           const existingItemIndex = state.items.findIndex(
-            (item) => item.productId === product.id && item.variantSku === variantSku,
+            (item) => String(item.productId) === String(product.id) && item.variantSku === variantSku,
           )
 
           if (existingItemIndex > -1) {
