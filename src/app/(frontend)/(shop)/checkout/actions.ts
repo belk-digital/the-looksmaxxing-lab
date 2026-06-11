@@ -335,6 +335,14 @@ export async function createPayloadOrder(
              orderId: String(order.id)
           }
        })
+    } else if (total <= 0) {
+       // Instantly finalize the free order (deduct inventory, use coupons, give points)
+       const { finalizeOrder } = await import('@/lib/orders/finalizeOrder')
+       await finalizeOrder(order.id, {
+          cartId: undefined, // user cart cleared in finalizeOrder, guest cart is in formData guestCart
+          affiliateId: (await cookies()).get('affiliate_ref')?.value,
+          clickId: (await cookies()).get('affiliate_click_id')?.value,
+       })
     }
 
     // Set a cookie to authorize the order confirmation page
@@ -358,118 +366,8 @@ export async function syncPaymentStatus(paymentIntentId: string, orderId: string
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
     
     if (paymentIntent.status === 'succeeded') {
-      const payload = await getPayload({ config: configPromise })
-      const numericId = parseInt(orderId, 10)
-      const idToUse = isNaN(numericId) ? orderId : numericId
-
-      const order = await payload.findByID({
-        collection: 'orders',
-        id: idToUse,
-        depth: 0,
-      })
-
-      // Only update if it hasn't been updated by the webhook yet
-      if (order.paymentStatus !== 'captured') {
-        await payload.update({
-          collection: 'orders',
-          id: idToUse,
-          data: {
-            status: 'paid',
-            paymentStatus: 'captured',
-          }
-        })
-
-        // 1. Decrement Inventory
-        if (order.items && Array.isArray(order.items)) {
-          for (const item of order.items) {
-            const productId = item.product && typeof item.product === 'object' ? item.product.id : item.product;
-            if (productId) {
-              const productDoc = await payload.findByID({ collection: 'products', id: productId });
-              if (productDoc) {
-                const newStock = Math.max(0, (productDoc.stock || 0) - (item.quantity || 1));
-                await payload.update({ collection: 'products', id: productId, data: { stock: newStock } });
-              }
-            }
-          }
-        }
-
-        // 2. Increment Coupon Usage
-        if (order.couponCode) {
-           const coupons = await payload.find({ collection: 'coupons', where: { code: { equals: order.couponCode } }, overrideAccess: true })
-           if (coupons.docs.length > 0) {
-              const coupon = coupons.docs[0]
-              await payload.update({
-                 collection: 'coupons',
-                 id: coupon.id,
-                 data: { usageCount: (coupon.usageCount || 0) + 1 },
-                 overrideAccess: true
-              })
-           }
-        }
-
-        // 3. User Points and Clear Cart
-        if (order.owner) {
-          const userId = typeof order.owner === 'object' ? order.owner.id : order.owner
-          const user = await payload.findByID({ collection: 'users', id: userId })
-          
-          let currentPoints = user.maxxPoints || 0
-          // Deduct redeemed
-          if (order.redeemedPoints && order.redeemedPoints > 0) {
-             currentPoints = Math.max(0, currentPoints - order.redeemedPoints)
-          }
-
-          await payload.update({
-             collection: 'users',
-             id: userId,
-             data: { maxxPoints: currentPoints }
-          })
-
-          // Clear user's Payload cart instantly
-          const carts = await payload.find({ collection: 'carts', where: { user: { equals: userId } } });
-          if (carts.docs.length > 0) {
-            await payload.update({ collection: 'carts', id: carts.docs[0].id, data: { items: [] } });
-          }
-        } else if (paymentIntent.metadata?.cartId) {
-          // Clear Guest Cart
-          await payload.update({ collection: 'carts', id: paymentIntent.metadata.cartId, data: { items: [] } });
-        }
-
-        // 4. Affiliate Attribution
-        const affiliateId = paymentIntent.metadata?.affiliateId;
-        const clickId = paymentIntent.metadata?.clickId; // If we start passing it
-        const { attributeOrder } = await import('@/lib/affiliates/commission')
-        
-        if (affiliateId || order.couponCode) {
-          attributeOrder(
-            order as any,
-            affiliateId || null,
-            order.couponCode || null,
-            clickId || null
-          ).catch(console.error)
-        }
-
-        // 5. Send Email
-        try {
-           let customerEmail = order.guestEmail;
-           if (!customerEmail && order.owner) {
-              const userDoc = typeof order.owner === 'object' ? order.owner : await payload.findByID({ collection: 'users', id: order.owner });
-              customerEmail = userDoc.email;
-           }
-           if (customerEmail) {
-              const { generateOrderInvoiceHtml } = await import('@/lib/emails/generateOrderEmail');
-              const invoiceHtml = await generateOrderInvoiceHtml(order, payload);
-
-              await payload.sendEmail({
-                 to: customerEmail,
-                 bcc: 'support@thelooksmaxxinglab.com',
-                 subject: `Order Confirmation #${order.orderNumber || order.id}`,
-                 html: invoiceHtml,
-              })
-           }
-        } catch (err) {
-           console.error('Failed to send confirmation email', err)
-        }
-      }
+      const { finalizeOrder } = await import('@/lib/orders/finalizeOrder')
+      await finalizeOrder(orderId, paymentIntent.metadata)
       return { success: true }
     }
     return { success: false, status: paymentIntent.status }

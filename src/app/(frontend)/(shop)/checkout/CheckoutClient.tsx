@@ -43,6 +43,7 @@ export function CheckoutClient() {
   const [selectedAddressId, setSelectedAddressId] = useState<string | 'new'>('new')
 
   // Form State
+  const [isProcessing, setIsProcessing] = useState(false)
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
