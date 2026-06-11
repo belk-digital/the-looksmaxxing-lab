@@ -251,6 +251,7 @@ export function CheckoutClient() {
     } catch (err) {
       setAppliedCoupon(null)
       if (!codeToApply) toast.error('Failed to verify coupon')
+      if (codeToApply) setCoupon(null)
     } finally {
       setIsVerifyingCoupon(false)
     }
