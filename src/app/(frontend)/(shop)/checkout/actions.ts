@@ -33,11 +33,11 @@ export async function getActiveProcessingFees() {
   const payload = await getPayload({ config: configPromise })
   const fees = await payload.find({
     collection: 'processing-fees',
-    where: { isActive: { equals: true } },
     depth: 0,
     overrideAccess: true,
+    limit: 100,
   })
-  return fees.docs
+  return fees.docs.filter((f: any) => f.isActive)
 }
 
 export async function createPaymentIntent(
