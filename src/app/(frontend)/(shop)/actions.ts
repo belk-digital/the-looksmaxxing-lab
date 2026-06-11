@@ -273,7 +273,9 @@ export async function verifyCoupon(couponCode: string, subtotal: number, clientC
     if (clientCartItems && clientCartItems.length > 0) {
       cartItems = clientCartItems.map((item: any) => ({
         product: item.productId || item.product?.id || item.product,
-        quantity: item.quantity || 1
+        quantity: item.quantity || 1,
+        priceSnapshot: item.priceSnapshot,
+        variantSku: item.variantSku
       }))
     } else if (user) {
       const carts = await payload.find({

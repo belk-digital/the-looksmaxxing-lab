@@ -318,7 +318,7 @@ export function CheckoutClient() {
                 <div className="p-4 border-t border-ink/5 flex flex-col gap-6 bg-[#fafafa]/50">
                   
                   {/* Items */}
-                  <div className="flex flex-col gap-4 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
+                  <div className="flex flex-col gap-4 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2" data-lenis-prevent>
                     {items.map((item) => (
                       <div key={item.lineId} className="flex gap-4 group">
                         <div className="relative w-16 h-16 shrink-0">
@@ -656,7 +656,7 @@ export function CheckoutClient() {
               </h2>
               
               {/* Items List */}
-              <div className="flex flex-col gap-6 max-h-[40vh] overflow-y-auto pt-4 pr-4 pb-2 custom-scrollbar">
+              <div className="flex flex-col gap-6 max-h-[40vh] overflow-y-auto pt-4 pr-4 pb-2 custom-scrollbar" data-lenis-prevent>
                 {items.map((item) => (
                   <div key={item.lineId} className="flex gap-4 group">
                     <div className="relative w-20 h-20 shrink-0 transition-transform group-hover:scale-105">
