@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache'
 import { attributeOrder } from '@/lib/affiliates/commission'
 import { cookies } from 'next/headers'
 
-export async function addToCart(productId: string | number, quantity: number = 1) {
+export async function addToCart(productId: string | number, quantity: number = 1, providedVariantSku?: string, providedPriceSnapshot?: number) {
   try {
     const user = await getPayloadUser()
     if (!user) return { success: false, error: 'Must be logged in to add to cart' }
@@ -21,8 +21,8 @@ export async function addToCart(productId: string | number, quantity: number = 1
     // Normalize the product ID to a number so relationship fields and comparisons work
     const numericProductId = Number(product.id)
 
-    const variantSku = product.sku || (product.variants && product.variants[0]?.sku) || `${product.id}`
-    const priceSnapshot = typeof product.salePrice === 'number' ? product.salePrice : (typeof product.price === 'number' ? product.price : 0)
+    const variantSku = providedVariantSku || product.sku || (product.variants && product.variants[0]?.sku) || `${product.id}`
+    const priceSnapshot = providedPriceSnapshot !== undefined ? providedPriceSnapshot : (typeof product.salePrice === 'number' ? product.salePrice : (typeof product.price === 'number' ? product.price : 0))
 
     // Find existing cart — depth:0 so product comes back as raw ID
     const existingCarts = await payload.find({
@@ -84,7 +84,7 @@ export async function addToCart(productId: string | number, quantity: number = 1
   }
 }
 
-export async function addToWishlist(productId: string | number) {
+export async function addToWishlist(productId: string | number, providedVariantSku?: string, providedPriceSnapshot?: number) {
   try {
     const user = await getPayloadUser()
     if (!user) return { success: false, error: 'Must be logged in to add to wishlist' }
@@ -98,8 +98,8 @@ export async function addToWishlist(productId: string | number) {
     // Normalize the product ID to a number so comparisons never fail due to type mismatch
     const numericProductId = Number(product.id)
 
-    const variantSku = product.sku || (product.variants && product.variants[0]?.sku) || `${product.id}`;
-    const priceSnapshot = typeof product.salePrice === 'number' ? product.salePrice : (typeof product.price === 'number' ? product.price : 0);
+    const variantSku = providedVariantSku || product.sku || (product.variants && product.variants[0]?.sku) || `${product.id}`;
+    const priceSnapshot = providedPriceSnapshot !== undefined ? providedPriceSnapshot : (typeof product.salePrice === 'number' ? product.salePrice : (typeof product.price === 'number' ? product.price : 0));
 
     // Find existing wishlist — use depth:0 so product fields come back as raw IDs, not populated objects
     const existingLists = await payload.find({

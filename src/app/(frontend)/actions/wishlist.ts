@@ -4,7 +4,7 @@ import { auth } from '@clerk/nextjs/server'
 import { getPayload } from 'payload'
 import configPromise from '@/payload.config'
 
-export async function toggleWishlistInPayload(productId: string | number, isAdding: boolean) {
+export async function toggleWishlistInPayload(productId: string | number, isAdding: boolean, providedVariantSku?: string, providedPriceSnapshot?: number) {
   try {
     const { userId } = await auth()
     if (!userId) return { success: false, error: 'Not authenticated' }
@@ -32,18 +32,22 @@ export async function toggleWishlistInPayload(productId: string | number, isAddi
 
     let priceSnapshot = 0
     if (isAdding) {
-      // Fetch the product to get the accurate price snapshot
-      try {
-        const product = await payload.findByID({
-          collection: 'products',
-          id: productId,
-        })
-        if (product) {
-          // Use salePrice if it exists, otherwise regular price. Fallback to 0.
-          priceSnapshot = product.salePrice || product.price || 0
+      if (providedPriceSnapshot !== undefined) {
+        priceSnapshot = providedPriceSnapshot
+      } else {
+        // Fetch the product to get the accurate price snapshot
+        try {
+          const product = await payload.findByID({
+            collection: 'products',
+            id: productId,
+          })
+          if (product) {
+            // Use salePrice if it exists, otherwise regular price. Fallback to 0.
+            priceSnapshot = product.salePrice || product.price || 0
+          }
+        } catch (err) {
+          console.warn('Could not fetch product price for snapshot', err)
         }
-      } catch (err) {
-        console.warn('Could not fetch product price for snapshot', err)
       }
     }
 
@@ -59,7 +63,7 @@ export async function toggleWishlistInPayload(productId: string | number, isAddi
           user: payloadUser.id,
           items: [{
             product: (!isNaN(Number(productId)) ? Number(productId) : productId) as any,
-            variantSku: 'default',
+            variantSku: providedVariantSku || 'default',
             quantity: 1,
             addedAt: new Date().toISOString(),
             priceSnapshot: priceSnapshot
@@ -77,13 +81,13 @@ export async function toggleWishlistInPayload(productId: string | number, isAddi
     if (isAdding) {
       const exists = currentItems.some(item => {
         const pId = typeof item.product === 'object' ? item.product?.id : item.product
-        return String(pId) === String(productId)
+        return String(pId) === String(productId) && (item.variantSku || 'default') === (providedVariantSku || 'default')
       })
       
       if (!exists) {
         newItems.push({
           product: (!isNaN(Number(productId)) ? Number(productId) : productId) as any,
-          variantSku: 'default',
+          variantSku: providedVariantSku || 'default',
           quantity: 1,
           addedAt: new Date().toISOString(),
           priceSnapshot: priceSnapshot
