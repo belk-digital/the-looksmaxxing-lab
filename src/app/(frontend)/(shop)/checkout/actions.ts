@@ -229,10 +229,15 @@ export async function createPayloadOrder(
     }
 
     // Format order items for Payload
-    const orderItems = items.map(item => ({
-      product: item.productId,
-      quantity: item.quantity
-    }))
+    const orderItems = items.map(item => {
+      const parsedId = parseInt(String(item.productId), 10)
+      return {
+        product: isNaN(parsedId) ? item.productId : parsedId,
+        variant: item.variantSku || 'DEFAULT',
+        price: item.priceSnapshot,
+        quantity: item.quantity
+      }
+    })
 
     // Create pending Order in Payload
     const order = await payload.create({

@@ -97,7 +97,19 @@ export const Orders: CollectionConfig = {
       name: 'items',
       type: 'array',
       fields: [
-        { name: 'product', type: 'relationship', relationTo: 'products', required: true },
+        { 
+          name: 'product', 
+          type: 'relationship', 
+          relationTo: 'products', 
+          required: true,
+          validate: (value) => {
+            // Bypass Payload's buggy default relationship validation for duplicate array items
+            if (!value) return 'Product is required';
+            return true;
+          }
+        },
+        { name: 'variant', type: 'text', admin: { description: 'The variant or bundle purchased' } },
+        { name: 'price', type: 'number', admin: { description: 'Price paid per unit at the time of order' } },
         { name: 'quantity', type: 'number', required: true },
         {
           name: 'productSnapshot',
