@@ -286,7 +286,7 @@ export function ProductClient({ product }: ProductClientProps) {
       { id: product.id, name: product.name, imageUrl: product.images[0] },
       selectedVariant.title,
       quantity,
-      parseFloat(selectedVariant.price.replace('$', ''))
+      parseFloat((selectedVariant.salePrice || selectedVariant.price).replace(/[^0-9.]/g, ''))
     )
 
     setJustAdded(true)

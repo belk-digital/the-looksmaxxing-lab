@@ -32,7 +32,7 @@ export async function syncCartToPayload(items: CartLine[]) {
     })
 
     const mappedItems = items.map(item => ({
-      product: item.productId,
+      product: (!isNaN(Number(item.productId)) ? Number(item.productId) : item.productId) as any,
       variantSku: item.variantSku || 'default',
       quantity: item.quantity,
       priceSnapshot: item.priceSnapshot,

@@ -55,18 +55,34 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
   // Sync Cart with Backend
   useEffect(() => {
     if (isLoggedIn && !cartHydrated.current) {
-      setCartItems(initialCartItems)
+      const localItems = cartStore.items
+      if (initialCartItems.length > 0) {
+        // Backend has a cart, use it
+        setCartItems(initialCartItems)
+      } else if (localItems.length > 0) {
+        // Backend cart is empty, but local has items (e.g. they added items before logging in)
+        // Push local items to backend
+        import('@/app/(frontend)/actions/cart').then(m => m.syncCartToPayload(localItems))
+      }
       cartHydrated.current = true
     }
-  }, [isLoggedIn, initialCartItems, setCartItems])
+  }, [isLoggedIn, initialCartItems]) // removed setCartItems and cartStore.items from deps to prevent loop
 
   // Sync Wishlist with Backend
   useEffect(() => {
     if (isLoggedIn && !wishlistHydrated.current) {
-      setWishlistItems(initialWishlistItems)
+      const localItems = useWishlistStore.getState().items
+      if (initialWishlistItems.length > 0) {
+        setWishlistItems(initialWishlistItems)
+      } else if (localItems.length > 0) {
+        // Push local items to backend one by one, since there's no bulk sync for wishlist
+        import('@/app/(frontend)/actions/wishlist').then(m => {
+          localItems.forEach(item => m.toggleWishlistInPayload(item.id, true))
+        })
+      }
       wishlistHydrated.current = true
     }
-  }, [isLoggedIn, initialWishlistItems, setWishlistItems])
+  }, [isLoggedIn, initialWishlistItems])
 
   // Global Search Shortcut (Cmd+K / Ctrl+K)
   useEffect(() => {
