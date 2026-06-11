@@ -15,6 +15,10 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
     return notFound()
   }
 
+  const { cookies } = await import('next/headers')
+  const cookieStore = await cookies()
+  const isCookieAuthorized = cookieStore.get(`order_auth_${id}`)?.value === 'true'
+
   const payload = await getPayload({ config: configPromise })
   
   let order;
@@ -30,6 +34,29 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
   }
 
   if (!order) return notFound()
+
+  // 1. Check Cookie Auth (Guest or Immediate Post-Checkout)
+  let isAuthorized = isCookieAuthorized;
+
+  // 2. Check User Auth (Logged in user returning to the page)
+  if (!isAuthorized) {
+     try {
+       const { auth } = await import('@clerk/nextjs/server')
+       const { userId } = await auth()
+       if (userId && order.owner) {
+          const ownerDoc = typeof order.owner === 'object' ? order.owner : await payload.findByID({ collection: 'users', id: order.owner });
+          if (ownerDoc && ownerDoc.clerkUserId === userId) {
+             isAuthorized = true;
+          }
+       }
+     } catch (e) {
+       console.error('Auth check failed', e)
+     }
+  }
+
+  if (!isAuthorized) {
+    return notFound()
+  }
 
   // Format order items
   const formattedItems = (order.items || []).map((item: any, i: number) => {

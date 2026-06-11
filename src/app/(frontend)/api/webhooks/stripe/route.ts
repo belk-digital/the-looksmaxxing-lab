@@ -116,13 +116,36 @@ export async function POST(req: Request) {
             if (affiliateId) {
                const numericAffiliateId = parseInt(affiliateId, 10)
                if (!isNaN(numericAffiliateId)) {
+                  let commissionAmount = 0;
+                  try {
+                    const affiliateDoc = await payload.findByID({ collection: 'affiliates', id: numericAffiliateId, depth: 0 });
+                    const globals = await payload.findGlobal({ slug: 'affiliate-settings' });
+                    
+                    const commissionRate = typeof affiliateDoc.commissionRate === 'number' ? affiliateDoc.commissionRate : (globals.defaultCommissionRate || 10);
+                    const commissionType = affiliateDoc.commissionType || globals.defaultCommissionType || 'percentage';
+                    const commissionOn = affiliateDoc.commissionOn || globals.defaultCommissionOn || 'subtotal_after_coupon';
+                    
+                    const baseAmount = commissionOn === 'subtotal_before_coupon' 
+                       ? (order.subtotal || 0) + (order.discountTotal || 0) 
+                       : (order.subtotal || 0);
+
+                    if (commissionType === 'percentage') {
+                       commissionAmount = Math.round(baseAmount * 100 * (commissionRate / 100));
+                    } else if (commissionType === 'fixed_amount') {
+                       commissionAmount = Math.round(commissionRate * 100);
+                    }
+                  } catch (e) {
+                    console.error('Failed to calculate dynamic commission, using fallback 10%', e);
+                    commissionAmount = Math.round((order.subtotal || 0) * 100 * 0.10);
+                  }
+
                   await payload.create({
                      collection: 'affiliate-conversions',
                      data: {
                         affiliate: numericAffiliateId,
                         order: idToUse as any,
                         orderSubtotal: order.subtotal || 0,
-                        commissionAmount: Math.round((order.subtotal || 0) * 100 * 0.10), // 10% in cents
+                        commissionAmount: commissionAmount,
                         status: 'pending',
                      }
                   })

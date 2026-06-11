@@ -312,8 +312,8 @@ export async function createPayloadOrder(
           country: 'US', // default
         },
         items: orderItems,
-        status: 'pending',
-        paymentStatus: 'unpaid',
+        status: total <= 0 ? 'paid' : 'pending',
+        paymentStatus: total <= 0 ? 'captured' : 'unpaid',
         fulfillmentStatus: 'unfulfilled',
         subtotal: subtotal,
         discountTotal: discountAmount,
@@ -328,11 +328,22 @@ export async function createPayloadOrder(
       }
     })
 
-    // Update Stripe PaymentIntent with the Order ID
-    await stripe.paymentIntents.update(paymentIntentId, {
-       metadata: {
-          orderId: String(order.id)
-       }
+    // Update Stripe PaymentIntent with the Order ID (unless it's a free order)
+    if (paymentIntentId && paymentIntentId !== 'free_order') {
+       await stripe.paymentIntents.update(paymentIntentId, {
+          metadata: {
+             orderId: String(order.id)
+          }
+       })
+    }
+
+    // Set a cookie to authorize the order confirmation page
+    const cookieStore = await cookies()
+    cookieStore.set(`order_auth_${order.id}`, 'true', { 
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
     })
 
     return { orderId: String(order.id) }

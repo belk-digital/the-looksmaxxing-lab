@@ -234,6 +234,41 @@ export function CheckoutClient() {
     toast.info('Coupon removed')
   }
 
+  const handleZeroTotalCheckout = async () => {
+    if (!formData.email || !formData.firstName || !formData.address || !formData.city || !formData.state || !formData.zip) {
+      toast.error('Please fill out all required shipping fields before completing your order.')
+      return
+    }
+
+    setIsProcessing(true)
+
+    try {
+      const { createPayloadOrder } = await import('./actions')
+      const orderRes = await createPayloadOrder(
+        items, shippingMethod, appliedCoupon?.code, isRedeemingPoints, 
+        { ...formData, email: user?.email || formData.email }, 
+        'free_order', 
+        user?.id as string
+      )
+
+      if (orderRes.error || !orderRes.orderId) {
+        toast.error(orderRes.error || 'Failed to initialize free order in database.')
+        if ((orderRes as any).priceChanged && (orderRes as any).updatedItems) {
+          useCartStore.getState().setItems((orderRes as any).updatedItems)
+        }
+        setIsProcessing(false)
+        return
+      }
+
+      toast.success("Order successful! Redirecting...")
+      useCartStore.getState().clear()
+      window.location.href = `/order-confirmation/${orderRes.orderId}`
+    } catch (e: any) {
+      toast.error('An unexpected error occurred.')
+      setIsProcessing(false)
+    }
+  }
+
   useEffect(() => {
     if (storedCouponCode && !isVerifyingCoupon) {
       handleApplyCoupon(undefined, storedCouponCode)
@@ -605,7 +640,17 @@ export function CheckoutClient() {
                 <h2 className="text-xl font-display font-bold text-ink mb-2">Payment</h2>
                 <p className="text-xs font-medium text-ink/50 mb-2 flex items-center gap-1.5"><Lock size={12} /> All transactions are 256-bit encrypted and secure.</p>
                 
-                {clientSecret && stripePromise && paymentIntentId ? (
+                {total <= 0 ? (
+                  <div className="w-full h-56 bg-green-50 border border-green-500/20 rounded-3xl flex flex-col items-center justify-center gap-4 shadow-sm relative overflow-hidden p-6 text-center">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                       <Check size={24} />
+                    </div>
+                    <span className="text-sm font-bold text-green-800">Your order is completely covered!</span>
+                    <Button onClick={handleZeroTotalCheckout} disabled={isProcessing} variant="dark" size="lg" className="w-full h-14 rounded-full">
+                      {isProcessing ? <Loader2 className="animate-spin" /> : "Complete Free Order"}
+                    </Button>
+                  </div>
+                ) : clientSecret && stripePromise && paymentIntentId ? (
                   <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
                     <StripeCheckoutForm 
                        amount={total}

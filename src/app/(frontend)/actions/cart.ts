@@ -169,14 +169,15 @@ export async function revalidateCartPrices(items: CartLine[]): Promise<CartLine[
 
         return { ...item, priceSnapshot: livePrice }
       } catch (err) {
-        return item
+        console.error('Error revalidating individual item:', err)
+        throw new Error('Failed to revalidate item price due to an internal error.')
       }
     }))
     
     return updatedItems
   } catch (error) {
     console.error('Error revalidating cart prices:', error)
-    return items
+    throw new Error('Critical failure during cart price revalidation.')
   }
 }
 
