@@ -137,18 +137,14 @@ export async function POST(req: Request) {
                   customerEmail = userDoc.email;
                }
                if (customerEmail) {
+                  const { generateOrderInvoiceHtml } = await import('@/lib/emails/generateOrderEmail');
+                  const invoiceHtml = generateOrderInvoiceHtml(order);
+
                   await payload.sendEmail({
                      to: customerEmail,
+                     bcc: 'support@thelooksmaxxinglab.com',
                      subject: `Order Confirmation #${order.orderNumber || order.id}`,
-                     html: `
-                        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                           <h1 style="color: #000; letter-spacing: -1px;">Thank you for your order!</h1>
-                           <p style="color: #666; font-size: 16px;">We have received your order <strong>#${order.orderNumber || order.id}</strong> and are preparing it for shipment.</p>
-                           <hr style="border: none; border-top: 1px solid #eaeaea; margin: 20px 0;" />
-                           <p style="color: #000; font-weight: bold;">Order Total: $${(order.total || 0).toFixed(2)}</p>
-                           <p style="color: #666; font-size: 14px; margin-top: 30px;">The Looksmaxxing Lab</p>
-                        </div>
-                     `,
+                     html: invoiceHtml,
                   })
                }
             } catch (err) {
