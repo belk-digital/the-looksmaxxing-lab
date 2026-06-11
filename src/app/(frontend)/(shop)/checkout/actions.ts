@@ -177,6 +177,8 @@ export async function createPayloadOrder(
   const { revalidateCartPrices } = await import('@/app/(frontend)/actions/cart')
   const liveItems = await revalidateCartPrices(items)
 
+  const productsCache = new Map()
+
   for (let i = 0; i < items.length; i++) {
      const item = items[i]
      const liveItem = liveItems[i]
@@ -189,6 +191,7 @@ export async function createPayloadOrder(
      if (!productRes) {
         return { error: `Product not found: ${item.productId}` }
      }
+     productsCache.set(item.productId, productRes)
      if ((productRes.stock || 0) < item.quantity) {
         return { error: `Insufficient stock for ${productRes.name || 'item'}. Only ${productRes.stock} left.` }
      }
@@ -276,11 +279,13 @@ export async function createPayloadOrder(
     // Format order items for Payload
     const orderItems = items.map(item => {
       const parsedId = parseInt(String(item.productId), 10)
+      const productData = productsCache.get(item.productId)
       return {
         product: isNaN(parsedId) ? item.productId : parsedId,
         variant: item.variantSku || 'DEFAULT',
         price: item.priceSnapshot,
-        quantity: item.quantity
+        quantity: item.quantity,
+        productSnapshot: productData || null
       }
     })
 

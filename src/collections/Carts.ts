@@ -24,7 +24,7 @@ export const Carts: CollectionConfig = {
           name: 'product',
           type: 'relationship',
           relationTo: 'products',
-          required: true,
+          required: false,
         },
         {
           name: 'variantSku',

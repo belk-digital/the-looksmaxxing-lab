@@ -27,88 +27,92 @@ export const afterCreateUserTodo: CollectionAfterChangeHook = async ({ doc, oper
 
     // Retroactive Order Binding
     if (doc.email) {
-      try {
-        const payload = req.payload
-        const orders = await payload.find({
-          collection: 'orders',
-          where: {
-            and: [
-              { guestEmail: { equals: doc.email.toLowerCase() } },
-              {
-                or: [
-                  { owner: { exists: false } },
-                  { owner: { equals: null } }
-                ]
-              }
-            ]
-          },
-          overrideAccess: true,
-          req,
-          sort: '-createdAt',
-        })
-        
-        if (orders.docs.length > 0) {
-          // Bind all guest orders to this user
-          await Promise.all(orders.docs.map(order => 
-            payload.update({
+      setTimeout(() => {
+        (async () => {
+          try {
+            const payload = req.payload
+            const orders = await payload.find({
               collection: 'orders',
-              id: order.id,
-              data: {
-                owner: doc.id
+              where: {
+                and: [
+                  { guestEmail: { equals: doc.email.toLowerCase() } },
+                  {
+                    or: [
+                      { owner: { exists: false } },
+                      { owner: { equals: null } }
+                    ]
+                  }
+                ]
               },
               overrideAccess: true,
               req,
+              sort: '-createdAt',
             })
-          ))
-
-          // Sync user details from the most recent guest order if the user profile is empty
-          const recentOrder = orders.docs[0] as any
-          if (!doc.firstName && !doc.lastName && recentOrder.customerFirstName) {
-            let addressId = null
             
-            // Create default address from the order's shipping address
-            if (recentOrder.shippingAddress && recentOrder.shippingAddress.line1) {
-              const newAddress = await payload.create({
-                collection: 'addresses',
-                data: {
-                  user: doc.id,
-                  label: 'Default Shipping',
-                  firstName: recentOrder.customerFirstName,
-                  lastName: recentOrder.customerLastName || '',
-                  line1: recentOrder.shippingAddress.line1,
-                  line2: recentOrder.shippingAddress.line2 || '',
-                  city: recentOrder.shippingAddress.city || '',
-                  state: recentOrder.shippingAddress.state || '',
-                  postalCode: recentOrder.shippingAddress.postalCode || '',
-                  country: recentOrder.shippingAddress.country || '',
-                  phone: recentOrder.customerPhone || '',
-                  isDefaultShipping: true
-                },
-                overrideAccess: true,
-                req,
-              })
-              addressId = newAddress.id
-            }
+            if (orders.docs.length > 0) {
+              // Bind all guest orders to this user
+              await Promise.all(orders.docs.map(order => 
+                payload.update({
+                  collection: 'orders',
+                  id: order.id,
+                  data: {
+                    owner: doc.id
+                  },
+                  overrideAccess: true,
+                  req,
+                })
+              ))
 
-            // Update User Profile
-            await payload.update({
-              collection: 'users',
-              id: doc.id,
-              data: {
-                firstName: recentOrder.customerFirstName,
-                lastName: recentOrder.customerLastName || '',
-                phone: recentOrder.customerPhone || '',
-                ...(addressId ? { defaultShippingAddress: addressId as any } : {})
-              },
-              overrideAccess: true,
-              req,
-            })
+              // Sync user details from the most recent guest order if the user profile is empty
+              const recentOrder = orders.docs[0] as any
+              if (!doc.firstName && !doc.lastName && recentOrder.customerFirstName) {
+                let addressId = null
+                
+                // Create default address from the order's shipping address
+                if (recentOrder.shippingAddress && recentOrder.shippingAddress.line1) {
+                  const newAddress = await payload.create({
+                    collection: 'addresses',
+                    data: {
+                      user: doc.id,
+                      label: 'Default Shipping',
+                      firstName: recentOrder.customerFirstName,
+                      lastName: recentOrder.customerLastName || '',
+                      line1: recentOrder.shippingAddress.line1,
+                      line2: recentOrder.shippingAddress.line2 || '',
+                      city: recentOrder.shippingAddress.city || '',
+                      state: recentOrder.shippingAddress.state || '',
+                      postalCode: recentOrder.shippingAddress.postalCode || '',
+                      country: recentOrder.shippingAddress.country || '',
+                      phone: recentOrder.customerPhone || '',
+                      isDefaultShipping: true
+                    },
+                    overrideAccess: true,
+                    req,
+                  })
+                  addressId = newAddress.id
+                }
+
+                // Update User Profile
+                await payload.update({
+                  collection: 'users',
+                  id: doc.id,
+                  data: {
+                    firstName: recentOrder.customerFirstName,
+                    lastName: recentOrder.customerLastName || '',
+                    phone: recentOrder.customerPhone || '',
+                    ...(addressId ? { defaultShippingAddress: addressId as any } : {})
+                  },
+                  overrideAccess: true,
+                  req,
+                })
+              }
+              console.log(`Retroactively bound ${orders.docs.length} guest orders to user ${doc.id}`)
+            }
+          } catch (err) {
+            console.error('Error retroactively binding orders:', err)
           }
-          console.log(`Retroactively bound ${orders.docs.length} guest orders to user ${doc.id}`)
-        }
-      } catch (err) {
-        console.error('Error retroactively binding orders:', err)
-      }
+        })()
+      }, 0)
     }
   }
 }

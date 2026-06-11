@@ -112,7 +112,10 @@ export async function revalidateCartPrices(items: CartLine[]): Promise<CartLine[
 
         // 2. Check Variants
         if (product.variants && product.variants.length > 0) {
-          const variant = product.variants.find(v => v.title === item.variantSku || v.sku === item.variantSku)
+          const variant = product.variants.find((v: any) => {
+            const computedTitle = v.options?.map((o: any) => o.value).join(' ') || `Variant ${v.sku}`
+            return computedTitle === item.variantSku || v.sku === item.variantSku
+          })
           if (variant) {
             const vPrice = typeof variant.price === 'number' ? variant.price : parseFloat(String(variant.price).replace(/[^0-9.]/g, ''))
             const vSale = variant.salePrice ? (typeof variant.salePrice === 'number' ? variant.salePrice : parseFloat(String(variant.salePrice).replace(/[^0-9.]/g, ''))) : null
