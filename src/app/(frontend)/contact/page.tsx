@@ -15,6 +15,8 @@ import {
 } from '@/components/ui/select'
 import { CheckCircle2 } from 'lucide-react'
 import { FaqCarousel } from '@/components/shared/FaqCarousel'
+import { submitContactForm } from './actions'
+import { toast } from 'sonner'
 
 const CONTACT_FAQS = [
   { question: 'When will my order ship?', answer: 'Orders placed before 2:00 PM EST Monday through Friday are shipped the same day. Orders placed after the cutoff or on weekends will ship the following business day.' },
@@ -30,14 +32,20 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
-    // Simulate network request
-    setTimeout(() => {
-      setIsSubmitting(false)
+
+    const formData = new FormData(e.currentTarget)
+    const result = await submitContactForm(formData)
+
+    setIsSubmitting(false)
+
+    if (result.error) {
+      toast.error(result.error)
+    } else {
       setSubmitted(true)
-    }, 1500)
+    }
   }
 
   return (
@@ -78,7 +86,7 @@ export default function ContactPage() {
                     {/* Department Select */}
                     <div className="space-y-2">
                       <Label htmlFor="department" className="text-sm font-semibold text-ink ml-1">Department</Label>
-                      <Select defaultValue="general">
+                      <Select defaultValue="general" name="department">
                         <SelectTrigger id="department" className="h-14 rounded-xl bg-gray-50 border-transparent focus:ring-1 focus:ring-[#5984c4] px-4">
                           <SelectValue placeholder="Select a department" />
                         </SelectTrigger>
@@ -95,18 +103,18 @@ export default function ContactPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="name" className="text-sm font-semibold text-ink ml-1">Full Name <span className="text-[#5984c4]">*</span></Label>
-                        <Input id="name" required placeholder="Dr. John Smith" className="h-14 rounded-xl bg-gray-50 border-transparent focus:ring-1 focus:ring-[#5984c4] px-4" />
+                        <Input id="name" name="name" required placeholder="Dr. John Smith" className="h-14 rounded-xl bg-gray-50 border-transparent focus:ring-1 focus:ring-[#5984c4] px-4" />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email" className="text-sm font-semibold text-ink ml-1">Email Address <span className="text-[#5984c4]">*</span></Label>
-                        <Input id="email" type="email" required placeholder="john@example.com" className="h-14 rounded-xl bg-gray-50 border-transparent focus:ring-1 focus:ring-[#5984c4] px-4" />
+                        <Input id="email" name="email" type="email" required placeholder="john@example.com" className="h-14 rounded-xl bg-gray-50 border-transparent focus:ring-1 focus:ring-[#5984c4] px-4" />
                       </div>
                     </div>
 
                     {/* Subject */}
                     <div className="space-y-2">
                       <Label htmlFor="subject" className="text-sm font-semibold text-ink ml-1">Subject <span className="text-[#5984c4]">*</span></Label>
-                      <Input id="subject" required placeholder="Order #12345 Inquiry" className="h-14 rounded-xl bg-gray-50 border-transparent focus:ring-1 focus:ring-[#5984c4] px-4" />
+                      <Input id="subject" name="subject" required placeholder="Order #12345 Inquiry" className="h-14 rounded-xl bg-gray-50 border-transparent focus:ring-1 focus:ring-[#5984c4] px-4" />
                     </div>
 
                     {/* Message */}
@@ -114,6 +122,7 @@ export default function ContactPage() {
                       <Label htmlFor="message" className="text-sm font-semibold text-ink ml-1">Message <span className="text-[#5984c4]">*</span></Label>
                       <Textarea 
                         id="message" 
+                        name="message"
                         required 
                         placeholder="How can we assist you?" 
                         className="min-h-[160px] rounded-xl bg-gray-50 border-transparent focus:ring-1 focus:ring-[#5984c4] p-4 resize-none"

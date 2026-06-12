@@ -1,4 +1,4 @@
-export async function generateOrderInvoiceHtml(order: any, payload?: any): Promise<string> {
+export async function generateOrderInvoiceHtml(order: any, payload?: any, customNote?: string): Promise<string> {
   const orderNumber = order.orderNumber || order.id;
   const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://thelooksmaxxinglab.com';
@@ -119,6 +119,18 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any): Promi
               <p style="margin: 12px 0 0 0; font-size: 16px; color: #6b7280;">Thank you for your order, ${customerName}!</p>
             </td>
           </tr>
+
+          ${customNote ? `
+          <!-- Custom Admin Note -->
+          <tr>
+            <td style="padding: 0 40px;">
+              <div style="background-color: #FFFBEB; border-left: 4px solid #F59E0B; padding: 20px; border-radius: 4px;">
+                <h3 style="margin: 0 0 8px 0; color: #92400E; font-size: 15px; font-weight: 600;">Message regarding your order</h3>
+                <p style="margin: 0; color: #92400E; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${customNote}</p>
+              </div>
+            </td>
+          </tr>
+          ` : ''}
 
           <!-- Order Info -->
           <tr>

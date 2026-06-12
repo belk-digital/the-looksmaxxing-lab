@@ -56,6 +56,30 @@ export const Orders: CollectionConfig = {
             validateStatusTransition(oldStatus, newStatus)
           }
         }
+
+        // Handle notes processing
+        if (data.notes && Array.isArray(data.notes)) {
+          const queuedCustomerNotes: string[] = []
+          
+          data.notes = data.notes.map((note: any) => {
+            // Auto-stamp the date for new notes
+            if (!note.date) {
+              note.date = new Date().toISOString()
+            }
+            
+            // Queue customer notes to be emailed if they haven't been sent yet
+            if (note.type === 'customer' && !note.isEmailed) {
+              queuedCustomerNotes.push(note.note)
+              note.isEmailed = true // Mark as emailed so it doesn't get sent again
+            }
+            
+            return note
+          })
+
+          if (queuedCustomerNotes.length > 0) {
+            req.context.queuedCustomerNotes = queuedCustomerNotes
+          }
+        }
       },
     ],
     afterChange: [
@@ -241,6 +265,55 @@ export const Orders: CollectionConfig = {
           Cell: '@/components/admin/TimeAgoCell',
         },
       },
+    },
+    {
+      name: 'notes',
+      type: 'array',
+      label: 'Order Notes',
+      admin: {
+        description: 'Keep a running history of internal notes or send messages directly to the customer.',
+      },
+      fields: [
+        {
+          name: 'type',
+          type: 'radio',
+          required: true,
+          defaultValue: 'internal',
+          options: [
+            { label: 'Internal Note (Private)', value: 'internal' },
+            { label: 'Message to Customer (Emailed)', value: 'customer' },
+          ],
+          admin: {
+            layout: 'horizontal',
+            condition: (data, siblingData) => !siblingData?.isEmailed, // Lock type if emailed
+          },
+        },
+        {
+          name: 'note',
+          type: 'textarea',
+          required: true,
+          admin: {
+            condition: (data, siblingData) => !siblingData?.isEmailed, // Lock note text if emailed
+          },
+        },
+        {
+          name: 'date',
+          type: 'date',
+          admin: {
+            readOnly: true,
+            description: 'Auto-stamped when you save.',
+          },
+        },
+        {
+          name: 'isEmailed',
+          type: 'checkbox',
+          label: 'Dispatched to Customer',
+          admin: {
+            readOnly: true,
+            condition: (data, siblingData) => siblingData?.isEmailed,
+          },
+        },
+      ],
     },
   ],
 }

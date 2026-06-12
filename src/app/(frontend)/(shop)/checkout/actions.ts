@@ -377,3 +377,43 @@ export async function syncPaymentStatus(paymentIntentId: string, orderId: string
   }
 }
 
+export async function notifyAdminFailedPayment(orderId: string, errorMessage: string) {
+  try {
+    const payload = await getPayload({ config: configPromise })
+    
+    const order = await payload.findByID({
+      collection: 'orders',
+      id: isNaN(Number(orderId)) ? orderId : Number(orderId),
+      depth: 0,
+    })
+
+    if (!order) return { success: false }
+
+    const customerEmail = (typeof order.owner === 'object' && order.owner !== null ? order.owner.email : order.guestEmail) || 'N/A'
+    const total = `$${(order.total || 0).toFixed(2)}`
+
+    const html = `
+      <h2>Payment Failed Alert</h2>
+      <p>A customer attempted to checkout but their payment failed.</p>
+      <ul>
+        <li><strong>Order ID:</strong> ${orderId}</li>
+        <li><strong>Customer Email:</strong> ${customerEmail}</li>
+        <li><strong>Total:</strong> ${total}</li>
+        <li><strong>Error Message:</strong> ${errorMessage}</li>
+      </ul>
+      <p>You can check their cart/order details in the Payload Admin panel to see what they were trying to buy.</p>
+    `
+
+    await payload.sendEmail({
+      to: 'support@thelooksmaxxinglab.com',
+      subject: `⚠️ Payment Failed - Order ${orderId}`,
+      html: html,
+    })
+
+    return { success: true }
+  } catch (error) {
+    console.error('Failed to send admin failure notification:', error)
+    return { success: false }
+  }
+}
+

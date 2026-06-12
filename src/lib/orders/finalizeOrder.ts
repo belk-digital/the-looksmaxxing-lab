@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { attributeOrder } from '@/lib/affiliates/commission'
+import { appendOrderToSheet } from '@/lib/google/sheets'
 
 /**
  * Centralized post-checkout logic.
@@ -140,6 +141,13 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
         }
     } catch (err) {
         console.error('Failed to send confirmation email', err)
+    }
+
+    // 7. Google Sheets Sync
+    try {
+      await appendOrderToSheet(order as any)
+    } catch (err) {
+      console.error('Failed to append to Google Sheets', err)
     }
 
     return true

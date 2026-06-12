@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useCartStore } from '@/lib/cart/store'
-import { createPayloadOrder } from './actions'
+import { createPayloadOrder, notifyAdminFailedPayment } from './actions'
 
 interface StripeCheckoutFormProps {
   amount: number
@@ -62,6 +62,9 @@ export function StripeCheckoutForm({
     if (error) {
       toast.error(error.message || 'An unexpected error occurred.')
       setIsProcessing(false)
+      
+      // Notify Admin
+      await notifyAdminFailedPayment(String(orderRes.orderId), error.message || 'Unknown error')
     } else if (paymentIntent && paymentIntent.status === 'succeeded') {
       toast.success("Payment successful! Redirecting...")
       

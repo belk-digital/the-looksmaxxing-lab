@@ -56,7 +56,7 @@ export async function submitAffiliateApplication(formData: FormData) {
       collection: 'affiliate-applications',
       data: {
         user: user.id,
-        status: 'pending',
+        status: 'approved',
         displayName,
         websiteUrl,
         socialLinks: [

@@ -64,7 +64,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
           </div>
           <div className="relative z-10 flex flex-col h-full justify-between">
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">Maxx Points</span>
-            <span className={`text-5xl text-black leading-none font-bold tracking-tighter ${spaceGrotesk.className}`}>{stats.maxxPoints}</span>
+            <span className={`text-5xl text-black leading-none font-bold tracking-tighter ${spaceGrotesk.className}`}>{Number(stats.maxxPoints.toFixed(2))}</span>
           </div>
         </motion.div>
 

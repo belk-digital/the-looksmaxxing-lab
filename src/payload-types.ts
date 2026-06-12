@@ -706,6 +706,21 @@ export interface Order {
   guestEmail?: string | null;
   createdAt: string;
   updatedAt: string;
+  /**
+   * Keep a running history of internal notes or send messages directly to the customer.
+   */
+  notes?:
+    | {
+        type?: ('internal' | 'customer') | null;
+        note?: string | null;
+        /**
+         * Auto-stamped when you save.
+         */
+        date?: string | null;
+        isEmailed?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1710,6 +1725,15 @@ export interface OrdersSelect<T extends boolean = true> {
   guestEmail?: T;
   createdAt?: T;
   updatedAt?: T;
+  notes?:
+    | T
+    | {
+        type?: T;
+        note?: T;
+        date?: T;
+        isEmailed?: T;
+        id?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

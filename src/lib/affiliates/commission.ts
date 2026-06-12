@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import type { Order, Affiliate, AffiliateClick } from '@/payload-types'
+import { generateAdminAffiliateConversionEmail } from '@/lib/emails/generateAdminAffiliateConversionEmail'
 
 export async function computeCommission(order: Order, affiliateId: string | number): Promise<number> {
   const payload = await getPayload({ config })
@@ -119,4 +120,16 @@ export async function attributeOrder(
     } as any, // Typecast due to dynamically generated types possibly missing fields
     overrideAccess: true,
   })
+
+  // Send admin notification
+  try {
+    const adminHtml = generateAdminAffiliateConversionEmail(order, affiliate, isVoid ? 0 : commissionAmount)
+    await payload.sendEmail({
+      to: 'support@thelooksmaxxinglab.com',
+      subject: `New Affiliate Sale! ${affiliate.displayName} made a conversion`,
+      html: adminHtml,
+    })
+  } catch (err) {
+    console.error('Failed to send admin affiliate conversion email', err)
+  }
 }

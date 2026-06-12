@@ -1,5 +1,7 @@
 import type { CollectionAfterChangeHook } from 'payload'
 import slugify from 'slugify'
+import { generateAffiliateWelcomeEmail } from '@/lib/emails/generateAffiliateWelcomeEmail'
+import { generateAdminAffiliateNotificationEmail } from '@/lib/emails/generateAdminAffiliateNotificationEmail'
 
 function generateRandomString(length: number) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -16,18 +18,29 @@ export const afterAffiliateApplicationChange: CollectionAfterChangeHook = async 
   req,
   operation,
 }) => {
-  // Only proceed if status was changed to 'approved' and it wasn't approved before
+  // Proceed if status is 'approved' and there is no linked affiliate yet
   if (
-    operation === 'update' &&
+    (operation === 'create' || operation === 'update') &&
     doc.status === 'approved' &&
-    previousDoc.status !== 'approved' &&
+    (!previousDoc || previousDoc.status !== 'approved') &&
     !doc.linkedAffiliate
   ) {
     try {
+      // 0. Fetch Global Affiliate Settings
+      const settings = await req.payload.findGlobal({
+        slug: 'affiliate-settings',
+        depth: 0,
+      })
+      const commissionRate = settings?.defaultCommissionRate || 10
+      const cookieDuration = settings?.defaultCookieDurationDays || 30
+      const pendingPeriod = settings?.defaultPendingPeriodDays || 30
+      const commissionOn = settings?.defaultCommissionOn || 'subtotal_after_coupon'
+      const commissionType = settings?.defaultCommissionType || 'percentage'
+
       const displayName = doc.displayName || 'affiliate'
       
       // 1. Generate unique Coupon Code
-      const baseCode = (displayName.replace(/[^a-zA-Z0-9]/g, '').toUpperCase() + '10').substring(0, 15)
+      const baseCode = (displayName.replace(/[^a-zA-Z0-9]/g, '').toUpperCase() + commissionRate).substring(0, 15)
       let finalCode = baseCode
       
       // Ensure code is unique (simple retry logic)
@@ -53,7 +66,7 @@ export const afterAffiliateApplicationChange: CollectionAfterChangeHook = async 
         data: {
           code: finalCode,
           type: 'percentage',
-          value: 10,
+          value: commissionRate,
           appliesTo: 'all',
           freeShipping: false,
           stackable: false,
@@ -98,12 +111,12 @@ export const afterAffiliateApplicationChange: CollectionAfterChangeHook = async 
           referralSlug: finalSlug,
           couponCode: finalCode,
           coupon: newCoupon.id,
-          cookieDurationDays: 30,
-          commissionRate: 10,
-          commissionType: 'percentage',
-          customerDiscount: 10,
-          pendingPeriodDays: 30,
-          commissionOn: 'subtotal_after_coupon',
+          cookieDurationDays: cookieDuration,
+          commissionRate: commissionRate,
+          commissionType: commissionType,
+          customerDiscount: commissionRate,
+          pendingPeriodDays: pendingPeriod,
+          commissionOn: commissionOn,
           tier: 'standard',
           minimumPayoutThreshold: 5000,
           payoutCurrency: 'USD',
@@ -121,6 +134,38 @@ export const afterAffiliateApplicationChange: CollectionAfterChangeHook = async 
         // use internal API context to avoid triggering loops
         req: { ...req, context: { ...req.context, disableHooks: true } } as any,
       })
+
+      // 5. Send Welcome & Admin Emails
+      try {
+        const userId = typeof doc.user === 'object' && doc.user !== null ? doc.user.id : doc.user
+        const userDoc = await req.payload.findByID({
+          collection: 'users',
+          id: userId,
+          depth: 0,
+        })
+        
+        if (userDoc && userDoc.email) {
+          // Send Welcome Email to Affiliate
+          const welcomeHtml = await generateAffiliateWelcomeEmail(newAffiliate, userDoc)
+          await req.payload.sendEmail({
+            to: userDoc.email,
+            subject: 'Welcome to the Partner Program! 🎉',
+            html: welcomeHtml,
+          })
+          req.payload.logger.info(`Sent welcome email to ${userDoc.email}`)
+          
+          // Send Notification Email to Admin
+          const adminHtml = generateAdminAffiliateNotificationEmail(doc, newAffiliate, userDoc)
+          await req.payload.sendEmail({
+            to: 'support@thelooksmaxxinglab.com',
+            subject: `New Affiliate Registered: ${newAffiliate.displayName}`,
+            html: adminHtml,
+          })
+          req.payload.logger.info(`Sent admin notification to support@thelooksmaxxinglab.com`)
+        }
+      } catch (emailErr) {
+        req.payload.logger.error({ err: emailErr }, 'Error sending affiliate emails')
+      }
 
       req.payload.logger.info(`Successfully approved application and created affiliate for user ${doc.user}`)
       
