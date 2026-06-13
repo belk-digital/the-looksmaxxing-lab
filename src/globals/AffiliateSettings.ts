@@ -6,8 +6,8 @@ export const AffiliateSettings: GlobalConfig = {
     group: 'Affiliate System',
   },
   access: {
-    read: () => true, // Everyone needs to read this for commission calcs
-    update: ({ req: { user } }) => !!user?.role && ['admin', 'staff'].includes(user.role),
+    read: () => true,
+    update: ({ req: { user } }) => !!user,
   },
   fields: [
     {
