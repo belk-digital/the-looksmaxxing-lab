@@ -48,7 +48,13 @@ export default async function AffiliatePayoutsPage() {
   const totalRequested = affiliate.totalCommissionRequested || 0
   const totalPendingHold = affiliate.totalCommissionPending || 0
   const availableBalance = Math.max(0, totalApproved - totalRequested)
-  const minimumThreshold = affiliate.minimumPayoutThreshold || 5000 // default $50
+
+  const settings = await payload.findGlobal({
+    slug: 'affiliate-settings',
+    overrideAccess: true,
+  }) as any
+  const pendingPeriodDays = affiliate.pendingPeriodDays ?? settings?.defaultPendingPeriodDays ?? 30
+  const minimumThreshold = affiliate.minimumPayoutThreshold ?? settings?.defaultMinimumPayoutThreshold ?? 5000
 
   return (
     <PayoutsClient 
@@ -56,6 +62,7 @@ export default async function AffiliatePayoutsPage() {
       availableBalance={availableBalance}
       totalPendingHold={totalPendingHold}
       minimumThreshold={minimumThreshold}
+      pendingPeriodDays={pendingPeriodDays}
     />
   )
 }

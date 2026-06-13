@@ -285,15 +285,17 @@ export const Orders: CollectionConfig = {
           ],
           admin: {
             layout: 'horizontal',
-            condition: (data, siblingData) => !siblingData?.isEmailed, // Lock type if emailed
+          },
+          access: {
+            update: ({ siblingData }) => !siblingData?.isEmailed,
           },
         },
         {
           name: 'note',
           type: 'textarea',
           required: true,
-          admin: {
-            condition: (data, siblingData) => !siblingData?.isEmailed, // Lock note text if emailed
+          access: {
+            update: ({ siblingData }) => !siblingData?.isEmailed,
           },
         },
         {

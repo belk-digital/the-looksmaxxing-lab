@@ -77,7 +77,7 @@ export const Affiliates: CollectionConfig = {
         {
           label: 'Payout',
           fields: [
-            { name: 'minimumPayoutThreshold', type: 'number', defaultValue: 5000, admin: { description: 'In cents. Default 5000 ($50.00)' } },
+            { name: 'minimumPayoutThreshold', type: 'number', admin: { description: 'Leave blank to use Global Default. Minimum payout threshold in cents (e.g. 5000 = $50.00).' } },
             { name: 'payoutCurrency', type: 'select', defaultValue: 'USD', options: ['USD', 'BTC', 'ETH', 'USDT_ERC20', 'USDT_TRC20', 'STORE_CREDIT'] },
             {
               name: 'payoutMethods',

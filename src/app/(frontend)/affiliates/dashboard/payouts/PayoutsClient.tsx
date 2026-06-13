@@ -20,9 +20,10 @@ interface PayoutsClientProps {
   availableBalance: number;
   totalPendingHold: number;
   minimumThreshold: number;
+  pendingPeriodDays: number;
 }
 
-export function PayoutsClient({ payoutRequests, availableBalance, totalPendingHold, minimumThreshold }: PayoutsClientProps) {
+export function PayoutsClient({ payoutRequests, availableBalance, totalPendingHold, minimumThreshold, pendingPeriodDays }: PayoutsClientProps) {
   const router = useRouter()
   
   const [amount, setAmount] = useState<string>('')
@@ -126,16 +127,16 @@ export function PayoutsClient({ payoutRequests, availableBalance, totalPendingHo
           </div>
         </motion.div>
 
-        {/* Pending 15-Day Hold Card */}
+        {/* Pending Hold Card */}
         <motion.div variants={itemVars} className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm flex flex-col justify-between min-h-[200px]">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Clock className="w-5 h-5 text-gray-400" />
               <h1 className={`text-xl font-bold tracking-tight text-black ${spaceGrotesk.className}`}>
-                15-Day Hold
+                {pendingPeriodDays}-Day Hold
               </h1>
             </div>
-            <p className="text-gray-500 text-sm">Pending commissions from recent orders. They will automatically clear after 15 days.</p>
+            <p className="text-gray-500 text-sm">Pending commissions from recent orders. They will automatically clear after {pendingPeriodDays} days.</p>
           </div>
           <div className="mt-8">
             <span className="text-4xl font-black text-gray-400 tracking-tight">{formatMoney(totalPendingHold)}</span>

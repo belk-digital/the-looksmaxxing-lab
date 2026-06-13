@@ -154,7 +154,7 @@ export async function generateAffiliateWelcomeEmail(affiliate: any, user: any): 
       </ul>
       
       <div style="text-align: center; margin-top: 32px;">
-        <a href="${serverUrl}/affiliates/dashboard" class="button">Go to Dashboard</a>
+        <a href="${serverUrl}/affiliates/dashboard" class="button" style="color: #FAF7F2;">Go to Dashboard</a>
       </div>
     </div>
     <div class="footer">
