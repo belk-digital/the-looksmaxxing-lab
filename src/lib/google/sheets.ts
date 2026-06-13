@@ -33,7 +33,8 @@ export async function appendOrderToSheet(order: Order) {
     // Items
     const itemsList = (order.items || []).map((item: any) => {
       const productName = item.productSnapshot?.name || item.product?.name || 'Unknown Product';
-      return `${productName} (x${item.quantity || 1})`;
+      const variantText = item.variant && item.variant !== 'DEFAULT' ? ` [Variant: ${item.variant}]` : '';
+      return `${productName}${variantText} (x${item.quantity || 1})`;
     }).join(', ');
 
     // Financials
