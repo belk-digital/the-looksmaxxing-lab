@@ -49,10 +49,17 @@ export default async function AffiliatePayoutsPage() {
   const totalPendingHold = affiliate.totalCommissionPending || 0
   const availableBalance = Math.max(0, totalApproved - totalRequested)
 
-  const settings = await payload.findGlobal({
-    slug: 'affiliate-settings',
-    overrideAccess: true,
-  }) as any
+  let settings: any = null;
+  try {
+    settings = await payload.findGlobal({
+      slug: 'affiliate-settings',
+      overrideAccess: true,
+    })
+  } catch (error) {
+    // If global hasn't been initialized in admin yet, findGlobal might throw an error
+    console.warn('Affiliate settings global not initialized yet, using fallback defaults.')
+  }
+
   const pendingPeriodDays = affiliate.pendingPeriodDays ?? settings?.defaultPendingPeriodDays ?? 30
   const minimumThreshold = affiliate.minimumPayoutThreshold ?? settings?.defaultMinimumPayoutThreshold ?? 5000
 
