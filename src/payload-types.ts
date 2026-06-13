@@ -711,8 +711,8 @@ export interface Order {
    */
   notes?:
     | {
-        type?: ('internal' | 'customer') | null;
-        note?: string | null;
+        type: 'internal' | 'customer';
+        note: string;
         /**
          * Auto-stamped when you save.
          */
@@ -998,7 +998,7 @@ export interface Affiliate {
    */
   totalCommissionPaid?: number | null;
   /**
-   * In cents. Default 5000 ($50.00)
+   * Leave blank to use Global Default. Minimum payout threshold in cents (e.g. 5000 = $50.00).
    */
   minimumPayoutThreshold?: number | null;
   payoutCurrency?: ('USD' | 'BTC' | 'ETH' | 'USDT_ERC20' | 'USDT_TRC20' | 'STORE_CREDIT') | null;
@@ -2083,6 +2083,10 @@ export interface AffiliateSetting {
   defaultCommissionOn: 'subtotal_after_coupon' | 'subtotal_before_coupon';
   defaultCookieDurationDays: number;
   defaultPendingPeriodDays: number;
+  /**
+   * Global default minimum payout threshold in cents (e.g. 5000 = $50.00).
+   */
+  defaultMinimumPayoutThreshold: number;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2096,6 +2100,7 @@ export interface AffiliateSettingsSelect<T extends boolean = true> {
   defaultCommissionOn?: T;
   defaultCookieDurationDays?: T;
   defaultPendingPeriodDays?: T;
+  defaultMinimumPayoutThreshold?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
