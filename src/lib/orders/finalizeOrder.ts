@@ -143,12 +143,7 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
         console.error('Failed to send confirmation email', err)
     }
 
-    // 7. Google Sheets Sync
-    try {
-      await appendOrderToSheet(order as any)
-    } catch (err) {
-      console.error('Failed to append to Google Sheets', err)
-    }
+
 
     return true
 

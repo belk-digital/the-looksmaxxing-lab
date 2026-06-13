@@ -61,5 +61,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     path: '/',
   })
 
+  if (affiliate.couponCode) {
+    // We do NOT use httpOnly here because we want the client-side cart logic to read and clear this cookie
+    response.cookies.set('affiliate_auto_coupon', affiliate.couponCode, {
+      maxAge: 60 * 60, // 1 hour is plenty of time to apply it
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    })
+  }
+
   return response
 }

@@ -1,6 +1,21 @@
 import type { CollectionAfterChangeHook } from 'payload'
+import { appendOrderToSheet } from '@/lib/google/sheets'
 
 export const afterOrderChange: CollectionAfterChangeHook = async ({ doc, previousDoc, operation, req }) => {
+  // Sync to Google Sheets if it became paid, captured, or completed
+  const becamePaid = (doc.paymentStatus === 'paid' || doc.paymentStatus === 'captured') && 
+                     (previousDoc?.paymentStatus !== 'paid' && previousDoc?.paymentStatus !== 'captured')
+  const becameCompleted = doc.status === 'completed' && previousDoc?.status !== 'completed'
+
+  if (becamePaid || becameCompleted) {
+    try {
+      await appendOrderToSheet(doc as any)
+      req.payload.logger.info(`Synced Order ${doc.id} to Google Sheets from hook`)
+    } catch (err) {
+      req.payload.logger.error({ err }, `Failed to sync Order ${doc.id} to Google Sheets`)
+    }
+  }
+
   if (operation === 'update') {
     // If the order is refunded or cancelled, we must reverse any associated affiliate conversions
     const wasRefunded = doc.status === 'refunded' && previousDoc?.status !== 'refunded'
