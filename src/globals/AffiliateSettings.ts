@@ -3,7 +3,7 @@ import type { GlobalConfig } from 'payload'
 export const AffiliateSettings: GlobalConfig = {
   slug: 'affiliate-settings',
   admin: {
-    group: 'Settings',
+    group: 'Affiliate System',
   },
   access: {
     read: () => true, // Everyone needs to read this for commission calcs
