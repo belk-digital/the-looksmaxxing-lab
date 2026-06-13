@@ -9,8 +9,8 @@ export async function GET() {
     // Try to force a database schema push
     let pushResult = 'skipped'
     try {
-      if (typeof payload.db.push === 'function') {
-        await payload.db.push()
+      if (typeof (payload.db as any).push === 'function') {
+        await (payload.db as any).push()
         pushResult = 'success'
       }
     } catch (e: any) {
