@@ -21,7 +21,7 @@ const CATEGORIES = [
 
 // Re-using the premium generated images as placeholders
 const CATEGORY_IMAGES = [
-  '/Featured%20Images/glass-dna-strand.webp', // Bioregulators
+  '/Featured%20Images/bioregulators-category-image.webp', // Bioregulators
   '/Featured%20Images/blue-petri-dishes.webp', // Cellular Health
   '/Featured%20Images/white-blue-dna-helix.webp', // Cognitive Function
   '/Featured%20Images/mt-2-water-ripple.webp', // Essentials

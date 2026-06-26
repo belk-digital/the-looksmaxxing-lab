@@ -1,127 +1,146 @@
-'use client'
+import type { Metadata } from 'next'
+import FaqClient from './FaqClient'
 
-import React, { useState } from 'react'
-import { SearchIcon } from 'lucide-react'
-import { FadeUp } from '@/components/motion/FadeUp'
-import { EmptyState } from '@/components/shared/EmptyState'
-import { Input } from '@/components/ui/input'
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from '@/components/ui/accordion'
-
-const FAQ_DATA = [
-  {
-    title: 'Products & Purity',
-    items: [
-      { q: 'What is research-use-only?', a: 'Our products are strictly intended for in-vitro and laboratory research applications. They are not intended for human consumption, therapeutic use, or any form of diagnostic application. By purchasing, you acknowledge the inherent risks associated with these compounds and your responsibility to handle them in a controlled laboratory environment.' },
-      { q: 'What purity level is research-grade?', a: 'We guarantee a minimum of 99% purity across our entire catalog. This standard is enforced through mandatory third-party HPLC (High-Performance Liquid Chromatography) and LC-MS (Liquid Chromatography-Mass Spectrometry) testing.' },
-      { q: 'How are COAs verified?', a: 'Every batch synthesized undergoes independent analysis at an ISO-certified US laboratory. The resulting Certificate of Analysis (COA) verifies both the exact sequence structure and the overall purity percentage. COAs are publicly available in our verification library and included with every shipment.' }
-    ]
-  },
-  {
-    title: 'Ordering & Shipping',
-    items: [
-      { q: 'Do you ship internationally?', a: 'Yes, we offer worldwide shipping. However, it is the sole responsibility of the researcher to ensure that the importation of research peptides complies with all local, state, and national regulations.' },
-      { q: 'What is the cutoff time for same-day shipping?', a: 'Orders successfully placed and verified before 2:00 PM EST (Monday through Friday) will be dispatched on the same business day.' },
-      { q: 'Is a signature required for delivery?', a: 'To ensure the secure chain of custody for research materials, all orders exceeding $500 automatically require a signature upon delivery.' }
-    ]
-  },
-
-  {
-    title: 'Research Use',
-    items: [
-      { q: 'Can I use these for human consumption?', a: 'No. Under no circumstances should these compounds be used for human consumption. Any communication indicating intent to misuse these products will result in immediate cancellation of your order and a permanent ban from our platform.' },
-      { q: 'How should I store unmixed peptides?', a: 'Lyophilized (powdered) peptides should be stored in a freezer at -20°C away from light and moisture. For short-term storage (under 30 days), refrigeration at 4°C is acceptable.' }
-    ]
-  },
-  {
-    title: 'Account',
-    items: [
-      { q: 'How do I access my past COAs?', a: 'Log in to your account dashboard and navigate to your Order History. Digital copies of the specific COAs associated with your batches are available for download there.' },
-      { q: 'How do I reset my password?', a: 'Click the "Forgot Password" link on the login portal. You will receive a secure reset link via the email associated with your account.' }
-    ]
-  }
-]
+export const metadata: Metadata = {
+  title: 'Research Peptide FAQ | Looksmaxxing, Purity & Ordering | Looksmaxxing Lab',
+  description: 'Answers to every question about research peptides, looksmaxxing, purity standards, COA verification, ordering, and storage. US-synthesized compounds. Research use only.',
+}
 
 export default function FAQPage() {
-  const [searchQuery, setSearchQuery] = useState('')
+  const schemaOrganization = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "The Looksmaxxing Lab",
+    "url": "https://the-looksmaxxing-lab.vercel.app",
+    "description": "US-based research peptide supplier providing 99%+ HPLC-pure compounds with third-party COA verification.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "US"
+    },
+    "sameAs": []
+  };
 
-  const filteredCategories = FAQ_DATA.map(cat => {
-    return {
-      ...cat,
-      items: cat.items.filter(item => 
-        item.q.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        item.a.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    }
-  }).filter(cat => cat.items.length > 0)
+  const schemaBreadcrumbList = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://the-looksmaxxing-lab.vercel.app"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "FAQ",
+        "item": "https://the-looksmaxxing-lab.vercel.app/faq"
+      }
+    ]
+  };
+
+  const schemaFAQPage = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is looksmaxxing?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Looksmaxxing is the practice of systematically optimizing physical appearance through controllable habits — skincare, grooming, fitness, nutrition, and sleep. The Looksmaxxing Lab focuses on evidence-based softmaxxing. All research products are strictly for laboratory use only."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does research-use-only (RUO) mean?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Research-use-only (RUO) means a product is intended exclusively for laboratory research. RUO products are not drugs or supplements. They have not been evaluated by the FDA for human use and are not intended for human consumption, diagnosis, or treatment."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What purity level is research-grade?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Research-grade peptides must meet or exceed 99% HPLC purity. The Looksmaxxing Lab enforces a strict 99%+ purity floor verified by independent third-party HPLC and LC-MS testing on every production batch."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How are COAs verified?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Every COA is generated by an independent third-party laboratory including HPLC purity, LC-MS identity confirmation, endotoxin testing, and batch lot number. The full COA library is publicly accessible at /certificates."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the cutoff time for same-day shipping?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Orders placed before 2:00 PM Eastern Time on business days ship the same day. Orders after 2 PM ET or on weekends ship the next business day. 2-day delivery available on orders over $300."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use these for human consumption?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. All products are strictly for laboratory and research use only. Not intended for human consumption, clinical diagnosis, or therapeutic use. These statements have not been evaluated by the FDA."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How should I store unmixed peptides?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Store lyophilized peptide powder in a freezer at -20°C or below for long-term stability. Avoid repeated freeze-thaw cycles. Once reconstituted with bacteriostatic water, refrigerate at 2-8°C and use within 2-4 weeks."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is looksmaxxing safe?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Evidence-based softmaxxing — skincare, grooming, fitness, and healthy lifestyle — is safe and widely practised. Concerns arise with hardmaxxing approaches promoting extreme modification. Our research compounds are for laboratory use only, not for self-administration."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is HPLC purity testing?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "HPLC (High-Performance Liquid Chromatography) separates a compound mixture to measure the concentration of the target peptide vs impurities, expressed as a percentage. A 99%+ result means 99% or more of the sample is the intended compound."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is bacteriostatic water?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Bacteriostatic water (BAC water) is sterile water containing 0.9% benzyl alcohol that prevents microbial growth. It is the standard diluent for reconstituting lyophilized research peptides, extending reconstituted stability to 2-4 weeks at 2-8°C."
+        }
+      }
+    ]
+  };
+
+  const schemaWebPage = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Research Peptide FAQ — The Looksmaxxing Lab",
+    "url": "https://the-looksmaxxing-lab.vercel.app/faq",
+    "description": "Answers to questions about research peptides, looksmaxxing, purity, ordering, and compliance.",
+    "mainEntity": schemaFAQPage
+  };
 
   return (
-    <main className="bg-[#f3f4f6] min-h-screen pt-32 lg:pt-40 pb-24">
-      {/* Header & Search */}
-      <section className="px-6 mb-16 lg:mb-24 max-w-2xl mx-auto flex flex-col items-center">
-        <FadeUp className="w-full flex flex-col items-center">
-          <span className="px-4 py-1.5 bg-white border border-gray-100 shadow-sm text-ink rounded-full text-xs font-bold uppercase tracking-widest mb-6">Support Center</span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-ink mb-6 text-center tracking-tight leading-tight">Frequently Asked Questions</h1>
-          <p className="text-lg lg:text-xl text-gray-500 text-center mb-10 max-w-xl font-light leading-relaxed">
-            Everything you need to know about our research compounds, purity standards, and ordering guidelines.
-          </p>
-          
-          <div className="relative w-full max-w-[540px]">
-            <SearchIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <Input 
-              type="text" 
-              placeholder="Search for an answer..." 
-              className="w-full h-14 pl-14 pr-6 rounded-full bg-white border-transparent shadow-sm hover:shadow-md focus:border-[#5984c4] focus:ring-1 focus:ring-[#5984c4] transition-all duration-300 text-lg placeholder:text-gray-400"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </FadeUp>
-      </section>
-
-      {/* FAQ Accordions */}
-      <section className="px-4 md:px-6 max-w-[800px] mx-auto mb-24">
-        <FadeUp delay={0.1}>
-          {filteredCategories.length === 0 ? (
-            <div className="py-24 bg-white rounded-[2rem] shadow-sm flex items-center justify-center">
-              <EmptyState 
-                icon={SearchIcon} 
-                title="No results found" 
-                description={`We couldn't find any answers matching "${searchQuery}".`} 
-              />
-            </div>
-          ) : (
-            <div className="flex flex-col gap-8">
-              {filteredCategories.map((category) => (
-                <div key={category.title} className="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-6 lg:p-10 shadow-sm">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="w-8 h-8 rounded-full bg-[#5984c4]/10 flex items-center justify-center shrink-0">
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#5984c4]" />
-                    </div>
-                    <h2 className="text-2xl lg:text-3xl font-bold text-ink tracking-tight">{category.title}</h2>
-                  </div>
-                  <Accordion type="multiple" className="w-full">
-                    {category.items.map((item, i) => (
-                      <AccordionItem key={i} value={`${category.title}-${i}`} className="border-b border-gray-100 last:border-0">
-                        <AccordionTrigger className="text-lg md:text-xl font-medium text-ink hover:text-[#5984c4] transition-colors duration-300 py-6 text-left">
-                          {item.q}
-                        </AccordionTrigger>
-                        <AccordionContent className="text-base md:text-lg text-gray-500 leading-relaxed pb-8 font-light">
-                          {item.a}
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </div>
-              ))}
-            </div>
-          )}
-        </FadeUp>
-      </section>
-    </main>
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaOrganization) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaBreadcrumbList) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaWebPage) }} />
+      <FaqClient />
+    </>
   )
 }

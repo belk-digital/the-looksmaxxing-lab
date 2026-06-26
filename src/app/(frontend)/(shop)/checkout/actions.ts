@@ -25,7 +25,7 @@ export async function getShippingMethods() {
   // Fallback if none exist
   return [
     { method: 'Standard Shipping', price: 0, estimatedDays: 5 },
-    { method: 'Express Shipping', price: 25, estimatedDays: 2 }
+    { method: 'Express Shipping', price: 2500, estimatedDays: 2 }
   ]
 }
 
@@ -105,7 +105,7 @@ export async function createPaymentIntent(
     }
   }
 
-  const shippingCost = selectedMethod?.price || 0
+  const shippingCost = (selectedMethod?.price || 0) / 100
 
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)
   const isExpressShipping = shippingMethodName.toLowerCase().includes('express')
@@ -172,7 +172,8 @@ export async function createPayloadOrder(
   isRedeemingPoints: boolean,
   formData: any,
   paymentIntentId: string,
-  userId?: string
+  userId?: string,
+  paymentMethod?: string
 ) {
   const payload = await getPayload({ config: configPromise })
 
@@ -231,7 +232,7 @@ export async function createPayloadOrder(
     }
   }
 
-  const shippingCost = selectedMethod?.price || 0
+  const shippingCost = (selectedMethod?.price || 0) / 100
 
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)
   const isExpressShipping = shippingMethodName.toLowerCase().includes('express')
@@ -278,6 +279,47 @@ export async function createPayloadOrder(
        })
        if (userRes.docs.length > 0) {
           payloadUserId = userRes.docs[0].id
+          
+          // Save the address to their profile if it doesn't already exist
+          if (formData.address && formData.city && formData.zip) {
+            const existingAddress = await payload.find({
+              collection: 'addresses',
+              where: {
+                and: [
+                  { user: { equals: payloadUserId } },
+                  { line1: { equals: formData.address } },
+                  { postalCode: { equals: formData.zip } },
+                ]
+              }
+            })
+
+            if (existingAddress.docs.length === 0) {
+              const allUserAddresses = await payload.find({
+                collection: 'addresses',
+                where: { user: { equals: payloadUserId } }
+              })
+              const isFirst = allUserAddresses.docs.length === 0
+
+              await payload.create({
+                collection: 'addresses',
+                data: {
+                  user: payloadUserId,
+                  label: isFirst ? 'Default Address' : 'Additional Address',
+                  firstName: formData.firstName || '',
+                  lastName: formData.lastName || '',
+                  line1: formData.address,
+                  line2: formData.apartment || '',
+                  city: formData.city,
+                  state: formData.state,
+                  postalCode: formData.zip,
+                  country: 'US',
+                  phone: formData.phone || '',
+                  isDefaultShipping: isFirst,
+                  isDefaultBilling: isFirst
+                }
+              })
+            }
+          }
        }
     }
 
@@ -325,11 +367,12 @@ export async function createPayloadOrder(
         total: total,
         shippingMethod: shippingMethodName,
         couponCode: couponCode || '',
-      }
+        paymentMethod: paymentMethod || 'stripe',
+      } as any
     })
 
     // Update Stripe PaymentIntent with the Order ID (unless it's a free order)
-    if (paymentIntentId && paymentIntentId !== 'free_order') {
+    if (paymentIntentId && paymentIntentId !== 'free_order' && paymentIntentId !== 'manual') {
        await stripe.paymentIntents.update(paymentIntentId, {
           metadata: {
              orderId: String(order.id)
@@ -343,6 +386,14 @@ export async function createPayloadOrder(
           affiliateId: (await cookies()).get('affiliate_ref')?.value,
           clickId: (await cookies()).get('affiliate_click_id')?.value,
        })
+    } else if (paymentIntentId === 'manual') {
+       // Finalize the order but leave it as unpaid (so email sends with manual instructions)
+       const { finalizeOrder } = await import('@/lib/orders/finalizeOrder')
+       await finalizeOrder(order.id, {
+          cartId: undefined,
+          affiliateId: (await cookies()).get('affiliate_ref')?.value,
+          clickId: (await cookies()).get('affiliate_click_id')?.value,
+       }, true)
     }
 
     // Set a cookie to authorize the order confirmation page

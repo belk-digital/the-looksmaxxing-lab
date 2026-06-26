@@ -111,30 +111,44 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
           {/* Tracking Timeline */}
           <div className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm">
             <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-black mb-8 border-b border-gray-100 pb-4">Tracking Status</h2>
-            <div className="relative flex justify-between px-4 sm:px-8">
+            <div className="relative flex justify-between px-0 sm:px-8">
               {/* Connecting Line (Background) */}
-              <div className="absolute top-4 left-8 right-8 h-[2px] bg-gray-100 -z-10 rounded-full" />
+              <div className="absolute top-3 sm:top-4 left-4 sm:left-8 right-4 sm:right-8 h-[2px] bg-gray-100 -z-10 rounded-full" />
               
               {/* Connecting Line (Progress) */}
               <div 
-                className="absolute top-4 left-8 h-[2px] bg-black -z-10 transition-all duration-1000 ease-out rounded-full" 
-                style={{ width: `calc(${(Math.max(currentStepIndex, 0) / (STATUS_STEPS.length - 1)) * 100}% - 4rem)` }} 
+                className="absolute top-3 sm:top-4 left-4 sm:left-8 h-[2px] bg-black -z-10 transition-all duration-1000 ease-out rounded-full" 
+                style={{ width: `calc(${(Math.max(currentStepIndex, 0) / (STATUS_STEPS.length - 1)) * 100}% - var(--line-offset, 2rem))` }}
+                // Using a CSS variable or standard calculation for responsiveness can be tricky inline, 
+                // but since it's just decorative, we'll keep it simple or allow slight overflow.
+                // A better way is using a ref or just standard percentages. 
+                // Let's use 100% of the calculated segment:
               />
+              <style jsx>{`
+                div[style*="width: calc"] {
+                  width: calc(${(Math.max(currentStepIndex, 0) / (STATUS_STEPS.length - 1)) * 100}% - 2rem) !important;
+                }
+                @media (min-width: 640px) {
+                  div[style*="width: calc"] {
+                    width: calc(${(Math.max(currentStepIndex, 0) / (STATUS_STEPS.length - 1)) * 100}% - 4rem) !important;
+                  }
+                }
+              `}</style>
 
               {STATUS_STEPS.map((step, index) => {
                 const isCompleted = index <= currentStepIndex
                 const isCurrent = index === currentStepIndex
                 
                 return (
-                  <div key={step} className="flex flex-col items-center gap-3 bg-white px-2">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 shadow-sm ${
+                  <div key={step} className="flex flex-col items-center gap-2 sm:gap-3 bg-white px-1 sm:px-2">
+                    <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-500 shadow-sm ${
                       isCompleted ? 'bg-black text-white border-none' : 'bg-white border-2 border-gray-100 text-gray-300'
                     }`}>
                       {isCompleted && (
-                        <div className="w-2 h-2 bg-white rounded-full" />
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full" />
                       )}
                     </div>
-                    <span className={`text-[10px] font-bold uppercase tracking-[0.1em] ${
+                    <span className={`text-[8px] sm:text-[10px] font-bold uppercase tracking-[0.05em] sm:tracking-[0.1em] ${
                       isCurrent ? 'text-black' : isCompleted ? 'text-gray-500' : 'text-gray-300'
                     }`}>
                       {step}
@@ -147,6 +161,20 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
             {order.status === 'cancelled' && (
               <div className="mt-8 bg-red-50 text-red-600 p-4 rounded-xl text-sm font-medium border border-red-100 flex items-center gap-2">
                 This order has been cancelled.
+              </div>
+            )}
+
+            {order.trackingLink && (
+              <div className="mt-8 bg-purple-50 p-6 rounded-2xl border border-purple-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-purple-900 flex items-center gap-2">
+                    <Truck size={14} /> Tracking Information
+                  </h3>
+                  <p className="text-sm text-purple-800">Your shipment is on the way. Track it live below.</p>
+                </div>
+                <a href={order.trackingLink} target="_blank" rel="noopener noreferrer" className="bg-purple-600 text-white w-full sm:w-auto text-center px-6 py-3.5 rounded-full text-[10px] font-bold uppercase tracking-[0.15em] hover:bg-purple-700 transition-colors shadow-sm">
+                  Track Package
+                </a>
               </div>
             )}
           </div>
@@ -178,28 +206,30 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                 }
                 
                 return (
-                  <div key={item.id || Math.random()} className="flex items-center gap-6 group">
-                    <Link href={`/products/${product.slug || ''}`} className="relative w-20 h-20 bg-gray-50 shrink-0 border border-gray-100 rounded-2xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow">
+                  <div key={item.id || Math.random()} className="flex items-center gap-3 sm:gap-6 group">
+                    <Link href={`/products/${product.slug || ''}`} className="relative w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 shrink-0 border border-gray-100 rounded-2xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow">
                       <Image src={imageUrl} alt={title} fill className="object-contain p-2" sizes="80px" />
-                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-[10px] font-bold z-10 border-2 border-white shadow-sm">
-                        {item.quantity}
-                      </div>
                     </Link>
                     
-                    <div className="flex flex-col flex-1">
-                      <Link href={`/products/${product.slug || ''}`}>
-                        <span className={`text-lg text-black font-bold tracking-tight hover:text-purple-600 transition-colors ${spaceGrotesk.className}`}>
+                    <div className="flex flex-col flex-1 min-w-0">
+                      <Link href={`/products/${product.slug || ''}`} className="truncate">
+                        <span className={`text-base sm:text-lg text-black font-bold tracking-tight hover:text-purple-600 transition-colors ${spaceGrotesk.className} truncate block`}>
                           {title}
                         </span>
                       </Link>
-                      {displayVariant && !['DEFAULT', 'DEFAULT TITLE'].includes(displayVariant.toUpperCase()) && (
-                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 mt-1">
-                          {displayVariant}
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-1 sm:mt-1.5">
+                        {displayVariant && !['DEFAULT', 'DEFAULT TITLE'].includes(displayVariant.toUpperCase()) && (
+                          <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
+                            {displayVariant}
+                          </span>
+                        )}
+                        <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400 bg-gray-50 px-1.5 sm:px-2 py-0.5 rounded border border-gray-100">
+                          Qty: {item.quantity}
                         </span>
-                      )}
+                      </div>
                     </div>
                     
-                    <span className={`text-xl font-bold text-black tracking-tighter ${spaceGrotesk.className}`}>
+                    <span className={`text-lg sm:text-xl font-bold text-black tracking-tighter ${spaceGrotesk.className} shrink-0`}>
                       ${(price * item.quantity).toFixed(2)}
                     </span>
                   </div>

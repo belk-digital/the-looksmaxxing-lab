@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -15,6 +15,28 @@ import { useLenis } from 'lenis/react'
 export function CartDrawer() {
   const { isOpen, closeCart, items, removeItem, updateQuantity } = useCartStore()
   const lenis = useLenis()
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number>(300) // Fallback
+
+  useEffect(() => {
+    async function fetchThreshold() {
+      try {
+        const shippingRes = await fetch('/api/shippingzones')
+        const shippingData = await shippingRes.json()
+        if (shippingData?.docs?.length > 0) {
+          const firstZone = shippingData.docs[0]
+          if (firstZone.methods?.length > 0) {
+            const freeMethod = firstZone.methods.find((m: any) => m.price === 0 && m.minOrderAmount > 0)
+            if (freeMethod) {
+              setFreeShippingThreshold(freeMethod.minOrderAmount)
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch free shipping threshold", err)
+      }
+    }
+    fetchThreshold()
+  }, [])
 
   // Lock body scroll when open
   useEffect(() => {
@@ -41,9 +63,8 @@ export function CartDrawer() {
   }, [closeCart])
 
   const subtotal = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
-  const FREE_SHIPPING_THRESHOLD = 300
-  const progressToFreeShipping = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)
-  const amountToFreeShipping = FREE_SHIPPING_THRESHOLD - subtotal
+  const progressToFreeShipping = Math.min((subtotal / freeShippingThreshold) * 100, 100)
+  const amountToFreeShipping = freeShippingThreshold - subtotal
 
   return (
     <AnimatePresence>
@@ -107,8 +128,8 @@ export function CartDrawer() {
                 <div className="px-6 md:px-8 py-5 bg-[#F8F8FA] shrink-0">
                   <p className="text-xs font-bold uppercase tracking-wider text-ink/70 text-center mb-3">
                     {amountToFreeShipping > 0 
-                      ? `Add $${amountToFreeShipping.toFixed(2)} more for free 2-day shipping`
-                      : "🎉 You've unlocked free 2-day shipping!"}
+                      ? `Add $${amountToFreeShipping.toFixed(2)} more for free shipping`
+                      : "🎉 You've unlocked free shipping!"}
                   </p>
                   <div className="w-full h-2 bg-black/5 rounded-full overflow-hidden shadow-inner">
                     <motion.div 

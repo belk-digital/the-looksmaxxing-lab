@@ -3,7 +3,6 @@ import { Hero } from '@/components/home/Hero'
 import { FeaturedProductsSection } from '@/components/home/FeaturedProductsSection'
 import { CategoriesSection } from '@/components/home/CategoriesSection'
 import { AboutTeaser } from '@/components/home/AboutTeaser'
-import { TrustBadges } from '@/components/shared/TrustBadges'
 import { JournalTeaser } from '@/components/home/JournalTeaser'
 import { CoaSection } from '@/components/home/CoaSection'
 import { FaqSection } from '@/components/home/FaqSection'
@@ -36,7 +35,6 @@ export default async function Homepage() {
           <FeaturedProductsSection products={products} />
           <CategoriesSection />
           <AboutTeaser />
-          <TrustBadges />
           <WhatSetsUsApart />
           <CoaSection />
           <JournalTeaser />

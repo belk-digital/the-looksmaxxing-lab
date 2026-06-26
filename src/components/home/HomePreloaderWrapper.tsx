@@ -137,11 +137,7 @@ export function HomePreloaderWrapper({ children }: { children: React.ReactNode }
            className="absolute bottom-12 md:bottom-[10%] flex flex-col items-center gap-4 text-ink/50"
            style={{ opacity: 0 }}
          >
-           <svg width="48" height="24" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 15 C15 7, 45 7, 45 15 C45 23, 20 23, 20 15 C20 11, 40 11, 40 15 C40 19, 25 19, 25 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M5 15 C5 2, 55 2, 55 15 C55 28, 10 28, 10 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <circle cx="58" cy="4" r="1.5" fill="currentColor" />
-           </svg>
+           <span className="font-serif text-3xl font-bold tracking-tighter text-currentColor">TLML</span>
            <span className="text-[10px] md:text-label-sm uppercase tracking-[0.3em] font-bold text-center">
              The Looksmaxxing Lab
            </span>

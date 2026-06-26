@@ -3,7 +3,7 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
   const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://thelooksmaxxinglab.com';
   
-  const formatMoney = (amount: number) => `$${(amount).toFixed(2)}`;
+  const formatMoney = (amount: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
   
   const subtotal = order.subtotal || 0;
   const discountTotal = order.discountTotal || 0;
@@ -98,6 +98,31 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
     </tr>
   ` : '';
 
+  let manualPaymentBanner = '';
+  if ((order.paymentMethod === 'apple_pay' || order.paymentMethod === 'zelle') && order.paymentStatus === 'unpaid') {
+    const paymentContact = order.paymentMethod === 'apple_pay' ? '(555) 123-4567 (Apple Pay)' : 'payments@thelooksmaxxinglab.com (Zelle)';
+    manualPaymentBanner = `
+          <!-- Manual Payment Instructions -->
+          <tr>
+            <td style="padding: 0 40px 20px 40px;">
+              <div style="background-color: #FEF3C7; border: 1px solid #FDE68A; padding: 24px; border-radius: 8px; text-align: center;">
+                <h3 style="margin: 0 0 12px 0; color: #92400E; font-size: 18px; font-weight: 700;">Action Required: Complete Your Payment</h3>
+                <p style="margin: 0 0 16px 0; color: #92400E; font-size: 14px; line-height: 1.5;">
+                  Your order has been placed but is currently unpaid. To complete your purchase and begin processing, please send <strong>${formatMoney(total)}</strong> to:
+                </p>
+                <div style="background-color: #ffffff; padding: 12px; border-radius: 6px; display: inline-block; border: 1px solid #FDE68A; margin-bottom: 16px;">
+                  <strong style="font-size: 18px; color: #111827;">${paymentContact}</strong>
+                </div>
+                <p style="margin: 0; color: #92400E; font-size: 13px;">
+                  <strong>Important:</strong> You must include your Order Number (<strong>#${orderNumber}</strong>) in the payment notes.
+                </p>
+              </div>
+            </td>
+          </tr>
+    `;
+  }
+
+
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -132,6 +157,8 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
           </tr>
           ` : ''}
 
+          ${manualPaymentBanner}
+
           <!-- Order Info -->
           <tr>
             <td style="padding: 30px 40px;">
@@ -144,6 +171,16 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
                   <td width="50%" align="right">
                     <p style="margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #9ca3af; font-weight: 600;">Date</p>
                     <p style="margin: 4px 0 0 0; font-size: 16px; color: #111827; font-weight: 500;">${orderDate}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="50%" style="padding-top: 16px;">
+                    <p style="margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #9ca3af; font-weight: 600;">Payment Method</p>
+                    <p style="margin: 4px 0 0 0; font-size: 16px; color: #111827; font-weight: 500;">${order.paymentMethod === 'apple_pay' ? 'Apple Pay' : order.paymentMethod === 'zelle' ? 'Zelle' : 'Credit / Debit Card'}</p>
+                  </td>
+                  <td width="50%" align="right" style="padding-top: 16px;">
+                    <p style="margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #9ca3af; font-weight: 600;">Payment Status</p>
+                    <p style="margin: 4px 0 0 0; font-size: 16px; color: #111827; font-weight: 500; text-transform: capitalize;">${order.paymentStatus || 'unpaid'}</p>
                   </td>
                 </tr>
               </table>

@@ -110,7 +110,8 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
     discountTotal: order.discountTotal || 0,
     redeemedPoints: order.redeemedPoints || 0,
     couponCode: order.couponCode || '',
-    paymentMethod: 'Credit Card' 
+    paymentMethod: order.paymentMethod || 'stripe',
+    paymentStatus: order.paymentStatus || 'unpaid'
   }
 
   return (

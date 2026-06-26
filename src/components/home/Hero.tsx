@@ -107,7 +107,7 @@ export function Hero() {
         <div className="absolute top-0 inset-x-0 h-[160px] bg-gradient-to-b from-black/20 to-transparent z-10 pointer-events-none"></div>
       </div>
 
-      <div className="relative w-full h-full px-6 md:px-12 lg:px-16 flex flex-col items-center lg:items-start justify-center pt-32 lg:pt-0 pb-16 lg:pb-0 z-20">
+      <div className="relative w-full h-full px-6 md:px-12 lg:px-16 flex flex-col items-center lg:items-start justify-center pt-32 lg:pt-[120px] pb-16 lg:pb-12 z-20">
         
         {/* Text & CTA */}
         <div ref={textContainerRef} className="w-full lg:w-[55%] xl:w-[50%] flex flex-col items-center lg:items-start text-center lg:text-left mt-4 lg:mt-0 drop-shadow-md">
@@ -120,14 +120,13 @@ export function Hero() {
 
           <div className="gsap-reveal overflow-hidden mb-5 lg:mb-8">
             <h1 className={`text-[clamp(2.75rem,8vw,3.5rem)] lg:text-[clamp(3.5rem,4.5vw,5.25rem)] leading-[1.05] font-bold tracking-tighter text-white ${spaceGrotesk.className}`}>
-              Research-Grade Peptides <br className="hidden lg:block" />
-              for Peak Performance
+              The Pinnacle of <br className="hidden lg:block" /> Research Purity.
             </h1>
           </div>
 
           <div className="gsap-reveal overflow-hidden mb-8 lg:mb-12">
             <p className="text-body-md lg:text-body-lg text-white/90 max-w-[480px]">
-              US-synthesized research peptides verified at ≥99% HPLC purity — with a full Certificate of Analysis on every order. Built for researchers who refuse to compromise on quality.
+              US-synthesized peptides engineered for the elite. Guaranteed ≥99% purity with rigorous third-party testing on every batch.
             </p>
           </div>
 

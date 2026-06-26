@@ -13,6 +13,9 @@ export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'),
   title: 'Looksmaxxing Lab',
   description: 'Premium Peptides for Peak Performance',
+  icons: {
+    icon: '/favicon.ico',
+  },
 }
 
 export default function FrontendLayout({ children }: { children: React.ReactNode }) {

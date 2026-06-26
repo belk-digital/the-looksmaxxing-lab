@@ -8,7 +8,7 @@ import { appendOrderToSheet } from '@/lib/google/sheets'
  * Safely processes inventory, coupons, user points, and affiliate tracking.
  * This should be called exactly once when an order is finalized.
  */
-export async function finalizeOrder(orderId: string | number, paymentIntentMetadata?: any) {
+export async function finalizeOrder(orderId: string | number, paymentIntentMetadata?: any, skipPaymentStatusUpdate: boolean = false) {
   try {
     const payload = await getPayload({ config: configPromise })
     const numericId = typeof orderId === 'string' ? parseInt(orderId, 10) : orderId
@@ -31,8 +31,8 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
       return true
     }
 
-    // 1. Mark Order as Paid
-    if (order.paymentStatus !== 'captured') {
+    // 1. Mark Order as Paid (unless it's a manual payment awaiting funds)
+    if (!skipPaymentStatusUpdate && order.paymentStatus !== 'captured') {
       await payload.update({
         collection: 'orders',
         id: idToUse,

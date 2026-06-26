@@ -603,7 +603,7 @@ export interface Coupon {
 export interface Order {
   id: number;
   /**
-   * Auto‑generated order identifier (PEP‑YYYY‑NNNNN).
+   * Auto‑generated order identifier (e.g. 1000, 1001).
    */
   orderNumber?: string | null;
   /**
@@ -660,8 +660,13 @@ export interface Order {
     country?: string | null;
   };
   status: 'pending' | 'paid' | 'fulfilled' | 'shipped' | 'completed' | 'refunded' | 'cancelled';
+  paymentMethod: 'stripe' | 'apple_pay' | 'zelle';
   paymentStatus: 'unpaid' | 'authorized' | 'captured' | 'refunded';
   fulfillmentStatus: 'unfulfilled' | 'partial' | 'fulfilled';
+  /**
+   * Provide the tracking link/URL for the customer after shipment.
+   */
+  trackingLink?: string | null;
   refunds?:
     | {
         amount?: number | null;
@@ -785,7 +790,7 @@ export interface Shippingzone {
     | {
         method: string;
         /**
-         * Set to 0 for free shipping
+         * Price in cents (e.g. 500 = $5.00). Set to 0 for free shipping
          */
         price: number;
         estimatedDays?: number | null;
@@ -1694,8 +1699,10 @@ export interface OrdersSelect<T extends boolean = true> {
         country?: T;
       };
   status?: T;
+  paymentMethod?: T;
   paymentStatus?: T;
   fulfillmentStatus?: T;
+  trackingLink?: T;
   refunds?:
     | T
     | {

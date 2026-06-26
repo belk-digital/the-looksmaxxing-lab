@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Check, ChevronDown, ChevronUp, Lock, Loader2, ArrowRight, ShieldCheck, Tag, ShoppingCart, Sparkles } from 'lucide-react'
+import { Check, ChevronDown, ChevronUp, Lock, Loader2, ArrowRight, ShieldCheck, Tag, ShoppingCart, Sparkles, Smartphone, Wallet } from 'lucide-react'
 import { Container } from '@/components/ui/container'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -126,6 +126,7 @@ export function CheckoutClient() {
   const [couponCode, setCouponCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; freeShipping: boolean; description: string } | null>(null)
   const [isVerifyingCoupon, setIsVerifyingCoupon] = useState(false)
+  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'apple_pay' | 'zelle'>('stripe')
 
   // Order Calculations
   const subtotal = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
@@ -138,17 +139,28 @@ export function CheckoutClient() {
     return true
   })
 
+  const prevSubtotal = useRef(subtotal)
   useEffect(() => {
     if (visibleShippingMethods.length > 0) {
       const isCurrentValid = visibleShippingMethods.some(m => m.method === shippingMethod)
+      const freeMethod = visibleShippingMethods.find(m => m.price === 0 && m.minOrderAmount > 0)
+      
+      const crossedThreshold = freeMethod && subtotal >= freeMethod.minOrderAmount && prevSubtotal.current < freeMethod.minOrderAmount
+
       if (!isCurrentValid) {
-        setShippingMethod(visibleShippingMethods[0].method)
+        setShippingMethod(freeMethod && subtotal >= freeMethod.minOrderAmount ? freeMethod.method : visibleShippingMethods[0].method)
+      } else if (crossedThreshold) {
+        setShippingMethod(freeMethod.method)
+      } else if (!shippingMethod) {
+        setShippingMethod(freeMethod && subtotal >= freeMethod.minOrderAmount ? freeMethod.method : visibleShippingMethods[0].method)
       }
+      
+      prevSubtotal.current = subtotal
     }
-  }, [subtotal, availableShippingMethods, shippingMethod])
+  }, [subtotal, visibleShippingMethods, shippingMethod])
 
   const selectedMethodObj = visibleShippingMethods.find(m => m.method === shippingMethod) || visibleShippingMethods[0]
-  const shippingCost = selectedMethodObj?.price || 0
+  const shippingCost = (selectedMethodObj?.price || 0) / 100
   const isExpressShipping = shippingMethod.toLowerCase().includes('express')
   const finalShipping = (appliedCoupon?.freeShipping && !isExpressShipping) ? 0 : shippingCost
   const discountAmount = appliedCoupon ? appliedCoupon.discount : 0
@@ -262,6 +274,42 @@ export function CheckoutClient() {
       }
 
       toast.success("Order successful! Redirecting...")
+      useCartStore.getState().clear()
+      window.location.href = `/order-confirmation/${orderRes.orderId}`
+    } catch (e: any) {
+      toast.error('An unexpected error occurred.')
+      setIsProcessing(false)
+    }
+  }
+
+  const handleManualCheckout = async () => {
+    if (!formData.email || !formData.firstName || !formData.address || !formData.city || !formData.state || !formData.zip) {
+      toast.error('Please fill out all required shipping fields before completing your order.')
+      return
+    }
+
+    setIsProcessing(true)
+
+    try {
+      const { createPayloadOrder } = await import('./actions')
+      const orderRes = await createPayloadOrder(
+        items, shippingMethod, appliedCoupon?.code, isRedeemingPoints, 
+        { ...formData, email: user?.primaryEmailAddress?.emailAddress || formData.email }, 
+        'manual', 
+        user?.id as string,
+        paymentMethod
+      )
+
+      if (orderRes.error || !orderRes.orderId) {
+        toast.error(orderRes.error || 'Failed to initialize order in database.')
+        if ((orderRes as any).priceChanged && (orderRes as any).updatedItems) {
+          useCartStore.getState().setItems((orderRes as any).updatedItems)
+        }
+        setIsProcessing(false)
+        return
+      }
+
+      toast.success("Order Placed! Redirecting...")
       useCartStore.getState().clear()
       window.location.href = `/order-confirmation/${orderRes.orderId}`
     } catch (e: any) {
@@ -456,7 +504,7 @@ export function CheckoutClient() {
                       <span className="text-ink font-bold">{finalShipping === 0 ? 'Free' : `$${finalShipping.toFixed(2)}`}</span>
                     </div>
                     <div className="flex justify-between items-center text-sm font-medium text-ink/70">
-                      <span>Processing Fee</span>
+                      <span>Processing Fee {activeFees.find((f: any) => f.type === 'percentage') ? `(${activeFees.find((f: any) => f.type === 'percentage').amount}%)` : ''}</span>
                       <span className="text-ink font-bold">${processingFeeAmount.toFixed(2)}</span>
                     </div>
                   </div>
@@ -466,7 +514,7 @@ export function CheckoutClient() {
                   <div className="flex justify-between items-end mb-2 mt-4">
                     <span className="text-sm font-bold uppercase tracking-widest text-ink/60">Total</span>
                     <span className={`text-4xl font-bold text-ink ${spaceGrotesk.className}`}>
-                      ${total.toFixed(2)}
+                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total)}
                     </span>
                   </div>
 
@@ -481,24 +529,7 @@ export function CheckoutClient() {
           {/* Left Column: Flow */}
           <div className="flex flex-col gap-10">
             
-            {/* Express Checkout */}
-            <div className="flex flex-col gap-4 p-6 sm:p-8 bg-white rounded-3xl border border-slate-100 shadow-sm items-center">
-              <span className="text-xs font-bold uppercase tracking-widest text-ink/40 text-center">Express Checkout</span>
-              <div className="flex flex-col sm:flex-row w-full gap-3">
-                <Button variant="dark" className="flex-1 h-12 rounded-full bg-[#000] text-white hover:bg-black/80 transition-colors shadow-sm whitespace-nowrap">
-                  Apple Pay
-                </Button>
-                <Button variant="outline" className="flex-1 h-12 rounded-full bg-white text-ink border-ink/20 hover:border-ink/40 transition-colors shadow-sm whitespace-nowrap">
-                  Google Pay
-                </Button>
-              </div>
-            </div>
 
-            <div className="flex items-center gap-4 py-2 opacity-50">
-              <div className="flex-1 h-px bg-ink/10" />
-              <span className="text-xs font-bold uppercase tracking-widest text-ink/60">OR PAY WITH CARD</span>
-              <div className="flex-1 h-px bg-ink/10" />
-            </div>
 
             {/* Continuous Form */}
             <div className="flex flex-col gap-10">
@@ -585,16 +616,16 @@ export function CheckoutClient() {
 
                 {(!user || selectedAddressId === 'new') && (
                   <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <Input name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="First Name" className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
                       <Input name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Last Name" className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
                     </div>
                     <Input name="address" value={formData.address} onChange={handleInputChange} placeholder="Address" className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
                     <Input name="apartment" value={formData.apartment} onChange={handleInputChange} placeholder="Apartment, suite, etc. (optional)" className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" />
-                    <div className="grid grid-cols-6 gap-4">
-                      <Input name="city" value={formData.city} onChange={handleInputChange} placeholder="City" className="col-span-3 sm:col-span-2 h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
-                      <Input name="state" value={formData.state} onChange={handleInputChange} placeholder="State" className="col-span-3 sm:col-span-2 h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
-                      <Input name="zip" value={formData.zip} onChange={handleInputChange} placeholder="ZIP Code" className="col-span-6 sm:col-span-2 h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <Input name="city" value={formData.city} onChange={handleInputChange} placeholder="City" className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                      <Input name="state" value={formData.state} onChange={handleInputChange} placeholder="State" className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
+                      <Input name="zip" value={formData.zip} onChange={handleInputChange} placeholder="ZIP Code" className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
                     </div>
                     <Input name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone (for delivery updates)" type="tel" className="h-14 rounded-2xl border-slate-100 bg-white shadow-sm focus-visible:ring-ink" required={selectedAddressId === 'new'} />
                   </div>
@@ -619,7 +650,7 @@ export function CheckoutClient() {
                         <div className="flex flex-col">
                           <span className="text-sm font-bold text-ink">{method.method}</span>
                           {method.estimatedDays && (
-                            <span className="text-xs text-ink/60 mt-0.5">{method.estimatedDays} business days</span>
+                            <span className="text-xs text-ink/60 mt-0.5">{method.estimatedDays === 5 && method.method === 'Standard Shipping' ? '5-7' : method.estimatedDays} business days</span>
                           )}
                         </div>
                       </div>
@@ -628,7 +659,7 @@ export function CheckoutClient() {
                           const isExpress = method.method.toLowerCase().includes('express')
                           const isFreeShipping = appliedCoupon?.freeShipping && !isExpress
                           if (isFreeShipping || method.price === 0) return 'Free'
-                          return `$${method.price.toFixed(2)}`
+                          return `$${(method.price / 100).toFixed(2)}`
                         })()}
                       </span>
                     </label>
@@ -641,33 +672,110 @@ export function CheckoutClient() {
                 <h2 className="text-xl font-display font-bold text-ink mb-2">Payment</h2>
                 <p className="text-xs font-medium text-ink/50 mb-2 flex items-center gap-1.5"><Lock size={12} /> All transactions are 256-bit encrypted and secure.</p>
                 
+                <div className="flex flex-col gap-3 mb-4">
+                  {[
+                    { id: 'stripe', label: 'Credit / Debit Card' },
+                    { id: 'apple_pay', label: 'Apple Pay' },
+                    { id: 'zelle', label: 'Zelle' },
+                  ].map((method) => (
+                    <label key={method.id} className={`flex items-center gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${paymentMethod === method.id ? 'border-ink bg-ink/5' : 'border-slate-100 bg-white hover:border-ink/30'}`}>
+                      <input 
+                        type="radio" 
+                        name="paymentMethod" 
+                        value={method.id} 
+                        checked={paymentMethod === method.id} 
+                        onChange={() => setPaymentMethod(method.id as 'stripe' | 'apple_pay' | 'zelle')}
+                        className="w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0" 
+                      />
+                      <span className="text-sm font-bold text-ink">{method.label}</span>
+                    </label>
+                  ))}
+                </div>
+
                 {total <= 0 ? (
                   <div className="w-full h-56 bg-green-50 border border-green-500/20 rounded-3xl flex flex-col items-center justify-center gap-4 shadow-sm relative overflow-hidden p-6 text-center">
                     <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600">
                        <Check size={24} />
                     </div>
                     <span className="text-sm font-bold text-green-800">Your order is completely covered!</span>
-                    <Button onClick={handleZeroTotalCheckout} disabled={isProcessing} variant="dark" size="lg" className="w-full h-14 rounded-full">
+                    <Button onClick={handleZeroTotalCheckout} disabled={isProcessing} variant="dark" size="lg" className="w-full h-14 rounded-full text-white font-bold tracking-widest uppercase shadow-[0_4px_14px_0_rgb(0,0,0,0.1)]">
                       {isProcessing ? <Loader2 className="animate-spin" /> : "Complete Free Order"}
                     </Button>
                   </div>
-                ) : clientSecret && stripePromise && paymentIntentId ? (
-                  <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
-                    <StripeCheckoutForm 
-                       amount={total}
-                       items={items}
-                       shippingMethod={shippingMethod}
-                       couponCode={appliedCoupon?.code}
-                       isRedeemingPoints={isRedeemingPoints}
-                       formData={formData}
-                       paymentIntentId={paymentIntentId}
-                       userId={user?.id}
-                    />
-                  </Elements>
+                ) : paymentMethod === 'stripe' ? (
+                  clientSecret && stripePromise && paymentIntentId ? (
+                    <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
+                      <StripeCheckoutForm 
+                         amount={total}
+                         items={items}
+                         shippingMethod={shippingMethod}
+                         couponCode={appliedCoupon?.code}
+                         isRedeemingPoints={isRedeemingPoints}
+                         formData={formData}
+                         paymentIntentId={paymentIntentId}
+                         userId={user?.id}
+                      />
+                    </Elements>
+                  ) : (
+                    <div className="w-full h-56 bg-white border border-ink/10 rounded-3xl flex items-center justify-center flex-col gap-3 shadow-sm relative overflow-hidden">
+                      <Loader2 size={32} className="text-ink/20 animate-spin" />
+                      <span className="text-sm font-bold text-ink/40">Initializing secure checkout...</span>
+                    </div>
+                  )
                 ) : (
-                  <div className="w-full h-56 bg-white border border-ink/10 rounded-3xl flex items-center justify-center flex-col gap-3 shadow-sm relative overflow-hidden">
-                    <Loader2 size={32} className="text-ink/20 animate-spin" />
-                    <span className="text-sm font-bold text-ink/40">Initializing secure checkout...</span>
+                  <div className="w-full relative overflow-hidden bg-white border border-ink/10 rounded-3xl flex flex-col items-center gap-5 sm:gap-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] text-center p-6 sm:p-10">
+                    {/* Decorative Background */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-white -z-10" />
+                    
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-3xl bg-ink/5 flex items-center justify-center text-ink/80 mb-1 sm:mb-2 ring-1 ring-inset ring-ink/10 shadow-sm">
+                      {paymentMethod === 'apple_pay' ? (
+                        <Smartphone size={28} strokeWidth={1.5} className="sm:w-8 sm:h-8 w-7 h-7" />
+                      ) : (
+                        <Wallet size={28} strokeWidth={1.5} className="sm:w-8 sm:h-8 w-7 h-7" />
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-3 sm:gap-4 items-center max-w-md w-full">
+                      <h3 className="text-xl sm:text-2xl font-display font-bold text-ink">
+                        Pay with {paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'}
+                      </h3>
+                      
+                      <div className="bg-[#fafafa] border border-ink/5 rounded-2xl p-4 sm:p-6 text-left w-full mt-1 sm:mt-2">
+                        <ul className="flex flex-col gap-4 sm:gap-5">
+                          <li className="flex gap-3 sm:gap-4 text-[13px] sm:text-sm text-ink/80">
+                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-ink text-white flex items-center justify-center text-xs font-bold mt-0.5">1</span>
+                            <div>
+                              <strong className="block text-ink mb-0.5">Place Your Order</strong>
+                              Click the button below to secure your items and generate your unique order number.
+                            </div>
+                          </li>
+                          <li className="flex gap-3 sm:gap-4 text-[13px] sm:text-sm text-ink/80">
+                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-ink text-white flex items-center justify-center text-xs font-bold mt-0.5">2</span>
+                            <div>
+                              <strong className="block text-ink mb-0.5">Get Payment Details</strong>
+                              On the next page, you'll receive our official {paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'} contact details.
+                            </div>
+                          </li>
+                          <li className="flex gap-3 sm:gap-4 text-[13px] sm:text-sm text-ink/80">
+                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-ink text-white flex items-center justify-center text-xs font-bold mt-0.5">3</span>
+                            <div>
+                              <strong className="block text-ink mb-0.5">Send Payment</strong>
+                              Transfer the exact total and include your order number in the payment notes to complete your purchase.
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <Button 
+                      onClick={handleManualCheckout} 
+                      disabled={isProcessing} 
+                      variant="dark" 
+                      size="lg" 
+                      className="w-full max-w-md mt-4 h-16 rounded-full text-sm font-bold tracking-widest uppercase shadow-[0_8px_20px_rgb(0,0,0,0.15)] hover:-translate-y-0.5 transition-all text-white disabled:opacity-50 disabled:hover:translate-y-0"
+                    >
+                      {isProcessing ? <Loader2 className="animate-spin" /> : `Place ${paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'} Order`}
+                    </Button>
                   </div>
                 )}
               </section>
@@ -811,7 +919,7 @@ export function CheckoutClient() {
                   <span className="text-ink font-bold">{finalShipping === 0 ? 'Free' : `$${finalShipping.toFixed(2)}`}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm font-medium text-ink/70">
-                  <span>Processing Fee</span>
+                  <span>Processing Fee {activeFees.find((f: any) => f.type === 'percentage') ? `(${activeFees.find((f: any) => f.type === 'percentage').amount}%)` : ''}</span>
                   <span className="text-ink font-bold">${processingFeeAmount.toFixed(2)}</span>
                 </div>
               </div>

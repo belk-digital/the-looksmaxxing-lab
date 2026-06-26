@@ -23,6 +23,7 @@ export function CartClient() {
 
   // Dynamic Data States
   const [shippingCost, setShippingCost] = useState<number | null>(null)
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number | null>(null)
   const [taxAmount, setTaxAmount] = useState<number>(0)
   const [isLoadingData, setIsLoadingData] = useState(true)
 
@@ -51,7 +52,13 @@ export function CartClient() {
           // Grab the first available shipping method price from the first zone
           const firstZone = shippingData.docs[0]
           if (firstZone.methods?.length > 0) {
-            estimatedShipping = firstZone.methods[0].price / 100 // Convert cents to dollars
+            const standardMethod = firstZone.methods.find((m: any) => m.price > 0) || firstZone.methods[0]
+            const freeMethod = firstZone.methods.find((m: any) => m.price === 0 && m.minOrderAmount > 0)
+            
+            estimatedShipping = standardMethod.price / 100 // Convert cents to dollars
+            if (freeMethod) {
+              setFreeShippingThreshold(freeMethod.minOrderAmount)
+            }
           }
         }
         
@@ -223,6 +230,10 @@ export function CartClient() {
   let discountAmount = 0
   let isFreeShipping = false
   let eligibleSubtotal = 0
+
+  if (freeShippingThreshold !== null && subtotal >= freeShippingThreshold) {
+    isFreeShipping = true
+  }
 
   if (activeCoupon) {
     if (activeCoupon.freeShipping) {

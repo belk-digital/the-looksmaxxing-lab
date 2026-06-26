@@ -179,16 +179,16 @@ export function SwipeCarousel({ title, description, cards, isLoading = false }: 
                     src={card.image} 
                     alt={card.title} 
                     fill 
-                    className="object-cover transition-transform duration-700 group-hover:scale-105" 
+                    className="object-contain transition-transform duration-700 group-hover:scale-105 p-4 z-0" 
                     draggable={false} // Important so browser doesn't try to drag the image
                   />
                   
                   {/* Gradient overlay for text legibility */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 z-10 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent pointer-events-none" />
                   
                   {/* Content */}
-                  <div className="absolute bottom-0 left-0 w-full p-6 lg:p-8 pointer-events-none">
-                    <h3 className="text-2xl lg:text-3xl font-serif text-white mb-3 tracking-wide">
+                  <div className="absolute bottom-0 left-0 w-full p-6 lg:p-8 z-20 pointer-events-none">
+                    <h3 className="text-xl md:text-2xl lg:text-3xl font-serif text-white mb-2 md:mb-3 tracking-wide">
                       {card.title}
                     </h3>
                     <p className="text-white/80 font-light leading-relaxed text-sm md:text-base">

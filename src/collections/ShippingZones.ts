@@ -23,7 +23,7 @@ export const ShippingZones: CollectionConfig = {
       type: 'array',
       fields: [
         { name: 'method', type: 'text', required: true },
-        { name: 'price', type: 'number', required: true, admin: { description: 'Set to 0 for free shipping' } },
+        { name: 'price', type: 'number', required: true, admin: { description: 'Price in cents (e.g. 500 = $5.00). Set to 0 for free shipping' } },
         { name: 'estimatedDays', type: 'number' },
         { name: 'minOrderAmount', type: 'number', admin: { description: 'Minimum subtotal required for this method to appear (e.g., 100 for free shipping over $100)' } },
       ],

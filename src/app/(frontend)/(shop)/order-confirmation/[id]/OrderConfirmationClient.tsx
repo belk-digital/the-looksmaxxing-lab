@@ -39,6 +39,7 @@ type OrderData = {
   redeemedPoints?: number
   couponCode?: string
   paymentMethod: string
+  paymentStatus?: string
 }
 
 export function OrderConfirmationClient({ order }: { order: OrderData }) {
@@ -72,13 +73,46 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
           
           <FadeUp delay={0.1}>
             <h1 className="text-3xl md:text-4xl font-display font-bold text-ink mb-3">
-              Payment Successful
+              {order.paymentMethod === 'stripe' ? 'Payment Successful' : 'Order Confirmed'}
             </h1>
             <p className="text-ink/60 text-sm md:text-base">
               Thank you, {order.customerName}. Your order is confirmed.
             </p>
           </FadeUp>
         </div>
+
+        {(order.paymentMethod === 'apple_pay' || order.paymentMethod === 'zelle') && order.paymentStatus === 'unpaid' && (
+          <FadeUp delay={0.15} className="w-full max-w-2xl mb-10 print:hidden">
+            <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-2xl flex flex-col gap-4 text-center shadow-sm">
+              <h2 className="text-lg font-bold text-yellow-900">Action Required: Complete Your Payment</h2>
+              <p className="text-sm text-yellow-800">
+                Your order has been placed successfully, but it is currently <strong>unpaid</strong>. <br className="hidden sm:block" />
+                Please pay <strong>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(order.total)}</strong> via {order.paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'} to:
+              </p>
+
+              {order.paymentMethod === 'zelle' && (
+                <div className="flex justify-center my-2">
+                  <Image 
+                    src="/Payment Details/zelle-payment-qr.jpeg" 
+                    alt="Zelle QR Code" 
+                    width={200} 
+                    height={200} 
+                    className="rounded-xl border-2 border-yellow-200 shadow-sm"
+                  />
+                </div>
+              )}
+
+              <div className="bg-white py-3 px-6 rounded-xl border border-yellow-200 inline-block mx-auto shadow-sm">
+                <span className="font-mono text-lg font-bold text-ink">
+                  {order.paymentMethod === 'apple_pay' ? '(555) 123-4567' : 'support@thelooksmaxxinglab.com'}
+                </span>
+              </div>
+              <p className="text-xs text-yellow-800 mt-2">
+                <strong>Important:</strong> You must include your Order Number (<strong>#{order.id}</strong>) in the payment notes so we can verify your payment and process your order.
+              </p>
+            </div>
+          </FadeUp>
+        )}
 
         {/* Invoice Card */}
         <FadeUp delay={0.2} className="w-full max-w-5xl print:max-w-none print:w-full">
@@ -123,7 +157,11 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
                     </div>
                     <div>
                       <p className="text-ink/40 text-[10px] sm:text-xs font-medium uppercase tracking-wider mb-1">Payment Method</p>
-                      <p className="font-bold text-ink">{order.paymentMethod}</p>
+                      <p className="font-bold text-ink">{order.paymentMethod === 'stripe' ? 'Credit / Debit Card' : order.paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'}</p>
+                    </div>
+                    <div>
+                      <p className="text-ink/40 text-[10px] sm:text-xs font-medium uppercase tracking-wider mb-1">Payment Status</p>
+                      <p className="font-bold text-ink capitalize">{order.paymentStatus || 'Unpaid'}</p>
                     </div>
                   </div>
                 </div>

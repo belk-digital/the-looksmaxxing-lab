@@ -22,14 +22,12 @@ export const Orders: CollectionConfig = {
     beforeChange: [
       async ({ operation, originalDoc, data, req }) => {
         if (operation === 'create') {
-          const year = new Date().getFullYear()
           const db = req.payload.db as any
-          const counterRes: any = await db.drizzle.execute(sql`INSERT INTO "order_counters" ("id", "counter", "created_at", "updated_at") VALUES (${year}, 1, now(), now())
+          const counterRes: any = await db.drizzle.execute(sql`INSERT INTO "order_counters" ("id", "counter", "created_at", "updated_at") VALUES (1, 1000, now(), now())
                       ON CONFLICT ("id") DO UPDATE SET "counter" = "order_counters"."counter" + 1, "updated_at" = now()
                       RETURNING "counter"`)
           const counter = (counterRes.rows ? counterRes.rows[0].counter : counterRes[0].counter)
-          const padded = String(counter).padStart(5, '0')
-          data.orderNumber = `PEP-${year}-${padded}`
+          data.orderNumber = `${counter}`
 
           if (Array.isArray(data.items)) {
             const snapshotItems = await Promise.all(
@@ -95,7 +93,7 @@ export const Orders: CollectionConfig = {
     {
       name: 'orderNumber',
       type: 'text',
-      admin: { disabled: true, description: 'Auto‑generated order identifier (PEP‑YYYY‑NNNNN).' },
+      admin: { disabled: true, description: 'Auto‑generated order identifier (e.g. 1000, 1001).' },
     },
     {
       name: 'owner',
@@ -186,6 +184,17 @@ export const Orders: CollectionConfig = {
       defaultValue: 'pending',
     },
     {
+      name: 'paymentMethod',
+      type: 'select',
+      options: [
+        { label: 'Stripe (Credit Card)', value: 'stripe' },
+        { label: 'Apple Pay (Manual)', value: 'apple_pay' },
+        { label: 'Zelle (Manual)', value: 'zelle' },
+      ],
+      required: true,
+      defaultValue: 'stripe',
+    },
+    {
       name: 'paymentStatus',
       type: 'select',
       options: [
@@ -207,6 +216,14 @@ export const Orders: CollectionConfig = {
       ],
       required: true,
       defaultValue: 'unfulfilled',
+    },
+    {
+      name: 'trackingLink',
+      type: 'text',
+      admin: {
+        position: 'sidebar',
+        description: 'Provide the tracking link/URL for the customer after shipment.',
+      },
     },
     {
       name: 'refunds',

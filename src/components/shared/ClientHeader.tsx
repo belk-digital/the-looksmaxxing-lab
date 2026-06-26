@@ -15,7 +15,7 @@ import { SearchOverlay } from './SearchOverlay'
 const CartDrawer = dynamic(() => import('@/components/cart/CartDrawer').then(mod => mod.CartDrawer), { ssr: false })
 
 const ANNOUNCEMENTS = [
-  "FREE SHIPPING ON ORDERS OVER $150",
+  "FREE SHIPPING ON ORDERS OVER $300",
   "NEW PEPTIDE BLENDS JUST DROPPED",
   "SUBSCRIBE FOR 15% OFF YOUR FIRST ORDER"
 ]
@@ -189,11 +189,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
           {/* Left: Logo (Mimicking the reference swirl) */}
           <div className="flex-1 xl:flex-none flex justify-start">
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-              <svg width="48" height="24" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15 15 C15 7, 45 7, 45 15 C45 23, 20 23, 20 15 C20 11, 40 11, 40 15 C40 19, 25 19, 25 15" stroke={iconColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M5 15 C5 2, 55 2, 55 15 C55 28, 10 28, 10 15" stroke={iconColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <circle cx="58" cy="4" r="1.5" fill={iconColor} />
-              </svg>
+              <span className="font-serif text-xl font-bold tracking-tighter" style={{ color: iconColor }}>TLML</span>
             </Link>
           </div>
 

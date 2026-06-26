@@ -8,26 +8,26 @@ import { FadeUp } from '@/components/motion/FadeUp'
 const PILLARS = [
   {
     id: '01',
-    title: 'Independent Testing',
-    desc: 'Every single batch is tested by accredited US-based third-party laboratories via HPLC & Mass Spectrometry before it is ever made available for research.',
+    title: 'Independent Third-Party Verification — Every Batch',
+    desc: 'Every production batch is tested by accredited, independent US-based laboratories via HPLC chromatography and LC-MS mass spectrometry before it enters our inventory. We do not perform in-house testing and do not sell any compound without documented third-party verification.',
     image: '/Featured%20Images/scientist-at-microscope.webp'
   },
   {
     id: '02',
-    title: '≥99% Purity Guarantee',
-    desc: 'We enforce a strict 99% purity floor across our entire catalog. If a batch tests at 98.9%, it is discarded. There are no exceptions to this standard.',
+    title: '≥99% HPLC Purity — Non-Negotiable Minimum',
+    desc: 'Our purity floor is ≥99% HPLC — enforced without exception across every compound in our catalog. Any batch testing below this threshold is immediately discarded. We publish the exact purity percentage from each batch’s COA — not a range, not an estimate.',
     image: '/Featured%20Images/clear-glass-dropper.webp'
   },
   {
     id: '03',
-    title: 'USA Fulfillment',
-    desc: 'Our compounds are stocked securely in domestic, climate-controlled facilities. We fulfill and ship all orders directly from the United States for rapid delivery.',
+    title: 'US-Based Synthesis & Fulfillment — Zero Overseas Powders',
+    desc: 'Every compound is synthesized in ISO-certified, US-based peptide laboratories using solid-phase peptide synthesis (SPPS). We do not source raw powders from overseas suppliers and do not use third-party bulk brokers. Complete molecular traceability from synthesis to your bench.',
     image: '/Featured%20Images/three-floating-vials.webp'
   },
   {
     id: '04',
-    title: 'Lyophilized Stability',
-    desc: 'Compounds are rigorously lyophilized and vacuum-sealed to prevent degradation, ensuring structural integrity from our laboratory to yours.',
+    title: 'Lyophilized Stability — Molecular Integrity Guaranteed',
+    desc: 'All research peptides ship in vacuum-sealed lyophilized (freeze-dried) form, which ensures maximum molecular stability during transit and storage. Lyophilized compounds remain structurally intact under ambient conditions during shipping — no cold-chain required for standard vials.',
     image: '/Featured%20Images/crushed-white-powder.webp'
   }
 ]
@@ -52,7 +52,7 @@ export function WhyChooseUs() {
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] xl:grid-cols-[1.5fr_1fr] gap-8 lg:gap-24 items-start relative">
           
           {/* Left Side: Dynamic Image Slider (Desktop & Mobile) */}
-          <div className="lg:sticky lg:top-32 h-[300px] md:h-[400px] lg:h-[75vh] w-full relative rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl bg-white border border-slate-100 z-10 order-1">
+          <div className="lg:sticky lg:top-20 h-[300px] md:h-[400px] lg:h-[60vh] max-h-[600px] w-full relative rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl bg-white border border-slate-100 z-10 order-1">
             <motion.div 
               className="absolute inset-0 w-full h-full flex flex-col"
               animate={{ y: `-${activeIndex * 100}%` }}
@@ -77,11 +77,14 @@ export function WhyChooseUs() {
           <div className="flex flex-col w-full h-full z-20 order-2">
             
             <FadeUp>
-              <h2 className="text-[10px] md:text-xs font-mono uppercase tracking-[0.2em] text-[#5984c4] mb-6 lg:mb-12 font-bold mt-4 lg:mt-0">The Gold Standard</h2>
+              <h2 className="text-[10px] md:text-xs font-mono uppercase tracking-[0.2em] text-[#5984c4] mb-4 font-bold mt-4 lg:mt-0">The Gold Standard: Independent Third-Party Testing</h2>
+              <p className="text-sm md:text-base lg:text-lg text-ink/70 leading-relaxed font-light mb-6 lg:mb-12 max-w-xl">
+                Every compound we sell meets four non-negotiable standards before fulfillment. These are not marketing claims — they are verifiable, documented facts included with every order.
+              </p>
             </FadeUp>
             
             {/* Top area: Dynamic Content */}
-            <div className="relative min-h-[240px] md:min-h-[160px] lg:min-h-[220px] mb-4 lg:mb-16">
+            <div className="relative min-h-[240px] md:min-h-[160px] lg:min-h-[200px] mb-4 lg:mb-8">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeIndex}
@@ -91,10 +94,10 @@ export function WhyChooseUs() {
                   transition={{ duration: 0.4, ease: "easeOut" }}
                   className="w-full"
                 >
-                  <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif mb-3 md:mb-4 lg:mb-6 tracking-tight leading-[1.1] text-ink">
+                  <h3 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-serif mb-3 md:mb-4 lg:mb-6 tracking-tight leading-[1.1] text-ink">
                     {PILLARS[activeIndex].title}
                   </h3>
-                  <p className="text-base lg:text-lg text-ink/70 leading-relaxed font-light max-w-lg">
+                  <p className="text-sm md:text-base lg:text-lg text-ink/70 leading-relaxed font-light max-w-lg">
                     {PILLARS[activeIndex].desc}
                   </p>
                 </motion.div>
@@ -116,9 +119,9 @@ export function WhyChooseUs() {
                       key={pillar.id}
                       onMouseEnter={() => setActiveIndex(index)}
                       onClick={() => setActiveIndex(index)}
-                      className="group border-b border-slate-200 py-4 lg:py-8 flex items-center justify-between text-left transition-colors duration-500 hover:border-[#5984c4]/30 w-full"
+                      className="group border-b border-slate-200 py-4 lg:py-6 flex items-center justify-between text-left transition-colors duration-500 hover:border-[#5984c4]/30 w-full"
                     >
-                      <span className={`text-xl md:text-2xl lg:text-3xl font-serif tracking-tight transition-colors duration-500 pr-4 ${isActive ? 'text-[#5984c4]' : 'text-ink/50 group-hover:text-ink/80'}`}>
+                      <span className={`text-lg md:text-xl lg:text-3xl font-serif tracking-tight transition-colors duration-500 pr-4 ${isActive ? 'text-[#5984c4]' : 'text-ink/50 group-hover:text-ink/80'}`}>
                         {pillar.title}
                       </span>
                       

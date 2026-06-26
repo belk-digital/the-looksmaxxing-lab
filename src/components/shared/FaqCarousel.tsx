@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useMotionValueEvent, useMotionValue, useSpring } from 'framer-motion'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { FadeUp } from '@/components/motion/FadeUp'
+import Link from 'next/link'
 
 export interface FaqItem {
   question: string;
@@ -17,6 +18,10 @@ export interface FaqCarouselProps {
   description?: string;
   sectionLabel?: string;
   theme?: 'light' | 'dark';
+  bottomLink?: {
+    text: string;
+    href: string;
+  };
 }
 
 export function FaqCarousel({ 
@@ -25,7 +30,8 @@ export function FaqCarousel({
   accentTitle = "Asked Questions", 
   description = "Find answers to common questions about our research compounds, laboratory guidelines, and purity standards.",
   sectionLabel,
-  theme = 'light'
+  theme = 'light',
+  bottomLink
 }: FaqCarouselProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -138,7 +144,7 @@ export function FaqCarousel({
       style={{ height: `${faqs.length * 80}vh` }} // Make section taller based on number of FAQs
     >
       <div 
-        className="sticky top-0 h-[100dvh] w-full flex flex-col justify-start pt-10 lg:pt-16 pb-12 overflow-hidden md:cursor-none"
+        className="sticky top-0 h-[100dvh] w-full flex flex-col justify-start pt-4 lg:pt-8 pb-4 lg:pb-8 overflow-hidden md:cursor-none"
         onPointerMove={(e) => {
           cursorX.set(e.clientX);
           cursorY.set(e.clientY);
@@ -183,14 +189,14 @@ export function FaqCarousel({
         <div className="max-w-[1400px] mx-auto px-6 w-full relative z-10">
           
           {/* Header */}
-          <div className="mb-12 lg:mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
+          <div className="mb-6 lg:mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 lg:gap-12">
             <FadeUp className="max-w-2xl">
               {sectionLabel && (
                 <span className={`text-label-md uppercase tracking-widest mb-4 block font-bold ${isDark ? 'text-gold' : 'text-[#5984c4]'}`}>
                   {sectionLabel}
                 </span>
               )}
-              <h2 className={`text-4xl sm:text-5xl xl:text-6xl font-serif tracking-tight leading-[1.1] ${titleClass}`}>
+              <h2 className={`text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-serif tracking-tight leading-[1.1] ${titleClass}`}>
                 {title} <span className={isDark ? 'text-gold' : 'text-[#1c4477]'}>{accentTitle}</span>
               </h2>
             </FadeUp>
@@ -200,7 +206,7 @@ export function FaqCarousel({
                 {description}
               </p>
               <div 
-                className="flex items-center md:justify-end gap-4"
+                className="flex items-center md:justify-end gap-4 cursor-auto md:cursor-auto p-4 -m-4"
                 onMouseEnter={() => setIsHoveringButton(true)}
                 onMouseLeave={() => setIsHoveringButton(false)}
               >
@@ -208,7 +214,7 @@ export function FaqCarousel({
                   onClick={() => scrollWindow('left')}
                   disabled={activeIndex === 0}
                   aria-label="Previous question"
-                  className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors group disabled:opacity-30 disabled:cursor-not-allowed !cursor-default ${
+                  className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors group disabled:opacity-30 disabled:cursor-not-allowed !cursor-pointer md:!cursor-pointer ${
                     isDark 
                       ? 'border-cream/20 hover:bg-cream/10 text-cream' 
                       : 'border-slate-300 hover:bg-slate-100 text-slate-500 bg-white shadow-sm'
@@ -220,7 +226,7 @@ export function FaqCarousel({
                   onClick={() => scrollWindow('right')}
                   disabled={activeIndex === faqs.length - 1}
                   aria-label="Next question"
-                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors group disabled:opacity-30 disabled:cursor-not-allowed shadow-md !cursor-default ${
+                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors group disabled:opacity-30 disabled:cursor-not-allowed shadow-md !cursor-pointer md:!cursor-pointer ${
                     isDark 
                       ? 'bg-cream text-ink hover:bg-cream/90' 
                       : 'bg-ink text-white hover:bg-ink/90'
@@ -237,7 +243,7 @@ export function FaqCarousel({
         {/* We moved this outside the max-w-[1400px] wrapper. This ensures the overflow-x-auto container 
             spans the entire physical screen, meaning shadows can NEVER be clipped by an invisible wrapper edge! */}
         <div className="w-full relative z-10 flex-1 min-h-0 flex flex-col md:[&_*]:!cursor-none">
-          <div ref={scrollRef} className="w-full overflow-x-auto hide-scrollbar pb-24 pt-16 -mt-16 flex-1 min-h-0 flex flex-col">
+          <div ref={scrollRef} className="w-full overflow-x-auto hide-scrollbar pb-8 pt-8 lg:pb-24 lg:pt-16 -mt-8 lg:-mt-16 flex-1 min-h-0 flex flex-col">
             <motion.div 
               className="flex gap-6 py-8 flex-1 min-h-0"
               // We use layout to allow cards to flex smoothly, removing explicit x translation
@@ -262,7 +268,7 @@ export function FaqCarousel({
                          }
                       }
                     }}
-                    className={`faq-card shrink-0 overflow-y-auto hide-scrollbar rounded-[2rem] p-6 md:p-8 lg:p-12 transition-all duration-500 ease-out flex flex-col cursor-pointer min-h-[350px] lg:min-h-[min(480px,60vh)] h-fit max-h-full ${
+                    className={`faq-card shrink-0 overflow-y-auto hide-scrollbar rounded-[2rem] px-5 pt-5 md:px-6 md:pt-6 lg:px-8 lg:pt-8 transition-all duration-500 ease-out flex flex-col cursor-pointer min-h-[min(350px,100%)] h-full max-h-full ${
                       isActive 
                         ? `${activeCardBg} shadow-2xl relative z-10` 
                         : `${inactiveCardBg} hover:opacity-80 relative z-0`
@@ -279,19 +285,19 @@ export function FaqCarousel({
                     />
                     
                     {/* Inner wrapper allows text to naturally wrap based on the card's current width */}
-                    <div className="w-full h-full flex flex-col relative z-10">
+                    <div className="w-full flex flex-col relative z-10 pb-5 md:pb-6 lg:pb-8">
                       {/* Let the question fill the width on active cards, but lock it on inactive cards to prevent reflow during transition */}
-                      <h3 className={`text-2xl lg:text-3xl font-serif leading-tight mb-6 md:mb-8 w-full ${isActive ? 'max-w-none' : 'max-w-[216px] lg:max-w-[184px] line-clamp-4'}`}>
+                      <h3 className={`text-lg md:text-xl lg:text-2xl font-serif leading-tight mb-4 md:mb-6 w-full ${isActive ? 'max-w-none' : 'max-w-[216px] lg:max-w-[184px] line-clamp-4'}`}>
                         {faq.question}
                       </h3>
 
                       {/* We lock the answer to the active width so it doesn't reflow while fading in/out */}
                       <div 
                         className={`transition-all duration-500 w-full md:w-[384px] ${
-                          isActive ? 'max-h-[1000px] opacity-100 mt-6' : 'max-h-0 opacity-0'
+                          isActive ? 'max-h-[1000px] opacity-100 mt-2' : 'max-h-0 opacity-0'
                         }`}
                       >
-                        <p className={`text-sm lg:text-base leading-relaxed font-light ${
+                        <p className={`text-xs lg:text-sm leading-relaxed font-light ${
                           isActive 
                             ? (isDark ? 'text-ink/70' : 'text-white/80') 
                             : ''
@@ -310,7 +316,22 @@ export function FaqCarousel({
           </div>
         </div>
 
-
+        {bottomLink && (
+          <div 
+            className="relative z-10 pb-4 lg:pb-8 flex justify-center mt-auto p-4 -m-4"
+            onMouseEnter={() => setIsHoveringButton(true)}
+            onMouseLeave={() => setIsHoveringButton(false)}
+          >
+            <Link 
+              href={bottomLink.href} 
+              className={`font-serif text-base lg:text-lg border-b pb-1 transition-colors relative z-50 !cursor-pointer md:!cursor-pointer ${
+                isDark ? 'text-cream border-cream/30 hover:border-cream' : 'text-ink border-ink/30 hover:border-ink'
+              }`}
+            >
+              {bottomLink.text} &rarr;
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   )

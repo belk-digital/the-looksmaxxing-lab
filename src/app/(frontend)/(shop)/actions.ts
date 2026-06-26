@@ -542,7 +542,7 @@ export async function processCheckout(formData: FormData) {
     // Create Order
     const order = await payload.create({
       collection: 'orders',
-      data: {
+      data: ({
         owner: user ? user.id : null,
         guestEmail: user ? user.email : guestEmail,
         customerFirstName: finalFirstName,
@@ -568,7 +568,7 @@ export async function processCheckout(formData: FormData) {
           price: typeof item.priceSnapshot === 'number' ? item.priceSnapshot : 0
         })) as any,
         shippingAddress: finalAddress
-      },
+      } as any),
       overrideAccess: true,
     })
 

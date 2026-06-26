@@ -64,7 +64,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
           </div>
           <div className="relative z-10 flex flex-col h-full justify-between">
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">Maxx Points</span>
-            <span className={`text-5xl text-black leading-none font-bold tracking-tighter ${spaceGrotesk.className}`}>{Number(stats.maxxPoints.toFixed(2))}</span>
+            <span className={`text-4xl lg:text-5xl text-black leading-none font-bold tracking-tighter truncate ${spaceGrotesk.className}`}>{Number(stats.maxxPoints.toFixed(2))}</span>
           </div>
         </motion.div>
 
@@ -74,7 +74,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
           </div>
           <div className="relative z-10 flex flex-col h-full justify-between">
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">Orders Placed</span>
-            <span className={`text-5xl text-black leading-none font-bold tracking-tighter ${spaceGrotesk.className}`}>{stats.ordersPlaced}</span>
+            <span className={`text-4xl lg:text-5xl text-black leading-none font-bold tracking-tighter truncate ${spaceGrotesk.className}`}>{stats.ordersPlaced}</span>
           </div>
         </motion.div>
 
@@ -84,7 +84,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
           </div>
           <div className="relative z-10 flex flex-col h-full justify-between">
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">Wishlist Items</span>
-            <span className={`text-5xl text-black leading-none font-bold tracking-tighter ${spaceGrotesk.className}`}>{stats.wishlistCount}</span>
+            <span className={`text-4xl lg:text-5xl text-black leading-none font-bold tracking-tighter truncate ${spaceGrotesk.className}`}>{stats.wishlistCount}</span>
           </div>
         </motion.div>
 
@@ -94,7 +94,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
           </div>
           <div className="relative z-10 flex flex-col h-full justify-between">
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">Member Since</span>
-            <span className={`text-5xl text-black leading-none font-bold tracking-tighter ${spaceGrotesk.className}`}>{stats.memberSince}</span>
+            <span className={`text-4xl lg:text-5xl text-black leading-none font-bold tracking-tighter truncate ${spaceGrotesk.className}`}>{stats.memberSince}</span>
           </div>
         </motion.div>
       </div>
@@ -123,7 +123,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-black translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300" />
                 
                 <div className="flex flex-col gap-2 pl-2">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-black">Order #{order.id}</span>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-black truncate max-w-[150px] sm:max-w-[200px]" title={`Order #${order.orderNumber}`}>Order #{order.orderNumber}</span>
                   <span className="text-xs font-medium text-gray-500">{order.date}</span>
                 </div>
                 
@@ -135,7 +135,7 @@ export function AccountOverviewClient({ stats, recentOrders, defaultAddress, aff
                   </div>
                 </div>
                 
-                <Link href={`/account/orders/${order.id}`} className="bg-black text-white rounded-full px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] hover:bg-gray-800 transition-all duration-300 mt-2 sm:mt-0 whitespace-nowrap text-center shadow-md">
+                <Link href={`/account/orders/${order.orderNumber}`} className="bg-black text-white rounded-full px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] hover:bg-gray-800 transition-all duration-300 mt-2 sm:mt-0 whitespace-nowrap text-center shadow-md">
                   View Details
                 </Link>
               </motion.div>
