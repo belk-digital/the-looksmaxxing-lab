@@ -1,5 +1,6 @@
 import React from 'react'
 import { ProductClient } from './ProductClient'
+import { ProductJsonLd } from '@/components/ProductJsonLd'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
@@ -311,6 +312,19 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     <div className="flex flex-col min-h-screen">
+      <ProductJsonLd
+        name={rawProduct.name}
+        slug={rawProduct.slug || slug}
+        description={rawProduct.description || ''}
+        price={rawProduct.price || 0}
+        salePrice={rawProduct.salePrice ?? undefined}
+        sku={rawProduct.sku ?? undefined}
+        images={mappedImages}
+        categories={mappedCategories}
+        faqs={mappedFaqs}
+        hasVariants={rawProduct.hasVariants || false}
+        variants={mappedVariants}
+      />
       <main className="flex-1 mt-20">
         <ProductClient product={productData as any} />
       </main>

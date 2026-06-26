@@ -176,23 +176,23 @@ export default function FaqClient() {
             <p className="text-gray-500 text-lg mb-8 max-w-lg leading-relaxed">
               Our support team responds within 1 business day. For compound-specific questions, our Journal also covers BPC-157, TB-500, GHK-Cu, and Semaglutide in detail.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-              <Link href="/contact" className="w-full sm:w-auto">
-                <Button className="w-full sm:w-auto rounded-full px-8 h-14 bg-ink text-white hover:bg-[#5984c4] transition-colors duration-500 font-medium text-base flex items-center justify-center gap-2 group">
+            <div className="flex flex-col md:flex-row flex-wrap items-center justify-center gap-4 w-full">
+              <Link href="/contact" className="w-full md:w-auto flex-1 md:flex-none">
+                <Button className="w-full whitespace-nowrap rounded-full px-8 h-14 bg-ink text-white hover:bg-[#5984c4] transition-colors duration-500 font-medium text-base flex items-center justify-center gap-2 group">
                   Contact Support
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform shrink-0" />
                 </Button>
               </Link>
-              <Link href="/journal" className="w-full sm:w-auto">
-                <Button variant="outline" className="w-full sm:w-auto rounded-full px-8 h-14 border-slate-200 text-ink hover:border-[#5984c4] hover:bg-slate-50 transition-colors duration-500 font-medium text-base flex items-center justify-center gap-2 group">
+              <Link href="/journal" className="w-full md:w-auto flex-1 md:flex-none">
+                <Button variant="outline" className="w-full whitespace-nowrap rounded-full px-8 h-14 border-slate-200 text-ink hover:border-[#5984c4] hover:bg-slate-50 transition-colors duration-500 font-medium text-base flex items-center justify-center gap-2 group">
                   Explore the Journal
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform shrink-0" />
                 </Button>
               </Link>
-              <Link href="/shop" className="w-full sm:w-auto">
-                <Button variant="outline" className="w-full sm:w-auto rounded-full px-8 h-14 border-slate-200 text-ink hover:border-[#5984c4] hover:bg-slate-50 transition-colors duration-500 font-medium text-base flex items-center justify-center gap-2 group">
+              <Link href="/shop" className="w-full md:w-auto flex-1 md:flex-none">
+                <Button variant="outline" className="w-full whitespace-nowrap rounded-full px-8 h-14 border-slate-200 text-ink hover:border-[#5984c4] hover:bg-slate-50 transition-colors duration-500 font-medium text-base flex items-center justify-center gap-2 group">
                   Browse Research Peptides
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform shrink-0" />
                 </Button>
               </Link>
             </div>
