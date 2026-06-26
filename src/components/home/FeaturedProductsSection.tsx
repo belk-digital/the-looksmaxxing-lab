@@ -84,7 +84,7 @@ export function FeaturedProductsSection({ products = [] }: { products?: Product[
           <div className="relative w-full mx-auto px-0 sm:px-8">
             
             <div className="overflow-hidden" ref={emblaRef}>
-              <div className="flex -ml-4 sm:-ml-8">
+              <div className="flex items-stretch -ml-4 sm:-ml-8">
                 {CAROUSEL_PRODUCTS.map((product, index) => (
                   <div key={index} className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_25%] pl-4 sm:pl-8 p-4">
                     <PrimaryProductCard product={product} />

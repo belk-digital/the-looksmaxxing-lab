@@ -16,6 +16,16 @@ export interface Category {
   slug: string
 }
 
+function formatCategoryName(name: string): string {
+  return name
+    .replace(/\bresearch\b/gi, '')
+    .replace(/\bpeptides\b/gi, '')
+    .replace(/\bstudies\b/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
 export interface FilterSidebarProps {
   categories?: Category[]
 }
@@ -97,7 +107,7 @@ function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
                 onCheckedChange={() => toggleCategory(cat.name)}
               />
               <Label htmlFor={`cat-${cat.slug}`} className="text-sm font-medium text-black cursor-pointer leading-none">
-                {cat.name}
+                {formatCategoryName(cat.name)}
               </Label>
             </div>
           ))}

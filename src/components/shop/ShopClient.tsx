@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, useEffect, Suspense, useCallback } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { Container } from '@/components/ui/container'
 import { FilterSidebar } from '@/components/shop/FilterSidebar'
@@ -125,7 +125,16 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
   // Active chips extraction
   const getActiveChips = () => {
     const chips: { key: string, label: string, value: string }[] = []
-    searchParams.getAll('category').forEach(cat => chips.push({ key: `category-${cat}`, label: cat, value: cat }))
+    searchParams.getAll('category').forEach(cat => {
+      const displayName = cat
+        .replace(/\bresearch\b/gi, '')
+        .replace(/\bpeptides\b/gi, '')
+        .replace(/\bstudies\b/gi, '')
+        .replace(/\s{2,}/g, ' ')
+        .trim()
+        .replace(/\b\w/g, (c) => c.toUpperCase())
+      chips.push({ key: `category-${cat}`, label: displayName, value: cat })
+    })
     if (searchParams.get('inStock') === 'true') chips.push({ key: 'inStock', label: 'In Stock', value: 'true' })
     if (searchParams.get('onSale') === 'true') chips.push({ key: 'onSale', label: 'On Sale', value: 'true' })
     return chips

@@ -172,7 +172,7 @@ export function PrimaryProductCard({ product, size = 'small', id }: PrimaryProdu
   return (
     <div 
       id={id}
-      className="group relative flex flex-col w-full bg-white p-3 sm:p-4 rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)] transition-shadow duration-300 cursor-pointer"
+      className="group relative flex flex-col w-full h-full bg-white p-3 sm:p-4 rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)] transition-shadow duration-300 cursor-pointer"
     >
       {/* Image Area */}
       <div className={`relative w-full ${imageAspectClass} overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] bg-[#F5F5F7] mb-4 sm:mb-6`}>
@@ -256,7 +256,7 @@ export function PrimaryProductCard({ product, size = 'small', id }: PrimaryProdu
       {/* Info Area */}
       <div className="flex flex-col px-1 sm:px-2 flex-1 relative z-20 pointer-events-none">
         {/* Title */}
-        <h3 className="text-base sm:text-xl font-bold text-ink leading-tight tracking-tight mb-1">
+        <h3 className="text-base sm:text-xl font-bold text-ink leading-tight tracking-tight mb-1 line-clamp-2 min-h-[2.5rem] sm:min-h-[3.25rem]">
           {product.name}
         </h3>
         
