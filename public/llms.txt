@@ -1,0 +1,50 @@
+# The Looksmaxxing Lab
+
+> US-based supplier of research-grade peptides and COA-verified research compounds for scientific laboratory use. Every batch is independently HPLC tested to ≥99% purity with a full Certificate of Analysis. Research Use Only (RUO) — not for human consumption.
+
+## About
+
+The Looksmaxxing Lab is a research peptide supplier founded in 2024, based in the United States. We specialize in high-purity research compounds for academic institutions, independent laboratories, and qualified researchers. All products are synthesized via Solid-Phase Peptide Synthesis (SPPS), purified by preparative HPLC, and verified by independent third-party laboratories.
+
+## Products
+
+We carry 30+ research compounds across these categories:
+
+- **Metabolic Research Peptides**: Tirzepatide, Retatrutide, Semaglutide
+- **Growth Hormone Secretagogues**: CJC-1295/Ipamorelin, Ipamorelin, Tesamorelin, Sermorelin, CJC-1295 No DAC, Tesamorelin/Ipamorelin
+- **Tissue Repair Peptides**: BPC-157, TB-500, BPC-157 + TB-500, GHK-Cu
+- **Longevity & Cellular Research**: Epithalon, NAD+, MOTS-C, Glutathione
+- **Neuropeptides**: Selank, Semax, Semax/Selank, Oxytocin
+- **Melanocortin Peptides**: Melanotan I, Melanotan II (MT-2)
+- **Anti-Inflammatory**: KPV, LL-37
+- **Reproductive Research**: Kisspeptin
+- **Multi-Peptide Blends**: Glow Blend, KLOW Blend
+- **Lab Essentials**: Bacteriostatic Water (BAC Water)
+
+## Quality Standards
+
+- Purity: ≥99% guaranteed on all compounds
+- Testing: Independent third-party HPLC and LC-MS/ESI-MS verification
+- Documentation: Batch-specific Certificate of Analysis (COA) with every order
+- Traceability: Unique lot numbers for complete batch traceability
+
+## Key Pages
+
+- Homepage: https://the-looksmaxxing-lab.vercel.app/
+- Shop: https://the-looksmaxxing-lab.vercel.app/shop
+- About: https://the-looksmaxxing-lab.vercel.app/about
+- FAQ: https://the-looksmaxxing-lab.vercel.app/faq
+- Certificates of Analysis: https://the-looksmaxxing-lab.vercel.app/certificates
+- Contact: https://the-looksmaxxing-lab.vercel.app/contact
+- Peptide Calculator: https://the-looksmaxxing-lab.vercel.app/peptide-calculator
+- Research Journal: https://the-looksmaxxing-lab.vercel.app/journal
+- Affiliate Program: https://the-looksmaxxing-lab.vercel.app/affiliates
+
+## Compliance
+
+All products are sold exclusively under Research Use Only (RUO) classification. They are not approved by the FDA, EMA, or any regulatory authority for human consumption, veterinary use, or therapeutic application. The Looksmaxxing Lab makes no therapeutic, health, or performance claims.
+
+## Contact
+
+- Website: https://the-looksmaxxing-lab.vercel.app
+- Contact Page: https://the-looksmaxxing-lab.vercel.app/contact

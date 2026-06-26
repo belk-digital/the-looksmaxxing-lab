@@ -1,3 +1,5 @@
+export const metadata = { title: 'Test Design', robots: { index: false, follow: false } }
+
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'

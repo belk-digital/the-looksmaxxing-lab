@@ -1,9 +1,20 @@
 import type { Metadata } from 'next'
 import AboutClient from './AboutClient'
 
+const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://the-looksmaxxing-lab.vercel.app'
+
 export const metadata: Metadata = {
   title: 'About The Looksmaxxing Lab | US Research Peptide Supplier',
   description: 'The Looksmaxxing Lab is a US-based research peptide supplier founded in 2024. We synthesize BPC-157, TB-500, GHK-Cu & more at ≥99% HPLC purity with independent COA verification.',
+  alternates: {
+    canonical: `${siteUrl}/about`,
+  },
+  openGraph: {
+    images: [{ url: '/og/og-about.png', width: 1200, height: 630, alt: 'About The Looksmaxxing Lab' }],
+    title: 'About The Looksmaxxing Lab | US Research Peptide Supplier',
+    description: 'US-based research peptide supplier. ≥99% HPLC purity, independent COA verification, 30+ compounds.',
+    url: `${siteUrl}/about`,
+  },
 }
 
 export default function AboutPage() {

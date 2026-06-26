@@ -8,6 +8,7 @@ import type { Order, Address } from '@/payload-types'
 
 export const metadata = {
   title: 'Account Overview | The Looksmaxxing Lab',
+  robots: { index: false, follow: false },
 }
 
 export default async function AccountOverviewPage() {

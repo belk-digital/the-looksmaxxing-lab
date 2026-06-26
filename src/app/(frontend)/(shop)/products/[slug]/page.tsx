@@ -6,15 +6,26 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { Metadata } from 'next'
 
+export async function generateStaticParams() {
+  const payload = await getPayload({ config: configPromise })
+  const { docs } = await payload.find({
+    collection: 'products',
+    where: { status: { equals: 'active' } },
+    limit: 1000,
+    depth: 0,
+  })
+  return docs.filter((p) => p.slug).map((p) => ({ slug: p.slug }))
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const payload = await getPayload({ config: configPromise })
-  
+
   const { docs } = await payload.find({
     collection: 'products',
     where: { slug: { equals: slug } },
     limit: 1,
-    depth: 1, // Need media depth for images
+    depth: 1,
   })
 
   if (!docs || docs.length === 0) {
@@ -24,31 +35,51 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const product = docs[0]
   const title = product.seoTitle || product.name || 'Product'
   const description = product.seoDescription || product.description?.substring(0, 160) || ''
+  const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://the-looksmaxxing-lab.vercel.app'
+  const productUrl = `${siteUrl}/products/${slug}`
 
-  // Get primary image for open graph
-  let imageUrl = undefined
+  let imageUrl: string | undefined
   if (product.images && product.images.length > 0 && typeof product.images[0].image === 'object' && product.images[0].image?.url) {
     imageUrl = product.images[0].image.url
     if (imageUrl.startsWith('/')) {
-      imageUrl = `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}${imageUrl}`
+      imageUrl = `${siteUrl}${imageUrl}`
     }
   }
+
+  const lowestPrice = product.hasVariants && product.variants?.length
+    ? Math.min(...product.variants.map((v: any) => Number(v.price || 0)))
+    : product.salePrice || product.price || 0
 
   return {
     title,
     description,
+    alternates: {
+      canonical: productUrl,
+    },
     openGraph: {
       title,
       description,
-      images: imageUrl ? [imageUrl] : undefined,
+      images: imageUrl
+        ? [{ url: imageUrl, width: 1200, height: 630, alt: `${product.name} — The Looksmaxxing Lab` }]
+        : [{ url: '/hero-image.png', width: 1200, height: 630, alt: 'The Looksmaxxing Lab' }],
       type: 'website',
+      url: productUrl,
+      siteName: 'The Looksmaxxing Lab',
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: imageUrl ? [imageUrl] : undefined,
-    }
+      images: imageUrl ? [imageUrl] : ['/hero-image.png'],
+    },
+    other: {
+      'og:type': 'product',
+      'product:price:amount': String(lowestPrice),
+      'product:price:currency': 'USD',
+      'product:availability': 'in stock',
+      'product:condition': 'new',
+      'product:retailer_item_id': product.slug || '',
+    },
   }
 }
 
@@ -324,6 +355,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         faqs={mappedFaqs}
         hasVariants={rawProduct.hasVariants || false}
         variants={mappedVariants}
+        averageRating={rawProduct.averageRating || 0}
+        reviewCount={rawProduct.reviewCount || 0}
       />
       <main className="flex-1 mt-20">
         <ProductClient product={productData as any} />

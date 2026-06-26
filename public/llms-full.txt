@@ -1,0 +1,142 @@
+# The Looksmaxxing Lab — Full Site Reference
+
+> US-based supplier of research-grade peptides and COA-verified research compounds for scientific laboratory use. Every batch is independently HPLC tested to ≥99% purity with a full Certificate of Analysis. Research Use Only (RUO).
+
+## Company Overview
+
+The Looksmaxxing Lab is a US-based research peptide supplier founded in 2024. We synthesize, purify, and distribute high-purity research compounds for academic institutions, independent laboratories, and qualified researchers worldwide. All compounds are manufactured using Solid-Phase Peptide Synthesis (SPPS), purified via preparative High-Performance Liquid Chromatography (HPLC), and independently verified by third-party laboratories.
+
+Our quality system guarantees:
+- ≥99% purity on every compound
+- Independent third-party HPLC and mass spectrometry verification
+- Batch-specific Certificate of Analysis (COA) with every order
+- Unique lot numbers for complete traceability
+- Lyophilized powder form for maximum stability
+
+## Complete Product Catalog
+
+### Metabolic Research Peptides
+
+**Tirzepatide** — Dual GIP/GLP-1 receptor agonist (LY3298176). 39-amino-acid synthetic peptide with a C20 fatty diacid chain. Studied for metabolic regulation, appetite signaling, glucose homeostasis, and insulin sensitivity research. Available in 10mg ($60), 20mg ($82), 30mg ($122), 60mg ($175).
+URL: /products/tirzepatide
+
+**Retatrutide** — Triple GLP-1/GIP/glucagon receptor agonist (LY3437943). 39-amino-acid peptide, molecular weight ~4,531 g/mol. One of the most pharmacologically complex peptides in research. Available in 10mg ($100), 20mg ($155), 30mg ($185), 60mg ($300).
+URL: /products/retatrutide
+
+**Semaglutide** — GLP-1 receptor agonist. 31-amino-acid peptide analog of human GLP-1(7-37), molecular weight ~4,113.6 g/mol. Incorporates C18 fatty acid chain and Aib substitution for DPP-IV resistance. Available in 5mg ($48), 10mg ($65), 20mg ($99), 30mg ($130).
+URL: /products/semaglutide
+
+### Growth Hormone Secretagogues
+
+**CJC-1295 / Ipamorelin** — Dual GHS blend combining GHRH analog (CJC-1295) with selective GHSR-1a agonist (Ipamorelin, 711.9 g/mol). Targets somatotropic axis through complementary receptor pathways. Available in 5mg/5mg ($73).
+URL: /products/cjc-ipamorelin
+
+**Ipamorelin** — Selective pentapeptide GHSR-1a agonist (ghrelin mimetic). Stimulates GH release via Gq/Ca2+/PKC signaling with minimal off-target activity at ACTH/cortisol or prolactin axes. Available in 5mg ($49), 10mg ($68).
+URL: /products/ipamorelin
+
+**Tesamorelin** — Stabilized 44-amino-acid GHRH analog with trans-3-hexenoyl modification for enzymatic resistance. Available in 10mg ($93), 20mg ($153).
+URL: /products/tesamorelin
+
+**Sermorelin** — GHRH(1-29)NH2, the minimal biologically active fragment of human growth hormone releasing hormone. Reference standard for GHRH receptor pharmacology. Available in 10mg ($73), 20mg ($118).
+URL: /products/sermorelin
+
+**CJC-1295 No DAC** — Modified GRF(1-29) without Drug Affinity Complex. Shorter half-life mimics endogenous GHRH pulsatility. 10mg ($73).
+URL: /products/cjc-1295-no-dac
+
+**Tesamorelin / Ipamorelin** — Dual GHRH/GHSR blend. Tesamorelin via GHRHR/Gs/cAMP, Ipamorelin via GHSR-1a/Gq/Ca2+. Available in 6mg/3mg ($88), 13mg/3mg ($148).
+URL: /products/tesa-ipa
+
+### Tissue Repair & Regeneration Peptides
+
+**BPC-157** — Body Protection Compound-157. Synthetic pentadecapeptide (15 amino acids, ~1419.5 g/mol) derived from human gastric juice. Studied for cytoprotective, angiogenic, and tissue repair properties. Available in 5mg ($46), 10mg ($56).
+URL: /products/bpc-157
+
+**TB-500** — Synthetic fragment of Thymosin Beta-4 containing the active actin-binding domain (LKKTETQ). Studied for cell migration, angiogenesis, and tissue remodeling. Available in 5mg ($68), 10mg ($88).
+URL: /products/tb-500
+
+**BPC-157 + TB-500** — Dual peptide blend for tissue repair research combining cytoprotective (BPC-157) and cytoskeletal remodeling (TB-500) mechanisms. Available in 5mg/5mg ($83), 10mg/10mg ($103).
+URL: /products/bpc-tb-500
+
+**GHK-Cu** — Copper Peptide. Naturally occurring tripeptide-copper complex (Gly-His-Lys + Cu2+, ~403.9 g/mol). Studied for wound healing, collagen synthesis, and ECM remodeling. Available in 50mg ($46), 100mg ($63).
+URL: /products/ghk-cu
+
+### Longevity & Cellular Research
+
+**Epithalon** — Synthetic tetrapeptide Ala-Glu-Asp-Gly (AEDG), 390.35 g/mol. Developed by Professor Vladimir Khavinson. Studied for telomerase (hTERT) activation and telomere biology. Available in 10mg ($58), 50mg ($93).
+URL: /products/epithalon
+
+**NAD+** — Nicotinamide Adenine Dinucleotide (oxidized form). CAS 53-84-9, molecular weight 663.43 g/mol. Essential coenzyme and substrate for sirtuins (SIRT1-7), PARPs, and CD38. Available in 500mg ($63), 1000mg ($103).
+URL: /products/nad-plus
+
+**MOTS-C** — 16-amino-acid mitochondrial-derived peptide (MDP) encoded by mitochondrial DNA. Studied for AMPK pathway activation and cellular energy regulation. Available in 10mg ($68), 40mg ($133).
+URL: /products/mots-c
+
+**Glutathione** — Naturally occurring tripeptide antioxidant in reduced form. Studied for cellular antioxidant defense, redox homeostasis, and oxidative stress regulation. Available in 600mg ($58), 1500mg ($78).
+URL: /products/glutathione
+
+### Neuropeptides
+
+**Selank** — Synthetic heptapeptide derived from tuftsin with Pro-Gly-Pro C-terminal extension. Studied for GABAergic signaling, enkephalinase inhibition, and neurotransmitter regulation. 10mg ($58).
+URL: /products/selank
+
+**Semax** — Synthetic heptapeptide derived from ACTH(4-7) with Pro-Gly-Pro extension. Studied for BDNF pathway modulation and melanocortin receptor interactions. Available in 10mg ($58), 30mg ($93).
+URL: /products/semax
+
+**Semax / Selank** — Dual nootropic neuropeptide blend combining BDNF modulation (Semax) with GABAergic signaling (Selank). 10mg/10mg ($78).
+URL: /products/semax-selank
+
+**Oxytocin** — Cyclic nonapeptide (Cys-Tyr-Ile-Gln-Asn-Cys-Pro-Leu-Gly-NH2), 1007.2 g/mol. Studied for social behavior neuroscience and neuroendocrine research. 10mg ($63).
+URL: /products/oxytocin
+
+### Melanocortin Peptides
+
+**Melanotan II (MT-2)** — Synthetic cyclic heptapeptide α-MSH analogue, ~1024.2 g/mol. Agonist at MC1R, MC3R, MC4R, MC5R. Studied for melanocortin receptor signaling and pigmentation biology. 10mg ($53).
+URL: /products/melanotan-ii
+
+**Melanotan I** — Linear tridecapeptide α-MSH analog (Afamelanotide) with preferential MC1R selectivity. Studied for MC1R-specific pigmentation research. 10mg ($53).
+URL: /products/melanotan-i
+
+### Anti-Inflammatory & Immune Peptides
+
+**KPV** — Tripeptide (Lys-Pro-Val), ~342.4 g/mol. C-terminal fragment of α-MSH. Studied for anti-inflammatory properties, NF-κB signaling, and mucosal barrier integrity. 10mg ($63).
+URL: /products/kpv
+
+**LL-37** — Human cathelicidin antimicrobial peptide. 37-amino-acid alpha-helical peptide, ~4493.3 g/mol. Studied for antimicrobial, immunomodulatory, and wound healing properties. ($63).
+URL: /products/ll-37
+
+### Reproductive Research
+
+**Kisspeptin** — Neuropeptide encoded by KISS1 gene. Primary upstream activator of GnRH neurons. Studied for reproductive endocrinology and HPG axis research. 10mg ($68).
+URL: /products/kisspeptin
+
+### Multi-Peptide Blends
+
+**Glow Blend** — Multi-peptide blend for skin regeneration, collagen synthesis, and extracellular matrix signaling research. ($123).
+URL: /products/glow-blend
+
+**KLOW Blend** — Multi-peptide blend for tissue regeneration, collagen remodeling, and cellular recovery pathway research. ($128).
+URL: /products/klow-blend
+
+### Lab Essentials
+
+**BAC Water** — Bacteriostatic Water with 0.9% benzyl alcohol. Standard reconstitution solvent for lyophilized peptides. Available in 3mL ($8), 10mL ($12).
+URL: /products/bac-water
+
+**Lipo-C** — Lipotropic research compound for lipid metabolism investigation. Contact for pricing.
+URL: /products/lipo-c
+
+## Site Pages
+
+- Homepage: /
+- Shop (all products): /shop
+- About Us: /about
+- FAQ: /faq
+- Certificates of Analysis: /certificates
+- Contact: /contact
+- Peptide Reconstitution Calculator: /peptide-calculator
+- Research Journal: /journal
+- Affiliate Program: /affiliates
+
+## Compliance Notice
+
+All products sold by The Looksmaxxing Lab are classified Research Use Only (RUO). They are not approved by the FDA, EMA, or any regulatory authority for human consumption, veterinary treatment, cosmetic application, or therapeutic use of any kind. The Looksmaxxing Lab makes no therapeutic, health, performance, or cosmetic claims. Purchasers must be qualified researchers using compounds exclusively for in vitro or preclinical research.

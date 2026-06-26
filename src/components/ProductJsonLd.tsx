@@ -12,6 +12,8 @@ interface ProductJsonLdProps {
   faqs: { question: string; answer: string }[]
   hasVariants: boolean
   variants: { sku: string; price: string; title: string }[]
+  averageRating?: number
+  reviewCount?: number
 }
 
 export function ProductJsonLd({
@@ -26,6 +28,8 @@ export function ProductJsonLd({
   faqs,
   hasVariants,
   variants,
+  averageRating,
+  reviewCount,
 }: ProductJsonLdProps) {
   const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://the-looksmaxxing-lab.vercel.app'
   const productUrl = `${siteUrl}/products/${slug}`
@@ -42,6 +46,54 @@ export function ProductJsonLd({
     ? Math.max(...variants.map((v) => parseFloat(v.price.replace('$', ''))))
     : salePrice || price
 
+  const returnPolicy = {
+    '@type': 'MerchantReturnPolicy',
+    applicableCountry: 'US',
+    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+    merchantReturnDays: 0,
+  }
+
+  const shippingDetails = {
+    '@type': 'OfferShippingDetails',
+    shippingRate: {
+      '@type': 'MonetaryAmount',
+      value: '0',
+      currency: 'USD',
+    },
+    shippingDestination: {
+      '@type': 'DefinedRegion',
+      addressCountry: 'US',
+    },
+    deliveryTime: {
+      '@type': 'ShippingDeliveryTime',
+      handlingTime: {
+        '@type': 'QuantitativeValue',
+        minValue: 1,
+        maxValue: 2,
+        unitCode: 'DAY',
+      },
+      transitTime: {
+        '@type': 'QuantitativeValue',
+        minValue: 2,
+        maxValue: 4,
+        unitCode: 'DAY',
+      },
+    },
+  }
+
+  const offerBase = {
+    priceCurrency: 'USD',
+    availability: 'https://schema.org/InStock',
+    url: productUrl,
+    itemCondition: 'https://schema.org/NewCondition',
+    seller: {
+      '@type': 'Organization',
+      name: 'The Looksmaxxing Lab',
+    },
+    hasMerchantReturnPolicy: returnPolicy,
+    shippingDetails,
+  }
+
   const productSchema: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -57,31 +109,29 @@ export function ProductJsonLd({
     ...(imageUrls.length > 0 && { image: imageUrls }),
   }
 
+  if (averageRating && averageRating > 0 && reviewCount && reviewCount > 0) {
+    productSchema.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: averageRating.toFixed(1),
+      bestRating: '5',
+      worstRating: '1',
+      reviewCount,
+    }
+  }
+
   if (hasVariants && variants.length > 1) {
     productSchema.offers = {
       '@type': 'AggregateOffer',
-      priceCurrency: 'USD',
+      ...offerBase,
       lowPrice: lowestPrice.toFixed(2),
       highPrice: highestPrice.toFixed(2),
       offerCount: variants.length,
-      availability: 'https://schema.org/InStock',
-      url: productUrl,
-      seller: {
-        '@type': 'Organization',
-        name: 'The Looksmaxxing Lab',
-      },
     }
   } else {
     productSchema.offers = {
       '@type': 'Offer',
-      priceCurrency: 'USD',
+      ...offerBase,
       price: lowestPrice.toFixed(2),
-      availability: 'https://schema.org/InStock',
-      url: productUrl,
-      seller: {
-        '@type': 'Organization',
-        name: 'The Looksmaxxing Lab',
-      },
     }
   }
 
@@ -98,8 +148,8 @@ export function ProductJsonLd({
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Research Peptides',
-        item: `${siteUrl}/products`,
+        name: 'Shop',
+        item: `${siteUrl}/shop`,
       },
       {
         '@type': 'ListItem',

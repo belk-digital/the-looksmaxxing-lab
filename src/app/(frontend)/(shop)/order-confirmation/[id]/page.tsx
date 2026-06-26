@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 
 export const metadata = {
   title: 'Order Confirmed | The Looksmaxxing Lab',
+  robots: { index: false, follow: false },
 }
 
 export default async function OrderConfirmationPage({ params }: { params: Promise<{ id: string }> }) {

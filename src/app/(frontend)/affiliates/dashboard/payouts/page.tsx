@@ -6,6 +6,7 @@ import { PayoutsClient } from './PayoutsClient'
 
 export const metadata = {
   title: 'Payouts | Affiliate Dashboard',
+  robots: { index: false, follow: false },
 }
 
 export default async function AffiliatePayoutsPage() {

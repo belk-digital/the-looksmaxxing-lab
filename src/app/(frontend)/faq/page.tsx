@@ -1,9 +1,20 @@
 import type { Metadata } from 'next'
 import FaqClient from './FaqClient'
 
+const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://the-looksmaxxing-lab.vercel.app'
+
 export const metadata: Metadata = {
-  title: 'Research Peptide FAQ | Looksmaxxing, Purity & Ordering | Looksmaxxing Lab',
+  title: 'Research Peptide FAQ | Purity, Ordering & Storage',
   description: 'Answers to every question about research peptides, looksmaxxing, purity standards, COA verification, ordering, and storage. US-synthesized compounds. Research use only.',
+  alternates: {
+    canonical: `${siteUrl}/faq`,
+  },
+  openGraph: {
+    images: [{ url: '/og/og-faq.png', width: 1200, height: 630, alt: 'Research Peptide FAQ — The Looksmaxxing Lab' }],
+    title: 'Research Peptide FAQ | The Looksmaxxing Lab',
+    description: 'Frequently asked questions about research peptides, purity standards, COA verification, ordering, and storage.',
+    url: `${siteUrl}/faq`,
+  },
 }
 
 export default function FAQPage() {

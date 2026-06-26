@@ -5,9 +5,20 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { getShopProducts } from '../(shop)/actions'
 
+const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://the-looksmaxxing-lab.vercel.app'
+
 export const metadata: Metadata = {
-  title: 'Shop All Compounds | The Looksmaxxing Lab',
-  description: 'Browse our complete catalog of research-grade peptides and compounds. Filter by purity, category, and availability.',
+  title: 'Shop Research Peptides | 30+ COA-Verified Compounds',
+  description: 'Browse 30+ research-grade peptides and compounds — BPC-157, Semaglutide, Tirzepatide, NAD+, and more. Every batch ≥99% HPLC purity with Certificate of Analysis. Research use only.',
+  alternates: {
+    canonical: `${siteUrl}/shop`,
+  },
+  openGraph: {
+    images: [{ url: '/og/og-shop.png', width: 1200, height: 630, alt: 'Shop Research Peptides — The Looksmaxxing Lab' }],
+    title: 'Shop Research Peptides | The Looksmaxxing Lab',
+    description: 'Browse 30+ COA-verified research peptides. ≥99% HPLC purity, batch-traceable. US-based supplier.',
+    url: `${siteUrl}/shop`,
+  },
 }
 
 export const dynamic = 'force-dynamic'
@@ -53,11 +64,50 @@ export default async function ShopPage() {
     )
   }
 
+  const products = initialProductsRes.success ? (initialProductsRes.products as any[]) : []
+
+  const itemListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Research Peptides & Compounds',
+    description: 'Browse 30+ research-grade peptides and compounds from The Looksmaxxing Lab.',
+    url: `${siteUrl}/shop`,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: products.length,
+      itemListElement: products.slice(0, 30).map((p: any, i: number) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `${siteUrl}/products/${p.slug}`,
+        name: p.name,
+      })),
+    },
+  }
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
+      { '@type': 'ListItem', position: 2, name: 'Shop', item: `${siteUrl}/shop` },
+    ],
+  }
+
   return (
-    <ShopClient 
-      initialProducts={initialProductsRes.success ? (initialProductsRes.products as any) : []} 
-      totalPages={initialProductsRes.success ? initialProductsRes.totalPages : 0} 
-      categories={categories} 
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <ShopClient
+        initialProducts={products}
+        totalPages={initialProductsRes.success ? initialProductsRes.totalPages : 0}
+        categories={categories}
+      />
+    </>
   )
 }

@@ -6,6 +6,7 @@ import { SettingsClient } from './SettingsClient'
 
 export const metadata = {
   title: 'Settings | Affiliate Dashboard',
+  robots: { index: false, follow: false },
 }
 
 export default async function AffiliateSettingsPage() {

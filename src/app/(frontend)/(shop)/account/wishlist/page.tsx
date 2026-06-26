@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation'
 
 export const metadata = {
   title: 'My Wishlist | The Looksmaxxing Lab',
+  robots: { index: false, follow: false },
 }
 
 export default async function WishlistPage() {

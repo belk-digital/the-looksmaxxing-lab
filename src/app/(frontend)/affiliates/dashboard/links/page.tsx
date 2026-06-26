@@ -6,6 +6,7 @@ import { LinksClient } from './LinksClient'
 
 export const metadata = {
   title: 'Links & Creatives | Affiliate Dashboard',
+  robots: { index: false, follow: false },
 }
 
 export default async function AffiliateLinksPage() {

@@ -3,7 +3,9 @@ import configPromise from '@payload-config'
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Products | Test Store',
+  title: 'All Products | Research-Grade Peptides',
+  description: 'Browse all research-grade peptides and compounds from The Looksmaxxing Lab. ≥99% HPLC purity, COA-verified, batch-traceable. Research use only.',
+  robots: { index: false, follow: true },
 }
 
 export default async function ProductsPage() {

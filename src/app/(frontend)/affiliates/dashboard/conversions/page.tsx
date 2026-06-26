@@ -6,6 +6,7 @@ import { ConversionsClient } from './ConversionsClient'
 
 export const metadata = {
   title: 'Conversions | Affiliate Dashboard',
+  robots: { index: false, follow: false },
 }
 
 export default async function AffiliateConversionsPage() {

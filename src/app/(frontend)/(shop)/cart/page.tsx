@@ -3,6 +3,7 @@ import { CartClient } from './CartClient'
 
 export const metadata = {
   title: 'Your Cart | The Looksmaxxing Lab',
+  robots: { index: false, follow: false },
 }
 
 export default function CartPage() {

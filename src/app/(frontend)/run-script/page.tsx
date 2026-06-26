@@ -1,3 +1,5 @@
+export const metadata = { title: 'Run Script', robots: { index: false, follow: false } }
+
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 

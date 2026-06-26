@@ -7,6 +7,7 @@ import config from '@payload-config'
 
 export const metadata = {
   title: 'Affiliate Dashboard | The Looksmaxxing Lab',
+  robots: { index: false, follow: false },
 }
 
 export default async function AffiliateDashboardOverview() {

@@ -9,9 +9,17 @@ import { FaqSection } from '@/components/home/FaqSection'
 import { WhatSetsUsApart } from '@/components/home/WhatSetsUsApart'
 import { Metadata } from 'next'
 
+const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://the-looksmaxxing-lab.vercel.app'
+
 export const metadata: Metadata = {
+  openGraph: {
+    images: [{ url: '/og/og-home.png', width: 1200, height: 630, alt: 'The Looksmaxxing Lab — Research-Grade Peptides' }],
+  },
   title: 'The Looksmaxxing Lab | Research-Grade Peptides, COA-Verified',
-  description: 'US-synthesized research peptides — BPC-157, TB-500, GHK-Cu, Semaglutide. Every batch verified at ≥99% HPLC purity with a full COA. Shop with confidence. 2-day shipping available.',
+  description: 'US-synthesized research peptides — BPC-157, Semaglutide, Tirzepatide, GHK-Cu, NAD+, and 30+ compounds. Every batch verified at ≥99% HPLC purity with a full COA. 2-day shipping available. Research use only.',
+  alternates: {
+    canonical: siteUrl,
+  },
 }
 
 import { getShopProducts } from '@/app/(frontend)/(shop)/actions'
