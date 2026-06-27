@@ -121,23 +121,21 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
   const lastYRef = useRef(0)
 
   useMotionValueEvent(scrollY, 'change', (y) => {
-    setIsScrolled(y > 50)
+    const scrolled = y > 50
+    setIsScrolled((prev) => prev === scrolled ? prev : scrolled)
     const difference = y - lastYRef.current
     if (Math.abs(difference) > 20) {
-      if (difference > 0 && y > 150) {
-        setHidden(true)
-      } else {
-        setHidden(false)
-      }
+      const shouldHide = difference > 0 && y > 150
+      setHidden((prev) => prev === shouldHide ? prev : shouldHide)
       lastYRef.current = y
     }
   })
 
   const isTransparent = !isScrolled && isHome;
-  const headerClasses = `w-full h-[72px] flex items-center justify-between px-6 md:px-12 lg:px-16 pointer-events-auto transition-all duration-300 relative ${
+  const headerClasses = `w-full h-[72px] flex items-center justify-between px-6 md:px-12 lg:px-16 pointer-events-auto transition-colors duration-300 relative ${
     isTransparent
       ? 'bg-transparent border-transparent'
-      : 'bg-white/95 backdrop-blur-md border-b border-black/10 shadow-sm'
+      : 'bg-white border-b border-black/10 shadow-sm'
   }`
 
   const textColor = isTransparent ? 'text-white' : 'text-ink';
@@ -158,7 +156,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
           initial="hidden"
           animate={hidden ? "hidden" : "visible"}
           transition={{ duration: 0.35, ease: "easeOut" }}
-          className="w-full flex flex-col"
+          className="w-full flex flex-col transform-gpu"
         >
           {/* Announcement Bar */}
           {!announcementClosed && (
@@ -273,19 +271,15 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
               </AnimatePresence>
             </button>
             
-            <div className="flex items-center md:min-w-[34px] justify-center">
-              {mounted ? (
-                isLoggedIn ? (
-                  <Link href="/account" className={`p-1 transition-colors flex items-center justify-center ${textColor} ${textHoverColor}`}>
-                    <User size={18} strokeWidth={1.5} />
-                  </Link>
-                ) : (
-                  <Link href="/login" className={`hidden md:inline-flex px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase transition-all shadow-md ${isTransparent ? 'bg-white text-black hover:bg-gray-200' : 'bg-black text-white hover:bg-gray-800'}`}>
-                    LOGIN
-                  </Link>
-                )
-              ) : null}
-            </div>
+            {mounted && isLoggedIn ? (
+              <Link href="/account" className={`p-1 transition-colors flex items-center justify-center ${textColor} ${textHoverColor}`}>
+                <User size={18} strokeWidth={1.5} />
+              </Link>
+            ) : mounted ? (
+              <Link href="/login" className={`hidden md:inline-flex px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase transition-all shadow-md ${isTransparent ? 'bg-white text-black hover:bg-gray-200' : 'bg-black text-white hover:bg-gray-800'}`}>
+                LOGIN
+              </Link>
+            ) : null}
             
             <Link href="/shop" className={`hidden md:inline-flex border rounded-none px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase transition-all ${textColor} ${buttonBorder}`}>
               SHOP NOW
@@ -311,16 +305,15 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
         }}
       >
         {/* Background Blur Overlay for Mega Menu */}
-        <div 
+        <div
           className={`fixed inset-0 bg-black/10 transition-opacity duration-300 ${isMegaMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-          style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+          style={isMegaMenuOpen ? { backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' } : undefined}
           onMouseEnter={() => setIsMegaMenuOpen(false)}
         />
 
         {/* Full-Width Mega Menu Dropdown */}
-        <div 
-          className={`absolute left-0 right-0 w-full bg-white/75 border-b border-gray-100 shadow-xl transition-all duration-300 overflow-hidden ${isMegaMenuOpen ? 'opacity-100 pointer-events-auto translate-y-0' : 'opacity-0 pointer-events-none -translate-y-2'}`}
-          style={{ backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)' }}
+        <div
+          className={`absolute left-0 right-0 w-full bg-white border-b border-gray-100 shadow-xl transition-all duration-300 overflow-hidden ${isMegaMenuOpen ? 'opacity-100 pointer-events-auto translate-y-0' : 'opacity-0 pointer-events-none -translate-y-2'}`}
           onMouseEnter={() => setIsMegaMenuOpen(true)}
           onMouseLeave={() => setIsMegaMenuOpen(false)}
         >

@@ -38,19 +38,13 @@ export function WhatSetsUsApart() {
     offset: ["start start", "end end"]
   })
 
-  // Map scroll progress (0 to 1) into 3 distinct active states
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest < 0.33) {
-      setActiveTab(0)
-    } else if (latest >= 0.33 && latest < 0.66) {
-      setActiveTab(1)
-    } else {
-      setActiveTab(2)
-    }
+    const newTab = latest < 0.33 ? 0 : latest < 0.66 ? 1 : 2
+    setActiveTab((prev) => prev === newTab ? prev : newTab)
   })
 
   return (
-    <section ref={containerRef} className="w-full h-auto lg:h-[250vh] bg-white relative z-10 border-y border-ink/5">
+    <section ref={containerRef} className="w-full h-auto lg:h-[200vh] bg-white relative z-10 border-y border-ink/5">
       
       {/* ----------------------------- */}
       {/* DESKTOP LAYOUT (Sticky Scroll) */}

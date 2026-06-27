@@ -88,13 +88,13 @@ export function Hero() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.2, ease: 'easeInOut' }}
-            className="absolute inset-0 w-full h-full"
+            className="absolute inset-0 w-full h-full transform-gpu"
           >
-            <Image 
-              src={backgroundImages[currentImageIndex]} 
-              alt="Dark blue laboratory environment with premium glass peptide vials — The Looksmaxxing Lab research peptides" 
-              fill 
-              className="object-cover object-center"
+            <Image
+              src={backgroundImages[currentImageIndex]}
+              alt="Dark blue laboratory environment with premium glass peptide vials — The Looksmaxxing Lab research peptides"
+              fill
+              className="object-cover object-center transform-gpu"
               priority={currentImageIndex === 0}
             />
           </motion.div>

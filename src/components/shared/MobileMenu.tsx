@@ -56,24 +56,22 @@ export function MobileMenu({ isOpen, onClose, isLoggedIn = false, onSearchClick 
   }, [isOpen, onClose])
 
   const menuVariants: Variants = {
-    closed: { opacity: 0, scale: 0.96, y: 10 },
-    open: { 
+    closed: { opacity: 0 },
+    open: {
       opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: { 
-        duration: 0.5, 
+      transition: {
+        duration: 0.3,
         ease: [0.22, 1, 0.36, 1],
-        staggerChildren: 0.04,
-        delayChildren: 0.1
-      } 
+        staggerChildren: 0.03,
+        delayChildren: 0.05
+      }
     },
-    exit: { opacity: 0, scale: 0.98, y: 5, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }
+    exit: { opacity: 0, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }
   }
 
   const itemVariants: Variants = {
-    closed: { y: 15, opacity: 0, scale: 0.98 },
-    open: { y: 0, opacity: 1, scale: 1, transition: { duration: 0.4, ease: "easeOut" } }
+    closed: { y: 10, opacity: 0 },
+    open: { y: 0, opacity: 1, transition: { duration: 0.3, ease: "easeOut" } }
   }
 
   return (
@@ -174,7 +172,7 @@ export function MobileMenu({ isOpen, onClose, isLoggedIn = false, onSearchClick 
           {/* Footer Utility Dock */}
           <motion.div 
             variants={itemVariants} 
-            className="absolute bottom-0 left-0 right-0 border-t border-black/10 bg-white/95 backdrop-blur-md shadow-[0_-10px_40px_rgba(0,0,0,0.05)] pb-safe"
+            className="absolute bottom-0 left-0 right-0 border-t border-black/10 bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.05)] pb-safe"
           >
             <div className="grid grid-cols-3 h-[72px]">
               <button 

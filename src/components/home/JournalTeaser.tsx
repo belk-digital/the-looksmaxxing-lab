@@ -46,10 +46,18 @@ export function JournalTeaser() {
         setMaxScroll(Math.max(0, scrollWidth - viewportWidth))
       }
     }
-    
+
     updateMeasurements()
-    window.addEventListener('resize', updateMeasurements)
-    return () => window.removeEventListener('resize', updateMeasurements)
+    let timeout: ReturnType<typeof setTimeout>
+    const debouncedUpdate = () => {
+      clearTimeout(timeout)
+      timeout = setTimeout(updateMeasurements, 150)
+    }
+    window.addEventListener('resize', debouncedUpdate)
+    return () => {
+      window.removeEventListener('resize', debouncedUpdate)
+      clearTimeout(timeout)
+    }
   }, [])
   
   const { scrollYProgress } = useScroll({
@@ -133,8 +141,8 @@ export function JournalTeaser() {
           
           <motion.div 
             ref={trackRef}
-            style={{ x }} 
-            className="flex gap-4 xl:gap-12 pl-6 xl:pl-12 pr-6 xl:pr-12 w-max"
+            style={{ x, willChange: 'transform' }}
+            className="flex gap-4 xl:gap-12 pl-6 xl:pl-12 pr-6 xl:pr-12 w-max transform-gpu"
           >
             {SAMPLE_POSTS.map((post) => (
               <JournalCard key={post.slug} post={post} />

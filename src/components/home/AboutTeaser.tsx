@@ -14,17 +14,10 @@ export function AboutTeaser() {
     offset: ["start end", "end start"]
   })
 
-  // Deep Background Layer (moves very slowly)
-  const bgY = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"])
-  
-  // Mid Text Layer (moves slightly faster)
-  const textY = useTransform(scrollYProgress, [0, 1], ["10%", "-10%"])
-  
-  // Foreground Focus Layer (moves fast)
-  const fgFocusY = useTransform(scrollYProgress, [0, 1], ["30%", "-30%"])
-  
-  // Extreme Foreground Blur Layer (moves extremely fast)
-  const fgBlurY = useTransform(scrollYProgress, [0, 1], ["80%", "-80%"])
+  const bgY = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"])
+  const textY = useTransform(scrollYProgress, [0, 1], ["5%", "-5%"])
+  const fgFocusY = useTransform(scrollYProgress, [0, 1], ["15%", "-15%"])
+  const fgBlurY = useTransform(scrollYProgress, [0, 1], ["30%", "-30%"])
 
   return (
     <div className="w-full mx-auto my-16 md:my-24">

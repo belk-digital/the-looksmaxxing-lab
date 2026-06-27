@@ -36,7 +36,7 @@ export async function getMegaMenuData() {
         slug: prod.slug,
         image: typeof prod.images?.[0]?.image === 'object' && prod.images[0].image?.url 
           ? prod.images[0].image.url 
-          : '/placeholder.jpg',
+          : '/Featured%20Images/vial-no-bg.webp',
         price: prod.price
       }))
     })

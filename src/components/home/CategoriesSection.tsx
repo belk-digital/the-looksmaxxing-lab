@@ -126,7 +126,7 @@ export function CategoriesSection() {
             const isEven = i % 2 === 0;
             return (
               <motion.div variants={staggerItemVariants} key={cat.slug} className="w-full h-full">
-                <motion.div style={{ y: isEven ? yEven : yOdd }} className="w-full h-full">
+                <motion.div style={{ y: isEven ? yEven : yOdd, willChange: 'transform' }} className="w-full h-full transform-gpu">
                   <CategoryCard category={cat} index={i} />
                 </motion.div>
               </motion.div>

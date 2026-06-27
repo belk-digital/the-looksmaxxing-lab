@@ -4,7 +4,7 @@ import React, { useRef } from 'react'
 import Image from 'next/image'
 import { Container } from '@/components/ui/container'
 import { FadeUp } from '@/components/motion/FadeUp'
-import { motion, useSpring, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { CheckCircle2, ShieldCheck, FileSearch, ArrowUpRight } from 'lucide-react'
 
 // Desktop Animated HUD Card
@@ -128,33 +128,37 @@ const MobileAnimatedCard = ({ icon, title, desc, delay, tooltip }: { icon: React
 
 export function CoaSection() {
   const containerRef = useRef<HTMLDivElement>(null)
-  
-  // Create a mouse-tracking effect for the 3D vial
-  const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 })
+
+  const springConfig = { damping: 20, stiffness: 50, mass: 1 }
+  const rawRotateX = useMotionValue(0)
+  const rawRotateY = useMotionValue(0)
+  const rotateX = useSpring(rawRotateX, springConfig)
+  const rotateY = useSpring(rawRotateY, springConfig)
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current) return
     const rect = containerRef.current.getBoundingClientRect()
     const x = (e.clientX - rect.left) / rect.width - 0.5
     const y = (e.clientY - rect.top) / rect.height - 0.5
-    setMousePosition({ x, y })
+    rawRotateX.set(y * 30)
+    rawRotateY.set(x * -30)
   }
 
-  // Smooth springs for mouse movement
-  const springConfig = { damping: 20, stiffness: 50, mass: 1 }
-  const rotateX = useSpring(mousePosition.y * 30, springConfig)
-  const rotateY = useSpring(mousePosition.x * -30, springConfig)
+  const handleMouseLeave = () => {
+    rawRotateX.set(0)
+    rawRotateY.set(0)
+  }
   
   return (
       <section 
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      onMouseLeave={() => setMousePosition({ x: 0, y: 0 })}
+      onMouseLeave={handleMouseLeave}
       className="relative w-full bg-[#f8fafd] text-ink py-24 lg:py-48 overflow-hidden z-10"
     >
        {/* Aesthetic Ambient Background Glow */}
        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
-          <div className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[700px] lg:h-[700px] rounded-full bg-gradient-to-tr from-[#5984c4]/5 to-[#5984c4]/10 blur-[80px] lg:blur-[140px] transform translate-y-16 transform-gpu will-change-transform opacity-60" />
+          <div className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[700px] lg:h-[700px] rounded-full bg-gradient-to-tr from-[#5984c4]/5 to-[#5984c4]/10 blur-[80px] lg:blur-[140px] translate-y-16 transform-gpu opacity-60" />
        </div>
        
        <Container size="wide" className="relative z-10">
