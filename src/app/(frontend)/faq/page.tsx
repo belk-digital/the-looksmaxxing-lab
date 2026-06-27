@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import FaqClient from './FaqClient'
 
-const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://the-looksmaxxing-lab.vercel.app'
+const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com'
 
 export const metadata: Metadata = {
   title: 'Research Peptide FAQ | Purity, Ordering & Storage',
@@ -22,7 +22,7 @@ export default function FAQPage() {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "The Looksmaxxing Lab",
-    "url": "https://the-looksmaxxing-lab.vercel.app",
+    "url": "https://www.thelooksmaxxinglab.com",
     "description": "US-based research peptide supplier providing 99%+ HPLC-pure compounds with third-party COA verification.",
     "address": {
       "@type": "PostalAddress",
@@ -39,13 +39,13 @@ export default function FAQPage() {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://the-looksmaxxing-lab.vercel.app"
+        "item": "https://www.thelooksmaxxinglab.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "FAQ",
-        "item": "https://the-looksmaxxing-lab.vercel.app/faq"
+        "item": "https://www.thelooksmaxxinglab.com/faq"
       }
     ]
   };
@@ -141,7 +141,7 @@ export default function FAQPage() {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Research Peptide FAQ — The Looksmaxxing Lab",
-    "url": "https://the-looksmaxxing-lab.vercel.app/faq",
+    "url": "https://www.thelooksmaxxinglab.com/faq",
     "description": "Answers to questions about research peptides, looksmaxxing, purity, ordering, and compliance.",
     "mainEntity": schemaFAQPage
   };

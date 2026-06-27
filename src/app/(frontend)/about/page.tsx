@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import AboutClient from './AboutClient'
 
-const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://the-looksmaxxing-lab.vercel.app'
+const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com'
 
 export const metadata: Metadata = {
   title: 'About The Looksmaxxing Lab | US Research Peptide Supplier',
@@ -22,7 +22,7 @@ export default function AboutPage() {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "The Looksmaxxing Lab",
-    "url": "https://the-looksmaxxing-lab.vercel.app",
+    "url": "https://www.thelooksmaxxinglab.com",
     "foundingDate": "2024",
     "description": "US-based research peptide supplier providing ≥99% HPLC-pure compounds with independent third-party COA verification on every order.",
     "address": {
@@ -36,7 +36,7 @@ export default function AboutPage() {
     "@context": "https://schema.org",
     "@type": "AboutPage",
     "name": "About The Looksmaxxing Lab",
-    "url": "https://the-looksmaxxing-lab.vercel.app/about",
+    "url": "https://www.thelooksmaxxinglab.com/about",
     "description": "About The Looksmaxxing Lab — US-based research peptide supplier founded in 2024. Mission, philosophy, quality standards, and compound catalog.",
     "mainEntity": {
       "@type": "Organization",
@@ -52,13 +52,13 @@ export default function AboutPage() {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://the-looksmaxxing-lab.vercel.app"
+        "item": "https://www.thelooksmaxxinglab.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "About",
-        "item": "https://the-looksmaxxing-lab.vercel.app/about"
+        "item": "https://www.thelooksmaxxinglab.com/about"
       }
     ]
   };

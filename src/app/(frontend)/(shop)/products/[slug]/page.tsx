@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const product = docs[0]
   const title = product.seoTitle || product.name || 'Product'
   const description = product.seoDescription || product.description?.substring(0, 160) || ''
-  const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://the-looksmaxxing-lab.vercel.app'
+  const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com'
   const productUrl = `${siteUrl}/products/${slug}`
 
   let imageUrl: string | undefined

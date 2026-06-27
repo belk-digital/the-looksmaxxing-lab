@@ -8,9 +8,9 @@ export const metadata: Metadata = {
   title: 'Peptide Reconstitution Calculator — Free Tool | Looksmaxxing Lab',
   description: 'Free peptide reconstitution calculator. Enter your vial size, BAC water volume, and target dose to get exact IU syringe units, concentration, and total doses. No signup — instant results.',
   alternates: {
-    canonical: 'https://the-looksmaxxing-lab.vercel.app/peptide-calculator',
+    canonical: 'https://www.thelooksmaxxinglab.com/peptide-calculator',
     languages: {
-      'en-US': 'https://the-looksmaxxing-lab.vercel.app/peptide-calculator',
+      'en-US': 'https://www.thelooksmaxxinglab.com/peptide-calculator',
     },
   },
 }
@@ -67,7 +67,7 @@ export default function Page() {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Peptide Reconstitution Calculator",
-    "url": "https://the-looksmaxxing-lab.vercel.app/peptide-calculator",
+    "url": "https://www.thelooksmaxxinglab.com/peptide-calculator",
     "description": "Free online peptide reconstitution calculator. Enter vial size, BAC water volume, and target dose to get exact IU syringe units, concentration, and total doses.",
     "applicationCategory": "HealthApplication",
     "operatingSystem": "Web Browser",
@@ -124,13 +124,13 @@ export default function Page() {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://the-looksmaxxing-lab.vercel.app"
+        "item": "https://www.thelooksmaxxinglab.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Peptide Calculator",
-        "item": "https://the-looksmaxxing-lab.vercel.app/peptide-calculator"
+        "item": "https://www.thelooksmaxxinglab.com/peptide-calculator"
       }
     ]
   }

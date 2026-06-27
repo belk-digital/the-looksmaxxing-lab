@@ -3,7 +3,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { AffiliatesLandingClient, UserAffiliateStatus } from './AffiliatesLandingClient'
 
-const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://the-looksmaxxing-lab.vercel.app'
+const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com'
 
 export const metadata = {
   title: 'Affiliate Program | Earn 15% Commission on Research Peptides',

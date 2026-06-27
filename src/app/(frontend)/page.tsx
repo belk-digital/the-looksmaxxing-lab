@@ -9,7 +9,7 @@ import { FaqSection } from '@/components/home/FaqSection'
 import { WhatSetsUsApart } from '@/components/home/WhatSetsUsApart'
 import { Metadata } from 'next'
 
-const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://the-looksmaxxing-lab.vercel.app'
+const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com'
 
 export const metadata: Metadata = {
   openGraph: {
@@ -105,19 +105,19 @@ export default async function Homepage() {
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "The Looksmaxxing Lab",
-              "url": "https://the-looksmaxxing-lab.vercel.app",
+              "url": "https://www.thelooksmaxxinglab.com",
               "description": "US-based research peptide supplier providing ≥99% HPLC-pure compounds with third-party COA verification.",
               "sameAs": ["https://instagram.com/thelooksmaxxinglab"]
             },
             {
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "url": "https://the-looksmaxxing-lab.vercel.app",
+              "url": "https://www.thelooksmaxxinglab.com",
               "potentialAction": {
                 "@type": "SearchAction",
                 "target": {
                   "@type": "EntryPoint",
-                  "urlTemplate": "https://the-looksmaxxing-lab.vercel.app/shop?q={search_term_string}"
+                  "urlTemplate": "https://www.thelooksmaxxinglab.com/shop?q={search_term_string}"
                 },
                 "query-input": "required name=search_term_string"
               }
