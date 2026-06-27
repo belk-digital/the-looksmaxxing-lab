@@ -13,7 +13,8 @@ export const Orders: CollectionConfig = {
   access: {
     read: ({ req }) => {
       if (req.user?.role === 'admin') return true
-      return { owner: { equals: req.user?.id } }
+      if (!req.user) return false
+      return { owner: { equals: req.user.id } }
     },
     create: () => false,
     update: ({ req }) => req.user?.role === 'admin',
@@ -272,6 +273,12 @@ export const Orders: CollectionConfig = {
     { name: 'couponCode', type: 'text', admin: { position: 'sidebar' } },
     { name: 'customerNote', type: 'textarea' },
     { name: 'guestEmail', type: 'text', admin: { position: 'sidebar', description: 'For orders without a registered user account' } },
+    {
+      name: 'isFinalized',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: { position: 'sidebar', readOnly: true, description: 'Set automatically after order finalization to prevent double-processing.' },
+    },
     { name: 'createdAt', type: 'date', admin: { position: 'sidebar', disabled: true } },
     { name: 'updatedAt', type: 'date', admin: { position: 'sidebar', disabled: true } },
     {

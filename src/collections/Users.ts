@@ -51,6 +51,9 @@ export const Users: CollectionConfig = {
         { label: 'Admin', value: 'admin' },
         { label: 'Staff', value: 'staff' },
       ],
+      access: {
+        update: ({ req }) => req.user?.role === 'admin',
+      },
     },
 
     {
@@ -114,6 +117,9 @@ export const Users: CollectionConfig = {
       name: 'maxxPoints',
       type: 'number',
       defaultValue: 0,
+      access: {
+        update: ({ req }) => ['admin', 'staff'].includes(req.user?.role || ''),
+      },
       admin: {
         description: 'Maxx Points ($1 per point). Can be used by users at checkout.',
       },

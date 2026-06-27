@@ -1,7 +1,6 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { attributeOrder } from '@/lib/affiliates/commission'
-import { appendOrderToSheet } from '@/lib/google/sheets'
 
 /**
  * Centralized post-checkout logic.
@@ -25,11 +24,18 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
       return false
     }
 
-    // Double-check to prevent duplicate finalization
-    if (order.paymentStatus === 'captured' && order.fulfillmentStatus !== 'unfulfilled') {
-      console.warn(`finalizeOrder: Order ${orderId} already captured and processed. Skipping.`)
+    // Prevent duplicate finalization
+    if ((order as any).isFinalized) {
+      console.warn(`finalizeOrder: Order ${orderId} already finalized. Skipping.`)
       return true
     }
+
+    // Mark as finalized immediately to prevent race conditions
+    await payload.update({
+      collection: 'orders',
+      id: idToUse,
+      data: { isFinalized: true } as any,
+    })
 
     // 1. Mark Order as Paid (unless it's a manual payment awaiting funds)
     if (!skipPaymentStatusUpdate && order.paymentStatus !== 'captured') {
@@ -50,7 +56,8 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
         if (productId) {
           const productDoc = await payload.findByID({ collection: 'products', id: productId });
           if (productDoc) {
-            const newStock = Math.max(0, (productDoc.stock || 0) - (item.quantity || 1));
+            const qty = item.quantity || 1;
+            const newStock = Math.max(0, (productDoc.stock || 0) - qty);
             await payload.update({ collection: 'products', id: productId, data: { stock: newStock } });
           }
         }
@@ -62,12 +69,11 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
       const coupons = await payload.find({ collection: 'coupons', where: { code: { equals: order.couponCode } }, overrideAccess: true })
       if (coupons.docs.length > 0) {
         const coupon = coupons.docs[0]
-        
+
         const updateData: any = {
           usageCount: (coupon.usageCount || 0) + 1
         }
 
-        // Properly deduct remaining balance for store credit coupons!
         if (coupon.type === 'store_credit' && typeof coupon.remainingBalance === 'number') {
           updateData.remainingBalance = Math.max(0, coupon.remainingBalance - (order.discountTotal || 0))
         }
@@ -85,9 +91,8 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
     if (order.owner) {
       const userId = typeof order.owner === 'object' ? order.owner.id : order.owner
       const user = await payload.findByID({ collection: 'users', id: userId })
-      
+
       let currentPoints = user.maxxPoints || 0
-      // Deduct redeemed
       if (order.redeemedPoints && order.redeemedPoints > 0) {
           currentPoints = Math.max(0, currentPoints - order.redeemedPoints)
       }
@@ -98,20 +103,18 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
           data: { maxxPoints: currentPoints }
       })
 
-      // Clear user's Payload cart instantly
       const carts = await payload.find({ collection: 'carts', where: { user: { equals: userId } } });
       if (carts.docs.length > 0) {
         await payload.update({ collection: 'carts', id: carts.docs[0].id, data: { items: [] } });
       }
     } else if (paymentIntentMetadata?.cartId) {
-      // Clear Guest Cart using metadata fallback
       await payload.update({ collection: 'carts', id: paymentIntentMetadata.cartId, data: { items: [] } });
     }
 
     // 5. Affiliate Attribution
     const affiliateId = paymentIntentMetadata?.affiliateId;
-    const clickId = paymentIntentMetadata?.clickId; 
-    
+    const clickId = paymentIntentMetadata?.clickId;
+
     if (affiliateId || order.couponCode) {
       attributeOrder(
         order as any,

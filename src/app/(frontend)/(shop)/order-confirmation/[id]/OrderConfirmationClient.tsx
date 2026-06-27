@@ -104,7 +104,7 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
 
               <div className="bg-white py-3 px-6 rounded-xl border border-yellow-200 inline-block mx-auto shadow-sm">
                 <span className="font-mono text-lg font-bold text-ink">
-                  {order.paymentMethod === 'apple_pay' ? '(555) 123-4567' : 'support@thelooksmaxxinglab.com'}
+                  support@thelooksmaxxinglab.com
                 </span>
               </div>
               <p className="text-xs text-yellow-800 mt-2">

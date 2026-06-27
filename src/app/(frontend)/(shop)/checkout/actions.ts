@@ -5,6 +5,13 @@ import configPromise from '@payload-config'
 import Stripe from 'stripe'
 import { verifyCoupon, getUserMaxxPoints } from '../actions'
 import { cookies } from 'next/headers'
+import { auth } from '@clerk/nextjs/server'
+import crypto from 'crypto'
+
+function signOrderCookie(orderId: string): string {
+  const secret = process.env.PAYLOAD_SECRET || 'fallback-secret'
+  return crypto.createHmac('sha256', secret).update(`order_${orderId}`).digest('hex')
+}
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2024-04-10' as any,
@@ -166,13 +173,13 @@ export async function createPaymentIntent(
 }
 
 export async function createPayloadOrder(
-  items: any[], 
+  items: any[],
   shippingMethodName: string,
   couponCode: string | undefined,
   isRedeemingPoints: boolean,
   formData: any,
   paymentIntentId: string,
-  userId?: string,
+  _userId?: string,
   paymentMethod?: string
 ) {
   const payload = await getPayload({ config: configPromise })
@@ -270,12 +277,13 @@ export async function createPayloadOrder(
   const total = totalBeforePoints - pointsToRedeem
 
   try {
-    // Attempt to map clerk userId to Payload User
+    // Verify authenticated user server-side instead of trusting client
     let payloadUserId = null
-    if (userId) {
+    const { userId: clerkUserId } = await auth()
+    if (clerkUserId) {
        const userRes = await payload.find({
           collection: 'users',
-          where: { clerkUserId: { equals: userId } }
+          where: { clerkUserId: { equals: clerkUserId } }
        })
        if (userRes.docs.length > 0) {
           payloadUserId = userRes.docs[0].id
@@ -398,7 +406,7 @@ export async function createPayloadOrder(
 
     // Set a cookie to authorize the order confirmation page
     const cookieStore = await cookies()
-    cookieStore.set(`order_auth_${order.id}`, 'true', { 
+    cookieStore.set(`order_auth_${order.id}`, signOrderCookie(String(order.id)), {
       maxAge: 60 * 60 * 24 * 7, // 7 days
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -415,7 +423,13 @@ export async function createPayloadOrder(
 export async function syncPaymentStatus(paymentIntentId: string, orderId: string) {
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
-    
+
+    // Verify the PaymentIntent actually belongs to this order
+    if (paymentIntent.metadata?.orderId !== orderId) {
+      console.error(`syncPaymentStatus: PaymentIntent ${paymentIntentId} does not belong to order ${orderId}`)
+      return { error: 'Payment verification failed' }
+    }
+
     if (paymentIntent.status === 'succeeded') {
       const { finalizeOrder } = await import('@/lib/orders/finalizeOrder')
       await finalizeOrder(orderId, paymentIntent.metadata)
