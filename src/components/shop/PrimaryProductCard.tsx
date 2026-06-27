@@ -11,7 +11,7 @@ import { useCartStore } from '@/lib/cart/store'
 import { toast } from 'sonner'
 
 export interface Product {
-  id?: string // added id to support wishlist
+  id?: string
   name: string
   slug: string
   image: string
@@ -21,6 +21,10 @@ export interface Product {
   originalPrice?: string
   discountPercentage?: number
   category: string
+  hasVariants?: boolean
+  variantCount?: number
+  firstVariantName?: string
+  firstVariantSku?: string
 }
 
 export interface PrimaryProductCardProps {
@@ -35,16 +39,26 @@ function SlideToAddButton({ product }: { product: Product }) {
   const [isAdded, setIsAdded] = useState(false)
   const cartStore = useCartStore()
 
+  const isMultiVariant = product.hasVariants && (product.variantCount || 0) > 1
+
   const handleAdd = () => {
+    if (isMultiVariant) {
+      window.location.href = `/products/${product.slug}`
+      return
+    }
+
+    const variantTitle = product.firstVariantName || 'Standard'
+    const variantSku = product.firstVariantSku || product.id || product.slug
     cartStore.addItem(
       { id: product.id || product.slug, name: product.name, imageUrl: product.image },
-      'Default',
+      variantSku,
       1,
-      parseFloat(product.priceRange.replace(/[^0-9.]/g, '')) || 0
+      parseFloat(product.priceRange.replace(/[^0-9.]/g, '')) || 0,
+      variantTitle,
     )
     setIsAdded(true)
-    toast.success('Added to cart', { 
-      action: { label: 'VIEW', onClick: cartStore.openCart } 
+    toast.success('Added to cart', {
+      action: { label: 'VIEW', onClick: cartStore.openCart }
     })
     cartStore.openCart()
     setTimeout(() => setIsAdded(false), 2000)
@@ -77,7 +91,7 @@ function SlideToAddButton({ product }: { product: Product }) {
       className="relative w-full h-[40px] sm:h-[52px] bg-[#F1F1F1] rounded-full flex items-center overflow-hidden pointer-events-auto z-20 mt-auto border border-black/5"
     >
       <div className="absolute inset-0 flex items-center justify-center pl-8 sm:pl-10 text-[9px] sm:text-[12px] lg:text-[13px] font-semibold text-ink/40 pointer-events-none select-none tracking-tight">
-        Slide to add <ChevronRight size={14} className="inline ml-0.5" />
+        {isMultiVariant ? 'Select options' : 'Slide to add'} <ChevronRight size={14} className="inline ml-0.5" />
       </div>
       
       <motion.button

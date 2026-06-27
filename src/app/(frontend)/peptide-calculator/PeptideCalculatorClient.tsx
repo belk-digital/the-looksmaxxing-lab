@@ -103,7 +103,7 @@ export default function PeptideCalculatorPage() {
   }
 
   const UnitToggle = ({ value, onChange }: { value: MassUnit, onChange: (v: MassUnit) => void }) => (
-    <div className="flex items-center gap-2 text-2xl lg:text-3xl font-serif">
+    <div className="flex items-center gap-2 text-xl sm:text-2xl lg:text-3xl font-serif">
       <button 
         onClick={() => onChange('mg')}
         className={`transition-colors ${value === 'mg' ? 'text-ink' : 'text-ink/20 line-through'}`}
@@ -121,7 +121,7 @@ export default function PeptideCalculatorPage() {
   )
 
   return (
-    <main className="bg-white min-h-screen">
+    <main className="bg-white min-h-screen overflow-x-hidden w-full">
       
       {/* ============================================
           SECTION 1: CALCULATOR (SPLIT SCREEN)
@@ -129,7 +129,7 @@ export default function PeptideCalculatorPage() {
       <section className="flex flex-col lg:flex-row w-full">
         
         {/* LEFT COLUMN: INPUTS */}
-        <div className="w-full lg:w-1/2 min-h-[50vh] lg:min-h-screen pt-28 pb-12 px-8 lg:px-12 xl:px-16 flex flex-col relative bg-white text-ink border-r border-ink/10">
+        <div className="w-full lg:w-1/2 min-h-[50vh] lg:min-h-screen pt-24 sm:pt-28 pb-12 px-5 sm:px-8 lg:px-12 xl:px-16 flex flex-col relative bg-white text-ink border-b lg:border-b-0 lg:border-r border-ink/10">
           
           <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.25] mix-blend-multiply z-0">
             <filter id="noiseLight">
@@ -145,11 +145,11 @@ export default function PeptideCalculatorPage() {
             </Link>
 
             <FadeUp>
-              <h1 className="text-4xl lg:text-5xl font-serif tracking-tighter leading-[0.9] mb-4">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif tracking-tighter leading-[0.9] mb-4">
                 Peptide <span className="text-ink/30 italic font-light">Reconstitution Calculator</span>
               </h1>
               <p className="text-sm font-mono text-ink/40 uppercase tracking-widest mb-12 flex items-center gap-2">
-                <Info className="w-4 h-4 shrink-0 mt-[2px]" /> <span className="normal-case tracking-normal">Free online peptide reconstitution calculator — enter your vial size, bacteriostatic water volume, and target dose to get the exact IU syringe mark, solution concentration, draw volume, and total doses per vial. No account required. Instant results.</span>
+                <Info className="w-4 h-4 shrink-0 mt-[2px]" /> <span className="normal-case tracking-normal">Free online peptide reconstitution calculator. Enter your vial size, bacteriostatic water, and target dose to instantly get exact IU syringe marks, concentration, and total doses.</span>
               </p>
             </FadeUp>
 
@@ -169,7 +169,7 @@ export default function PeptideCalculatorPage() {
                         <button
                           key={opt.v}
                           onClick={() => setSyringeVolume(opt.v as SyringeVolume)}
-                          className={`text-2xl lg:text-3xl font-serif transition-colors tracking-tight ${
+                          className={`text-xl sm:text-2xl lg:text-3xl font-serif transition-colors tracking-tight ${
                             syringeVolume === opt.v ? 'text-ink' : 'text-ink/20 line-through hover:text-ink/40'
                           }`}
                         >
@@ -193,10 +193,10 @@ export default function PeptideCalculatorPage() {
                         step="any"
                         value={peptideAmount}
                         onChange={e => setPeptideAmount(e.target.value)}
-                        className="bg-transparent text-4xl lg:text-5xl font-serif tracking-tighter text-ink focus:outline-none w-2/3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="bg-transparent text-3xl sm:text-4xl lg:text-5xl font-serif tracking-tighter text-ink focus:outline-none w-2/3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="0"
                       />
-                      <span className="text-2xl lg:text-3xl font-serif text-ink">MG</span>
+                      <span className="text-xl sm:text-2xl lg:text-3xl font-serif text-ink">MG</span>
                     </div>
                   </div>
                 </div>
@@ -206,7 +206,7 @@ export default function PeptideCalculatorPage() {
               <FadeUp delay={0.3}>
                 <div className="flex flex-col border-b border-ink pb-6">
                   <div className="w-full flex flex-col">
-                    <div className="flex justify-between items-end mb-2">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-4 sm:mb-2 gap-3 sm:gap-0">
                       <label className="block text-xs font-mono uppercase tracking-[0.2em] text-ink/60">Bacteriostatic Water Volume (ML)</label>
                       <div className="flex gap-4">
                         {['1', '2', '3'].map(ml => (
@@ -226,7 +226,7 @@ export default function PeptideCalculatorPage() {
                       step="any"
                       value={waterMl}
                       onChange={e => setWaterMl(e.target.value)}
-                      className="bg-transparent text-4xl lg:text-5xl font-serif tracking-tighter text-ink focus:outline-none w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="bg-transparent text-3xl sm:text-4xl lg:text-5xl font-serif tracking-tighter text-ink focus:outline-none w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="0"
                     />
                   </div>
@@ -245,7 +245,7 @@ export default function PeptideCalculatorPage() {
                         step="any"
                         value={desiredDose}
                         onChange={e => setDesiredDose(e.target.value)}
-                        className="bg-transparent text-4xl lg:text-5xl font-serif tracking-tighter text-gold focus:outline-none w-2/3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="bg-transparent text-3xl sm:text-4xl lg:text-5xl font-serif tracking-tighter text-gold focus:outline-none w-2/3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="0"
                       />
                       <UnitToggle value={doseUnit} onChange={setDoseUnit} />
@@ -271,7 +271,7 @@ export default function PeptideCalculatorPage() {
         </div>
 
         {/* RIGHT COLUMN: RESULTS (DARK) */}
-        <div className="w-full lg:w-1/2 min-h-[60vh] lg:min-h-screen pt-24 pb-24 px-8 lg:px-16 xl:px-24 flex flex-col justify-center relative bg-ink text-cream">
+        <div className="w-full lg:w-1/2 min-h-[60vh] lg:min-h-screen pt-16 sm:pt-24 pb-24 px-5 sm:px-8 lg:px-16 xl:px-24 flex flex-col justify-center relative bg-ink text-cream">
           
           <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.1] mix-blend-overlay z-0">
             <filter id="noiseDark">
@@ -294,10 +294,10 @@ export default function PeptideCalculatorPage() {
                     Required Draw (IU)
                   </span>
                   <div className="flex items-baseline gap-4">
-                    <span className={`font-serif tracking-tighter leading-none ${errorMsg ? 'text-6xl text-red-500' : 'text-8xl lg:text-[12vw]'}`}>
+                    <span className={`font-serif tracking-tighter leading-none ${errorMsg ? 'text-4xl sm:text-6xl text-red-500' : 'text-6xl sm:text-8xl lg:text-[12vw]'}`}>
                       {tickMarksStr}
                     </span>
-                    {!errorMsg && <span className="text-2xl lg:text-4xl font-serif text-cream/30 italic">IU</span>}
+                    {!errorMsg && <span className="text-xl sm:text-2xl lg:text-4xl font-serif text-cream/30 italic">IU</span>}
                   </div>
                 </div>
 
@@ -432,15 +432,15 @@ export default function PeptideCalculatorPage() {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
                 <div>
                   <span className="block text-[10px] font-mono text-cream/40 uppercase tracking-widest mb-4">Solution Concentration (mcg/ml)</span>
-                  <span className="text-2xl lg:text-3xl font-serif">{concentrationStr}</span>
+                  <span className="text-xl sm:text-2xl lg:text-3xl font-serif">{concentrationStr}</span>
                 </div>
                 <div>
                   <span className="block text-[10px] font-mono text-cream/40 uppercase tracking-widest mb-4">Draw Volume per Dose (ml)</span>
-                  <span className="text-2xl lg:text-3xl font-serif">{volumePerDoseStr}</span>
+                  <span className="text-xl sm:text-2xl lg:text-3xl font-serif">{volumePerDoseStr}</span>
                 </div>
                 <div className="col-span-2 md:col-span-1">
                   <span className="block text-[10px] font-mono text-cream/40 uppercase tracking-widest mb-4">Total Doses Per Vial</span>
-                  <span className="text-2xl lg:text-3xl font-serif">{dosesPerVialStr}</span>
+                  <span className="text-xl sm:text-2xl lg:text-3xl font-serif">{dosesPerVialStr}</span>
                 </div>
               </div>
             </div>
@@ -487,9 +487,9 @@ export default function PeptideCalculatorPage() {
           
           <FadeUp className="text-center mb-24 lg:mb-40">
             <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-gold mb-6 font-bold">Step-by-Step Guide</h2>
-            <h3 className="text-4xl lg:text-6xl font-serif text-ink tracking-tight mb-6">Step-by-Step Guide: How to Reconstitute a Research Peptide</h3>
-            <p className="text-lg lg:text-xl text-ink/50 font-light leading-relaxed max-w-2xl mx-auto">
-              Follow this four-step workflow to calculate the exact IU syringe mark, solution concentration, draw volume, and total doses for any research peptide reconstitution. Each step takes less than 30 seconds. The calculator handles all the math — no spreadsheet or manual formula required.
+            <h3 className="text-3xl sm:text-4xl lg:text-6xl font-serif text-ink tracking-tight mb-6">Step-by-Step Guide: How to Reconstitute a Research Peptide</h3>
+            <p className="text-base sm:text-lg lg:text-xl text-ink/50 font-light leading-relaxed max-w-2xl mx-auto">
+              Follow this quick four-step workflow to calculate the exact IU syringe mark, solution concentration, draw volume, and total doses for your research.
             </p>
           </FadeUp>
 
@@ -501,7 +501,7 @@ export default function PeptideCalculatorPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="sticky top-20 lg:top-32 w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-10 lg:p-16 border border-ink/5 bg-white shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden group mb-8 lg:mb-12"
+              className="relative md:sticky top-20 lg:top-32 w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-8 sm:p-10 lg:p-16 border border-ink/5 bg-white shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden group mb-8 lg:mb-12"
               style={{ zIndex: 10 }}
             >
               <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.4] mix-blend-multiply z-0">
@@ -513,17 +513,17 @@ export default function PeptideCalculatorPage() {
               
               <div className="relative z-10 grid grid-cols-1 md:grid-cols-[100px_1fr] lg:grid-cols-[160px_1fr] gap-8 lg:gap-16 items-stretch">
                 <div className="flex flex-row md:flex-col justify-between items-end md:items-start border-b md:border-b-0 md:border-r border-ink/10 pb-6 md:pb-0 md:pr-8">
-                  <span className="text-5xl lg:text-8xl font-serif text-ink tracking-tighter leading-none">01</span>
+                  <span className="text-4xl sm:text-5xl lg:text-8xl font-serif text-ink tracking-tighter leading-none">01</span>
                   <Syringe className="w-8 h-8 lg:w-12 lg:h-12 text-ink/30 mt-0 md:mt-12" strokeWidth={1} />
                 </div>
                 
                 <div className="flex flex-col justify-center py-2 lg:py-4">
-                  <h3 className="text-4xl lg:text-5xl font-serif text-ink mb-6 lg:mb-8 tracking-tight leading-[1.1]">Step 01: Select Your Insulin Syringe (0.3ml, 0.5ml, or 1.0ml)</h3>
-                  <p className="text-lg lg:text-xl text-ink/70 leading-relaxed max-w-3xl font-light mb-6">
-                    Begin by selecting the insulin syringe capacity you are using for this reconstitution. All three options use standard U-100 insulin syringes, where 1ml equals 100 IU. Your syringe size determines the maximum draw volume and the precision of your tick-mark readings.
+                  <h3 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-ink mb-6 lg:mb-8 tracking-tight leading-[1.1]">Step 01: Select Your Insulin Syringe (0.3ml, 0.5ml, or 1.0ml)</h3>
+                  <p className="text-base sm:text-lg lg:text-xl text-ink/70 leading-relaxed max-w-3xl font-light mb-6">
+                    Select your U-100 insulin syringe capacity. Your syringe size determines the maximum draw volume and tick-mark precision.
                   </p>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse min-w-[500px]">
                       <thead>
                         <tr className="border-b-2 border-ink">
                           <th className="py-3 pr-8 text-xs font-mono uppercase tracking-widest text-ink/60">Syringe Size</th>
@@ -560,7 +560,7 @@ export default function PeptideCalculatorPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="sticky top-28 lg:top-[12.5rem] w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-10 lg:p-16 border border-ink/5 bg-[#E5E9EF] shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden group mb-8 lg:mb-12"
+              className="relative md:sticky top-28 lg:top-[12.5rem] w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-8 sm:p-10 lg:p-16 border border-ink/5 bg-[#E5E9EF] shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden group mb-8 lg:mb-12"
               style={{ zIndex: 20 }}
             >
               <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.4] mix-blend-multiply z-0">
@@ -572,14 +572,14 @@ export default function PeptideCalculatorPage() {
               
               <div className="relative z-10 grid grid-cols-1 md:grid-cols-[100px_1fr] lg:grid-cols-[160px_1fr] gap-8 lg:gap-16 items-stretch">
                 <div className="flex flex-row md:flex-col justify-between items-end md:items-start border-b md:border-b-0 md:border-r border-ink/10 pb-6 md:pb-0 md:pr-8">
-                  <span className="text-5xl lg:text-8xl font-serif text-ink tracking-tighter leading-none">02</span>
+                  <span className="text-4xl sm:text-5xl lg:text-8xl font-serif text-ink tracking-tighter leading-none">02</span>
                   <Beaker className="w-8 h-8 lg:w-12 lg:h-12 text-ink/30 mt-0 md:mt-12" strokeWidth={1} />
                 </div>
                 
                 <div className="flex flex-col justify-center py-2 lg:py-4">
-                  <h3 className="text-4xl lg:text-5xl font-serif text-ink mb-6 lg:mb-8 tracking-tight leading-[1.1]">Step 02: Enter Your Peptide Vial Amount (mg or mcg)</h3>
-                  <p className="text-lg lg:text-xl text-ink/70 leading-relaxed max-w-3xl font-light mb-4">
-                    Input the total peptide amount stated on your vial label. Use the mg/mcg toggle to match whatever unit your label uses. Most research peptide vials are labeled in milligrams (mg) — common sizes are 5mg and 10mg. If your label reads &ldquo;5,000 mcg&rdquo;, that is identical to 5mg. The calculator converts between units automatically.
+                  <h3 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-ink mb-6 lg:mb-8 tracking-tight leading-[1.1]">Step 02: Enter Your Peptide Vial Amount (mg or mcg)</h3>
+                  <p className="text-base sm:text-lg lg:text-xl text-ink/70 leading-relaxed max-w-3xl font-light mb-4">
+                    Input the total peptide amount from your vial label. Use the mg/mcg toggle to match your unit (e.g., 5mg = 5,000 mcg). The calculator converts between units automatically.
                   </p>
                 </div>
               </div>
@@ -591,7 +591,7 @@ export default function PeptideCalculatorPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="sticky top-36 lg:top-[17rem] w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-10 lg:p-16 border border-ink/5 bg-[#E8EFE3] shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden group mb-8 lg:mb-12"
+              className="relative md:sticky top-36 lg:top-[17rem] w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-8 sm:p-10 lg:p-16 border border-ink/5 bg-[#E8EFE3] shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden group mb-8 lg:mb-12"
               style={{ zIndex: 30 }}
             >
               <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.4] mix-blend-multiply z-0">
@@ -603,18 +603,18 @@ export default function PeptideCalculatorPage() {
               
               <div className="relative z-10 grid grid-cols-1 md:grid-cols-[100px_1fr] lg:grid-cols-[160px_1fr] gap-8 lg:gap-16 items-stretch">
                 <div className="flex flex-row md:flex-col justify-between items-end md:items-start border-b md:border-b-0 md:border-r border-ink/10 pb-6 md:pb-0 md:pr-8">
-                  <span className="text-5xl lg:text-8xl font-serif text-ink tracking-tighter leading-none">03</span>
+                  <span className="text-4xl sm:text-5xl lg:text-8xl font-serif text-ink tracking-tighter leading-none">03</span>
                   <Droplets className="w-8 h-8 lg:w-12 lg:h-12 text-ink/30 mt-0 md:mt-12" strokeWidth={1} />
                 </div>
                 
                 <div className="flex flex-col justify-center py-2 lg:py-4">
-                  <h3 className="text-4xl lg:text-5xl font-serif text-ink mb-6 lg:mb-8 tracking-tight leading-[1.1]">Step 03: Specify Your Bacteriostatic Water Volume (ml)</h3>
-                  <p className="text-lg lg:text-xl text-ink/70 leading-relaxed max-w-3xl font-light mb-4">
-                    Enter the volume of bacteriostatic water (BAC water) you will add to the vial during reconstitution. The most common research volumes are 1ml, 2ml, and 3ml. The amount of water you add directly determines the solution concentration: more water lowers concentration (larger draws per dose), less water raises concentration (smaller, more precise draws). Use the +1ML, +2ML, and +3ML shortcuts or enter a custom volume.
+                  <h3 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-ink mb-6 lg:mb-8 tracking-tight leading-[1.1]">Step 03: Specify Your Bacteriostatic Water Volume (ml)</h3>
+                  <p className="text-base sm:text-lg lg:text-xl text-ink/70 leading-relaxed max-w-3xl font-light mb-4">
+                    Enter the volume of bacteriostatic water (BAC water) you will add to the vial. Common research volumes are 1ml, 2ml, and 3ml. More water lowers concentration (larger draws); less water raises it.
                   </p>
                   <div className="bg-white/60 border border-ink/10 rounded-2xl p-6 lg:p-8 mt-2">
                     <p className="text-sm font-mono text-ink/60 uppercase tracking-widest mb-4">Concentration Formula</p>
-                    <p className="text-2xl lg:text-3xl font-serif text-ink tracking-tight">
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-serif text-ink tracking-tight">
                       Concentration (mcg/ml) = <span className="text-gold italic">Peptide Amount (mcg)</span> ÷ <span className="text-gold italic">Bacteriostatic Water (ml)</span>
                     </p>
                   </div>
@@ -628,7 +628,7 @@ export default function PeptideCalculatorPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="sticky top-44 lg:top-[21.5rem] w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-10 lg:p-16 border border-ink/5 bg-[#F5F0E8] shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden group"
+              className="relative md:sticky top-44 lg:top-[21.5rem] w-full rounded-[2.5rem] lg:rounded-[3.5rem] p-8 sm:p-10 lg:p-16 border border-ink/5 bg-[#F5F0E8] shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden group"
               style={{ zIndex: 40 }}
             >
               <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.4] mix-blend-multiply z-0">
@@ -640,17 +640,17 @@ export default function PeptideCalculatorPage() {
               
               <div className="relative z-10 grid grid-cols-1 md:grid-cols-[100px_1fr] lg:grid-cols-[160px_1fr] gap-8 lg:gap-16 items-stretch">
                 <div className="flex flex-row md:flex-col justify-between items-end md:items-start border-b md:border-b-0 md:border-r border-ink/10 pb-6 md:pb-0 md:pr-8">
-                  <span className="text-5xl lg:text-8xl font-serif text-ink tracking-tighter leading-none">04</span>
+                  <span className="text-4xl sm:text-5xl lg:text-8xl font-serif text-ink tracking-tighter leading-none">04</span>
                   <Calculator className="w-8 h-8 lg:w-12 lg:h-12 text-ink/30 mt-0 md:mt-12" strokeWidth={1} />
                 </div>
                 
                 <div className="flex flex-col justify-center py-2 lg:py-4">
-                  <h3 className="text-4xl lg:text-5xl font-serif text-ink mb-6 lg:mb-8 tracking-tight leading-[1.1]">Step 04: Set Your Target Dose and Read the Calculation Results</h3>
-                  <p className="text-lg lg:text-xl text-ink/70 leading-relaxed max-w-3xl font-light mb-6">
-                    Enter your target research dose in either mg or mcg using the toggle. The calculator instantly outputs all four results. The Required Draw (IU) is the most important output — it is the exact tick mark on your syringe to draw to. All results update in real time as you adjust any input.
+                  <h3 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-ink mb-6 lg:mb-8 tracking-tight leading-[1.1]">Step 04: Set Your Target Dose and Read the Calculation Results</h3>
+                  <p className="text-base sm:text-lg lg:text-xl text-ink/70 leading-relaxed max-w-3xl font-light mb-6">
+                    Enter your target research dose. The calculator instantly outputs your results. The Required Draw (IU) is the exact tick mark on your syringe to draw to.
                   </p>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse min-w-[500px]">
                       <thead>
                         <tr className="border-b-2 border-ink">
                           <th className="py-3 pr-8 text-xs font-mono uppercase tracking-widest text-ink/60">Output Field</th>
@@ -705,9 +705,9 @@ export default function PeptideCalculatorPage() {
           <div className="lg:sticky lg:top-32">
             <FadeUp>
               <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-gold mb-8">The Science</h2>
-              <h3 className="text-5xl lg:text-7xl font-serif mb-8 tracking-tight leading-[1.1]">The Science: Understanding Peptide Reconstitution Math</h3>
-              <p className="text-xl text-white/50 leading-relaxed max-w-md font-light">
-                Every calculation this tool produces is the output of a simple three-step formula chain. Understanding the arithmetic lets you verify any result independently — and makes you a more precise researcher. The entire reconstitution math reduces to three divisions and one multiplication.
+              <h3 className="text-4xl sm:text-5xl lg:text-7xl font-serif mb-8 tracking-tight leading-[1.1]">The Science: Understanding Peptide Reconstitution Math</h3>
+              <p className="text-base sm:text-xl text-white/50 leading-relaxed max-w-md font-light">
+                Understanding the arithmetic lets you verify results independently. The entire reconstitution math reduces to three divisions and one multiplication.
               </p>
             </FadeUp>
           </div>
@@ -720,7 +720,7 @@ export default function PeptideCalculatorPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="sticky top-20 lg:top-32 w-full rounded-[2rem] lg:rounded-[3rem] p-8 lg:p-12 border border-white/10 bg-[#151515] shadow-2xl mb-6 lg:mb-8"
+                className="relative md:sticky top-20 lg:top-32 w-full rounded-[2rem] lg:rounded-[3rem] p-8 lg:p-12 border border-white/10 bg-[#151515] shadow-2xl mb-6 lg:mb-8"
                 style={{ zIndex: 10 }}
               >
                 <div className="flex flex-col md:flex-row gap-6 md:gap-10 md:items-start">
@@ -730,7 +730,7 @@ export default function PeptideCalculatorPage() {
                   <div className="flex flex-col gap-4">
                     <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white">Concentration Formula: Peptide (mcg) ÷ Bacteriostatic Water (ml)</h4>
                     <p className="text-lg text-white/60 leading-relaxed font-light max-w-2xl">
-                      Divide the total peptide amount (converted to mcg) by the volume of bacteriostatic water you added (in ml). This gives you the solution concentration in mcg per ml. Example: A 5mg vial (5,000 mcg) reconstituted with 2ml of BAC water produces a concentration of <strong className="text-white/90 font-medium">2,500 mcg/ml</strong>. Every milliliter of that solution contains exactly 2,500 micrograms of peptide.
+                      Divide the peptide amount (mcg) by the BAC water volume (ml) to get the concentration in mcg/ml. Example: A 5mg vial with 2ml water = <strong className="text-white/90 font-medium">2,500 mcg/ml</strong>.
                     </p>
                   </div>
                 </div>
@@ -741,7 +741,7 @@ export default function PeptideCalculatorPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="sticky top-28 lg:top-40 w-full rounded-[2rem] lg:rounded-[3rem] p-8 lg:p-12 border border-white/10 bg-[#1A1A1A] shadow-2xl mb-6 lg:mb-8"
+                className="relative md:sticky top-28 lg:top-40 w-full rounded-[2rem] lg:rounded-[3rem] p-8 lg:p-12 border border-white/10 bg-[#1A1A1A] shadow-2xl mb-6 lg:mb-8"
                 style={{ zIndex: 20 }}
               >
                 <div className="flex flex-col md:flex-row gap-6 md:gap-10 md:items-start">
@@ -751,7 +751,7 @@ export default function PeptideCalculatorPage() {
                   <div className="flex flex-col gap-4">
                     <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white">Draw Volume: Target Dose (mcg) ÷ Concentration (mcg/ml)</h4>
                     <p className="text-lg text-white/60 leading-relaxed font-light max-w-2xl">
-                      Divide your target research dose (in mcg) by the solution concentration (mcg/ml) to get the exact volume to draw in milliliters. Continuing the example: A target dose of 250 mcg at a 2,500 mcg/ml concentration requires a draw volume of exactly <strong className="text-white/90 font-medium">0.1 ml</strong>. This is the volume of liquid to extract from the vial per dose.
+                      Divide your target dose (mcg) by the solution concentration (mcg/ml) to get the volume to draw in ml. Example: A 250 mcg dose at 2,500 mcg/ml = <strong className="text-white/90 font-medium">0.1 ml</strong> draw.
                     </p>
                   </div>
                 </div>
@@ -762,7 +762,7 @@ export default function PeptideCalculatorPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="sticky top-36 lg:top-48 w-full rounded-[2rem] lg:rounded-[3rem] p-8 lg:p-12 border border-white/10 bg-[#1F1F1F] shadow-2xl mb-6 lg:mb-8"
+                className="relative md:sticky top-36 lg:top-48 w-full rounded-[2rem] lg:rounded-[3rem] p-8 lg:p-12 border border-white/10 bg-[#1F1F1F] shadow-2xl mb-6 lg:mb-8"
                 style={{ zIndex: 30 }}
               >
                 <div className="flex flex-col md:flex-row gap-6 md:gap-10 md:items-start">
@@ -772,7 +772,7 @@ export default function PeptideCalculatorPage() {
                   <div className="flex flex-col gap-4">
                     <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white">Syringe IU Conversion: Draw Volume (ml) × 100</h4>
                     <p className="text-lg text-white/60 leading-relaxed font-light max-w-2xl">
-                      Multiply your draw volume in ml by 100 to convert to International Units (IU) as marked on a standard U-100 insulin syringe. From the example: 0.1 ml × 100 = <strong className="text-white/90 font-medium">10 IU</strong>. You draw the syringe plunger back to the &apos;10&apos; tick mark. On every U-100 syringe, 1 ml = 100 IU, making this a straightforward single multiplication.
+                      Multiply your draw volume by 100 to convert to IU for a U-100 syringe. Example: 0.1 ml × 100 = <strong className="text-white/90 font-medium">10 IU</strong>. Draw the plunger to the &apos;10&apos; tick mark.
                     </p>
                   </div>
                 </div>
@@ -783,7 +783,7 @@ export default function PeptideCalculatorPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="sticky top-44 lg:top-56 w-full rounded-[2rem] lg:rounded-[3rem] p-8 lg:p-12 border border-white/10 bg-[#252525] shadow-2xl mb-6 lg:mb-8"
+                className="relative md:sticky top-44 lg:top-56 w-full rounded-[2rem] lg:rounded-[3rem] p-8 lg:p-12 border border-white/10 bg-[#252525] shadow-2xl mb-6 lg:mb-8"
                 style={{ zIndex: 40 }}
               >
                 <div className="flex flex-col md:flex-row gap-6 md:gap-10 md:items-start">
@@ -793,7 +793,7 @@ export default function PeptideCalculatorPage() {
                   <div className="flex flex-col gap-4">
                     <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-white">Total Doses Per Vial: Water Added (ml) ÷ Draw Volume (ml)</h4>
                     <p className="text-lg text-white/60 leading-relaxed font-light max-w-2xl">
-                      Divide the total reconstituted volume (the milliliters of BAC water you added) by the draw volume per dose to get the total number of doses available. From the example: 2 ml ÷ 0.1 ml = <strong className="text-white/90 font-medium">20 complete doses</strong> from one vial at this rate. This tells you exactly how long your current vial will last at your research protocol.
+                      Divide the total BAC water added by the draw volume to get total available doses. Example: 2 ml ÷ 0.1 ml = <strong className="text-white/90 font-medium">20 complete doses</strong> per vial.
                     </p>
                   </div>
                 </div>
@@ -824,9 +824,9 @@ export default function PeptideCalculatorPage() {
           
           <FadeUp className="text-center mb-16 lg:mb-24">
             <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-gold mb-6 font-bold">Quick Reference</h2>
-            <h3 className="text-4xl lg:text-6xl font-serif text-ink tracking-tight mb-6">Common Reconstitution Scenarios</h3>
-            <p className="text-lg lg:text-xl text-ink/50 font-light leading-relaxed max-w-2xl mx-auto">
-              Pre-calculated reference table for the most frequently used peptide vial sizes, water volumes, and dose amounts. All values assume a standard U-100 syringe.
+            <h3 className="text-3xl sm:text-4xl lg:text-6xl font-serif text-ink tracking-tight mb-6">Common Reconstitution Scenarios</h3>
+            <p className="text-base sm:text-lg lg:text-xl text-ink/50 font-light leading-relaxed max-w-2xl mx-auto">
+              Pre-calculated table for common vial sizes, water volumes, and doses using a standard U-100 syringe.
             </p>
           </FadeUp>
 
@@ -888,9 +888,9 @@ export default function PeptideCalculatorPage() {
           <div className="lg:sticky lg:top-32">
             <FadeUp>
               <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-gold mb-8 font-bold">Best Practices</h2>
-              <h3 className="text-5xl lg:text-7xl font-serif mb-8 tracking-tight leading-[1.1] text-ink">Peptide Storage & Handling — Before and After Reconstitution</h3>
-              <p className="text-xl text-ink/50 leading-relaxed max-w-md font-light">
-                Correct storage and sterile technique are as important as accurate dosing calculations. Improper storage degrades peptide potency; improper handling introduces contamination. Follow these four protocols for every reconstitution.
+              <h3 className="text-3xl sm:text-4xl lg:text-7xl font-serif mb-8 tracking-tight leading-[1.1] text-ink">Peptide Storage & Handling — Before and After Reconstitution</h3>
+              <p className="text-base sm:text-xl text-ink/50 leading-relaxed max-w-md font-light">
+                Improper storage degrades peptide potency and introduces contamination. Follow these protocols for every reconstitution.
               </p>
             </FadeUp>
           </div>
@@ -906,7 +906,7 @@ export default function PeptideCalculatorPage() {
                 <div className="flex flex-col gap-4">
                   <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-ink group-hover:text-gold transition-colors duration-500">Before Reconstitution: Store Lyophilized Peptides at −20°C</h4>
                   <p className="text-lg text-ink/50 leading-relaxed font-light max-w-2xl">
-                    Store unreconstituted (lyophilized) peptide powder in a freezer at −20°C or below for long-term stability. Lyophilized peptides are structurally resilient in freeze-dried form — brief exposure to room temperature during shipping does not cause significant degradation. Avoid repeated freeze-thaw cycles, which degrade peptide structure over time.
+                    Store lyophilized peptide powder in a freezer at −20°C or below for long-term stability. Avoid repeated freeze-thaw cycles to prevent degradation.
                   </p>
                 </div>
               </motion.div>
@@ -918,7 +918,7 @@ export default function PeptideCalculatorPage() {
                 <div className="flex flex-col gap-4">
                   <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-ink group-hover:text-gold transition-colors duration-500">After Reconstitution: Refrigerate at 2–8°C, Use Within 4 Weeks</h4>
                   <p className="text-lg text-ink/50 leading-relaxed font-light max-w-2xl">
-                    Once mixed with bacteriostatic water, store the reconstituted vial upright in a standard refrigerator at 2–8°C. Most reconstituted research peptides remain stable for 2 to 4 weeks, though this varies by peptide sequence. Bacteriostatic water extends shelf life significantly by inhibiting microbial growth via its 0.9% benzyl alcohol content. Never freeze a reconstituted peptide solution.
+                    Store reconstituted vials upright in a refrigerator at 2–8°C. They remain stable for 2 to 4 weeks. Never freeze a reconstituted solution.
                   </p>
                 </div>
               </motion.div>
@@ -930,7 +930,7 @@ export default function PeptideCalculatorPage() {
                 <div className="flex flex-col gap-4">
                   <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-ink group-hover:text-gold transition-colors duration-500">Reconstitution Technique: Swirl Gently — Never Shake</h4>
                   <p className="text-lg text-ink/50 leading-relaxed font-light max-w-2xl">
-                    Always inject bacteriostatic water slowly against the inner glass wall of the vial — never directly onto the lyophilized cake. Allow the water to run down and dissolve the peptide gradually. If the powder does not dissolve immediately, gently roll or swirl the vial for 1–2 minutes. Do not shake or agitate forcefully — this denatures (structurally damages) the peptide chains and compromises batch integrity.
+                    Inject BAC water slowly against the inner glass wall. Gently roll or swirl the vial for 1–2 minutes to dissolve. Never shake forcefully, as this damages peptide chains.
                   </p>
                 </div>
               </motion.div>
@@ -942,7 +942,7 @@ export default function PeptideCalculatorPage() {
                 <div className="flex flex-col gap-4">
                   <h4 className="text-3xl lg:text-4xl font-serif tracking-tight text-ink group-hover:text-gold transition-colors duration-500">Contamination Prevention: Sterile Technique for Research Use</h4>
                   <p className="text-lg text-ink/50 leading-relaxed font-light max-w-2xl">
-                    Swab the vial&apos;s rubber stopper with a sterile alcohol prep pad before every extraction. Use a fresh, sterile syringe and needle for each draw. Work in a clean, dust-free environment. If the reconstituted solution becomes cloudy, discolored, or contains visible particulates, discard the vial and reconstitute a fresh one. Compromised solution integrity means compromised research results.
+                    Swab the vial&apos;s stopper with an alcohol pad before every draw. Use a fresh syringe in a clean environment. If the solution becomes cloudy or discolored, discard it.
                   </p>
                 </div>
               </motion.div>
@@ -970,9 +970,9 @@ export default function PeptideCalculatorPage() {
           
           <FadeUp className="text-center mb-16 lg:mb-24">
             <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-gold mb-6 font-bold">Reference Tables</h2>
-            <h3 className="text-4xl lg:text-6xl font-serif tracking-tight mb-6">Unit Conversions for Peptide Research — mcg, mg, ml & IU Reference</h3>
-            <p className="text-lg text-white/50 font-light leading-relaxed max-w-xl mx-auto">
-              Quick-reference conversion tables for the most commonly used units in research peptide calculation. Bookmark this page for fast lookups during reconstitution.
+            <h3 className="text-3xl sm:text-4xl lg:text-6xl font-serif tracking-tight mb-6">Unit Conversions for Peptide Research</h3>
+            <p className="text-base sm:text-lg text-white/50 font-light leading-relaxed max-w-xl mx-auto">
+              Quick-reference conversion tables for the most commonly used units in research peptide calculation.
             </p>
           </FadeUp>
 
@@ -980,9 +980,9 @@ export default function PeptideCalculatorPage() {
             
             {/* Mass Conversions */}
             <FadeUp delay={0.1}>
-              <div className="border border-white/10 rounded-[2rem] p-8 lg:p-10 hover:border-gold/20 transition-colors">
-                <h4 className="text-2xl font-serif mb-8 tracking-tight">Mass Conversions: mg to mcg Reference Table</h4>
-                <table className="w-full text-left border-collapse">
+              <div className="border border-white/10 rounded-[2rem] p-6 sm:p-8 lg:p-10 hover:border-gold/20 transition-colors h-full overflow-x-auto">
+                <h4 className="text-xl sm:text-2xl font-serif mb-6 sm:mb-8 tracking-tight min-w-[300px]">Mass Conversions: mg to mcg</h4>
+                <table className="w-full text-left border-collapse min-w-[300px]">
                   <tbody className="font-light text-white/70">
                     <tr className="border-b border-white/10">
                       <td className="py-3 pr-4 font-serif text-lg text-white">1 mg</td>
@@ -1007,9 +1007,9 @@ export default function PeptideCalculatorPage() {
 
             {/* Volume Conversions */}
             <FadeUp delay={0.2}>
-              <div className="border border-white/10 rounded-[2rem] p-8 lg:p-10 hover:border-gold/20 transition-colors">
-                <h4 className="text-2xl font-serif mb-8 tracking-tight">Syringe Volume Reference: ml to IU on U-100 Syringe</h4>
-                <table className="w-full text-left border-collapse">
+              <div className="border border-white/10 rounded-[2rem] p-6 sm:p-8 lg:p-10 hover:border-gold/20 transition-colors h-full overflow-x-auto">
+                <h4 className="text-xl sm:text-2xl font-serif mb-6 sm:mb-8 tracking-tight min-w-[300px]">Syringe Volume: ml to IU</h4>
+                <table className="w-full text-left border-collapse min-w-[300px]">
                   <tbody className="font-light text-white/70">
                     <tr className="border-b border-white/10">
                       <td className="py-3 pr-4 font-serif text-lg text-white">1 ml</td>
@@ -1067,7 +1067,7 @@ export default function PeptideCalculatorPage() {
                 <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-gold mb-6 font-bold">Research Peptides</h2>
                 <h3 className="text-4xl lg:text-6xl font-serif tracking-tight mb-6">Shop Research Peptides Used in These Calculations</h3>
                 <p className="text-lg text-white/50 font-light leading-relaxed mb-8">
-                  Every compound in our catalog is US-synthesized, independently verified at ≥99% HPLC purity, and ships with a lot-specific Certificate of Analysis. Browse the peptides most commonly calculated on this page.
+                  US-synthesized, ≥99% HPLC purity, and shipped with a Certificate of Analysis. Browse commonly calculated peptides.
                 </p>
                 <Link href="/shop" className="inline-flex items-center gap-4 bg-gold hover:bg-white text-ink px-8 py-4 rounded-full font-mono text-sm uppercase tracking-widest transition-colors">
                   Browse Our Full Catalog <ArrowLeft className="w-4 h-4 rotate-180" />

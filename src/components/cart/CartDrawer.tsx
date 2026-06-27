@@ -170,7 +170,7 @@ export function CartDrawer() {
                                   {item.product?.name}
                                 </Link>
                                 <span className="text-[10px] uppercase tracking-wider text-ink/50 mt-1.5 font-bold">
-                                  {item.variantTitle || item.variantSku}
+                                  {item.variantTitle || 'Standard'}
                                 </span>
                               </div>
                               <button 

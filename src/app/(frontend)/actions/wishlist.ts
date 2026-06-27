@@ -47,6 +47,7 @@ export async function toggleWishlistInPayload(productId: string | number, isAddi
           }
         } catch (err) {
           console.warn('Could not fetch product price for snapshot', err)
+          return { success: false, error: 'Product not found' }
         }
       }
     }
