@@ -11,7 +11,7 @@ interface ProductJsonLdProps {
   categories: string[]
   faqs: { question: string; answer: string }[]
   hasVariants: boolean
-  variants: { sku: string; price: string; title: string }[]
+  variants: { sku: string; price: string; title: string; [key: string]: any }[]
   averageRating?: number
   reviewCount?: number
 }

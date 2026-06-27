@@ -87,7 +87,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let journalPages: MetadataRoute.Sitemap = []
   try {
     const { docs: posts } = await payload.find({
-      collection: 'journal-posts',
+      collection: 'journal-posts' as any,
       limit: 1000,
       depth: 0,
     })
