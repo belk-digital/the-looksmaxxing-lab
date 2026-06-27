@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -23,7 +23,7 @@ const CONTACT_FAQS = [
   { question: 'Where is my tracking number?', answer: 'Tracking numbers are automatically emailed as soon as your shipping label is created. You can also view your tracking status by logging into your account dashboard.' },
   { question: 'My package was damaged in transit, what do I do?', answer: 'If your vials arrive compromised, please use the contact form above to reach out within 48 hours of delivery. Include your order number and we will request photos of the damaged items to expedite a replacement.' },
   { question: 'How can I get a copy of my batch COA?', answer: 'Certificates of Analysis (COAs) are included with every shipment and are also available digitally. You can download past COAs directly from your Order History in your account dashboard, or request them via the Quality & COAs contact email.' },
-  { question: 'Do you offer wholesale pricing for laboratories?', answer: 'Yes, we offer special pricing tiers for bulk acquisition by licensed laboratories and academic institutions. Please select "Wholesale" in the contact form department dropdown or email wholesale@looksmaxxinglab.com directly.' },
+  { question: 'Do you offer wholesale pricing for laboratories?', answer: 'Yes, we offer special pricing tiers for bulk acquisition by licensed laboratories and academic institutions. Please select "Wholesale" in the contact form department dropdown or email support@thelooksmaxxinglab.com directly.' },
   { question: 'Why was my order cancelled?', answer: 'Orders may be cancelled if our fraud detection system flags an issue with the payment method, or if there is any communication indicating the intent to misuse our research-only products for human consumption.' },
   { question: 'Do you ship internationally?', answer: 'Yes, we ship worldwide. However, it is the sole responsibility of the researcher to ensure that the importation of our research compounds complies with all local and national regulations in the destination country.' }
 ]
@@ -31,12 +31,29 @@ const CONTACT_FAQS = [
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [num1, setNum1] = useState(0)
+  const [num2, setNum2] = useState(0)
+
+  useEffect(() => {
+    setNum1(Math.floor(Math.random() * 10) + 1)
+    setNum2(Math.floor(Math.random() * 10) + 1)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
 
     const formData = new FormData(e.currentTarget)
+    
+    const answer = parseInt(formData.get('mathAnswer') as string, 10)
+    if (answer !== num1 + num2) {
+      toast.error('Incorrect math answer. Please try again.')
+      setIsSubmitting(false)
+      return
+    }
+
+    formData.delete('mathAnswer')
+
     const result = await submitContactForm(formData)
 
     setIsSubmitting(false)
@@ -129,9 +146,19 @@ export default function ContactPage() {
                       />
                     </div>
 
-                    {/* Turnstile Placeholder */}
-                    <div className="w-full h-[65px] bg-gray-50 rounded-xl flex items-center justify-center text-xs text-gray-400 font-medium">
-                      [ Cloudflare Turnstile Placeholder ]
+                    {/* Math Verification */}
+                    <div className="space-y-2">
+                      <Label htmlFor="mathAnswer" className="text-sm font-semibold text-ink ml-1">
+                        What is {num1} + {num2}? <span className="text-[#5984c4]">*</span>
+                      </Label>
+                      <Input 
+                        id="mathAnswer" 
+                        name="mathAnswer" 
+                        type="number" 
+                        required 
+                        placeholder="Enter the sum" 
+                        className="h-14 rounded-xl bg-gray-50 border-transparent focus:ring-1 focus:ring-[#5984c4] px-4" 
+                      />
                     </div>
 
                     {/* Submit Button */}
@@ -154,43 +181,14 @@ export default function ContactPage() {
                 
                 <div className="space-y-10">
                   <div>
-                    <span className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Order Support</span>
-                    <a href="mailto:support@looksmaxxinglab.com" className="text-lg lg:text-xl font-medium text-ink hover:text-[#5984c4] transition-colors underline underline-offset-4">
-                      support@looksmaxxinglab.com
+                    <span className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Support</span>
+                    <a href="mailto:support@thelooksmaxxinglab.com" className="text-lg lg:text-xl font-medium text-ink hover:text-[#5984c4] transition-colors underline underline-offset-4">
+                      support@thelooksmaxxinglab.com
                     </a>
                     <p className="text-sm text-gray-500 mt-2">
                       Responses typically within 12 hours.
                     </p>
                   </div>
-
-                  <div>
-                    <span className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Quality & COAs</span>
-                    <a href="mailto:quality@looksmaxxinglab.com" className="text-lg lg:text-xl font-medium text-ink hover:text-[#5984c4] transition-colors underline underline-offset-4">
-                      quality@looksmaxxinglab.com
-                    </a>
-                    <p className="text-sm text-gray-500 mt-2">
-                      Include your batch number in the subject line.
-                    </p>
-                  </div>
-
-                  <div>
-                    <span className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Wholesale</span>
-                    <a href="mailto:wholesale@looksmaxxinglab.com" className="text-lg lg:text-xl font-medium text-ink hover:text-[#5984c4] transition-colors underline underline-offset-4">
-                      wholesale@looksmaxxinglab.com
-                    </a>
-                    <p className="text-sm text-gray-500 mt-2">
-                      For laboratory bulk acquisition and academic institutions.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-16 pt-10 border-t border-gray-100">
-                  <span className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Mailing Address</span>
-                  <address className="text-base text-gray-600 not-italic leading-relaxed font-light">
-                    The Looksmaxxing Lab<br />
-                    123 Innovation Drive, Suite 400<br />
-                    Research Triangle Park, NC 27709
-                  </address>
                 </div>
               </div>
             </FadeUp>

@@ -100,7 +100,7 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
 
   let manualPaymentBanner = '';
   if ((order.paymentMethod === 'apple_pay' || order.paymentMethod === 'zelle') && order.paymentStatus === 'unpaid') {
-    const paymentContact = order.paymentMethod === 'apple_pay' ? '(555) 123-4567 (Apple Pay)' : 'payments@thelooksmaxxinglab.com (Zelle)';
+    const paymentContact = order.paymentMethod === 'apple_pay' ? '(555) 123-4567 (Apple Pay)' : 'support@thelooksmaxxinglab.com (Zelle)';
     manualPaymentBanner = `
           <!-- Manual Payment Instructions -->
           <tr>

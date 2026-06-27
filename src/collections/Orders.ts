@@ -6,6 +6,7 @@ import { afterOrderChange } from '@/hooks/orders'
 export const Orders: CollectionConfig = {
   slug: 'orders',
   admin: {
+    useAsTitle: 'orderNumber',
     defaultColumns: ['orderNumber', 'status', 'paymentStatus', 'fulfillmentStatus', 'owner', 'orderTime'],
     description: 'Customer orders – generated server‑side only.',
   },

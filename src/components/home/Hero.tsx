@@ -112,6 +112,10 @@ export function Hero() {
         {/* Text & CTA */}
         <div ref={textContainerRef} className="w-full lg:w-[55%] xl:w-[50%] flex flex-col items-center lg:items-start text-center lg:text-left mt-4 lg:mt-0 drop-shadow-md">
           
+          <div className="sr-only">
+            The Looksmaxxing Lab - The official store supplying US-synthesized research peptides for scientific excellence.
+          </div>
+          
           <div className="gsap-reveal overflow-hidden mb-6 lg:mb-8">
             <span className="block text-label-md font-bold text-white tracking-[0.2em] uppercase">
               PRECISION. PURITY. PERFORMANCE.

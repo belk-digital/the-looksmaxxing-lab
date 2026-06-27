@@ -661,7 +661,7 @@ export function AffiliatesLandingClient({ userStatus }: Props) {
                   Become an Affiliate Now
                 </Button>
               </Link>
-              <p className="text-sm text-gray-400">Questions? Contact us at <a href="mailto:affiliates@thelooksmaxxinglab.com" className="text-[#5984c4] hover:underline">affiliates@thelooksmaxxinglab.com</a></p>
+              <p className="text-sm text-gray-400">Questions? Contact us at <a href="mailto:support@thelooksmaxxinglab.com" className="text-[#5984c4] hover:underline">support@thelooksmaxxinglab.com</a></p>
             </div>
           </div>
         </FadeUp>
