@@ -215,6 +215,14 @@ export function ProductClient({ product }: ProductClientProps) {
   const selectedVariant = product.variants.find(v => v.id === selectedVariantId) || product.variants[0]
   const currentStock = selectedVariant?.inStock ? 50 : 0 // Fake stock level for testing
 
+  const galleryImages = React.useMemo(() => {
+    if (selectedVariant?.image) {
+      const filtered = product.images.filter(img => img !== selectedVariant.image)
+      return [selectedVariant.image, ...filtered]
+    }
+    return product.images
+  }, [selectedVariant, product.images])
+
   const [justAdded, setJustAdded] = useState(false)
   const cartStore = useCartStore()
   
@@ -322,7 +330,7 @@ export function ProductClient({ product }: ProductClientProps) {
           
           {/* Left Column (Massive Cinematic Gallery) */}
           <div className="w-full lg:w-[45%] relative lg:sticky lg:top-32 lg:mt-6">
-            <ImageGallery images={product.images} />
+            <ImageGallery images={galleryImages} />
           </div>
 
           {/* Right Column (Clean Flow) */}

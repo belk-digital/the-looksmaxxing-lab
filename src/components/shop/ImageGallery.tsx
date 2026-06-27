@@ -31,6 +31,14 @@ export function ImageGallery({ images }: ImageGalleryProps) {
     emblaApi.on('reInit', onSelect)
   }, [emblaApi, onSelect])
 
+  // Reset to first image when the image array changes (e.g., variant selected)
+  useEffect(() => {
+    if (emblaApi && images.length > 0) {
+      emblaApi.scrollTo(0)
+      setActiveIndex(0)
+    }
+  }, [images[0], emblaApi])
+
   const scrollTo = useCallback((index: number) => {
     setActiveIndex(index)
     if (emblaApi) emblaApi.scrollTo(index)
