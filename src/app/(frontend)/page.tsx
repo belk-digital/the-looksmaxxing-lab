@@ -9,7 +9,7 @@ import { FaqSection } from '@/components/home/FaqSection'
 import { WhatSetsUsApart } from '@/components/home/WhatSetsUsApart'
 import { Metadata } from 'next'
 
-const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com'
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
   openGraph: {

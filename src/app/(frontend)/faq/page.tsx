@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import FaqClient from './FaqClient'
 
-const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com'
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
   title: 'Research Peptide FAQ | Purity, Ordering & Storage',

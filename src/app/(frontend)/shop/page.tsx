@@ -5,7 +5,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { getShopProducts } from '../(shop)/actions'
 
-const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com'
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
   title: 'Shop Research Peptides | 30+ COA-Verified Compounds',
