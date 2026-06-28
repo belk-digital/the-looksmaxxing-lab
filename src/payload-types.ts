@@ -709,6 +709,10 @@ export interface Order {
    * For orders without a registered user account
    */
   guestEmail?: string | null;
+  /**
+   * Set automatically after order finalization to prevent double-processing.
+   */
+  isFinalized?: boolean | null;
   createdAt: string;
   updatedAt: string;
   /**
@@ -1730,6 +1734,7 @@ export interface OrdersSelect<T extends boolean = true> {
   couponCode?: T;
   customerNote?: T;
   guestEmail?: T;
+  isFinalized?: T;
   createdAt?: T;
   updatedAt?: T;
   notes?:
