@@ -95,7 +95,7 @@ export const Orders: CollectionConfig = {
     {
       name: 'orderNumber',
       type: 'text',
-      admin: { disabled: true, description: 'Auto‑generated order identifier (e.g. 1000, 1001).' },
+      admin: { readOnly: true, description: 'Auto‑generated order identifier (e.g. 1000, 1001).' },
     },
     {
       name: 'owner',
