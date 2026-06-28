@@ -13,6 +13,7 @@ import * as migration_20260524_070000_add_emaillogs_collection from './20260524_
 import * as migration_20260524_203510_seed_updates from './20260524_203510_seed_updates';
 import * as migration_20260603_202126_add_product_fields from './20260603_202126_add_product_fields';
 import * as migration_20260628_000000_add_is_finalized_to_orders from './20260628_000000_add_is_finalized_to_orders';
+import * as migration_20260628_010000_add_order_counters_table from './20260628_010000_add_order_counters_table';
 
 export const migrations = [
   {
@@ -89,5 +90,10 @@ export const migrations = [
     up: migration_20260628_000000_add_is_finalized_to_orders.up,
     down: migration_20260628_000000_add_is_finalized_to_orders.down,
     name: '20260628_000000_add_is_finalized_to_orders'
+  },
+  {
+    up: migration_20260628_010000_add_order_counters_table.up,
+    down: migration_20260628_010000_add_order_counters_table.down,
+    name: '20260628_010000_add_order_counters_table'
   },
 ];
