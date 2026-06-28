@@ -40,10 +40,12 @@ export async function Header() {
               lineId: item.id || Math.random().toString(36).substring(2, 15),
               productId: String(prod.id || item.product),
               variantSku: item.variantSku || 'default',
+              variantTitle: item.variantTitle || item.variantSku || 'Standard',
               quantity: item.quantity || 1,
               priceSnapshot: item.priceSnapshot || 0,
               product: {
                 id: String(prod.id || item.product),
+                slug: prod.slug || '',
                 name: prod.name || '',
                 imageUrl: prod.images?.[0]?.image?.url || null,
               }
