@@ -47,10 +47,11 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
         const imageUrl = product.images?.[0]?.image?.url || product.images?.[0]?.url || '/temp-products/product-image.png'
         const price = typeof item.price === 'number' ? item.price : (product.basePrice || product.price || 0)
         addItem(
-          { id: product.id, name: title, imageUrl },
+          { id: product.id, slug: product.slug || '', name: title, imageUrl },
           item.variant || null, // variantSku
           item.quantity || 1,
-          price
+          price,
+          item.variant || null
         )
       }
     }

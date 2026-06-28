@@ -166,7 +166,7 @@ export function CartDrawer() {
                           <div className="flex flex-col flex-1 justify-between py-0.5">
                             <div className="flex justify-between items-start gap-2">
                               <div className="flex flex-col">
-                                <Link href={`/products/${item.productId}`} onClick={closeCart} className="text-body-md font-bold font-display text-ink hover:text-[#C9B58E] transition-colors line-clamp-1 leading-tight">
+                                <Link href={`/products/${item.product?.slug || item.productId}`} onClick={closeCart} className="text-body-md font-bold font-display text-ink hover:text-[#C9B58E] transition-colors line-clamp-1 leading-tight">
                                   {item.product?.name}
                                 </Link>
                                 <span className="text-[10px] uppercase tracking-wider text-ink/50 mt-1.5 font-bold">

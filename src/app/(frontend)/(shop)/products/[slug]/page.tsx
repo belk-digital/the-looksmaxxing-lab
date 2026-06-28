@@ -206,6 +206,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   // Map to ProductData interface
   const productData = {
     id: String(rawProduct.id),
+    slug: rawProduct.slug,
     name: rawProduct.name,
     subtitle: rawProduct.seoDescription || '',
     category: mappedCategories[0] || 'Product',

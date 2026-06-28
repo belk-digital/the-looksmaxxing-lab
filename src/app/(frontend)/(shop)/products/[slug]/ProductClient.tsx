@@ -31,6 +31,7 @@ const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', 
 
 interface ProductData {
   id: string
+  slug: string
   name: string
   subtitle: string
   category: string
@@ -292,7 +293,7 @@ export function ProductClient({ product }: ProductClientProps) {
     if (!selectedVariant?.inStock) return
 
     cartStore.addItem(
-      { id: product.id, name: product.name, imageUrl: product.images[0] },
+      { id: product.id, slug: product.slug, name: product.name, imageUrl: product.images[0] },
       selectedVariant.sku || selectedVariant.title,
       quantity,
       parseFloat((selectedVariant.salePrice || selectedVariant.price).replace(/[^0-9.]/g, '')),
@@ -446,7 +447,7 @@ export function ProductClient({ product }: ProductClientProps) {
                         key={bundle.id || idx}
                         onClick={() => {
                           cartStore.addItem(
-                            { id: product.id, name: product.name, imageUrl: product.images[0] },
+                            { id: product.id, slug: product.slug, name: product.name, imageUrl: product.images[0] },
                             bundleVariantSku,
                             1,
                             salePriceNum || priceNum,

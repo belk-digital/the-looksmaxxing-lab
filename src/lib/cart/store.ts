@@ -5,6 +5,7 @@ import { syncCartToPayload } from '@/app/(frontend)/actions/cart'
 export type MinimalProduct = {
   id: string
   name: string
+  slug?: string
   imageUrl: string | null
 }
 

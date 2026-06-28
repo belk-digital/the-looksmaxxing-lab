@@ -50,7 +50,7 @@ function SlideToAddButton({ product }: { product: Product }) {
     const variantTitle = product.firstVariantName || 'Standard'
     const variantSku = product.firstVariantSku || product.id || product.slug
     cartStore.addItem(
-      { id: product.id || product.slug, name: product.name, imageUrl: product.image },
+      { id: product.id || product.slug, slug: product.slug, name: product.name, imageUrl: product.image },
       variantSku,
       1,
       parseFloat(product.priceRange.replace(/[^0-9.]/g, '')) || 0,

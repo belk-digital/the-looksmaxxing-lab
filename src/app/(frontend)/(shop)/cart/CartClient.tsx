@@ -327,7 +327,7 @@ export function CartClient() {
             {items.map((item) => (
               <div key={item.lineId} className="flex flex-row gap-4 sm:gap-8 py-6 sm:py-8 border-b border-slate-100 group">
                 {/* Product Image Thumbnail */}
-                <Link href={`/products/${item.productId}`} className="relative w-24 sm:w-32 md:w-36 aspect-[4/5] bg-[#F5F5F7] shrink-0 rounded-[1.25rem] sm:rounded-[1.5rem] overflow-hidden">
+                <Link href={`/products/${item.product?.slug || item.productId}`} className="relative w-24 sm:w-32 md:w-36 aspect-[4/5] bg-[#F5F5F7] shrink-0 rounded-[1.25rem] sm:rounded-[1.5rem] overflow-hidden">
                   <Image 
                     src={item.product?.imageUrl || '/placeholder.png'} 
                     alt={item.product?.name || 'Product'} 
@@ -340,7 +340,7 @@ export function CartClient() {
                 <div className="flex flex-col flex-1 justify-between py-1 sm:py-0">
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-4">
                     <div className="flex flex-col gap-1 sm:gap-1.5 pr-4 sm:pr-0">
-                      <Link href={`/products/${item.productId}`} className={`text-base sm:text-xl md:text-2xl font-bold text-ink hover:text-[#5984c4] transition-colors leading-tight ${spaceGrotesk.className}`}>
+                      <Link href={`/products/${item.product?.slug || item.productId}`} className={`text-base sm:text-xl md:text-2xl font-bold text-ink hover:text-[#5984c4] transition-colors leading-tight ${spaceGrotesk.className}`}>
                         {item.product?.name}
                       </Link>
                       <span className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/50 line-clamp-1">
