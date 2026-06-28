@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Plus, Edit2, Trash2, MapPin, Search } from 'lucide-react'
+import { Plus, Edit2, Trash2, MapPin } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { motion } from 'framer-motion'
 import { Space_Grotesk } from 'next/font/google'
@@ -27,59 +26,6 @@ export interface AddressItem {
   isDefault: boolean;
 }
 
-const US_STATES = [
-  { value: 'AL', label: 'Alabama' },
-  { value: 'AK', label: 'Alaska' },
-  { value: 'AZ', label: 'Arizona' },
-  { value: 'AR', label: 'Arkansas' },
-  { value: 'CA', label: 'California' },
-  { value: 'CO', label: 'Colorado' },
-  { value: 'CT', label: 'Connecticut' },
-  { value: 'DE', label: 'Delaware' },
-  { value: 'DC', label: 'District Of Columbia' },
-  { value: 'FL', label: 'Florida' },
-  { value: 'GA', label: 'Georgia' },
-  { value: 'HI', label: 'Hawaii' },
-  { value: 'ID', label: 'Idaho' },
-  { value: 'IL', label: 'Illinois' },
-  { value: 'IN', label: 'Indiana' },
-  { value: 'IA', label: 'Iowa' },
-  { value: 'KS', label: 'Kansas' },
-  { value: 'KY', label: 'Kentucky' },
-  { value: 'LA', label: 'Louisiana' },
-  { value: 'ME', label: 'Maine' },
-  { value: 'MD', label: 'Maryland' },
-  { value: 'MA', label: 'Massachusetts' },
-  { value: 'MI', label: 'Michigan' },
-  { value: 'MN', label: 'Minnesota' },
-  { value: 'MS', label: 'Mississippi' },
-  { value: 'MO', label: 'Missouri' },
-  { value: 'MT', label: 'Montana' },
-  { value: 'NE', label: 'Nebraska' },
-  { value: 'NV', label: 'Nevada' },
-  { value: 'NH', label: 'New Hampshire' },
-  { value: 'NJ', label: 'New Jersey' },
-  { value: 'NM', label: 'New Mexico' },
-  { value: 'NY', label: 'New York' },
-  { value: 'NC', label: 'North Carolina' },
-  { value: 'ND', label: 'North Dakota' },
-  { value: 'OH', label: 'Ohio' },
-  { value: 'OK', label: 'Oklahoma' },
-  { value: 'OR', label: 'Oregon' },
-  { value: 'PA', label: 'Pennsylvania' },
-  { value: 'RI', label: 'Rhode Island' },
-  { value: 'SC', label: 'South Carolina' },
-  { value: 'SD', label: 'South Dakota' },
-  { value: 'TN', label: 'Tennessee' },
-  { value: 'TX', label: 'Texas' },
-  { value: 'UT', label: 'Utah' },
-  { value: 'VT', label: 'Vermont' },
-  { value: 'VA', label: 'Virginia' },
-  { value: 'WA', label: 'Washington' },
-  { value: 'WV', label: 'West Virginia' },
-  { value: 'WI', label: 'Wisconsin' },
-  { value: 'WY', label: 'Wyoming' }
-]
 
 export interface AccountAddressesProps {
   addresses: AddressItem[];
@@ -88,14 +34,9 @@ export interface AccountAddressesProps {
 export function AddressesClient({ addresses }: AccountAddressesProps) {
   const [open, setOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
   const [isPending, startTransition] = React.useTransition()
 
   const editingAddress = editingId ? addresses.find(a => a.id === editingId) : null
-  const filteredStates = US_STATES.filter(state => 
-    state.label.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    state.value.toLowerCase().includes(searchQuery.toLowerCase())
-  )
 
   async function handleAddSubmit(formData: FormData) {
     startTransition(async () => {
@@ -143,7 +84,6 @@ export function AddressesClient({ addresses }: AccountAddressesProps) {
     if (!isOpen) {
       setTimeout(() => {
         setEditingId(null)
-        setSearchQuery('')
       }, 300) // Clear after closing animation
     }
   }
@@ -219,34 +159,7 @@ export function AddressesClient({ addresses }: AccountAddressesProps) {
                   </div>
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="state" className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.1em]">State</Label>
-                    <Select name="state" defaultValue={editingAddress?.state || undefined}>
-                      <SelectTrigger id="state" className="h-12 bg-gray-50 border-gray-100 focus:border-black focus:ring-black rounded-xl text-sm">
-                        <SelectValue placeholder="Select State" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white border-gray-100 rounded-xl shadow-xl max-h-[300px]">
-                        <div className="p-2 sticky top-0 bg-white z-10 border-b border-gray-50 mb-1">
-                          <div className="relative">
-                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 size-3.5" />
-                            <Input 
-                              placeholder="Search states..." 
-                              value={searchQuery}
-                              onChange={(e) => setSearchQuery(e.target.value)}
-                              onKeyDown={(e) => e.stopPropagation()}
-                              onClick={(e) => e.stopPropagation()}
-                              className="h-8 pl-8 text-xs border-none bg-gray-50 focus-visible:ring-0 focus-visible:ring-offset-0"
-                            />
-                          </div>
-                        </div>
-                        {filteredStates.map((state) => (
-                          <SelectItem key={state.value} value={state.value}>
-                            {state.label}
-                          </SelectItem>
-                        ))}
-                        {filteredStates.length === 0 && (
-                          <div className="py-4 text-center text-[10px] text-gray-400 font-medium uppercase tracking-wider">No states found</div>
-                        )}
-                      </SelectContent>
-                    </Select>
+                    <Input name="state" id="state" defaultValue={editingAddress?.state || ''} required placeholder="State" className="h-12 bg-gray-50 border-gray-100 focus:border-black focus:ring-black rounded-xl" />
                   </div>
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="zip" className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.1em]">ZIP Code</Label>
