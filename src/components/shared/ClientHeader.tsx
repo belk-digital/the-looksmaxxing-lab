@@ -255,7 +255,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
               <Search size={18} strokeWidth={1.5} />
             </button>
 
-            <button onClick={cartStore.openCart} className={`p-1 transition-colors relative flex items-center justify-center ${textColor} ${textHoverColor}`}>
+            <button onClick={cartStore.openCart} aria-label="Open cart" className={`p-1 transition-colors relative flex items-center justify-center ${textColor} ${textHoverColor}`}>
               <ShoppingBag size={18} strokeWidth={1.5} />
               <AnimatePresence>
                 {activeCartCount > 0 && (

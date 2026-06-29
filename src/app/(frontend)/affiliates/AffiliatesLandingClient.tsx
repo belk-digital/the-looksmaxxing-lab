@@ -524,6 +524,21 @@ export function AffiliatesLandingClient({ userStatus }: Props) {
                   Unfortunately, your application to the affiliate program was not approved at this time.
                 </p>
               </div>
+            ) : userStatus === 'guest' ? (
+              <div className="text-center py-12">
+                <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-gray-100">
+                  <ShieldCheck className="w-12 h-12 text-[#5984c4]" strokeWidth={1.5} />
+                </div>
+                <h3 className="text-3xl font-bold text-ink mb-4 tracking-tight">Log in to Apply</h3>
+                <p className="text-lg text-gray-500 max-w-md mx-auto leading-relaxed mb-10">
+                  You must be logged in to apply for the affiliate program and access the partner dashboard.
+                </p>
+                <Link href="/login?redirect=/affiliates#apply">
+                  <Button size="lg" className="h-14 px-10 rounded-full bg-[#5984c4] text-white hover:bg-blue-600 hover:shadow-lg transition-all duration-300 font-bold tracking-wider uppercase text-sm border-none">
+                    Log In or Sign Up
+                  </Button>
+                </Link>
+              </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-8">
                 
@@ -569,8 +584,8 @@ export function AffiliatesLandingClient({ userStatus }: Props) {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="socialUrl" className="text-sm font-semibold text-ink ml-1">Profile URL <span className="text-[#5984c4]">*</span></Label>
-                      <Input id="socialUrl" name="socialUrl" type="url" required placeholder="https://youtube.com/c/..." className="h-14 rounded-xl bg-gray-50 border-transparent focus:ring-1 focus:ring-[#5984c4] px-4" />
+                      <Label htmlFor="socialUrl" className="text-sm font-semibold text-ink ml-1">Profile URL or Username <span className="text-[#5984c4]">*</span></Label>
+                      <Input id="socialUrl" name="socialUrl" type="text" required placeholder="@username or https://youtube.com/c/..." className="h-14 rounded-xl bg-gray-50 border-transparent focus:ring-1 focus:ring-[#5984c4] px-4" />
                     </div>
                   </div>
                 </div>

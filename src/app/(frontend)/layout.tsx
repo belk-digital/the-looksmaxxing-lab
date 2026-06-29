@@ -8,6 +8,8 @@ import { Footer } from '@/components/shared/Footer'
 import { SmoothScroll } from '@/components/shared/SmoothScroll'
 import { Toaster } from '@/components/ui/sonner'
 import { GlobalNavigationSpinner } from '@/components/shared/GlobalNavigationSpinner'
+import { cookies } from 'next/headers'
+import { AgeVerificationGate } from '@/components/shared/AgeVerificationGate'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
 
@@ -63,7 +65,10 @@ export const metadata = {
   verification: {},
 }
 
-export default function FrontendLayout({ children }: { children: React.ReactNode }) {
+export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies()
+  const isVerified = cookieStore.get('looksmaxxing_age_verified')?.value === 'true'
+
   return (
     <ClerkProvider>
       <html lang="en" className={`min-h-screen ${fontDisplay.variable} ${fontSans.variable}`} suppressHydrationWarning>
@@ -118,6 +123,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
           className="min-h-screen bg-cream text-ink antialiased"
           suppressHydrationWarning
         >
+          <AgeVerificationGate initialVerified={isVerified} />
           <React.Suspense fallback={null}>
             <GlobalNavigationSpinner />
           </React.Suspense>

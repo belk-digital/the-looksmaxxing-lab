@@ -489,6 +489,7 @@ export interface Cart {
     | {
         product?: (number | null) | Product;
         variantSku: string;
+        variantTitle?: string | null;
         quantity: number;
         addedAt: string;
         priceSnapshot: number;
@@ -1593,6 +1594,7 @@ export interface CartsSelect<T extends boolean = true> {
     | {
         product?: T;
         variantSku?: T;
+        variantTitle?: T;
         quantity?: T;
         addedAt?: T;
         priceSnapshot?: T;

@@ -89,9 +89,13 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
                 Your order has been placed successfully, but it is currently <strong>unpaid</strong>. <br className="hidden sm:block" />
                 Please pay <strong>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(order.total)}</strong> via {order.paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'} to:
               </p>
+              
+              <p className="text-xs sm:text-sm text-yellow-900 bg-yellow-100/50 px-3 py-2 rounded-lg border border-yellow-200/50 max-w-md mx-auto mb-4">
+                <strong>Important:</strong> You must include your Order Number (<strong>#{order.id}</strong>) in the payment notes so we can verify your payment and process your order.
+              </p>
 
               {order.paymentMethod === 'zelle' && (
-                <div className="flex justify-center my-2">
+                <div className="flex justify-center mb-4 mt-2">
                   <Image 
                     src="/Payment Details/zelle-payment-qr.jpeg" 
                     alt="Zelle QR Code" 
@@ -102,14 +106,11 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
                 </div>
               )}
 
-              <div className="bg-white py-3 px-6 rounded-xl border border-yellow-200 inline-block mx-auto shadow-sm">
-                <span className="font-mono text-lg font-bold text-ink">
+              <div className="bg-white py-3 px-4 sm:px-6 rounded-xl border border-yellow-200 inline-block max-w-full mx-auto shadow-sm">
+                <span className="font-mono text-sm sm:text-lg font-bold text-ink break-all">
                   support@thelooksmaxxinglab.com
                 </span>
               </div>
-              <p className="text-xs text-yellow-800 mt-2">
-                <strong>Important:</strong> You must include your Order Number (<strong>#{order.id}</strong>) in the payment notes so we can verify your payment and process your order.
-              </p>
             </div>
           </FadeUp>
         )}

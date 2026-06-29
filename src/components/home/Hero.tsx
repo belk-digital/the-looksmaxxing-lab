@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { Space_Grotesk } from 'next/font/google'
 import { usePreloader } from './HomePreloaderWrapper'
@@ -36,23 +35,21 @@ const MagneticButton = ({ children, className, variant = "default", size = "defa
   )
 }
 
-const backgroundImages = [
-  '/temp-homepage/hero-1.webp',
-  '/temp-homepage/hero-2.webp',
-  '/temp-homepage/hero-3.webp'
-]
-
 export function Hero() {
   const { isReady } = usePreloader()
   const textContainerRef = useRef<HTMLDivElement>(null)
   
+  const backgroundImages = [
+    '/temp-homepage/hero-1.webp',
+    '/temp-homepage/hero-2.webp',
+    '/temp-homepage/hero-3.webp'
+  ]
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
-  // Auto-scroll carousel every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % backgroundImages.length)
-    }, 3000)
+    }, 5000)
     return () => clearInterval(interval)
   }, [])
   
@@ -81,30 +78,23 @@ export function Hero() {
       
       {/* Background Image Carousel */}
       <div className="absolute inset-0 w-full h-full z-0 bg-ink">
-        <AnimatePresence initial={false}>
-          <motion.div
-            key={currentImageIndex}
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.2, ease: 'easeInOut' }}
-            className="absolute inset-0 w-full h-full transform-gpu"
-          >
-            <Image
-              src={backgroundImages[currentImageIndex]}
-              alt="Dark blue laboratory environment with premium glass peptide vials — The Looksmaxxing Lab research peptides"
-              fill
-              className="object-cover object-center transform-gpu"
-              priority={currentImageIndex === 0}
-            />
-          </motion.div>
-        </AnimatePresence>
-        
-        {/* Subtle black overlay on the left to ensure text is always readable */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/20 to-transparent lg:w-[60%] z-10 pointer-events-none"></div>
+        {backgroundImages.map((src, index) => (
+          <Image
+            key={src}
+            src={src}
+            alt={`The Looksmaxxing Lab - Hero ${index + 1}`}
+            fill
+            quality={100}
+            unoptimized={src.endsWith('.webp')}
+            className={`object-cover object-center transition-opacity duration-1000 ${
+              currentImageIndex === index ? 'opacity-100' : 'opacity-0'
+            }`}
+            priority={index === 0}
+          />
+        ))}
 
-        {/* Subtle black overlay at the top to protect the transparent header icons */}
-        <div className="absolute top-0 inset-x-0 h-[160px] bg-gradient-to-b from-black/20 to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent lg:w-[60%] z-10 pointer-events-none"></div>
+        <div className="absolute top-0 inset-x-0 h-[160px] bg-gradient-to-b from-black/40 to-transparent z-10 pointer-events-none"></div>
       </div>
 
       <div className="relative w-full h-full px-6 md:px-12 lg:px-16 flex flex-col items-center lg:items-start justify-center pt-32 lg:pt-[120px] pb-16 lg:pb-12 z-20">
@@ -124,7 +114,7 @@ export function Hero() {
 
           <div className="gsap-reveal overflow-hidden mb-5 lg:mb-8">
             <h1 className={`text-[clamp(2.75rem,8vw,3.5rem)] lg:text-[clamp(3.5rem,4.5vw,5.25rem)] leading-[1.05] font-bold tracking-tighter text-white ${spaceGrotesk.className}`}>
-              The Pinnacle of <br className="hidden lg:block" /> Research Purity.
+              Summer research collection 26' <br className="hidden lg:block" /> just dropped.
             </h1>
           </div>
 
@@ -135,26 +125,16 @@ export function Hero() {
           </div>
 
           <div className="gsap-reveal flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-            <MagneticButton href="/shop" variant="ghost" className="group w-full sm:w-auto px-9 py-6 rounded-none uppercase text-[10px] tracking-[0.25em] font-bold bg-white text-black hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all duration-300 flex items-center justify-center gap-3">
+            <MagneticButton href="/shop" variant="ghost" className="group w-full sm:w-auto px-6 py-4 sm:px-9 sm:py-6 rounded-full uppercase text-[10px] tracking-[0.25em] font-bold bg-white text-black hover:bg-white transition-all duration-300 flex items-center justify-center gap-3">
               SHOP RESEARCH PEPTIDES
               <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1.5" />
             </MagneticButton>
-            <MagneticButton href="/about" variant="ghost" className="group w-full sm:w-auto px-9 py-6 rounded-none uppercase text-[10px] tracking-[0.25em] font-bold border border-white/50 text-white hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-md bg-white/5 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] flex items-center justify-center gap-3">
+            <MagneticButton href="/about" variant="ghost" className="group w-full sm:w-auto px-6 py-4 sm:px-9 sm:py-6 rounded-full uppercase text-[10px] tracking-[0.25em] font-bold border border-white/50 text-white hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-md bg-white/5 flex items-center justify-center gap-3">
               DISCOVER THE LAB
               <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1.5" />
             </MagneticButton>
           </div>
 
-          {/* Functional Carousel Dots Indicator */}
-          <div className="gsap-reveal flex items-center gap-3 mt-12 lg:mt-24">
-            {backgroundImages.map((_, idx) => (
-              <div 
-                key={idx}
-                className={`h-2.5 rounded-full transition-all duration-500 cursor-pointer ${currentImageIndex === idx ? 'bg-[#1e4066] w-8' : 'bg-ink/20 hover:bg-ink/40 w-2.5'}`}
-                onClick={() => setCurrentImageIndex(idx)}
-              ></div>
-            ))}
-          </div>
         </div>
 
       </div>
