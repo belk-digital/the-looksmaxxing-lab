@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import crypto from 'crypto'
+import { auth } from '@clerk/nextjs/server'
 
 export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const payload = await getPayload({ config })
@@ -18,6 +19,26 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
 
   if (!affiliate || affiliate.status !== 'approved') {
     return NextResponse.redirect(new URL('/', request.url))
+  }
+
+  // Block affiliates from using their own referral link
+  const { userId: clerkUserId } = await auth()
+  if (clerkUserId) {
+    const userRes = await payload.find({
+      collection: 'users',
+      where: { clerkUserId: { equals: clerkUserId } },
+      limit: 1,
+      overrideAccess: true,
+    })
+    const currentUser = userRes.docs[0]
+    if (currentUser) {
+      const affiliateUserId = typeof affiliate.user === 'object' && affiliate.user !== null
+        ? affiliate.user.id
+        : affiliate.user
+      if (String(affiliateUserId) === String(currentUser.id)) {
+        return NextResponse.redirect(new URL('/', request.url))
+      }
+    }
   }
 
   // Generate anonymous click ID and IP hash

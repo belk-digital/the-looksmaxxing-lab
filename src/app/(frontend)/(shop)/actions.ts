@@ -311,6 +311,25 @@ export async function verifyCoupon(couponCode: string, subtotal: number, clientC
       return { valid: false, error: `Minimum spend of $${(coupon.minSpend / 100).toFixed(2)} required` }
     }
 
+    // Block affiliates from using their own coupon code
+    if (user) {
+      const affiliateRes = await payload.find({
+        collection: 'affiliates',
+        where: { couponCode: { equals: couponCode.trim().toUpperCase() } },
+        limit: 1,
+        overrideAccess: true,
+      })
+      const ownerAffiliate = affiliateRes.docs[0]
+      if (ownerAffiliate) {
+        const affiliateUserId = typeof ownerAffiliate.user === 'object' && ownerAffiliate.user !== null
+          ? ownerAffiliate.user.id
+          : ownerAffiliate.user
+        if (String(affiliateUserId) === String(user.id)) {
+          return { valid: false, error: 'You cannot use your own affiliate coupon code' }
+        }
+      }
+    }
+
     // Check locked emails
     if (coupon.lockedEmails && coupon.lockedEmails.length > 0) {
       if (!user) return { valid: false, error: 'You must log in to use this specific coupon' }

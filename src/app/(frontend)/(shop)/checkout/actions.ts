@@ -147,10 +147,36 @@ export async function createPaymentIntent(
       return { error: 'Order total too low for Stripe processing (minimum $0.50)' }
   }
 
-  // Check for affiliate ref cookie
+  // Check for affiliate ref cookie and block self-referral
   const cookieStore = await cookies()
-  const affiliateRef = cookieStore.get('affiliate_ref')?.value
-  const clickCookie = cookieStore.get('affiliate_click_id')?.value
+  let affiliateRef = cookieStore.get('affiliate_ref')?.value || null
+  let clickCookie = cookieStore.get('affiliate_click_id')?.value || null
+
+  if (affiliateRef) {
+    const { userId: clerkUserId } = await auth()
+    if (clerkUserId) {
+      const userRes = await payload.find({
+        collection: 'users',
+        where: { clerkUserId: { equals: clerkUserId } },
+        limit: 1,
+        overrideAccess: true,
+      })
+      const currentUser = userRes.docs[0]
+      if (currentUser) {
+        const affRes = await payload.findByID({
+          collection: 'affiliates',
+          id: isNaN(Number(affiliateRef)) ? affiliateRef : Number(affiliateRef),
+        }).catch(() => null)
+        if (affRes) {
+          const affUserId = typeof affRes.user === 'object' && affRes.user !== null ? affRes.user.id : affRes.user
+          if (String(affUserId) === String(currentUser.id)) {
+            affiliateRef = null
+            clickCookie = null
+          }
+        }
+      }
+    }
+  }
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
