@@ -30,15 +30,15 @@ We carry 30+ research compounds across these categories:
 
 ## Key Pages
 
-- Homepage: https://the-looksmaxxing-lab.vercel.app/
-- Shop: https://the-looksmaxxing-lab.vercel.app/shop
-- About: https://the-looksmaxxing-lab.vercel.app/about
-- FAQ: https://the-looksmaxxing-lab.vercel.app/faq
-- Certificates of Analysis: https://the-looksmaxxing-lab.vercel.app/certificates
-- Contact: https://the-looksmaxxing-lab.vercel.app/contact
-- Peptide Calculator: https://the-looksmaxxing-lab.vercel.app/peptide-calculator
-- Research Journal: https://the-looksmaxxing-lab.vercel.app/journal
-- Affiliate Program: https://the-looksmaxxing-lab.vercel.app/affiliates
+- [Homepage](https://www.thelooksmaxxinglab.com/)
+- [Shop All Products](https://www.thelooksmaxxinglab.com/shop)
+- [About Us](https://www.thelooksmaxxinglab.com/about)
+- [FAQ](https://www.thelooksmaxxinglab.com/faq)
+- [Certificates of Analysis](https://www.thelooksmaxxinglab.com/certificates)
+- [Contact](https://www.thelooksmaxxinglab.com/contact)
+- [Peptide Reconstitution Calculator](https://www.thelooksmaxxinglab.com/peptide-calculator)
+- [Research Journal](https://www.thelooksmaxxinglab.com/journal)
+- [Affiliate Program](https://www.thelooksmaxxinglab.com/affiliates)
 
 ## Compliance
 
@@ -46,5 +46,5 @@ All products are sold exclusively under Research Use Only (RUO) classification. 
 
 ## Contact
 
-- Website: https://the-looksmaxxing-lab.vercel.app
-- Contact Page: https://the-looksmaxxing-lab.vercel.app/contact
+- Website: [https://www.thelooksmaxxinglab.com](https://www.thelooksmaxxinglab.com)
+- Contact Page: [https://www.thelooksmaxxinglab.com/contact](https://www.thelooksmaxxinglab.com/contact)

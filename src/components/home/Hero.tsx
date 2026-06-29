@@ -40,9 +40,9 @@ export function Hero() {
   const textContainerRef = useRef<HTMLDivElement>(null)
   
   const backgroundImages = [
-    '/temp-homepage/hero-1.webp',
-    '/temp-homepage/hero-2.webp',
-    '/temp-homepage/hero-3.webp'
+    '/temp-homepage/summer-hero-1.webp',
+    '/temp-homepage/summer-hero-2.webp',
+    '/temp-homepage/summer-hero-3.webp'
   ]
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
