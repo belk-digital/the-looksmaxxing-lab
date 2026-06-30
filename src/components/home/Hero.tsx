@@ -35,23 +35,39 @@ const MagneticButton = ({ children, className, variant = "default", size = "defa
   )
 }
 
+const allImages = [
+  '/temp-homepage/summer-hero-1.webp',
+  '/temp-homepage/summer-hero-2.webp',
+  '/temp-homepage/summer-hero-3.webp',
+  '/temp-homepage/summer-hero-4.webp',
+  '/temp-homepage/summer-hero-5.webp',
+  '/temp-homepage/summer-hero-6.webp'
+]
+const desktopImages = allImages.filter(img => !img.includes('summer-hero-5'))
+
 export function Hero() {
   const { isReady } = usePreloader()
   const textContainerRef = useRef<HTMLDivElement>(null)
   
-  const backgroundImages = [
-    '/temp-homepage/summer-hero-1.webp',
-    '/temp-homepage/summer-hero-2.webp',
-    '/temp-homepage/summer-hero-3.webp'
-  ]
+  const [backgroundImages, setBackgroundImages] = useState(allImages)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setBackgroundImages(window.innerWidth >= 1024 ? desktopImages : allImages)
+    }
+    
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % backgroundImages.length)
     }, 5000)
     return () => clearInterval(interval)
-  }, [])
+  }, [backgroundImages.length])
   
   useGSAP(() => {
     if (!isReady) return;
