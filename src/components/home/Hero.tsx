@@ -101,7 +101,6 @@ export function Hero() {
             alt={`The Looksmaxxing Lab - Hero ${index + 1}`}
             fill
             quality={100}
-            unoptimized={src.endsWith('.webp')}
             className={`object-cover object-center transition-opacity duration-1000 ${
               currentImageIndex === index ? 'opacity-100' : 'opacity-0'
             }`}

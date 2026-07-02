@@ -11,9 +11,10 @@ import { DialogClose } from '@radix-ui/react-dialog'
 
 export interface ImageGalleryProps {
   images: string[]
+  productName?: string
 }
 
-export function ImageGallery({ images }: ImageGalleryProps) {
+export function ImageGallery({ images, productName }: ImageGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   
   // Embla for mobile swipe
@@ -95,7 +96,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
             >
               <Image 
                 src={img} 
-                alt={`Product view ${idx + 1}`}
+                alt={productName ? `${productName} - View ${idx + 1}` : `Product view ${idx + 1}`}
                 fill
                 priority={idx === 0}
                 className="object-cover transition-transform duration-[400ms] ease-out group-hover:scale-[1.75]"
@@ -128,7 +129,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
               >
                 <Image 
                   src={img}
-                  alt={`Thumbnail ${idx + 1}`}
+                  alt={productName ? `${productName} - Thumbnail ${idx + 1}` : `Thumbnail ${idx + 1}`}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 80px, 80px"

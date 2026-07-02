@@ -46,6 +46,21 @@ const nextConfig: NextConfig = {
 
     return webpackConfig
   },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'thelooksmaxxinglab.com',
+          },
+        ],
+        destination: 'https://www.thelooksmaxxinglab.com/:path*',
+        permanent: true, // 301 Redirect for SEO
+      },
+    ]
+  },
   turbopack: {
     root: path.resolve(dirname),
   },

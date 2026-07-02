@@ -29,6 +29,9 @@ export const Media: CollectionConfig = {
       type: 'text',
       required: true,
       localized: true,
+      admin: {
+        description: 'Critical for SEO. Describe the image clearly. E.g., "Vial of BPC-157 Research Peptide on sterile counter". Do not just use the product name.',
+      },
     },
     {
       name: 'caption',

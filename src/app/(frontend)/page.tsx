@@ -1,12 +1,15 @@
+import dynamic from 'next/dynamic'
 import { HomePreloaderWrapper } from '@/components/home/HomePreloaderWrapper'
 import { Hero } from '@/components/home/Hero'
 import { FeaturedProductsSection } from '@/components/home/FeaturedProductsSection'
 import { CategoriesSection } from '@/components/home/CategoriesSection'
-import { AboutTeaser } from '@/components/home/AboutTeaser'
-import { JournalTeaser } from '@/components/home/JournalTeaser'
-import { CoaSection } from '@/components/home/CoaSection'
-import { FaqSection } from '@/components/home/FaqSection'
-import { WhatSetsUsApart } from '@/components/home/WhatSetsUsApart'
+
+// Lazy load below-the-fold components to improve initial JS bundle size and LCP
+const AboutTeaser = dynamic(() => import('@/components/home/AboutTeaser').then(mod => mod.AboutTeaser))
+const WhatSetsUsApart = dynamic(() => import('@/components/home/WhatSetsUsApart').then(mod => mod.WhatSetsUsApart))
+const CoaSection = dynamic(() => import('@/components/home/CoaSection').then(mod => mod.CoaSection))
+const JournalTeaser = dynamic(() => import('@/components/home/JournalTeaser').then(mod => mod.JournalTeaser))
+const FaqSection = dynamic(() => import('@/components/home/FaqSection').then(mod => mod.FaqSection))
 import { Metadata } from 'next'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')

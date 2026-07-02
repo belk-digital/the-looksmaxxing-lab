@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react'
+import Script from 'next/script'
 import '@/app/globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
 import { fontDisplay, fontSans } from '@/app/fonts'
@@ -28,11 +29,6 @@ export const metadata = {
     email: false,
     telephone: false,
   },
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: '32x32' },
-    ],
-  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -47,9 +43,6 @@ export const metadata = {
     title: 'The Looksmaxxing Lab | Research-Grade Peptides',
     description: 'US-based supplier of research-grade peptides. ≥99% HPLC purity, COA-verified. Research use only.',
     images: ['/og/og-home.png'],
-  },
-  alternates: {
-    canonical: siteUrl,
   },
   robots: {
     index: true,
@@ -67,12 +60,26 @@ export const metadata = {
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies()
-  const isVerified = cookieStore.get('looksmaxxing_age_verified')?.value === 'true'
+  const headersList = await require('next/headers').headers()
+  const userAgent = headersList.get('user-agent') || ''
+  
+  // SEO Fix: Search engines must bypass the age gate to index the site content
+  const isBot = /bot|googlebot|crawler|spider|robot|crawling|facebookexternalhit|bingbot/i.test(userAgent)
+  const isVerified = cookieStore.get('looksmaxxing_age_verified')?.value === 'true' || isBot
 
   return (
     <ClerkProvider>
       <html lang="en" className={`min-h-screen ${fontDisplay.variable} ${fontSans.variable}`} suppressHydrationWarning>
         <head>
+          <Script id="google-tag-manager" strategy="afterInteractive">
+            {`
+              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer', '${process.env.NEXT_PUBLIC_GTM_ID || 'GTM-XXXXXXX'}');
+            `}
+          </Script>
           <link rel="author" href={`${siteUrl}/llms.txt`} type="text/plain" title="LLM Site Info" />
           <script
             type="application/ld+json"
@@ -123,6 +130,14 @@ export default async function FrontendLayout({ children }: { children: React.Rea
           className="min-h-screen bg-cream text-ink antialiased"
           suppressHydrationWarning
         >
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID || 'GTM-XXXXXXX'}`}
+              height="0"
+              width="0"
+              style={{ display: 'none', visibility: 'hidden' }}
+            />
+          </noscript>
           <AgeVerificationGate initialVerified={isVerified} />
           <React.Suspense fallback={null}>
             <GlobalNavigationSpinner />

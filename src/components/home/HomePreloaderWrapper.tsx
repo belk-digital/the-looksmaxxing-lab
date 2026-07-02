@@ -29,10 +29,13 @@ export function HomePreloaderWrapper({ children }: { children: React.ReactNode }
   }, [])
 
   useGSAP(() => {
+    // SEO Fix: Detect bots to completely skip the preloader animation
+    const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)
+    
     // Check if the preloader has already been shown in this browser session
     const hasPlayed = sessionStorage.getItem('looksmaxxingPreloaderPlayed')
     
-    if (hasPlayed === 'true') {
+    if (hasPlayed === 'true' || isBot) {
       // Immediately hide preloader and set ready without animation
       setIsReady(true)
       gsap.set(preloaderRef.current, { display: 'none' })

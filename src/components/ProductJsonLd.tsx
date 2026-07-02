@@ -14,6 +14,7 @@ interface ProductJsonLdProps {
   variants: { sku: string; price: string; title: string; [key: string]: any }[]
   averageRating?: number
   reviewCount?: number
+  reviews?: { author: string; datePublished: string; reviewBody: string; reviewRating: number }[]
 }
 
 export function ProductJsonLd({
@@ -30,6 +31,7 @@ export function ProductJsonLd({
   variants,
   averageRating,
   reviewCount,
+  reviews,
 }: ProductJsonLdProps) {
   const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
   const productUrl = `${siteUrl}/products/${slug}`
@@ -117,6 +119,24 @@ export function ProductJsonLd({
       worstRating: '1',
       reviewCount,
     }
+  }
+
+  if (reviews && reviews.length > 0) {
+    productSchema.review = reviews.map(review => ({
+      '@type': 'Review',
+      reviewRating: {
+        '@type': 'Rating',
+        ratingValue: review.reviewRating.toString(),
+        bestRating: '5',
+        worstRating: '1',
+      },
+      author: {
+        '@type': 'Person',
+        name: review.author,
+      },
+      datePublished: review.datePublished,
+      reviewBody: review.reviewBody,
+    }))
   }
 
   if (hasVariants && variants.length > 1) {

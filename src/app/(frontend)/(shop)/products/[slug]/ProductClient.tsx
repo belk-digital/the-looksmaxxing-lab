@@ -331,7 +331,7 @@ export function ProductClient({ product }: ProductClientProps) {
           
           {/* Left Column (Massive Cinematic Gallery) */}
           <div className="w-full lg:w-[45%] relative lg:sticky lg:top-32 lg:mt-6">
-            <ImageGallery images={galleryImages} />
+            <ImageGallery images={galleryImages} productName={product.name} />
           </div>
 
           {/* Right Column (Clean Flow) */}
@@ -464,7 +464,7 @@ export function ProductClient({ product }: ProductClientProps) {
                         
                         <div className="flex items-center gap-4 relative z-10">
                           {bundle.image ? (
-                            <img src={bundle.image} alt={bundle.name} className="w-12 h-12 rounded-lg object-cover bg-ink/5" />
+                            <img src={bundle.image} alt={`${product.name} - ${bundle.name} - Research Grade Peptide`} className="w-12 h-12 rounded-lg object-cover bg-ink/5" />
                           ) : (
                             <div className="w-12 h-12 rounded-xl bg-ink/5 flex flex-col items-center justify-center border border-ink/10">
                               <span className="text-sm font-black text-ink tracking-tighter leading-none">{bundle.quantity}x</span>
