@@ -284,5 +284,14 @@ export const Products: CollectionConfig = {
       type: 'checkbox',
       defaultValue: true,
     },
+    {
+      name: 'isBestSeller',
+      type: 'checkbox',
+      label: 'Show in Best Sellers Section (Homepage)',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
   ],
 }

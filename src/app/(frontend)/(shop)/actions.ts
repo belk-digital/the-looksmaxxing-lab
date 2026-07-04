@@ -656,6 +656,7 @@ export async function getShopProducts(params: {
   categories?: string[]
   inStock?: boolean
   onSale?: boolean
+  isBestSeller?: boolean
   minPrice?: number
   maxPrice?: number
   sort?: string
@@ -692,6 +693,10 @@ export async function getShopProducts(params: {
 
     if (params.onSale) {
       where.and.push({ salePrice: { greater_than: 0 } })
+    }
+
+    if (params.isBestSeller) {
+      where.and.push({ isBestSeller: { equals: true } })
     }
 
     if (params.minPrice !== undefined || params.maxPrice !== undefined) {

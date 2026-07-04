@@ -30,7 +30,7 @@ import { getShopProducts } from '@/app/(frontend)/(shop)/actions'
 export default async function Homepage() {
   let products = []
   try {
-    const res = await getShopProducts({ limit: 8, sort: 'newest' })
+    const res = await getShopProducts({ limit: 8, sort: 'newest', isBestSeller: true })
     if (res.success && res.products) {
       products = res.products as any[]
     }
