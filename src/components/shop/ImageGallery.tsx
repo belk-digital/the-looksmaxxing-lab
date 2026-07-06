@@ -6,8 +6,6 @@ import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motio
 import useEmblaCarousel from 'embla-carousel-react'
 import { X, Maximize2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
-import { DialogClose } from '@radix-ui/react-dialog'
 
 export interface ImageGalleryProps {
   images: string[]
@@ -99,7 +97,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
                 alt={productName ? `${productName} - View ${idx + 1}` : `Product view ${idx + 1}`}
                 fill
                 priority={idx === 0}
-                className="object-cover transition-transform duration-[400ms] ease-out group-hover:scale-[1.75]"
+                className="object-cover transition-transform duration-base ease-out group-hover:scale-[1.75]"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
 

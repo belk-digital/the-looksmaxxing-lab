@@ -32,7 +32,7 @@ export function HomeFeaturedProductCard({ product, id, index = 0 }: HomeFeatured
       <div id={id} className="relative w-full max-w-[220px] aspect-[3/4] flex items-center justify-center mb-8 mx-auto py-4 z-10 pointer-events-none">
         
         {/* Beige Circle Background */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] aspect-square rounded-full bg-cream transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] aspect-square rounded-full bg-cream transition-transform duration-500 ease-out-quart group-hover:scale-105" />
 
         {/* Product Image (Drops in naturally) */}
         <motion.div 
@@ -48,7 +48,7 @@ export function HomeFeaturedProductCard({ product, id, index = 0 }: HomeFeatured
           className="w-[75%] h-[95%] z-10"
         >
           {/* Hover Wrapper */}
-          <div className="relative w-full h-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110">
+          <div className="relative w-full h-full transition-transform duration-500 ease-out-quart group-hover:scale-110">
             <Image
               src={product.image}
               alt={product.name}

@@ -71,13 +71,13 @@ function CategoryCard({ category, index }: { category: typeof CATEGORIES[0], ind
           src={imageSrc}
           alt={category.name}
           fill
-          className="object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"
+          className="object-cover object-center transition-transform duration-700 ease-out-quart group-hover:scale-110"
         />
       </div>
       
       {/* Modern Hover Description Tooltip */}
       <div className="absolute left-1/2 -translate-x-1/2 bottom-4 sm:bottom-6 w-[90%] sm:w-[85%] z-30 pointer-events-none overflow-hidden rounded-xl">
-        <div className="bg-ink/95 backdrop-blur-md text-white/90 text-[11px] sm:text-[13px] leading-snug text-center p-3 sm:p-4 rounded-xl translate-y-[150%] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-2xl border border-white/10">
+        <div className="bg-ink/95 backdrop-blur-md text-white/90 text-[11px] sm:text-[13px] leading-snug text-center p-3 sm:p-4 rounded-xl translate-y-[150%] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out-quart shadow-2xl border border-white/10">
           {category.description}
         </div>
       </div>

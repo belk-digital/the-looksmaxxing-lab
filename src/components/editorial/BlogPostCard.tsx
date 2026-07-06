@@ -24,7 +24,7 @@ export function BlogPostCard({
           src={imageSrc} 
           alt={title} 
           fill 
-          className="object-cover transition-transform duration-[800ms] ease-out group-hover:scale-105" 
+          className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105" 
         />
       </div>
       <div className="flex flex-col flex-grow px-2 pb-2">
