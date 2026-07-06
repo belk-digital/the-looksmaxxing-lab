@@ -63,13 +63,9 @@ export default function RegisterPage() {
               appearance={{
                 variables: {
                   colorPrimary: '#000000', 
-                  colorText: '#000000', 
                   colorBackground: '#ffffff',
-                  colorInputBackground: '#ffffff',
-                  colorInputText: '#000000',
                   borderRadius: '0px',
                   fontFamily: 'inherit',
-                  colorTextOnPrimaryBackground: '#ffffff',
                 },
                 elements: {
                   rootBox: 'w-full flex justify-center !overflow-visible',

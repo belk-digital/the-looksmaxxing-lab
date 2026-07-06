@@ -55,5 +55,13 @@ export const Carts: CollectionConfig = {
         },
       ],
     },
+    {
+      name: 'abandonedEmailSentAt',
+      type: 'date',
+      admin: {
+        readOnly: true,
+        description: 'Records when the abandoned cart email was sent to prevent spamming.',
+      }
+    }
   ],
 }

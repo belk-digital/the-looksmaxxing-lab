@@ -280,6 +280,9 @@ export interface Address {
  */
 export interface Media {
   id: number;
+  /**
+   * Critical for SEO. Describe the image clearly. E.g., "Vial of BPC-157 Research Peptide on sterile counter". Do not just use the product name.
+   */
   alt: string;
   caption?: string | null;
   prefix?: string | null;
@@ -475,6 +478,7 @@ export interface Product {
     | null;
   status?: ('draft' | 'active' | 'archived') | null;
   isVisible?: boolean | null;
+  isBestSeller?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -496,6 +500,10 @@ export interface Cart {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Records when the abandoned cart email was sent to prevent spamming.
+   */
+  abandonedEmailSentAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1580,6 +1588,7 @@ export interface ProductsSelect<T extends boolean = true> {
       };
   status?: T;
   isVisible?: T;
+  isBestSeller?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1600,6 +1609,7 @@ export interface CartsSelect<T extends boolean = true> {
         priceSnapshot?: T;
         id?: T;
       };
+  abandonedEmailSentAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
