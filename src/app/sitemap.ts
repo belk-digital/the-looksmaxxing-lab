@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { JOURNAL_POSTS } from '@/data/journal-posts'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
@@ -86,22 +87,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   let journalPages: MetadataRoute.Sitemap = []
   try {
-    const { docs: posts } = await payload.find({
-      collection: 'journal-posts' as any,
-      limit: 1000,
-      depth: 0,
-    })
-
-    journalPages = posts
-      .filter((p: any) => p.slug)
-      .map((p: any) => ({
-        url: `${siteUrl}/journal/${p.slug}`,
-        lastModified: new Date(p.updatedAt),
-        changeFrequency: 'monthly' as const,
-        priority: 0.6,
-      }))
-  } catch {
-    // journal-posts collection may not exist
+    journalPages = JOURNAL_POSTS.map((p) => ({
+      url: `${siteUrl}/journal/${p.slug}`,
+      lastModified: new Date(), // Using current date as they are static files
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    }))
+  } catch (err) {
+    console.error('Failed to map journal posts for sitemap', err)
   }
 
   return [...staticPages, ...productPages, ...journalPages]

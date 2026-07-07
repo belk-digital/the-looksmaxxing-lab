@@ -464,7 +464,7 @@ export function ProductClient({ product }: ProductClientProps) {
                         
                         <div className="flex items-center gap-4 relative z-10">
                           {bundle.image ? (
-                            <img src={bundle.image} alt={`${product.name} - ${bundle.name} - Research Grade Peptide`} className="w-12 h-12 rounded-lg object-cover bg-ink/5" />
+                            <Image src={bundle.image} alt={`${product.name} - ${bundle.name} - Research Grade Peptide`} width={48} height={48} className="w-12 h-12 rounded-lg object-cover bg-ink/5" />
                           ) : (
                             <div className="w-12 h-12 rounded-xl bg-ink/5 flex flex-col items-center justify-center border border-ink/10">
                               <span className="text-sm font-black text-ink tracking-tighter leading-none">{bundle.quantity}x</span>

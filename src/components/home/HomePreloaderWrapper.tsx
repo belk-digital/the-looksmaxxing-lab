@@ -126,7 +126,7 @@ export function HomePreloaderWrapper({ children }: { children: React.ReactNode }
            >
              <Image 
                src="/Featured%20Images/vial-no-bg.webp"
-               alt="Vial Preloader"
+               alt="Research-grade peptide vial loading animation - The Looksmaxxing Lab"
                fill
                className="object-contain"
                priority

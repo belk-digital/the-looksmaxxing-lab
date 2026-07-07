@@ -592,7 +592,7 @@ export default function AboutClient() {
                 className="absolute -left-[5%] md:left-[5%] top-[10%] w-[300px] md:w-[400px] h-[400px] md:h-[500px] opacity-[0.15] pointer-events-none"
                 style={{ willChange: 'transform' }}
               >
-                <Image src="/Featured%20Images/vial-no-bg.webp" alt="Vial Watermark" fill className="object-contain" />
+                <Image src="/Featured%20Images/vial-no-bg.webp" alt="Research peptide vial watermark representing high-purity laboratory synthesis" fill className="object-contain" />
               </motion.div>
 
               {/* Floating Transparent Vial 2 */}
@@ -602,7 +602,7 @@ export default function AboutClient() {
                 className="absolute -right-[10%] md:-right-[5%] bottom-[5%] w-[400px] md:w-[500px] h-[500px] md:h-[600px] opacity-[0.1] pointer-events-none"
                 style={{ willChange: 'transform' }}
               >
-                <Image src="/Featured%20Images/vial-no-bg.webp" alt="Vial Watermark" fill className="object-contain" />
+                <Image src="/Featured%20Images/vial-no-bg.webp" alt="Research peptide vial watermark representing high-purity laboratory synthesis" fill className="object-contain" />
               </motion.div>
 
               {/* Scientific Rings */}

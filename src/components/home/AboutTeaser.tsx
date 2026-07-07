@@ -49,7 +49,7 @@ export function AboutTeaser() {
         >
           <Image 
             src="/Featured%20Images/vial-no-bg.webp"
-            alt="Foreground Blur Vial"
+            alt="Close-up of lyophilized research peptide vial with focus blur - The Looksmaxxing Lab"
             fill
             className="object-contain blur-xl opacity-20 transform-gpu"
           />
@@ -83,7 +83,7 @@ export function AboutTeaser() {
         >
           <Image 
             src="/Featured%20Images/vial-no-bg.webp"
-            alt="Foreground Vial"
+            alt="High purity research peptide vial ready for reconstitution - The Looksmaxxing Lab"
             fill
             className="object-contain drop-shadow-xl transform-gpu"
           />

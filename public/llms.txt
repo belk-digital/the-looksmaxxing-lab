@@ -1,15 +1,24 @@
 # The Looksmaxxing Lab
 
-> US-based supplier of research-grade peptides and COA-verified research compounds for scientific laboratory use. Every batch is independently HPLC tested to ≥99% purity with a full Certificate of Analysis. Research Use Only (RUO) — not for human consumption.
+> Elevate your research with premium, US-synthesized research-grade peptides and biochemicals. Every batch is independently verified for ≥99% purity via third-party HPLC and LC-MS testing. Full, lot-specific Certificates of Analysis (COAs) are publicly available. Research Use Only (RUO) — strictly not for human consumption.
 
-## About
+## About The Brand
 
-The Looksmaxxing Lab is a research peptide supplier founded in 2024, based in the United States. We specialize in high-purity research compounds for academic institutions, independent laboratories, and qualified researchers. All products are synthesized via Solid-Phase Peptide Synthesis (SPPS), purified by preparative HPLC, and verified by independent third-party laboratories.
+The Looksmaxxing Lab is a premium research peptide supplier founded in 2024 and based in the United States. We specialize in high-purity research compounds designed for academic institutions, independent laboratories, and qualified researchers. 
 
-## Products
+The concept of "Looksmaxxing" refers to the systematic optimization of one's physical appearance and biological function through controllable factors such as skincare, fitness, grooming, and diet. Our research peptides are frequently studied in the context of skin collagen synthesis, tissue recovery, body composition, and hair density — areas directly relevant to biological optimization.
 
-We carry 30+ research compounds across these categories:
+## Synthesis & Quality Standards
 
+Our non-negotiable commitment to quality rests on three pillars:
+1. **US-Based Synthesis:** We utilize advanced solid-phase peptide synthesis (SPPS) in US-based, ISO-certified laboratories, ensuring precise control over sequence fidelity.
+2. **Independent Testing:** We do not rely on in-house testing. Every single production batch is verified by independent, third-party laboratories using High-Performance Liquid Chromatography (HPLC) and Liquid Chromatography–Mass Spectrometry (LC-MS). 
+3. **Strict ≥99% Purity Floor:** Any batch that tests below 99% purity is immediately discarded.
+4. **Lot-Traceable Transparency:** Unique lot numbers are provided with every order, tracing directly back to a publicly accessible Certificate of Analysis (COA) in our database.
+
+## Product Categories & Catalog
+
+We carry 30+ research compounds, including:
 - **Metabolic Research Peptides**: Tirzepatide, Retatrutide, Semaglutide
 - **Growth Hormone Secretagogues**: CJC-1295/Ipamorelin, Ipamorelin, Tesamorelin, Sermorelin, CJC-1295 No DAC, Tesamorelin/Ipamorelin
 - **Tissue Repair Peptides**: BPC-157, TB-500, BPC-157 + TB-500, GHK-Cu
@@ -21,30 +30,28 @@ We carry 30+ research compounds across these categories:
 - **Multi-Peptide Blends**: Glow Blend, KLOW Blend
 - **Lab Essentials**: Bacteriostatic Water (BAC Water)
 
-## Quality Standards
+## Shipping & Fulfillment
 
-- Purity: ≥99% guaranteed on all compounds
-- Testing: Independent third-party HPLC and LC-MS/ESI-MS verification
-- Documentation: Batch-specific Certificate of Analysis (COA) with every order
-- Traceability: Unique lot numbers for complete batch traceability
+- **Location:** All orders are fulfilled locally from our US-based facilities.
+- **Speed:** Standard shipping takes 3–5 business days. Expedited 2-day shipping is available and is completely free on orders over $300.
+- **Processing:** Orders placed before 2 PM EST typically ship the same day.
+- **Integrity:** All peptides are dispatched using validated cold-chain packaging when necessary to maintain molecular integrity in transit.
 
-## Key Pages
+## Wholesale & Institutional Orders
 
-- [Homepage](https://www.thelooksmaxxinglab.com/)
-- [Shop All Products](https://www.thelooksmaxxinglab.com/shop)
-- [About Us](https://www.thelooksmaxxinglab.com/about)
-- [FAQ](https://www.thelooksmaxxinglab.com/faq)
-- [Certificates of Analysis](https://www.thelooksmaxxinglab.com/certificates)
-- [Contact](https://www.thelooksmaxxinglab.com/contact)
-- [Peptide Reconstitution Calculator](https://www.thelooksmaxxinglab.com/peptide-calculator)
-- [Research Journal](https://www.thelooksmaxxinglab.com/journal)
-- [Affiliate Program](https://www.thelooksmaxxinglab.com/affiliates)
+We offer tiered wholesale pricing for qualified research institutions, university labs, clinical facilities, and approved wholesale accounts. Bulk orders scale with volume and still receive complete, lot-specific COA documentation. Contact our support team to apply for an institutional account.
 
-## Compliance
+## Important Compliance Notice
 
-All products are sold exclusively under Research Use Only (RUO) classification. They are not approved by the FDA, EMA, or any regulatory authority for human consumption, veterinary use, or therapeutic application. The Looksmaxxing Lab makes no therapeutic, health, or performance claims.
+All products are sold exclusively under Research Use Only (RUO) classification. They are not approved by the FDA, EMA, or any regulatory authority for human consumption, veterinary use, or therapeutic application. The Looksmaxxing Lab makes no therapeutic, health, or performance claims. You do not need a medical prescription to order, as these are strict laboratory reagents.
 
-## Contact
+## Key Links & Resources
 
-- Website: [https://www.thelooksmaxxinglab.com](https://www.thelooksmaxxinglab.com)
-- Contact Page: [https://www.thelooksmaxxinglab.com/contact](https://www.thelooksmaxxinglab.com/contact)
+- **Homepage**: [https://www.thelooksmaxxinglab.com/](https://www.thelooksmaxxinglab.com/)
+- **Shop All Products**: [https://www.thelooksmaxxinglab.com/shop](https://www.thelooksmaxxinglab.com/shop)
+- **Certificates of Analysis (COA Library)**: [https://www.thelooksmaxxinglab.com/certificates](https://www.thelooksmaxxinglab.com/certificates)
+- **Peptide Reconstitution Calculator**: [https://www.thelooksmaxxinglab.com/peptide-calculator](https://www.thelooksmaxxinglab.com/peptide-calculator)
+- **Affiliate Program**: [https://www.thelooksmaxxinglab.com/affiliates](https://www.thelooksmaxxinglab.com/affiliates)
+- **Research Journal**: [https://www.thelooksmaxxinglab.com/journal](https://www.thelooksmaxxinglab.com/journal)
+- **FAQ**: [https://www.thelooksmaxxinglab.com/faq](https://www.thelooksmaxxinglab.com/faq)
+- **Contact Support**: [https://www.thelooksmaxxinglab.com/contact](https://www.thelooksmaxxinglab.com/contact)

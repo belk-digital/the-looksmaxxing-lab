@@ -9,6 +9,7 @@ import { StaggerChildren, staggerItemVariants } from '@/components/motion/Stagge
 import { EyebrowHeading } from '@/components/editorial/EyebrowHeading'
 import { BlogPostCard } from '@/components/editorial/BlogPostCard'
 import { Button } from '@/components/ui/button'
+import { JOURNAL_POSTS } from '@/data/journal-posts'
 
 const CATEGORIES = ['All', 'Emerging', 'Guidelines', 'Studies', 'Guides']
 
@@ -104,11 +105,11 @@ export default function JournalIndexPage() {
           <div className="mb-6 px-2 lg:px-4">
             <h2 className="text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-[#5984c4]">Featured Article</h2>
           </div>
-          <Link href="/journal/the-case-for-nad-in-mitochondrial-research" className="group block relative w-full bg-white rounded-[1.5rem] md:rounded-[2rem] p-3 md:p-4 lg:p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+          <Link href="/journal/ghk-cu-pharmacokinetics" className="group block relative w-full bg-white rounded-[1.5rem] md:rounded-[2rem] p-3 md:p-4 lg:p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
             <div className="relative w-full h-[35vh] min-h-[250px] md:h-[50vh] md:min-h-[400px] rounded-2xl md:rounded-3xl overflow-hidden mb-6 md:mb-8">
               <Image 
-                src="/hero-image.png" 
-                alt="Featured post" 
+                src="/journal-images/ghk_cu_molecular_science_1783383163855.png" 
+                alt="GHK-Cu Molecular Structure" 
                 fill 
                 className="object-cover transition-transform duration-cinema ease-out group-hover:scale-105" 
               />
@@ -116,14 +117,14 @@ export default function JournalIndexPage() {
             
             <div className="relative z-20 max-w-[960px] px-2 lg:px-6 pb-6">
               <div className="flex items-center gap-4 mb-6">
-                <span className="px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase tracking-wider">Emerging</span>
-                <span className="text-xs text-gray-400 font-medium uppercase tracking-wider">12 min read</span>
+                <span className="px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase tracking-wider">Studies</span>
+                <span className="text-xs text-gray-400 font-medium uppercase tracking-wider">15 min read</span>
               </div>
               <h2 className="text-3xl lg:text-5xl font-bold text-ink mb-6 tracking-tight leading-tight group-hover:text-blue-600 transition-colors duration-300">
-                The case for NAD+ in mitochondrial research
+                The Pharmacokinetics of GHK-Cu: Fibroblast Activation and Collagen Synthesis
               </h2>
               <p className="text-lg text-gray-500 mb-8 line-clamp-2 leading-relaxed">
-                A comprehensive review of NAD+ precursors and their impact on cellular respiration, longevity markers, and tissue repair guidelines.
+                An exhaustive review of how the GHK-Cu copper peptide interacts with fibroblasts, modulates the extracellular matrix, and up-regulates collagen synthesis.
               </p>
               <span className="text-sm font-bold uppercase tracking-wider text-ink flex items-center gap-2 group-hover:text-blue-600 transition-colors duration-300">
                 Read the full article <span aria-hidden="true" className="group-hover:translate-x-1 transition-transform">→</span>
@@ -165,15 +166,15 @@ export default function JournalIndexPage() {
       {/* Grid */}
       <section className="px-4 md:px-6 max-w-[1280px] mx-auto mb-16 md:mb-24">
         <StaggerChildren staggerDelay={0.05} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <motion.div key={i} variants={staggerItemVariants} className="h-full">
+          {JOURNAL_POSTS.map((post) => (
+            <motion.div key={post.slug} variants={staggerItemVariants} className="h-full">
               <BlogPostCard 
-                slug={`sample-post-${i}`}
-                title={`Guideline: Reconstitution and storage guidelines ${i}`}
-                category={i % 2 === 0 ? 'Guidelines' : 'Studies'}
-                excerpt="Best practices for maintaining peptide stability, minimizing degradation, and ensuring accurate dosing in clinical environments."
-                imageSrc="/hero-image.png"
-                readTime="5 min read"
+                slug={post.slug}
+                title={post.title}
+                category={post.category}
+                excerpt={post.excerpt}
+                imageSrc={post.heroImage}
+                readTime={post.readTime}
               />
             </motion.div>
           ))}

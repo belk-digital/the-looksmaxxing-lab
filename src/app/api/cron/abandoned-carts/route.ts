@@ -17,15 +17,15 @@ export async function GET(req: Request) {
 
     const payload = await getPayload({ config: configPromise })
     
-    // Calculate timestamp for 2 hours ago
-    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000)
+    // Calculate timestamp for 1 hour ago
+    const oneHourAgo = new Date(Date.now() - 1 * 60 * 60 * 1000)
 
-    // Find carts that were updated over 2 hours ago, and haven't had an email sent
+    // Find carts that were updated over 1 hour ago, and haven't had an email sent
     const { docs: carts } = await payload.find({
       collection: 'carts',
       where: {
         updatedAt: {
-          less_than: twoHoursAgo.toISOString()
+          less_than: oneHourAgo.toISOString()
         },
         abandonedEmailSentAt: {
           exists: false

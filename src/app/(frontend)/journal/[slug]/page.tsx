@@ -1,63 +1,25 @@
 import React from 'react'
 import { Metadata } from 'next'
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
 import JournalPostClient from './JournalPostClient'
+import { JOURNAL_POSTS } from '@/data/journal-posts'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
 
 export async function generateStaticParams() {
-  try {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-      collection: 'journal-posts' as any,
-      limit: 1000,
-      depth: 0,
-    })
-    return docs.filter((p: any) => p.slug).map((p: any) => ({ slug: p.slug }))
-  } catch {
-    // Return empty array if collection doesn't exist yet
-    return []
-  }
+  return JOURNAL_POSTS.map((p) => ({ slug: p.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   
-  let title = 'Science Journal'
-  let description = 'Research and clinical guidelines from The Looksmaxxing Lab.'
-  let imageUrl: string | undefined = undefined
-
-  try {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-      collection: 'journal-posts' as any,
-      where: { slug: { equals: slug } },
-      limit: 1,
-      depth: 1,
-    })
-    
-    if (docs && docs.length > 0) {
-      const post = docs[0]
-      title = post.title || title
-      description = post.excerpt || post.metaDescription || description
-      
-      if (post.heroImage && typeof post.heroImage === 'object' && post.heroImage.url) {
-        imageUrl = post.heroImage.url
-      } else if (post.image && typeof post.image === 'object' && post.image.url) {
-        imageUrl = post.image.url
-      }
-      
-      if (imageUrl && imageUrl.startsWith('/')) {
-        imageUrl = `${siteUrl}${imageUrl}`
-      }
-    }
-  } catch {
-    // Fallback if collection doesn't exist
-    // The client component is currently rendering a hardcoded post
-    // so we'll provide some generic but relevant metadata
-    title = 'The case for NAD+ in mitochondrial research | Science Journal'
-    description = 'Nicotinamide adenine dinucleotide (NAD+) is an essential pyridine nucleotide that serves as an electron carrier in cellular metabolism.'
+  const post = JOURNAL_POSTS.find(p => p.slug === slug)
+  
+  const title = post?.title || 'Science Journal'
+  const description = post?.excerpt || 'Research and clinical guidelines from The Looksmaxxing Lab.'
+  let imageUrl = post?.heroImage
+  
+  if (imageUrl && imageUrl.startsWith('/')) {
+    imageUrl = `${siteUrl}${imageUrl}`
   }
 
   const postUrl = `${siteUrl}/journal/${slug}`
@@ -88,6 +50,31 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 export default async function JournalPostPage({ params }: { params: Promise<{ slug: string }> }) {
-  // We can pass params to the client component if it needs them in the future
-  return <JournalPostClient />
+  const { slug } = await params
+  const post = JOURNAL_POSTS.find(p => p.slug === slug)
+
+  const faqSchema = post?.faqs && post.faqs.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: post.faqs.map(faq => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer
+      }
+    }))
+  } : null
+
+  return (
+    <>
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
+      <JournalPostClient slug={slug} />
+    </>
+  )
 }

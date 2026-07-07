@@ -98,7 +98,7 @@ export function Hero() {
           <Image
             key={src}
             src={src}
-            alt={`The Looksmaxxing Lab - Hero ${index + 1}`}
+            alt={`The Looksmaxxing Lab - High Purity Research Peptides - Slide ${index + 1}`}
             fill
             quality={100}
             className={`object-cover object-center transition-opacity duration-1000 ${

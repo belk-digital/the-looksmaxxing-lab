@@ -48,6 +48,7 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // 1. Non-www to www redirect (already existed and is correct)
       {
         source: '/:path*',
         has: [
@@ -57,8 +58,49 @@ const nextConfig: NextConfig = {
           },
         ],
         destination: 'https://www.thelooksmaxxinglab.com/:path*',
-        permanent: true, // 301 Redirect for SEO
+        permanent: true,
       },
+      // 2. Legacy WooCommerce product URLs to Next.js product URLs
+      {
+        source: '/product/:slug*',
+        destination: '/products/:slug*',
+        permanent: true,
+      },
+      // 3. Legacy Cart URLs
+      {
+        source: '/cart-2',
+        destination: '/cart',
+        permanent: true,
+      },
+      // 4. Legacy checkout URLs if any
+      {
+        source: '/checkout-2',
+        destination: '/checkout',
+        permanent: true,
+      },
+      // 5. Common WordPress default pages
+      {
+        source: '/hello-world',
+        destination: '/journal',
+        permanent: true,
+      },
+      // 6. WordPress Login
+      {
+        source: '/wp-login.php',
+        destination: '/login',
+        permanent: true,
+      },
+      // 7. WordPress Feeds
+      {
+        source: '/comments/feed',
+        destination: '/journal',
+        permanent: true,
+      },
+      {
+        source: '/feed',
+        destination: '/journal',
+        permanent: true,
+      }
     ]
   },
   turbopack: {

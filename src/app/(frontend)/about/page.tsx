@@ -5,14 +5,14 @@ const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxx
 
 export const metadata: Metadata = {
   title: 'About The Looksmaxxing Lab | US Research Peptide Supplier',
-  description: 'The Looksmaxxing Lab is a US-based research peptide supplier founded in 2024. We synthesize BPC-157, TB-500, GHK-Cu & more at ≥99% HPLC purity with independent COA verification.',
+  description: 'The Looksmaxxing Lab is a premier US-based research peptide supplier. We synthesize compounds for cellular regeneration, metabolic study, and structural repair at ≥99% HPLC purity with independent COA verification.',
   alternates: {
     canonical: `${siteUrl}/about`,
   },
   openGraph: {
     images: [{ url: '/og/og-about.png', width: 1200, height: 630, alt: 'About The Looksmaxxing Lab' }],
     title: 'About The Looksmaxxing Lab | US Research Peptide Supplier',
-    description: 'US-based research peptide supplier. ≥99% HPLC purity, independent COA verification, 30+ compounds.',
+    description: 'US-based research peptide supplier. Synthesizing compounds for cellular regeneration, metabolic study, and structural repair at ≥99% HPLC purity.',
     url: `${siteUrl}/about`,
   },
 }
