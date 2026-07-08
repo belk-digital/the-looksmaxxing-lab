@@ -70,8 +70,9 @@ function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
   }, [searchParams, pathname, router])
 
   const toggleCategory = (cat: string) => {
-    const next = activeCategories.includes(cat)
-      ? activeCategories.filter(c => c !== cat)
+    const isActive = activeCategories.some(c => c.toLowerCase() === cat.toLowerCase())
+    const next = isActive
+      ? activeCategories.filter(c => c.toLowerCase() !== cat.toLowerCase())
       : [...activeCategories, cat]
     updateFilters('category', next)
   }
@@ -103,7 +104,7 @@ function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
             <div key={cat.id} className="flex items-center space-x-3">
               <Checkbox 
                 id={`cat-${cat.slug}`} 
-                checked={activeCategories.includes(cat.name)}
+                checked={activeCategories.some(c => c.toLowerCase() === cat.name.toLowerCase() || c.toLowerCase() === cat.slug.toLowerCase())}
                 onCheckedChange={() => toggleCategory(cat.name)}
               />
               <Label htmlFor={`cat-${cat.slug}`} className="text-sm font-medium text-black cursor-pointer leading-none">

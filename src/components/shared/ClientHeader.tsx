@@ -138,11 +138,13 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
       : 'bg-white border-b border-black/10 shadow-sm'
   }`
 
-  const textColor = isTransparent ? 'text-white' : 'text-ink';
-  const textHoverColor = isTransparent ? 'hover:text-white/70' : 'hover:text-ink/70';
-  const iconColor = isTransparent ? 'white' : 'black';
-  const searchBg = isTransparent ? 'bg-white/10 border-white/20 placeholder:text-white/50 focus:border-white/40' : 'bg-black/5 border-black/10 placeholder:text-ink/40 focus:border-black/30';
-  const buttonBorder = isTransparent ? 'border-white/30 hover:bg-white hover:text-black' : 'border-black/30 hover:bg-black hover:text-white';
+  const textColor = isTransparent ? 'text-white lg:text-ink' : 'text-ink';
+  const textHoverColor = isTransparent ? 'hover:text-white/70 lg:hover:text-ink/70' : 'hover:text-ink/70';
+  const searchBg = isTransparent ? 'bg-white/10 lg:bg-black/5 border-white/20 lg:border-black/10 placeholder:text-white/50 lg:placeholder:text-ink/40 focus:border-white/40 lg:focus:border-black/30' : 'bg-black/5 border-black/10 placeholder:text-ink/40 focus:border-black/30';
+  const buttonBorder = isTransparent ? 'border-white/30 lg:border-black/30 hover:bg-white lg:hover:bg-black hover:text-black lg:hover:text-white' : 'border-black/30 hover:bg-black hover:text-white';
+  const iconBtnClass = isTransparent 
+    ? 'bg-white/20 lg:bg-black/40 hover:bg-white/30 lg:hover:bg-black/60 backdrop-blur-md text-white rounded-full w-9 h-9 transition-all'
+    : 'text-ink hover:bg-black/5 rounded-full w-9 h-9 transition-all';
 
   return (
     <>
@@ -187,7 +189,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
           {/* Left: Logo (Mimicking the reference swirl) */}
           <div className="flex-1 xl:flex-none flex justify-start">
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-              <span className="font-serif text-xl font-bold tracking-tighter" style={{ color: iconColor }}>TLML</span>
+              <span className={`font-serif text-xl font-bold tracking-tighter ${textColor}`}>TLML</span>
             </Link>
           </div>
 
@@ -249,21 +251,21 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
             {/* Search Button */}
             <button 
               onClick={() => setIsSearchOpen(true)}
-              className={`p-1 transition-colors relative flex items-center justify-center ${textColor} ${textHoverColor}`}
+              className={`relative flex items-center justify-center ${iconBtnClass}`}
               aria-label="Open search"
             >
-              <Search size={18} strokeWidth={1.5} />
+              <Search size={16} strokeWidth={1.5} />
             </button>
 
-            <button onClick={cartStore.openCart} aria-label="Open cart" className={`p-1 transition-colors relative flex items-center justify-center ${textColor} ${textHoverColor}`}>
-              <ShoppingBag size={18} strokeWidth={1.5} />
+            <button onClick={cartStore.openCart} aria-label="Open cart" className={`relative flex items-center justify-center ${iconBtnClass}`}>
+              <ShoppingBag size={16} strokeWidth={1.5} />
               <AnimatePresence>
                 {activeCartCount > 0 && (
                   <motion.span 
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className={`absolute -top-1 -right-1 text-[9px] font-bold w-[14px] h-[14px] flex items-center justify-center rounded-full ${isTransparent ? 'bg-white text-black' : 'bg-black text-white'}`}
+                    className={`absolute -top-1 -right-1 text-[9px] font-bold w-[14px] h-[14px] flex items-center justify-center rounded-full ${isTransparent ? 'bg-white text-black lg:bg-black lg:text-white' : 'bg-black text-white'}`}
                   >
                     {activeCartCount}
                   </motion.span>
@@ -272,11 +274,11 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
             </button>
             
             {mounted && isLoggedIn ? (
-              <Link href="/account" className={`p-1 transition-colors flex items-center justify-center ${textColor} ${textHoverColor}`}>
-                <User size={18} strokeWidth={1.5} />
+              <Link href="/account" className={`flex items-center justify-center ${iconBtnClass}`}>
+                <User size={16} strokeWidth={1.5} />
               </Link>
             ) : mounted ? (
-              <Link href="/login" className={`hidden md:inline-flex px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase transition-all shadow-md ${isTransparent ? 'bg-white text-black hover:bg-gray-200' : 'bg-black text-white hover:bg-gray-800'}`}>
+              <Link href="/login" className={`hidden md:inline-flex px-7 py-2.5 text-[9px] font-semibold tracking-[0.2em] uppercase transition-all shadow-md ${isTransparent ? 'bg-white text-black hover:bg-gray-200 lg:bg-black lg:text-white lg:hover:bg-gray-800' : 'bg-black text-white hover:bg-gray-800'}`}>
                 LOGIN
               </Link>
             ) : null}

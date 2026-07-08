@@ -183,7 +183,7 @@ export default function AboutClient() {
                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
              >
                <Image 
-                 src="/hero-image.png" 
+                 src="/Featured Images/about-page-hero.webp" 
                  alt="Laboratory environment" 
                  fill 
                  className="object-cover object-[75%_center] md:object-center"

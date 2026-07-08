@@ -672,13 +672,21 @@ export async function getShopProducts(params: {
     }
 
     if (params.categories && params.categories.length > 0) {
-      const cats = await payload.find({
+      const allCats = await payload.find({
         collection: 'categories',
-        where: { name: { in: params.categories } }, // In FilterSidebar we filter by Category Name
+        limit: 1000,
         depth: 0,
         overrideAccess: true,
       })
-      const catIds = cats.docs.map(c => c.id)
+      
+      const paramCatsLower = params.categories.map(c => c.toLowerCase())
+      
+      const matchedCats = allCats.docs.filter(c => 
+        paramCatsLower.includes(c.name.toLowerCase()) || 
+        (c.slug && paramCatsLower.includes(c.slug.toLowerCase()))
+      )
+      
+      const catIds = matchedCats.map(c => c.id)
       if (catIds.length > 0) {
         where.and.push({ categories: { in: catIds } })
       } else {
