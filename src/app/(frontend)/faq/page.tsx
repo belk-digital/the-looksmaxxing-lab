@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: `${siteUrl}/faq`,
   },
   openGraph: {
-    images: [{ url: '/og/og-faq.png', width: 1200, height: 630, alt: 'Research Peptide FAQ — The Looksmaxxing Lab' }],
+    images: [{ url: '/og/og-faq.webp', width: 1200, height: 630, alt: 'Research Peptide FAQ — The Looksmaxxing Lab' }],
     title: 'Research Peptide FAQ | The Looksmaxxing Lab',
     description: 'Frequently asked questions about research peptides, purity standards, COA verification, ordering, and storage.',
     url: `${siteUrl}/faq`,
@@ -18,19 +18,6 @@ export const metadata: Metadata = {
 }
 
 export default function FAQPage() {
-  const schemaOrganization = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "The Looksmaxxing Lab",
-    "url": "https://www.thelooksmaxxinglab.com",
-    "description": "US-based research peptide supplier providing 99%+ HPLC-pure compounds with third-party COA verification.",
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "US"
-    },
-    "sameAs": []
-  };
-
   const schemaBreadcrumbList = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -148,7 +135,6 @@ export default function FAQPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaOrganization) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaBreadcrumbList) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaWebPage) }} />
       <FaqClient />

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: `${siteUrl}/contact`,
   },
   openGraph: {
-    images: [{ url: '/og/og-contact.png', width: 1200, height: 630, alt: 'Contact The Looksmaxxing Lab' }],
+    images: [{ url: '/og/og-contact.webp', width: 1200, height: 630, alt: 'Contact The Looksmaxxing Lab' }],
     title: 'Contact Us | The Looksmaxxing Lab',
     description: 'Get in touch with our research peptide support team. Questions about orders, COA documents, bulk pricing, or product availability.',
     url: `${siteUrl}/contact`,

@@ -197,7 +197,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
              >
                <Image 
-                 src="/hero-image.png" 
+                 src="/hero-image.webp" 
                  alt="Research Catalog" 
                  fill 
                  className="object-cover object-center"

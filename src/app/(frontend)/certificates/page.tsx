@@ -45,6 +45,30 @@ const SAMPLE_COAS: COA[] = [
   { id: 15, product: 'Retatrutide (2mg)', category: 'Metabolic', purity: '99.8%', batch: 'RET-2602-A', analyzed: 'Feb 20, 2026', coaUrl: '/pdfs/sample.pdf' },
 ]
 
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+
+const schemaBreadcrumbList = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Certificates of Analysis', item: `${siteUrl}/certificates` },
+  ],
+}
+
+const schemaCollectionPage = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Certificates of Analysis | The Looksmaxxing Lab',
+  url: `${siteUrl}/certificates`,
+  description: 'Independent, third-party Certificates of Analysis (HPLC and mass spectrometry verified) for research peptide batches sold by The Looksmaxxing Lab.',
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'The Looksmaxxing Lab',
+    url: siteUrl,
+  },
+}
+
 export default function CertificatesPage() {
   const [filter, setFilter] = useState('All')
 
@@ -56,6 +80,8 @@ export default function CertificatesPage() {
 
   return (
     <main className="bg-cream min-h-screen pt-32 pb-24">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaBreadcrumbList) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaCollectionPage) }} />
       {/* Header */}
       <section className="px-6 mb-16 max-w-page mx-auto">
         <FadeUp>
@@ -194,7 +220,7 @@ export default function CertificatesPage() {
             <FadeUp>
               <div className="relative w-full aspect-square md:aspect-[4/3] rounded-sm overflow-hidden">
                 <Image 
-                  src="/hero-image.png" 
+                  src="/hero-image.webp" 
                   alt="HPLC Testing Machine" 
                   fill 
                   className="object-cover"

@@ -13,8 +13,13 @@ import { JOURNAL_POSTS } from '@/data/journal-posts'
 
 const CATEGORIES = ['All', 'Emerging', 'Guidelines', 'Studies', 'Guides']
 
+const SORTED_JOURNAL_POSTS = [...JOURNAL_POSTS].sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+)
+
 export default function JournalIndexPage() {
   const [activeCategory, setActiveCategory] = useState('All')
+  const [featuredPost, ...remainingPosts] = SORTED_JOURNAL_POSTS
 
   // Hero Parallax
   const { scrollYProgress: heroScroll } = useScroll({
@@ -105,26 +110,26 @@ export default function JournalIndexPage() {
           <div className="mb-6 px-2 lg:px-4">
             <h2 className="text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-[#5984c4]">Featured Article</h2>
           </div>
-          <Link href="/journal/ghk-cu-pharmacokinetics" className="group block relative w-full bg-white rounded-[1.5rem] md:rounded-[2rem] p-3 md:p-4 lg:p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+          <Link href={`/journal/${featuredPost.slug}`} className="group block relative w-full bg-white rounded-[1.5rem] md:rounded-[2rem] p-3 md:p-4 lg:p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
             <div className="relative w-full h-[35vh] min-h-[250px] md:h-[50vh] md:min-h-[400px] rounded-2xl md:rounded-3xl overflow-hidden mb-6 md:mb-8">
-              <Image 
-                src="/journal-images/ghk_cu_molecular_science_1783383163855.png" 
-                alt="GHK-Cu Molecular Structure" 
-                fill 
-                className="object-cover transition-transform duration-cinema ease-out group-hover:scale-105" 
+              <Image
+                src={featuredPost.heroImage}
+                alt={featuredPost.title}
+                fill
+                className="object-cover transition-transform duration-cinema ease-out group-hover:scale-105"
               />
             </div>
-            
+
             <div className="relative z-20 max-w-[960px] px-2 lg:px-6 pb-6">
               <div className="flex items-center gap-4 mb-6">
-                <span className="px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase tracking-wider">Studies</span>
-                <span className="text-xs text-gray-400 font-medium uppercase tracking-wider">15 min read</span>
+                <span className="px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase tracking-wider">{featuredPost.category}</span>
+                <span className="text-xs text-gray-400 font-medium uppercase tracking-wider">{featuredPost.readTime}</span>
               </div>
               <h2 className="text-3xl lg:text-5xl font-bold text-ink mb-6 tracking-tight leading-tight group-hover:text-blue-600 transition-colors duration-300">
-                The Pharmacokinetics of GHK-Cu: Fibroblast Activation and Collagen Synthesis
+                {featuredPost.title}
               </h2>
               <p className="text-lg text-gray-500 mb-8 line-clamp-2 leading-relaxed">
-                An exhaustive review of how the GHK-Cu copper peptide interacts with fibroblasts, modulates the extracellular matrix, and up-regulates collagen synthesis.
+                {featuredPost.excerpt}
               </p>
               <span className="text-sm font-bold uppercase tracking-wider text-ink flex items-center gap-2 group-hover:text-blue-600 transition-colors duration-300">
                 Read the full article <span aria-hidden="true" className="group-hover:translate-x-1 transition-transform">→</span>
@@ -166,7 +171,7 @@ export default function JournalIndexPage() {
       {/* Grid */}
       <section className="px-4 md:px-6 max-w-[1280px] mx-auto mb-16 md:mb-24">
         <StaggerChildren staggerDelay={0.05} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {JOURNAL_POSTS.map((post) => (
+          {remainingPosts.map((post) => (
             <motion.div key={post.slug} variants={staggerItemVariants} className="h-full">
               <BlogPostCard 
                 slug={post.slug}

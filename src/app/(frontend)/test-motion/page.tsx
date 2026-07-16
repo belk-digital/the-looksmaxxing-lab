@@ -73,7 +73,7 @@ export default function TestMotionPage() {
           </div>
           <div className="h-[60vh] w-full rounded-md overflow-hidden relative border border-default">
             <ParallaxImage 
-              src="/hero-image.png"
+              src="/hero-image.webp"
               alt="Test Parallax"
               className="absolute inset-0 w-full h-full"
               intensity={0.2}

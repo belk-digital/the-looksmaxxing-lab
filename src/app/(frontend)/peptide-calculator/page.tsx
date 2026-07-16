@@ -3,7 +3,7 @@ import PeptideCalculatorPage from './PeptideCalculatorClient'
 
 export const metadata: Metadata = {
   openGraph: {
-    images: [{ url: '/og/og-calculator.png', width: 1200, height: 630, alt: 'Peptide Reconstitution Calculator — The Looksmaxxing Lab' }],
+    images: [{ url: '/og/og-calculator.webp', width: 1200, height: 630, alt: 'Peptide Reconstitution Calculator — The Looksmaxxing Lab' }],
   },
   title: 'Peptide Reconstitution Calculator — Free Tool | Looksmaxxing Lab',
   description: 'Free peptide reconstitution calculator. Enter your vial size, BAC water volume, and target dose to get exact IU syringe units, concentration, and total doses. No signup — instant results.',

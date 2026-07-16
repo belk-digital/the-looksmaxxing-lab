@@ -12,7 +12,7 @@ export const metadata = {
     canonical: `${siteUrl}/affiliates`,
   },
   openGraph: {
-    images: [{ url: '/og/og-affiliates.png', width: 1200, height: 630, alt: 'Affiliate Program — The Looksmaxxing Lab' }],
+    images: [{ url: '/og/og-affiliates.webp', width: 1200, height: 630, alt: 'Affiliate Program — The Looksmaxxing Lab' }],
     title: 'Affiliate Program | The Looksmaxxing Lab',
     description: 'Earn 15% commission on every referral. Join our research peptide affiliate program today.',
     url: `${siteUrl}/affiliates`,

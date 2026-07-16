@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description,
       images: imageUrl
         ? [{ url: imageUrl, width: 1200, height: 630, alt: `${product.name} — The Looksmaxxing Lab` }]
-        : [{ url: '/hero-image.png', width: 1200, height: 630, alt: 'The Looksmaxxing Lab' }],
+        : [{ url: '/hero-image.webp', width: 1200, height: 630, alt: 'The Looksmaxxing Lab' }],
       type: 'website',
       url: productUrl,
       siteName: 'The Looksmaxxing Lab',
@@ -70,7 +70,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       card: 'summary_large_image',
       title,
       description,
-      images: imageUrl ? [imageUrl] : ['/hero-image.png'],
+      images: imageUrl ? [imageUrl] : ['/hero-image.webp'],
     },
     other: {
       'og:type': 'product',

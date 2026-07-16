@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: `${siteUrl}/about`,
   },
   openGraph: {
-    images: [{ url: '/og/og-about.png', width: 1200, height: 630, alt: 'About The Looksmaxxing Lab' }],
+    images: [{ url: '/og/og-about.webp', width: 1200, height: 630, alt: 'About The Looksmaxxing Lab' }],
     title: 'About The Looksmaxxing Lab | US Research Peptide Supplier',
     description: 'US-based research peptide supplier. Synthesizing compounds for cellular regeneration, metabolic study, and structural repair at ≥99% HPLC purity.',
     url: `${siteUrl}/about`,
@@ -18,20 +18,6 @@ export const metadata: Metadata = {
 }
 
 export default function AboutPage() {
-  const schemaOrganization = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "The Looksmaxxing Lab",
-    "url": "https://www.thelooksmaxxinglab.com",
-    "foundingDate": "2024",
-    "description": "US-based research peptide supplier providing ≥99% HPLC-pure compounds with independent third-party COA verification on every order.",
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "US"
-    },
-    "sameAs": []
-  };
-
   const schemaAboutPage = {
     "@context": "https://schema.org",
     "@type": "AboutPage",
@@ -120,7 +106,6 @@ export default function AboutPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaOrganization) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaAboutPage) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaBreadcrumbList) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaItemList) }} />

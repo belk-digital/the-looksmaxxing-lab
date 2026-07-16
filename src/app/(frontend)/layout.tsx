@@ -36,13 +36,13 @@ export const metadata = {
     title: 'The Looksmaxxing Lab | Research-Grade Peptides, COA-Verified',
     description: 'US-based supplier of research-grade peptides with ≥99% HPLC purity and batch-specific COA verification. 30+ compounds available. Research use only.',
     url: siteUrl,
-    images: [{ url: '/og/og-home.png', width: 1200, height: 630, alt: 'The Looksmaxxing Lab — Research-Grade Peptides' }],
+    images: [{ url: '/og/og-home.webp', width: 1200, height: 630, alt: 'The Looksmaxxing Lab — Research-Grade Peptides' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'The Looksmaxxing Lab | Research-Grade Peptides',
     description: 'US-based supplier of research-grade peptides. ≥99% HPLC purity, COA-verified. Research use only.',
-    images: ['/og/og-home.png'],
+    images: ['/og/og-home.webp'],
   },
   robots: {
     index: true,
@@ -54,11 +54,6 @@ export const metadata = {
       'max-image-preview': 'large' as const,
       'max-snippet': -1,
     },
-  },
-  icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
-    apple: '/apple-icon.png',
   },
   verification: {},
 }
@@ -94,10 +89,10 @@ export default async function FrontendLayout({ children }: { children: React.Rea
                 '@type': 'Organization',
                 name: 'The Looksmaxxing Lab',
                 url: siteUrl,
-                logo: `${siteUrl}/favicon.ico`,
+                logo: `${siteUrl}/icon.png`,
                 description: 'US-based supplier of research-grade peptides and COA-verified research compounds for scientific laboratory use.',
                 foundingDate: '2024',
-                sameAs: [],
+                sameAs: ['https://www.instagram.com/thelooksmaxxinglab'],
                 contactPoint: {
                   '@type': 'ContactPoint',
                   contactType: 'customer service',

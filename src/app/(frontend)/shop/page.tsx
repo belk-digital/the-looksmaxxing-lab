@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     canonical: `${siteUrl}/shop`,
   },
   openGraph: {
-    images: [{ url: '/og/og-shop.png', width: 1200, height: 630, alt: 'Shop Research Peptides — The Looksmaxxing Lab' }],
+    images: [{ url: '/og/og-shop.webp', width: 1200, height: 630, alt: 'Shop Research Peptides — The Looksmaxxing Lab' }],
     title: 'Shop Research Peptides | The Looksmaxxing Lab',
     description: 'Browse 30+ COA-verified research peptides. ≥99% HPLC purity, batch-traceable. US-based supplier.',
     url: `${siteUrl}/shop`,

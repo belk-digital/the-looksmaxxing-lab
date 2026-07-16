@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { motion, useScroll, useSpring } from 'framer-motion'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { BlogPostCard } from '@/components/editorial/BlogPostCard'
@@ -33,13 +34,24 @@ export default function JournalPostPage({ slug }: { slug: string }) {
         style={{ scaleX }}
       />
 
+      {/* Breadcrumb */}
+      <nav aria-label="Breadcrumb" className="px-6 max-w-[720px] mx-auto pt-28 md:pt-32">
+        <ol className="flex flex-wrap items-center gap-2 text-label-sm uppercase tracking-wider text-ink-muted">
+          <li><Link href="/" className="hover:text-gold transition-colors">Home</Link></li>
+          <li aria-hidden="true">/</li>
+          <li><Link href="/journal" className="hover:text-gold transition-colors">Journal</Link></li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" className="text-ink truncate max-w-[240px] md:max-w-none">{post.title}</li>
+        </ol>
+      </nav>
+
       {/* Hero Image */}
-      <div className="w-full h-[60vh] relative mb-16 md:mb-24">
-        <Image 
-          src={post.heroImage} 
-          alt={post.title} 
-          fill 
-          className="object-cover" 
+      <div className="w-full h-[60vh] relative mb-16 md:mb-24 mt-8">
+        <Image
+          src={post.heroImage}
+          alt={post.title}
+          fill
+          className="object-cover"
           priority
         />
         <div className="absolute inset-0 bg-ink/20" />

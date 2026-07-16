@@ -16,7 +16,7 @@ const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxx
 
 export const metadata: Metadata = {
   openGraph: {
-    images: [{ url: '/og/og-home.png', width: 1200, height: 630, alt: 'The Looksmaxxing Lab — Research-Grade Peptides' }],
+    images: [{ url: '/og/og-home.webp', width: 1200, height: 630, alt: 'The Looksmaxxing Lab — Research-Grade Peptides' }],
   },
   title: 'The Looksmaxxing Lab | Premium Research Peptides (US-Made)',
   description: 'Elevate your laboratory research with premium, US-synthesized peptides. We guarantee strict ≥99% HPLC purity through independent 3rd-party testing. Discover compounds for cellular regeneration, metabolic study, and structural repair with full COAs provided.',

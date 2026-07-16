@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: `${siteUrl}/journal`,
   },
   openGraph: {
-    images: [{ url: '/og/og-journal.png', width: 1200, height: 630, alt: 'Research Journal — The Looksmaxxing Lab' }],
+    images: [{ url: '/og/og-journal.webp', width: 1200, height: 630, alt: 'Research Journal — The Looksmaxxing Lab' }],
     title: 'Research Journal | The Looksmaxxing Lab',
     description: 'Peptide research articles, compound guides, and laboratory science insights.',
     url: `${siteUrl}/journal`,

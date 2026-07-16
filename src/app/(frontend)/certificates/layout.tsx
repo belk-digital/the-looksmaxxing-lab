@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: `${siteUrl}/certificates`,
   },
   openGraph: {
-    images: [{ url: '/og/og-certificates.png', width: 1200, height: 630, alt: 'Certificates of Analysis — The Looksmaxxing Lab' }],
+    images: [{ url: '/og/og-certificates.webp', width: 1200, height: 630, alt: 'Certificates of Analysis — The Looksmaxxing Lab' }],
     title: 'Certificates of Analysis | The Looksmaxxing Lab',
     description: 'Download COA documents for all research peptides. Third-party HPLC verified, ≥99% purity guaranteed.',
     url: `${siteUrl}/certificates`,

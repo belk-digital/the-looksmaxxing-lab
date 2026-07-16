@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: 'Science Journal | The Looksmaxxing Lab',
     description: 'Documented purity, detailed guidelines, and emerging studies in advanced peptide science.',
     url: `${siteUrl}/journal`,
-    images: [{ url: '/hero-image.png', width: 1200, height: 630, alt: 'Science Journal' }],
+    images: [{ url: '/hero-image.webp', width: 1200, height: 630, alt: 'Science Journal' }],
   }
 }
 
