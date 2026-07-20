@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 export interface FaqItem {
   question: string;
-  answer: string;
+  answer: React.ReactNode;
 }
 
 export interface FaqCarouselProps {

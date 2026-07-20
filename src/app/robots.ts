@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
+        allow: ['/', '/api/shippingzones'],
         disallow: [
           '/admin/',
           '/admin',
@@ -46,7 +46,32 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin/', '/api/', '/account/', '/cart', '/checkout'],
       },
       {
+        userAgent: 'ClaudeBot',
+        allow: '/',
+        disallow: ['/admin/', '/api/', '/account/', '/cart', '/checkout'],
+      },
+      {
+        userAgent: 'Claude-User',
+        allow: '/',
+        disallow: ['/admin/', '/api/', '/account/', '/cart', '/checkout'],
+      },
+      {
+        userAgent: 'Claude-SearchBot',
+        allow: '/',
+        disallow: ['/admin/', '/api/', '/account/', '/cart', '/checkout'],
+      },
+      {
+        userAgent: 'OAI-SearchBot',
+        allow: '/',
+        disallow: ['/admin/', '/api/', '/account/', '/cart', '/checkout'],
+      },
+      {
         userAgent: 'PerplexityBot',
+        allow: '/',
+        disallow: ['/admin/', '/api/', '/account/', '/cart', '/checkout'],
+      },
+      {
+        userAgent: 'Perplexity-User',
         allow: '/',
         disallow: ['/admin/', '/api/', '/account/', '/cart', '/checkout'],
       },

@@ -892,6 +892,9 @@ export default function PeptideCalculatorPage() {
               <p className="text-base sm:text-xl text-ink/50 leading-relaxed max-w-md font-light">
                 Improper storage degrades peptide potency and introduces contamination. Follow these protocols for every reconstitution.
               </p>
+              <Link href="/journal/peptide-reconstitution-storage-guide" className="inline-block text-sm font-bold uppercase tracking-widest text-gold hover:text-ink transition-colors mt-6">
+                Read the full Reconstitution & Storage Guide →
+              </Link>
             </FadeUp>
           </div>
 

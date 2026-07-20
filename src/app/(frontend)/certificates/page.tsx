@@ -238,6 +238,9 @@ export default function CertificatesPage() {
                 <p>
                   Following synthesis and lyophilization, random samples from the finished batch are submitted to independent third-party laboratories. They perform secondary HPLC alongside Mass Spectrometry (MS) to verify that the molecular weight perfectly matches the target peptide structure and that purity exceeds our 99% baseline standard.
                 </p>
+                <p>
+                  Want the full breakdown of how to read a chromatogram, what a purity percentage actually means, and how to spot red flags in a supplier's documentation? See our complete <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-gold underline hover:text-ink transition-colors">guide to reading a peptide Certificate of Analysis</Link>.
+                </p>
               </div>
             </FadeUp>
           </div>
@@ -251,7 +254,7 @@ export default function CertificatesPage() {
           <p className="text-body-lg text-ink-muted mb-10">
             Learn more about why rigorous independent testing is the only way to guarantee reproducible research results.
           </p>
-          <Link href="/science">
+          <Link href="/journal">
             <Button variant="primary" size="lg" className="gap-2">
               Explore Our Science <ArrowRightIcon className="w-4 h-4" />
             </Button>

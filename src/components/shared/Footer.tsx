@@ -108,6 +108,8 @@ const FooterContent = () => {
               <li><Link href="/peptide-calculator" className="text-sm text-cream/50 hover:text-white transition-colors">Peptide Calculator</Link></li>
               <li><Link href="/certificates" className="text-sm text-cream/50 hover:text-white transition-colors">COA Library</Link></li>
               <li><Link href="/faq" className="text-sm text-cream/50 hover:text-white transition-colors">FAQ</Link></li>
+              <li><Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-sm text-cream/50 hover:text-white transition-colors">COA & Purity Guide</Link></li>
+              <li><Link href="/journal/peptide-reconstitution-storage-guide" className="text-sm text-cream/50 hover:text-white transition-colors">Reconstitution Guide</Link></li>
             </ul>
           </div>
 

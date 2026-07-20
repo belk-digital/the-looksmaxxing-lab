@@ -5,33 +5,21 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { JOURNAL_POSTS } from '@/data/journal-posts'
 
-const SAMPLE_POSTS = [
-  {
-    title: 'The Pharmacology of BPC-157 in Tendon Repair',
-    slug: 'pharmacology-of-bpc-157',
-    category: 'Clinical Review',
-    excerpt: 'A detailed review of the mechanism by which BPC-157 modulates growth hormone receptor expression and angiogenic signaling in connective tissue research. Includes analysis of current in-vivo literature and dosing methodologies used in laboratory studies.',
-    readTime: '7 min',
-    image: '/Featured%20Images/white-powder-swiped.webp'
-  },
-  {
-    title: 'GHK-Cu: Research Applications Beyond Cosmetics',
-    slug: 'ghk-cu-beyond-cosmetic',
-    category: 'Research Notes',
-    excerpt: 'Glycine-Histidine-Lysine Copper is extensively studied for skin, hair follicle, and wound-healing research — but the literature extends far beyond cosmetic applications. This review covers cellular signalling, collagen synthesis data, and antioxidant properties.',
-    readTime: '12 min',
-    image: '/Featured%20Images/pouring-clear-liquid.webp'
-  },
-  {
-    title: 'How to Read an HPLC and LC-MS Purity Report',
-    slug: 'navigating-hplc-lcms',
-    category: 'Methodology',
-    excerpt: 'A practical methodology guide for interpreting third-party peptide purity certificates. Covers peak area percentages, mass-to-charge ratios, retention times, and how to identify certificate red flags.',
-    readTime: '5 min',
-    image: '/Featured%20Images/scientist-at-microscope.webp'
-  }
-]
+// Always the 5 most recently dated posts — recalculated from JOURNAL_POSTS on every render,
+// so new journal entries automatically surface here with no manual wiring.
+const RECENT_POSTS = [...JOURNAL_POSTS]
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  .slice(0, 5)
+  .map((post) => ({
+    title: post.title,
+    slug: post.slug,
+    category: post.category,
+    excerpt: post.excerpt,
+    readTime: post.readTime,
+    image: post.heroImage
+  }))
 
 export function JournalTeaser() {
   const targetRef = useRef<HTMLElement>(null)
@@ -67,7 +55,7 @@ export function JournalTeaser() {
   const x = useTransform(scrollYProgress, [0, 1], [0, -maxScroll])
 
   // Shared Card Component
-  const JournalCard = ({ post }: { post: typeof SAMPLE_POSTS[0] }) => (
+  const JournalCard = ({ post }: { post: typeof RECENT_POSTS[0] }) => (
     <Link 
       href={`/journal/${post.slug}`} 
       className="group flex flex-col w-[60vw] sm:w-[45vw] md:w-[35vw] xl:w-[28vw] max-w-[280px] 2xl:max-w-[400px] shrink-0 cursor-pointer"
@@ -144,7 +132,7 @@ export function JournalTeaser() {
             style={{ x, willChange: 'transform' }}
             className="flex gap-4 xl:gap-12 pl-6 xl:pl-12 pr-6 xl:pr-12 w-max transform-gpu"
           >
-            {SAMPLE_POSTS.map((post) => (
+            {RECENT_POSTS.map((post) => (
               <JournalCard key={post.slug} post={post} />
             ))}
           </motion.div>

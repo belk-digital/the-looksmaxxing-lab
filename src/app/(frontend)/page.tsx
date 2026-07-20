@@ -28,6 +28,10 @@ export const metadata: Metadata = {
 import { getShopProducts } from '@/app/(frontend)/(shop)/actions'
 
 export default async function Homepage() {
+  const headersList = await require('next/headers').headers()
+  const userAgent = headersList.get('user-agent') || ''
+  const isBot = /bot|googlebot|google-inspectiontool|lighthouse|crawler|spider|robot|crawling|facebookexternalhit|bingbot/i.test(userAgent)
+
   let products = []
   try {
     const res = await getShopProducts({ limit: 8, sort: 'newest', isBestSeller: true })
@@ -40,7 +44,7 @@ export default async function Homepage() {
 
   return (
     <>
-      <HomePreloaderWrapper>
+      <HomePreloaderWrapper isBot={isBot}>
         <div className="flex flex-col w-full min-h-screen relative z-10 bg-white">
           <Hero />
           <FeaturedProductsSection products={products} />

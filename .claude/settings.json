@@ -4,7 +4,9 @@
       "Bash(node -e ' *)",
       "Bash(cd \"C:\\\\Users\\\\aquib\\\\OneDrive\\\\Desktop\\\\99 Purity Peptides NextJS\" && find src/app -maxdepth 4 -type d | sort)",
       "Read(//c/Users/aquib/OneDrive/Desktop/99 Purity Peptides NextJS/**)",
-      "Bash(cd \"C:\\\\Users\\\\aquib\\\\OneDrive\\\\Desktop\\\\99 Purity Peptides NextJS\" && find src/app -iname \"robots*\" -o -iname \"sitemap*\")"
+      "Bash(cd \"C:\\\\Users\\\\aquib\\\\OneDrive\\\\Desktop\\\\99 Purity Peptides NextJS\" && find src/app -iname \"robots*\" -o -iname \"sitemap*\")",
+      "mcp__claude_ai_Semrush__keyword_research",
+      "mcp__claude_ai_Semrush__domain_overview"
     ]
   }
 }

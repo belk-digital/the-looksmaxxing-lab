@@ -1,14 +1,15 @@
 import React from 'react'
+import Link from 'next/link'
 import { FaqCarousel, FaqItem } from '@/components/shared/FaqCarousel'
 
 const FAQS: FaqItem[] = [
   {
     question: "What is the purity standard for your research peptides?",
-    answer: "Every research peptide sold by The Looksmaxxing Lab must meet or exceed a strictly enforced ≥99% purity threshold. We verify this standard through independent, third-party High-Performance Liquid Chromatography (HPLC) and Liquid Chromatography–Mass Spectrometry (LC-MS) testing for every production batch — not random samples. Any batch that tests below this threshold is immediately discarded."
+    answer: <>Every research peptide sold by The Looksmaxxing Lab must meet or exceed a strictly enforced ≥99% purity threshold. We verify this standard through independent, third-party High-Performance Liquid Chromatography (HPLC) and Liquid Chromatography–Mass Spectrometry (LC-MS) testing for every production batch — not random samples. Any batch that tests below this threshold is immediately discarded. See our full <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="underline hover:text-gold transition-colors">guide to HPLC purity testing</Link> for how to read the results.</>
   },
   {
     question: "How can I access the Certificate of Analysis (COA) for my order?",
-    answer: "Lot-specific Certificates of Analysis for every active batch are publicly available in our COA Library at /certificates. Every order also includes a batch number that corresponds directly to that batch's test documentation. You can verify purity, molecular identity, and endotoxin status for every compound you receive."
+    answer: <>Lot-specific Certificates of Analysis for every active batch are publicly available in our <Link href="/certificates" className="underline hover:text-gold transition-colors">COA Library</Link>. Every order also includes a batch number that corresponds directly to that batch's test documentation. You can verify purity, molecular identity, and endotoxin status for every compound you receive — learn <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="underline hover:text-gold transition-colors">how to read a Certificate of Analysis</Link> in full.</>
   },
   {
     question: "Are these products intended for human consumption?",
@@ -16,7 +17,7 @@ const FAQS: FaqItem[] = [
   },
   {
     question: "What are your shipping and fulfillment times?",
-    answer: "All orders are fulfilled from our US-based facilities. We offer standard shipping (3–5 business days) and expedited 2-day shipping on orders over $300. Orders placed before 2 PM EST typically ship same day. All peptides are dispatched using validated cold-chain packaging to maintain molecular integrity in transit."
+    answer: <>All orders are fulfilled from our US-based facilities. We offer standard shipping (3–5 business days) and expedited 2-day shipping on orders over $300. Orders placed before 2 PM EST typically ship same day. All peptides are dispatched using validated cold-chain packaging to maintain molecular integrity in transit — see our <Link href="/journal/peptide-reconstitution-storage-guide" className="underline hover:text-gold transition-colors">reconstitution and storage guide</Link> for handling once your order arrives.</>
   },
   {
     question: "What is looksmaxxing — and how do peptides relate to it?",

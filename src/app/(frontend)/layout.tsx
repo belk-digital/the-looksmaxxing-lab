@@ -64,7 +64,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
   const userAgent = headersList.get('user-agent') || ''
   
   // SEO Fix: Search engines must bypass the age gate to index the site content
-  const isBot = /bot|googlebot|crawler|spider|robot|crawling|facebookexternalhit|bingbot/i.test(userAgent)
+  const isBot = /bot|googlebot|google-inspectiontool|lighthouse|crawler|spider|robot|crawling|facebookexternalhit|bingbot/i.test(userAgent)
   const isVerified = cookieStore.get('looksmaxxing_age_verified')?.value === 'true' || isBot
 
   return (

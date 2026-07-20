@@ -62,6 +62,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    {
+      url: `${siteUrl}/terms`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${siteUrl}/privacy`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${siteUrl}/refund`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${siteUrl}/disclaimer`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
   ]
 
   let productPages: MetadataRoute.Sitemap = []
@@ -89,7 +113,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     journalPages = JOURNAL_POSTS.map((p) => ({
       url: `${siteUrl}/journal/${p.slug}`,
-      lastModified: new Date(), // Using current date as they are static files
+      lastModified: new Date(p.date),
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     }))

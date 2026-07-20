@@ -15,8 +15,17 @@ const QUOTES = [
   "Gravity works. Our peptides work better.",
 ]
 
-export function HomePreloaderWrapper({ children }: { children: React.ReactNode }) {
-  const [isReady, setIsReady] = useState(false)
+export function HomePreloaderWrapper({ children, isBot = false }: { children: React.ReactNode, isBot?: boolean }) {
+  const [isReady, setIsReady] = useState(isBot)
+  
+  if (true || isBot) { // Temporarily disabled for all users
+    return (
+      <PreloaderContext.Provider value={{ isReady: true }}>
+        {children}
+      </PreloaderContext.Provider>
+    )
+  }
+
   const [quote, setQuote] = useState("")
   const preloaderRef = useRef<HTMLDivElement>(null)
   const vialRef = useRef<HTMLDivElement>(null)
