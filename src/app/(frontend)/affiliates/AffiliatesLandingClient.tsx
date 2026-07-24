@@ -122,8 +122,8 @@ export function AffiliatesLandingClient({ userStatus }: Props) {
                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
              >
                <Image 
-                 src="/Featured%20Images/affiliates-hero.webp" 
-                 alt="Affiliate Program" 
+                 src="/Featured%20Images/affiliates-hero.webp"
+                 alt="Research-grade peptide vial surrounded by a digital DNA helix and molecular network overlay, representing The Looksmaxxing Lab affiliate research program"
                  fill 
                  className="object-cover object-center"
                  priority

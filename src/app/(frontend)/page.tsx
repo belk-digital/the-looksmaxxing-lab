@@ -107,27 +107,6 @@ export default async function Homepage() {
                   }
                 }
               ]
-            },
-            {
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "name": "The Looksmaxxing Lab",
-              "url": "https://www.thelooksmaxxinglab.com",
-              "description": "US-based research peptide supplier providing ≥99% HPLC-pure compounds with third-party COA verification.",
-              "sameAs": ["https://instagram.com/thelooksmaxxinglab"]
-            },
-            {
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              "url": "https://www.thelooksmaxxinglab.com",
-              "potentialAction": {
-                "@type": "SearchAction",
-                "target": {
-                  "@type": "EntryPoint",
-                  "urlTemplate": "https://www.thelooksmaxxinglab.com/shop?q={search_term_string}"
-                },
-                "query-input": "required name=search_term_string"
-              }
             }
           ])
         }}

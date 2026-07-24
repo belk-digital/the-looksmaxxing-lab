@@ -359,6 +359,87 @@ const RECON_STORAGE_FAQS = [
       }
     ]
 
+const RETATRUTIDE_FAQS = [
+      {
+        question: "What is retatrutide?",
+        answer: "Retatrutide (LY-3437943) is a synthetic peptide engineered to simultaneously activate three metabolic receptors: GLP-1, GIP, and glucagon. Developed by Eli Lilly, it is the first triple receptor agonist to reach Phase 3 clinical trials. Research-grade retatrutide is used in laboratory settings to study multi-receptor metabolic signaling and is not intended for human consumption."
+      },
+      {
+        question: "How does retatrutide work?",
+        answer: "Retatrutide activates three G protein-coupled receptors in a single molecule. GLP-1R activation drives insulin secretion and appetite signaling. GIPR activation provides a complementary insulinotropic pathway. GCGR activation promotes hepatic fat oxidation and increases basal energy expenditure. The combined effect creates a broader metabolic research profile than single or dual agonist compounds."
+      },
+      {
+        question: "What is the difference between retatrutide and tirzepatide?",
+        answer: "Tirzepatide is a dual agonist activating GLP-1 and GIP receptors. Retatrutide adds a third target — the glucagon receptor — which introduces direct hepatic fat oxidation and elevated energy expenditure not present in dual-agonist compounds. In published Phase 2 data, the highest retatrutide dose cohort demonstrated approximately 24% body weight reduction versus approximately 21% for tirzepatide's highest dose, though direct head-to-head comparison trials have not been conducted."
+      },
+      {
+        question: "What is the difference between retatrutide and semaglutide?",
+        answer: "Semaglutide is a single GLP-1 receptor agonist. Retatrutide engages three receptors simultaneously — GLP-1R, GIPR, and GCGR. The additional receptor targets add metabolic pathways (GIP-mediated insulinotropic enhancement and glucagon-mediated hepatic fat oxidation) that semaglutide cannot access through GLP-1 agonism alone."
+      },
+      {
+        question: "Is retatrutide FDA-approved?",
+        answer: "No. As of mid-2026, retatrutide remains an investigational compound in Eli Lilly's Phase 3 TRIUMPH clinical trial program. No regulatory approval or NDA filing has occurred. Research-grade retatrutide is available for laboratory use only and is not a substitute for the investigational drug product studied in clinical trials."
+      },
+      {
+        question: "Where can I buy retatrutide peptide for research?",
+        answer: "The Looksmaxxing Lab supplies research-grade retatrutide synthesized in US-based, ISO-certified facilities with ≥99% HPLC purity, LC-MS molecular identity verification, and lot-specific COA documentation. All products are for research use only."
+      }
+    ]
+
+const MOTSC_FAQS = [
+      {
+        question: "What is MOTS-c peptide?",
+        answer: "MOTS-c (Mitochondrial Open Reading Frame of the 12S rRNA Type-C) is a 16-amino-acid peptide encoded by the mitochondrial genome. It is classified as a mitochondrial-derived peptide (MDP) and functions as a systemic metabolic regulator. In preclinical models, MOTS-c activates AMPK, improves glucose homeostasis, and replicates metabolic adaptations associated with physical exercise — earning the designation of exercise mimetic in the published literature. It is for research use only."
+      },
+      {
+        question: "How does MOTS-c activate AMPK?",
+        answer: "MOTS-c activates AMPK by inhibiting the folate cycle and de novo purine synthesis pathway, causing accumulation of AICAR (5-aminoimidazole-4-carboxamide ribonucleotide), a potent endogenous AMPK activator. This mechanism allows AMPK engagement without requiring cellular energy depletion, distinguishing it from exercise-induced AMPK activation."
+      },
+      {
+        question: "Why is MOTS-c called an exercise mimetic?",
+        answer: "Preclinical research shows that MOTS-c administration reproduces key metabolic adaptations associated with aerobic exercise training — including enhanced insulin sensitivity, increased GLUT4 translocation, upregulated fatty acid oxidation, and activation of PGC-1α-mediated mitochondrial biogenesis. MOTS-c levels are also naturally upregulated during physical exercise in both rodent and human models."
+      },
+      {
+        question: "Does MOTS-c decline with age?",
+        answer: "Yes. Multiple observational studies have documented that circulating MOTS-c levels decline with age in humans. This decline parallels age-related reductions in mitochondrial function, metabolic flexibility, and exercise capacity, supporting the research hypothesis that MOTS-c restoration could attenuate metabolic aging."
+      },
+      {
+        question: "What is the difference between MOTS-c and GLP-1 peptides?",
+        answer: "MOTS-c and GLP-1 peptides operate through fundamentally different mechanisms. GLP-1 peptides bind to membrane-bound GLP-1 receptors and trigger GPCR signaling cascades primarily involving appetite suppression and insulin secretion. MOTS-c activates AMPK through metabolic pathway inhibition and translocates to the cell nucleus to directly regulate gene expression. MOTS-c reduces body weight through metabolic mechanisms rather than appetite suppression, making the two compound classes mechanistically complementary for research purposes."
+      },
+      {
+        question: "Where can I buy MOTS-c peptide for research?",
+        answer: "The Looksmaxxing Lab supplies research-grade MOTS-c synthesized in US-based, ISO-certified facilities with ≥99% HPLC purity, LC-MS identity verification, and lot-specific COA documentation. All products are for research use only."
+      }
+    ]
+
+const GLP3_FAQS = [
+      {
+        question: "What is GLP-3 peptide?",
+        answer: "GLP-3 is a synthetic research peptide that functions as a triple receptor agonist, simultaneously engaging glucagon-like peptide-1 receptors (GLP-1R), glucose-dependent insulinotropic polypeptide receptors (GIPR), and glucagon receptors (GCGR). It is modeled after the investigational compound retatrutide and is used in laboratory settings as a reference compound for studying multi-receptor metabolic signaling. It is not intended for human consumption."
+      },
+      {
+        question: "How does GLP-3 differ from GLP-1 peptides like semaglutide?",
+        answer: "Semaglutide activates only the GLP-1 receptor. GLP-3 activates three receptors simultaneously — GLP-1R, GIPR, and GCGR — in a single molecule. The glucagon receptor component adds hepatic fat oxidation and increased energy expenditure pathways that are not accessible through GLP-1 agonism alone, making GLP-3 a mechanistically distinct compound class for research purposes."
+      },
+      {
+        question: "What is the difference between GLP-3 and tirzepatide?",
+        answer: "Tirzepatide is a dual agonist targeting GLP-1 and GIP receptors. GLP-3 adds a third receptor target — the glucagon receptor (GCGR) — creating a broader engagement profile. In preclinical models, this triple-agonist mechanism has been associated with additional metabolic effects, including direct hepatic fat oxidation, that dual agonists do not produce."
+      },
+      {
+        question: "Is GLP-3 the same as retatrutide?",
+        answer: "GLP-3 is the research peptide community's designation for a triple GLP-1/GIP/glucagon receptor agonist modeled after Eli Lilly's investigational compound retatrutide (LY-3437943). Research-grade GLP-3 is used as a laboratory reference compound and is structurally distinct from the clinical drug product studied in Eli Lilly's TRIUMPH trial program."
+      },
+      {
+        question: "What purity standard should GLP-3 meet for research?",
+        answer: "Research-grade GLP-3 should meet a minimum of ≥99% HPLC-verified purity, confirmed by independent third-party testing. LC-MS mass spectrometry should verify molecular identity, and each batch should ship with a lot-specific Certificate of Analysis."
+      },
+      {
+        question: "Where can I buy GLP-3 peptide for research?",
+        answer: "The Looksmaxxing Lab is expanding its catalog to include research-grade GLP-3 synthesized in US-based, ISO-certified facilities with ≥99% HPLC purity, LC-MS identity verification, and lot-specific COA documentation. Visit our shop to view current triple-agonist research compound availability. All products are for research use only."
+      }
+    ]
+
 export const JOURNAL_POSTS: JournalPost[] = [
   {
     slug: 'ghk-cu-pharmacokinetics',
@@ -670,7 +751,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">MOTS-C: A Mitochondrial-Derived Peptide at the Center of Metabolic Research</h2>
 
         <p>
-          <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-C</Link> operates on an entirely different biological plane. Rather than being encoded by nuclear DNA like the overwhelming majority of the human proteome, MOTS-C is one of a small class of mitochondrial-derived peptides (MDPs) encoded directly within the mitochondrial genome itself. This unique genetic origin places MOTS-C at the epicenter of one of the fastest-growing subfields in cellular biology: mitochondrial-to-nuclear retrograde signaling, the process by which mitochondria actively communicate their metabolic status to the rest of the cell.
+          <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-C</Link> operates on an entirely different biological plane. Rather than being encoded by nuclear DNA like the overwhelming majority of the human proteome, MOTS-C is one of a small class of mitochondrial-derived peptides (MDPs) encoded directly within the mitochondrial genome itself. This unique genetic origin places MOTS-C at the epicenter of one of the fastest-growing subfields in cellular biology: mitochondrial-to-nuclear retrograde signaling, the process by which mitochondria actively communicate their metabolic status to the rest of the cell. For a full standalone treatment of MOTS-C's AMPK activation pathway and exercise-mimetic research profile, see our companion guide, <Link href="/journal/mots-c-peptide-mitochondrial-exercise-mimetic-research" className="text-blue-600 underline hover:text-blue-800">MOTS-C Peptide: Mitochondrial Signaling and the AMPK Activation Pathway</Link>.
         </p>
 
         <h3 className="text-xl font-bold text-ink mt-8 mb-4">Mitochondrial-to-Nuclear Signaling and the AMPK Pathway</h3>
@@ -852,7 +933,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Retatrutide: A Triple GLP-1/GIP/Glucagon Agonist</h2>
 
         <p>
-          <Link href="/products/retatrutide" className="text-blue-600 underline hover:text-blue-800">Retatrutide</Link> represents a structurally distinct research approach. Rather than acting upstream through the GH/IGF-1 axis, Retatrutide is engineered as a triple agonist — a single peptide capable of simultaneously binding and activating GLP-1, GIP, and glucagon receptors. This tri-pathway engagement is studied for producing more pronounced appetite suppression, glycemic modulation, and overall metabolic rate effects than single- or dual-agonist compounds.
+          <Link href="/products/retatrutide" className="text-blue-600 underline hover:text-blue-800">Retatrutide</Link> represents a structurally distinct research approach. Rather than acting upstream through the GH/IGF-1 axis, Retatrutide is engineered as a triple agonist — a single peptide capable of simultaneously binding and activating GLP-1, GIP, and glucagon receptors. This tri-pathway engagement is studied for producing more pronounced appetite suppression, glycemic modulation, and overall metabolic rate effects than single- or dual-agonist compounds. For a complete breakdown of this mechanism, published Phase 2/3 evidence, and sourcing standards, see our dedicated guide, <Link href="/journal/retatrutide-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">Retatrutide Peptide: Complete Research Guide to the Triple Agonist</Link>.
         </p>
 
         <Image src="/journal-images/tesamorelin-retatrutide-triple-agonist.webp" alt="Diagram of a triple-agonist peptide binding GLP-1, GIP, and glucagon receptors" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
@@ -1528,6 +1609,423 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </div>
       </>
     )
+  },
+  {
+    slug: 'retatrutide-peptide-triple-agonist-research-guide',
+    title: 'Retatrutide Peptide: Complete Research Guide to the GLP-1/GIP/Glucagon Triple Agonist',
+    category: 'Guidelines',
+    date: 'July 24, 2026',
+    readTime: '22 min read',
+    excerpt: 'A comprehensive guide to retatrutide — the GLP-1/GIP/glucagon triple agonist reshaping metabolic peptide research — covering molecular architecture, receptor pharmacology, Phase 2/3 evidence, and research-grade sourcing standards.',
+    heroImage: '/journal-images/retatrutide-triple-agonist-research-hero.webp',
+    author: 'The Looksmaxxing Lab Research Team',
+    faqs: RETATRUTIDE_FAQS,
+    content: (
+      <>
+        <p className="first-letter:text-7xl first-letter:font-serif first-letter:float-left first-letter:mr-4 first-letter:text-ink first-letter:mt-2">
+          Retatrutide has become one of the most intensely studied peptide compounds in metabolic research, generating search volume that exceeds every other emerging peptide in the research community as of mid-2026. Developed by Eli Lilly under the designation LY-3437943, <Link href="/products/retatrutide" className="text-blue-600 underline hover:text-blue-800">retatrutide</Link> is a synthetic peptide engineered to simultaneously activate three metabolic receptor systems: the glucagon-like peptide-1 receptor (GLP-1R), the glucose-dependent insulinotropic polypeptide receptor (GIPR), and the glucagon receptor (GCGR).
+        </p>
+
+        <p>
+          This triple-agonist architecture makes retatrutide mechanistically distinct from every approved or widely studied incretin compound, and it explains the rapid expansion of research interest across academic, institutional, and independent laboratories. This guide provides a comprehensive, research-oriented overview of retatrutide's molecular design, receptor pharmacology, published preclinical and clinical evidence, and practical considerations for laboratory procurement. It is written for researchers and peptide scientists — not consumers. All compounds referenced are for research use only.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Molecular Architecture: How Retatrutide Is Engineered</h2>
+
+        <p>
+          Retatrutide is a 39-amino-acid synthetic peptide with several structural modifications that distinguish it from native incretin hormones and earlier-generation analogs. The molecular design reflects a deliberate engineering strategy to achieve balanced multi-receptor agonism with a pharmacokinetic profile suitable for once-weekly research dosing: an amino acid backbone resistant to DPP-4 and neutral endopeptidase degradation, alpha-aminoisobutyric acid (Aib) substitution at key positions for steric protection against proteolytic cleavage, and a C18 fatty diacid moiety enabling non-covalent albumin binding that extends half-life from minutes to days.
+        </p>
+
+        <Image src="/journal-images/retatrutide-triple-receptor-binding.webp" alt="Molecular diagram of retatrutide binding three separate metabolic receptors" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">The Three-Receptor Mechanism: Why Triple Agonism Matters for Research</h2>
+
+        <p>
+          The scientific rationale for triple agonism rests on a straightforward pharmacological principle: each additional receptor target adds a metabolic pathway inaccessible to the prior generation of compounds.
+        </p>
+
+        <h3 className="text-xl font-bold text-ink mt-8 mb-4">First Axis: GLP-1R — Appetite Regulation and Insulin Secretion</h3>
+
+        <p>
+          GLP-1 receptor activation drives glucose-dependent insulin secretion, suppresses postprandial glucagon release, delays gastric emptying, and modulates central appetite signaling in the hypothalamus. This is the mechanism shared with semaglutide, liraglutide, and the GLP-1 agonist research class broadly — the foundational layer of retatrutide's activity profile.
+        </p>
+
+        <h3 className="text-xl font-bold text-ink mt-8 mb-4">Second Axis: GIPR — Complementary Insulinotropic Signaling</h3>
+
+        <p>
+          GIP receptor co-activation provides a second insulinotropic pathway that operates additively with GLP-1R signaling. Published research on dual GLP-1/GIP agonism — studied extensively through tirzepatide — has demonstrated that combined activation produces greater glycemic improvement and body weight effects than GLP-1R agonism alone in preclinical and clinical models. Retatrutide retains this dual layer and builds upon it.
+        </p>
+
+        <h3 className="text-xl font-bold text-ink mt-8 mb-4">Third Axis: GCGR — Hepatic Fat Oxidation and Energy Expenditure</h3>
+
+        <p>
+          The glucagon receptor arm is the differentiating mechanism. In preclinical models, GCGR agonism promotes hepatic fat oxidation through enhanced lipid mobilization and beta-oxidation in hepatocytes, and drives an increase in basal energy expenditure — a thermogenic effect mediated by the liver that operates independently of appetite suppression. This pathway is not accessible through GLP-1 or GLP-1/GIP agonism alone, and represents the mechanistic advancement that separates triple agonists from all prior compound classes.
+        </p>
+
+        <Image src="/journal-images/retatrutide-hepatic-fat-oxidation-pathway.webp" alt="Illustration of glucagon receptor activation driving hepatic fat oxidation in liver tissue" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Published Research Data: Phase 2 and Phase 3 Evidence</h2>
+
+        <p>
+          The pivotal Phase 2 trial, published in the New England Journal of Medicine (Jastreboff et al., 2023), randomized 338 adults with obesity to multiple retatrutide dose tiers or placebo over 48 weeks. The highest-dose cohort (12 mg) demonstrated mean body weight reductions exceeding 24% from baseline — the largest single-compound reduction reported in a controlled obesity trial at the time. The study also reported reductions in hepatic fat fraction measured by MRI-PDFF, suggesting direct hepatic effects attributable to the glucagon receptor component.
+        </p>
+
+        <p>
+          A parallel Phase 2 trial in adults with type 2 diabetes (Rosenstock et al., Lancet, 2023) demonstrated significant reductions in HbA1c alongside body weight effects, confirming that the triple-agonist mechanism produces metabolic improvements across both glycemic and adiposity endpoints simultaneously. Eli Lilly's Phase 3 TRIUMPH program encompasses multiple studies across obesity, type 2 diabetes, knee osteoarthritis, obstructive sleep apnea, and MASLD. TRIUMPH-1 (n=2,339) reported topline results in May 2026, confirming dose-dependent weight reduction at 80 weeks, with the 12 mg cohort demonstrating mean body weight reduction of approximately 28%.
+        </p>
+
+        <p>
+          It is essential for researchers to understand that this clinical trial data pertains to Eli Lilly's investigational drug product — not research-grade peptide material. Research-grade retatrutide is for laboratory use only.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Retatrutide vs. Tirzepatide vs. Semaglutide: Research Compound Comparison</h2>
+
+        <div className="overflow-x-auto my-8">
+          <table className="w-full border-collapse text-body-md">
+            <thead>
+              <tr className="border-b-2 border-ink">
+                <th className="text-left py-3 pr-4 font-bold text-ink">Parameter</th>
+                <th className="text-left py-3 pr-4 font-bold text-ink">Semaglutide</th>
+                <th className="text-left py-3 pr-4 font-bold text-ink">Tirzepatide</th>
+                <th className="text-left py-3 font-bold text-ink">Retatrutide</th>
+              </tr>
+            </thead>
+            <tbody className="text-ink-muted">
+              <tr className="border-b border-border-subtle">
+                <td className="py-3 pr-4 font-medium text-ink">Receptor targets</td>
+                <td className="py-3 pr-4">GLP-1R</td>
+                <td className="py-3 pr-4">GLP-1R + GIPR</td>
+                <td className="py-3">GLP-1R + GIPR + GCGR</td>
+              </tr>
+              <tr className="border-b border-border-subtle">
+                <td className="py-3 pr-4 font-medium text-ink">Receptor count</td>
+                <td className="py-3 pr-4">1</td>
+                <td className="py-3 pr-4">2</td>
+                <td className="py-3">3</td>
+              </tr>
+              <tr className="border-b border-border-subtle">
+                <td className="py-3 pr-4 font-medium text-ink">Hepatic fat effect</td>
+                <td className="py-3 pr-4">Indirect</td>
+                <td className="py-3 pr-4">Moderate</td>
+                <td className="py-3">Direct (GCGR-mediated)</td>
+              </tr>
+              <tr>
+                <td className="py-3 pr-4 font-medium text-ink">Published Phase 2 weight reduction</td>
+                <td className="py-3 pr-4">~15% (STEP trials)</td>
+                <td className="py-3 pr-4">~21% (SURMOUNT-1)</td>
+                <td className="py-3">~24% (NEJM 2023)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          This comparison underscores why retatrutide occupies a distinct position in the research landscape: it subsumes the mechanisms of both prior generations while adding the glucagon-mediated hepatic pathway that is generating the most active experimental questions in metabolic peptide science. For a deeper comparative analysis against GHRH-axis compounds, see our companion article on <Link href="/journal/tesamorelin-vs-retatrutide-visceral-fat-research" className="text-blue-600 underline hover:text-blue-800">Tesamorelin vs. Retatrutide in visceral fat research</Link>.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">A Note on GLP-3 Nomenclature</h2>
+
+        <p>
+          Researchers will frequently encounter the term "GLP-3" used within the peptide research community to describe this same triple-receptor mechanism class. GLP-3 is not a distinct compound — it is a research-community designation for a triple GLP-1/GIP/glucagon agonist modeled after retatrutide's receptor profile. Our companion guide, <Link href="/journal/glp-3-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">GLP-3 Peptide: Triple Receptor Agonism and Mechanism of Action</Link>, covers this nomenclature distinction and the broader triple-agonist research landscape in more detail.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Research-Grade Sourcing: Purity and Verification Standards</h2>
+
+        <p>
+          The rapid expansion of retatrutide research demand has brought a corresponding increase in vendor proliferation, making sourcing diligence more important than ever. Researchers should apply the same verification standards used for any critical reference compound: independent third-party HPLC testing confirming ≥99% peptide purity, LC-MS molecular weight verification ruling out truncated or misidentified material, lot-specific COA documentation publicly accessible for independent verification, and US-based synthesis in ISO-certified facilities.
+        </p>
+
+        <Image src="/journal-images/retatrutide-hplc-purity-verification.webp" alt="Laboratory HPLC purity verification of a research-grade retatrutide peptide batch" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+
+        <p>
+          <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> manufactures <Link href="/products/retatrutide" className="text-blue-600 underline hover:text-blue-800">retatrutide</Link> research peptide in US-based facilities, with every batch independently verified by third-party HPLC and LC-MS analysis. Lot-specific Certificates of Analysis are available in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution protocols, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>, and use the <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Calculator</Link> for concentration calculations.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
+
+        <div className="space-y-6">
+          {RETATRUTIDE_FAQS.map((faq, idx) => (
+            <div key={idx}>
+              <h4 className="font-bold text-ink">{faq.question}</h4>
+              <p className="text-ink-muted">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </>
+    )
+  },
+  {
+    slug: 'mots-c-peptide-mitochondrial-exercise-mimetic-research',
+    title: 'MOTS-C Peptide: Mitochondrial Signaling, Exercise Mimetic Research, and the AMPK Activation Pathway',
+    category: 'Studies',
+    date: 'July 23, 2026',
+    readTime: '20 min read',
+    excerpt: 'A research guide to MOTS-c, the mitochondrial-derived exercise mimetic peptide — covering AMPK activation, nuclear translocation, preclinical metabolic data, and sourcing standards for 2026.',
+    heroImage: '/journal-images/mots-c-mitochondrial-exercise-mimetic-hero.webp',
+    author: 'The Looksmaxxing Lab Research Team',
+    faqs: MOTSC_FAQS,
+    content: (
+      <>
+        <p className="first-letter:text-7xl first-letter:font-serif first-letter:float-left first-letter:mr-4 first-letter:text-ink first-letter:mt-2">
+          MOTS-c has emerged as one of the most compelling research peptides in mitochondrial biology and metabolic science, with search interest surging 150% year-over-year as of mid-2026. Unlike the majority of research peptides — which are encoded by nuclear DNA and synthesized in the cytoplasm — <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-c</Link> is encoded within the mitochondrial genome itself, specifically within the 12S ribosomal RNA gene, making it a mitochondrial-derived peptide (MDP): a class of signaling molecules representing a paradigm shift in how researchers understand intercellular communication between the mitochondria and the nucleus.
+        </p>
+
+        <p>
+          First characterized by Changhan David Lee's laboratory at the University of Southern California in 2015, MOTS-c is a 16-amino-acid peptide that has demonstrated remarkable metabolic effects in preclinical models — including improved glucose homeostasis, enhanced insulin sensitivity, reduced fat accumulation, and increased exercise endurance. These properties have earned MOTS-c the designation of "exercise mimetic" in the published literature: a compound that replicates a subset of the metabolic adaptations to physical exercise at the cellular level. This article provides a comprehensive overview of MOTS-c's mechanism, preclinical evidence base, and research applications for laboratory professionals.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">What Is MOTS-c? Origin and Molecular Identity</h2>
+
+        <p>
+          MOTS-c (Mitochondrial Open Reading Frame of the 12S rRNA Type-C) is a 16-amino-acid peptide with the sequence MRWQEMGYIFYPRKLR. It is encoded by a short open reading frame within the mitochondrial 12S rRNA gene (MT-RNR1), making it one of the first identified peptides that demonstrate a retrograde signaling pathway from the mitochondria to the nucleus — sometimes described as "mitonuclear communication." This represents a fundamental shift in the understanding of mitochondria as passive energy producers: MOTS-c demonstrates that mitochondria function as active signaling organelles capable of regulating nuclear gene expression and systemic metabolism.
+        </p>
+
+        <p>
+          Circulating MOTS-c levels have been measured in human plasma, confirming that the peptide functions as a systemic signaling molecule. Observational studies have found that plasma MOTS-c levels are negatively correlated with markers of metabolic dysfunction — including fasting insulin, HbA1c, and BMI — and that levels decline with age, paralleling the age-related decline in mitochondrial function and metabolic flexibility that characterizes cellular aging.
+        </p>
+
+        <Image src="/journal-images/mots-c-mitochondrial-nuclear-signaling.webp" alt="Illustration of MOTS-c signaling from the mitochondria to the cell nucleus" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">The AMPK Activation Pathway: How MOTS-c Produces Its Metabolic Effects</h2>
+
+        <p>
+          The central downstream effector of MOTS-c activity is AMPK (5' adenosine monophosphate-activated protein kinase), the master energy-sensing kinase that orchestrates cellular metabolic responses to energy stress. MOTS-c activates AMPK through a unique three-step mechanism: first, folate cycle inhibition — MOTS-c inhibits the de novo purine synthesis pathway by reducing methylenetetrahydrofolate availability; second, AICAR accumulation — this inhibition causes accumulation of AICAR, an endogenous metabolite and well-established AMPK activator; and third, AMPK phosphorylation — elevated AICAR activates AMPK, triggering the downstream metabolic cascade without requiring cellular energy depletion, the mechanism that distinguishes MOTS-c from exercise-induced AMPK activation.
+        </p>
+
+        <p>
+          Activated AMPK then drives a metabolic response profile that closely mirrors cellular adaptations to aerobic exercise training: enhanced insulin-independent glucose uptake through GLUT4 translocation, upregulated fatty acid oxidation through CPT-1 pathway activity, and activation of PGC-1α-mediated mitochondrial biogenesis programs. Lee et al. (2015) measured GLUT4 surface expression and AMP:ATP ratio changes in MOTS-c-treated skeletal muscle cells, directly confirming the exercise-mimetic pathway at the molecular level.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Nuclear Translocation: The Stress-Response Pathway</h2>
+
+        <p>
+          One of the most significant findings in MOTS-c research is the demonstration that MOTS-c translocates from the cytoplasm to the cell nucleus under conditions of metabolic stress — observed in response to glucose deprivation, oxidative stress, and serum starvation in cell models. Once in the nucleus, MOTS-c interacts with transcription factors and chromatin-modifying complexes to directly regulate the expression of genes involved in antioxidant defense, stress adaptation, and metabolic homeostasis. This establishes MOTS-c as more than a circulating signaling peptide — it is a direct nuclear effector that can reprogram gene expression in response to metabolic challenges.
+        </p>
+
+        <Image src="/journal-images/mots-c-glut4-glucose-uptake-mechanism.webp" alt="Diagram of MOTS-c driving GLUT4 translocation and glucose uptake in skeletal muscle" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Exercise Mimetic Properties: What Preclinical Models Show</h2>
+
+        <p>
+          In diet-induced obese mouse models, exogenous MOTS-c treatment improved fasting glucose levels and glucose tolerance to a degree comparable to exercise-mediated improvements, mediated by increased skeletal muscle glucose uptake. Treated animals also showed reduced fat mass accumulation on high-fat diets without significant changes in food intake, indicating a metabolic mechanism rather than appetite suppression — distinguishing MOTS-c from GLP-1 receptor agonists, which primarily reduce body weight through centrally mediated appetite suppression.
+        </p>
+
+        <p>
+          In aged mouse models, exogenous MOTS-c administration restored metabolic flexibility and physical performance metrics — including treadmill endurance — that typically deteriorate with age-related mitochondrial decline. Research published in Frontiers in Physiology (2025) further demonstrated that MOTS-c restored mitochondrial respiration in type 2 diabetic cardiac tissue models, expanding research interest into cardiac metabolism.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">MOTS-c vs. Other Metabolic Peptides: Where It Fits in the Research Landscape</h2>
+
+        <div className="overflow-x-auto my-8">
+          <table className="w-full border-collapse text-body-md">
+            <thead>
+              <tr className="border-b-2 border-ink">
+                <th className="text-left py-3 pr-4 font-bold text-ink">Peptide</th>
+                <th className="text-left py-3 pr-4 font-bold text-ink">Primary Mechanism</th>
+                <th className="text-left py-3 pr-4 font-bold text-ink">Receptor/Pathway</th>
+                <th className="text-left py-3 font-bold text-ink">Research Stage</th>
+              </tr>
+            </thead>
+            <tbody className="text-ink-muted">
+              <tr className="border-b border-border-subtle">
+                <td className="py-3 pr-4 font-medium text-ink">MOTS-c</td>
+                <td className="py-3 pr-4">AMPK via purine synthesis inhibition</td>
+                <td className="py-3 pr-4">Mitochondria → nucleus (no membrane GPCR)</td>
+                <td className="py-3">Preclinical + Phase 1</td>
+              </tr>
+              <tr className="border-b border-border-subtle">
+                <td className="py-3 pr-4 font-medium text-ink">Semaglutide</td>
+                <td className="py-3 pr-4">GLP-1R agonism</td>
+                <td className="py-3 pr-4">GLP-1R (GPCR)</td>
+                <td className="py-3">Approved (2017)</td>
+              </tr>
+              <tr>
+                <td className="py-3 pr-4 font-medium text-ink">Retatrutide</td>
+                <td className="py-3 pr-4">Triple GLP-1/GIP/GCGR agonism</td>
+                <td className="py-3 pr-4">GLP-1R + GIPR + GCGR</td>
+                <td className="py-3">Phase 3</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          The key distinction is that MOTS-c operates through a fundamentally different mechanism than GPCR-based metabolic peptides — it does not bind a membrane receptor and trigger a signaling cascade, it activates AMPK through metabolic pathway inhibition and directly enters the nucleus to regulate gene expression. This makes MOTS-c mechanistically orthogonal to the incretin class, positioning it as a complementary research compound rather than a competitor within the same pathway. Researchers investigating MOTS-c alongside the hormonal-metabolic axis in female physiology models should also see our companion article, <Link href="/journal/kisspeptin-mots-c-hormonal-metabolic-research" className="text-blue-600 underline hover:text-blue-800">Kisspeptin-10 & MOTS-C: Research Peptides and the Female Hormonal-Metabolic Axis</Link>.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Age-Related MOTS-c Decline: Implications for Aging Research</h2>
+
+        <p>
+          Multiple observational studies have documented that circulating MOTS-c levels decline with age in humans, paralleling the broader age-related deterioration in mitochondrial function central to current theories of biological aging. Additional observational data has shown that obese children have significantly lower circulating MOTS-c levels, and that plasma MOTS-c concentrations in adult males are negatively correlated with fasting insulin, HbA1c, and BMI. A meta-analysis of over 27,500 subjects identified an Asian-specific mitochondrial DNA variant (m.1382A&gt;C) that alters the MOTS-c amino acid sequence and is associated with higher type 2 diabetes prevalence in males, providing genetic evidence for a functional link between MOTS-c biology and metabolic disease susceptibility.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Research-Grade Sourcing and Handling</h2>
+
+        <p>
+          Given MOTS-c's 16-amino-acid length, synthesis fidelity and post-synthesis purification are critical for experimental reproducibility — even a single amino acid deletion or substitution represents a proportionally large structural change that could alter biological activity. Researchers should verify ≥99% HPLC purity confirmed by independent third-party testing, LC-MS molecular weight verification matching the target MOTS-c sequence (MRWQEMGYIFYPRKLR), and lot-specific COA documentation with every batch.
+        </p>
+
+        <Image src="/journal-images/mots-c-research-grade-vial-lab-bench.webp" alt="Research-grade MOTS-c lyophilized peptide vial on a laboratory bench" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+
+        <p>
+          <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> supplies research-grade <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-c</Link>, synthesized in US-based, ISO-certified facilities with full independent verification. Lot-specific Certificates of Analysis are accessible in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution and storage protocols, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>, and use the <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Calculator</Link> for precise concentration calculations.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
+
+        <div className="space-y-6">
+          {MOTSC_FAQS.map((faq, idx) => (
+            <div key={idx}>
+              <h4 className="font-bold text-ink">{faq.question}</h4>
+              <p className="text-ink-muted">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </>
+    )
+  },
+  {
+    slug: 'glp-3-peptide-triple-agonist-research-guide',
+    title: 'GLP-3 Peptide: Triple Receptor Agonism, Mechanism of Action, and What Researchers Need to Know in 2026',
+    category: 'Emerging',
+    date: 'July 22, 2026',
+    readTime: '19 min read',
+    excerpt: 'What is GLP-3 peptide? A research-grade guide to the triple GLP-1/GIP/glucagon receptor agonist — mechanism, receptor biology, preclinical data, and sourcing standards for 2026.',
+    heroImage: '/journal-images/glp-3-triple-receptor-agonist-hero.webp',
+    author: 'The Looksmaxxing Lab Research Team',
+    faqs: GLP3_FAQS,
+    content: (
+      <>
+        <p className="first-letter:text-7xl first-letter:font-serif first-letter:float-left first-letter:mr-4 first-letter:text-ink first-letter:mt-2">
+          GLP-3 peptide has rapidly emerged as one of the most discussed research compounds in metabolic peptide science heading into the second half of 2026. Unlike its predecessors in the incretin peptide class — single-pathway GLP-1 analogs such as semaglutide, and dual GLP-1/GIP agonists such as tirzepatide — GLP-3 engages three G protein-coupled receptors simultaneously: the glucagon-like peptide-1 receptor (GLP-1R), the glucose-dependent insulinotropic polypeptide receptor (GIPR), and the glucagon receptor (GCGR).
+        </p>
+
+        <p>
+          This triple-agonist profile represents a structural departure from every prior generation of incretin-based research compound, and it is the reason GLP-3 has drawn accelerating interest from metabolic researchers, endocrinology laboratories, and peptide scientists worldwide. This guide provides a research-oriented overview of GLP-3's receptor biology, molecular architecture, preclinical evidence base, and sourcing considerations — written for laboratory professionals, not consumers. All compounds referenced are for research use only.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">What Is GLP-3 Peptide? Defining the Triple-Agonist Class</h2>
+
+        <p>
+          In current research nomenclature, GLP-3 refers to a synthetic peptide analog modeled after the investigational compound <Link href="/journal/retatrutide-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">retatrutide</Link> (LY-3437943), developed by Eli Lilly. The designation "GLP-3" is used within the research peptide community to distinguish this triple-receptor compound class from single-pathway GLP-1 analogs and dual GLP-1/GIP agonists. It is not a naturally occurring peptide hormone; rather, it is a synthetic construct engineered to co-activate three distinct metabolic receptor systems within a single molecular framework.
+        </p>
+
+        <p>
+          The compound's structure incorporates several pharmacological enhancements over endogenous incretin hormones: a C18 fatty diacid moiety for albumin binding and extended circulating half-life, an alpha-aminoisobutyric acid (Aib) substitution for proteolytic resistance, and a carefully balanced agonist potency ratio across all three receptor targets. This engineering enables once-weekly research dosing protocols in preclinical models — a significant advancement over native GLP-1, which has a plasma half-life measured in minutes.
+        </p>
+
+        <Image src="/journal-images/glp-3-receptor-biology-diagram.webp" alt="Diagram of GLP-3 simultaneously engaging GLP-1, GIP, and glucagon receptors" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Receptor Biology: How GLP-3 Engages Three Distinct Metabolic Pathways</h2>
+
+        <p>
+          GLP-1 receptor activation is the foundational mechanism shared across the entire incretin peptide research class — stimulating glucose-dependent insulin secretion, suppressing glucagon release, delaying gastric emptying, and modulating hypothalamic appetite signaling. GLP-3 retains full GLP-1R agonist activity as its baseline layer.
+        </p>
+
+        <p>
+          GIP receptor activation adds a second, complementary incretin axis. Dual GLP-1/GIP agonism — the mechanism studied in tirzepatide — has demonstrated additive effects on insulin secretion and glycemic regulation. GLP-3 incorporates this dual layer as its intermediate mechanistic tier.
+        </p>
+
+        <p>
+          The glucagon receptor component is what distinguishes GLP-3 from every prior compound class. In isolation, glucagon receptor agonism promotes hepatic glucose output and glycogenolysis — effects that would seem counterproductive in metabolic research. However, when combined with concurrent GLP-1R and GIPR agonism, the insulinotropic effects of those pathways counterbalance the glycemic impact of glucagon signaling while preserving the metabolic rate increase. The net result observed in preclinical models is a compound that adds hepatic fat oxidation and elevated basal energy expenditure — pathways not accessible through GLP-1 or dual GLP-1/GIP agonism alone.
+        </p>
+
+        <Image src="/journal-images/glp-3-glucagon-energy-expenditure.webp" alt="Illustration of glucagon receptor engagement driving basal energy expenditure" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">GLP-3 vs. Semaglutide vs. Tirzepatide: A Receptor Comparison for Researchers</h2>
+
+        <div className="overflow-x-auto my-8">
+          <table className="w-full border-collapse text-body-md">
+            <thead>
+              <tr className="border-b-2 border-ink">
+                <th className="text-left py-3 pr-4 font-bold text-ink">Attribute</th>
+                <th className="text-left py-3 pr-4 font-bold text-ink">Semaglutide</th>
+                <th className="text-left py-3 pr-4 font-bold text-ink">Tirzepatide</th>
+                <th className="text-left py-3 font-bold text-ink">GLP-3</th>
+              </tr>
+            </thead>
+            <tbody className="text-ink-muted">
+              <tr className="border-b border-border-subtle">
+                <td className="py-3 pr-4 font-medium text-ink">GLP-1R activation</td>
+                <td className="py-3 pr-4">Yes</td>
+                <td className="py-3 pr-4">Yes</td>
+                <td className="py-3">Yes</td>
+              </tr>
+              <tr className="border-b border-border-subtle">
+                <td className="py-3 pr-4 font-medium text-ink">GIPR activation</td>
+                <td className="py-3 pr-4">No</td>
+                <td className="py-3 pr-4">Yes</td>
+                <td className="py-3">Yes</td>
+              </tr>
+              <tr className="border-b border-border-subtle">
+                <td className="py-3 pr-4 font-medium text-ink">GCGR activation</td>
+                <td className="py-3 pr-4">No</td>
+                <td className="py-3 pr-4">No</td>
+                <td className="py-3">Yes</td>
+              </tr>
+              <tr>
+                <td className="py-3 pr-4 font-medium text-ink">Hepatic fat oxidation</td>
+                <td className="py-3 pr-4">Indirect</td>
+                <td className="py-3 pr-4">Indirect</td>
+                <td className="py-3">Direct (via GCGR)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          This comparison illustrates why GLP-3 has attracted rapid research interest: it offers receptor coverage that subsumes the mechanisms of both prior generations while adding a metabolically distinct glucagon-mediated pathway. For researchers designing comparative studies, GLP-3 serves as the broadest-spectrum reference compound currently available in the incretin class.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Preclinical Evidence Base: What Published Research Shows</h2>
+
+        <p>
+          The scientific interest in GLP-3's triple-agonist mechanism is grounded in published preclinical and early-phase clinical data on the parent compound retatrutide. A Phase 2 trial published in the New England Journal of Medicine (Jastreboff et al., 2023) evaluated retatrutide in 338 adults with obesity over 48 weeks, with the highest-dose cohort demonstrating mean body weight reductions exceeding 24% from baseline. Subsequent Phase 2 data in type 2 diabetes populations (Rosenstock et al., Lancet, 2023) demonstrated significant HbA1c reductions alongside body weight effects. The Phase 3 TRIUMPH program reported topline results from TRIUMPH-1 in May 2026, confirming the dose-dependent weight reduction profile at 80 weeks. For a full breakdown of this trial data and the compound's molecular architecture, see our companion guide, <Link href="/journal/retatrutide-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">Retatrutide Peptide: Complete Research Guide to the Triple Agonist</Link>.
+        </p>
+
+        <p>
+          It is important for researchers to understand that this clinical data pertains to the investigational drug product studied in controlled human trials — not to research-grade peptide material. Research-grade GLP-3 is used in preclinical laboratory settings as a reference compound for studying triple receptor agonism, GPCR signal transduction, and multi-receptor crosstalk. It is not for human use.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Why GLP-3 Research Interest Is Accelerating in 2026</h2>
+
+        <ul className="list-disc pl-6 space-y-4 my-6 text-body-lg text-ink">
+          <li><strong>Mechanistic novelty.</strong> GLP-3 is among the first commercially available research peptides offering simultaneous engagement of three metabolic receptor systems, filling a gap for laboratories studying GPCR biology and multi-target pharmacology.</li>
+          <li><strong>Published efficacy signal.</strong> The NEJM Phase 2 data and subsequent TRIUMPH results have generated significant scientific media coverage, driving awareness among researchers who may not have previously worked with incretin compounds.</li>
+          <li><strong>Differentiation from saturated categories.</strong> GLP-3's glucagon receptor component opens new experimental questions — hepatic fat oxidation kinetics, energy expenditure modeling, and glucagon-mediated thermogenesis — that remain largely unexplored.</li>
+          <li><strong>Synthesis maturation.</strong> Research-grade GLP-3 availability has expanded substantially in 2026 as peptide synthesis protocols have matured, with HPLC-verified material meeting research purity standards now reliably accessible from qualified US-based suppliers.</li>
+        </ul>
+
+        <Image src="/journal-images/glp-3-hplc-synthesis-lab.webp" alt="Laboratory HPLC synthesis verification workflow for research-grade GLP-3 peptide" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Sourcing Standards: What to Verify Before Procuring GLP-3 for Research</h2>
+
+        <p>
+          As with any research peptide, the quality of GLP-3 material directly impacts experimental reproducibility. Researchers should verify HPLC purity ≥99% confirmed by independent third-party testing, LC-MS identity verification confirming the exact molecular weight matches the target GLP-3 sequence, a lot-specific Certificate of Analysis shipped with every batch, and US-based synthesis in ISO-certified facilities.
+        </p>
+
+        <p>
+          <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> is expanding its catalog of triple-agonist research compounds, synthesized in US-based facilities and independently verified by third-party HPLC and LC-MS testing, with lot-specific COA documentation for every batch. Researchers can access our full <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link> and browse current availability in our <Link href="/shop" className="text-blue-600 underline hover:text-blue-800">shop</Link>.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Reconstitution and Storage Considerations</h2>
+
+        <p>
+          GLP-3 is supplied as a lyophilized (freeze-dried) powder requiring reconstitution prior to laboratory use. Researchers should follow standard peptide reconstitution protocols using bacteriostatic water, calculating concentration based on the desired experimental parameters — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link> for the step-by-step protocol, and the <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Calculator</Link> for concentration and volume calculations. Post-reconstitution, GLP-3 should be stored under refrigeration (2–8°C) and protected from light; lyophilized material prior to reconstitution should be stored frozen (−20°C) for long-term stability.
+        </p>
+
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
+
+        <div className="space-y-6">
+          {GLP3_FAQS.map((faq, idx) => (
+            <div key={idx}>
+              <h4 className="font-bold text-ink">{faq.question}</h4>
+              <p className="text-ink-muted">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </>
+    )
   }
 ]
 
@@ -1540,5 +2038,8 @@ export const JOURNAL_POSTS_FAQS: Record<string, {question: string; answer: strin
   'tesamorelin-vs-retatrutide-visceral-fat-research': JOURNAL_POSTS[4].faqs,
   'cjc-1295-ipamorelin-muscle-recovery-research': JOURNAL_POSTS[5].faqs,
   'peptide-coa-hplc-purity-testing-guide': JOURNAL_POSTS[6].faqs,
-  'peptide-reconstitution-storage-guide': JOURNAL_POSTS[7].faqs
+  'peptide-reconstitution-storage-guide': JOURNAL_POSTS[7].faqs,
+  'retatrutide-peptide-triple-agonist-research-guide': JOURNAL_POSTS[8].faqs,
+  'mots-c-peptide-mitochondrial-exercise-mimetic-research': JOURNAL_POSTS[9].faqs,
+  'glp-3-peptide-triple-agonist-research-guide': JOURNAL_POSTS[10].faqs
 }

@@ -203,6 +203,34 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     coaFileUrl = rawProduct.coaFile.url
   }
 
+  // Fetch real approved reviews for structured data — never fabricate ratings/reviews
+  const { docs: approvedReviews } = await payload.find({
+    collection: 'reviews',
+    where: {
+      and: [
+        { product: { equals: rawProduct.id } },
+        { status: { equals: 'approved' } },
+      ],
+    },
+    sort: '-createdAt',
+    limit: 20,
+    depth: 1,
+  })
+
+  const mappedReviews = approvedReviews
+    .filter((r: any) => r.comment)
+    .map((r: any) => {
+      const user = typeof r.user === 'object' ? r.user : null
+      const lastInitial = user?.lastName ? `${user.lastName.charAt(0)}.` : ''
+      const author = user?.firstName ? `${user.firstName} ${lastInitial}`.trim() : 'Verified Researcher'
+      return {
+        author,
+        datePublished: new Date(r.createdAt).toISOString().split('T')[0],
+        reviewBody: r.comment as string,
+        reviewRating: r.rating as number,
+      }
+    })
+
   // Map to ProductData interface
   const productData = {
     id: String(rawProduct.id),
@@ -359,6 +387,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         variants={mappedVariants}
         averageRating={rawProduct.averageRating || 0}
         reviewCount={rawProduct.reviewCount || 0}
+        reviews={mappedReviews}
       />
       <main className="flex-1 mt-20">
         <ProductClient product={productData as any} />

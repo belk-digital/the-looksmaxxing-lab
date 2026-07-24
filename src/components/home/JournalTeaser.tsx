@@ -70,14 +70,14 @@ export function JournalTeaser() {
         <div className="absolute inset-0 bg-[#5984c4]/5 group-hover:bg-transparent transition-colors duration-500 mix-blend-multiply" />
       </div>
       <div className="flex flex-col px-1 md:px-2">
-        <span className="text-[10px] md:text-label-sm uppercase tracking-widest text-[#5984c4] mb-2 md:mb-4 font-bold">
+        <span className="text-[10px] md:text-label-sm uppercase tracking-widest text-[#2563EB] mb-2 md:mb-4 font-bold">
           {post.category}
         </span>
-        <h3 className="text-xl md:text-3xl font-display text-ink mb-2 md:mb-4 group-hover:text-[#5984c4] transition-colors duration-500 leading-tight">
+        <h3 className="text-xl md:text-3xl font-display text-ink mb-2 md:mb-4 group-hover:text-[#2563EB] transition-colors duration-500 leading-tight">
           {post.title}
         </h3>
         <div className="mt-auto">
-          <span className="text-[10px] md:text-label-sm text-ink/50 uppercase tracking-widest font-medium">
+          <span className="text-[10px] md:text-label-sm text-ink/70 uppercase tracking-widest font-medium">
             {post.readTime}
           </span>
         </div>
@@ -93,7 +93,7 @@ export function JournalTeaser() {
         
         {/* Left / Top Panel: Solid Sticky Block (Slides over the cards) */}
         <div className="absolute top-0 left-0 w-full h-[40vh] xl:w-[40vw] xl:h-screen bg-white z-20 flex flex-col justify-center px-6 sm:px-12 xl:pl-16 2xl:pl-24 shadow-[20px_0_40px_-20px_rgba(0,0,0,0.05)] border-r border-slate-100">
-           <span className="text-[10px] xl:text-label-md uppercase tracking-widest text-[#5984c4] mb-2 xl:mb-6 block font-bold">
+           <span className="text-[10px] xl:text-label-md uppercase tracking-widest text-[#2563EB] mb-2 xl:mb-6 block font-bold">
              SCIENCE JOURNAL
            </span>
            <h2 className="text-4xl sm:text-5xl xl:text-6xl 2xl:text-7xl font-display text-ink leading-[0.9] tracking-tight mb-4 xl:mb-8 max-w-[90%] drop-shadow-sm">
@@ -112,7 +112,7 @@ export function JournalTeaser() {
                  className="w-1 h-1.5 bg-[#5984c4] rounded-full"
                />
              </div>
-             <span className="text-[8px] xl:text-[9px] font-sans uppercase tracking-[0.25em] font-bold text-[#5984c4]">
+             <span className="text-[8px] xl:text-[9px] font-sans uppercase tracking-[0.25em] font-bold text-[#2563EB]">
                Scroll to Explore
              </span>
            </div>

@@ -92,7 +92,7 @@ export function CompactProductCard({ product }: { product: StandardProduct }) {
             >
               <Image
                 src={product.image}
-                alt={product.name}
+                alt={`${product.name} research peptide vial`}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -110,7 +110,7 @@ export function CompactProductCard({ product }: { product: StandardProduct }) {
               >
                 <Image
                   src={product.hoverImage}
-                  alt={`${product.name} alternate view`}
+                  alt={`${product.name} research peptide vial — alternate view`}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

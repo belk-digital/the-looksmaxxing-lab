@@ -220,8 +220,8 @@ export default function CertificatesPage() {
             <FadeUp>
               <div className="relative w-full aspect-square md:aspect-[4/3] rounded-sm overflow-hidden">
                 <Image 
-                  src="/hero-image.webp" 
-                  alt="HPLC Testing Machine" 
+                  src="/hero-image.webp"
+                  alt="TB-500 (Thymosin Beta-4) research peptide vial splashing through water, ≥98% purity research-grade compound from The Looksmaxxing Lab"
                   fill 
                   className="object-cover"
                 />

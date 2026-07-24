@@ -19,6 +19,15 @@ export const metadata = {
   },
 }
 
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Affiliates', item: `${siteUrl}/affiliates` },
+  ],
+}
+
 export default async function AffiliatesLandingPage() {
   const user = await getPayloadUser()
   let status: UserAffiliateStatus = 'guest'
@@ -56,5 +65,13 @@ export default async function AffiliatesLandingPage() {
     }
   }
 
-  return <AffiliatesLandingClient userStatus={status} />
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <AffiliatesLandingClient userStatus={status} />
+    </>
+  )
 }

@@ -75,7 +75,7 @@ const AnimatedHUDCard = ({
               <div className="w-10 h-10 rounded-full bg-[#5984c4]/10 flex items-center justify-center mb-4">
                 {icon}
               </div>
-              <h4 className="text-sm font-bold uppercase tracking-wider mb-2 text-ink">{title}</h4>
+              <h3 className="text-sm font-bold uppercase tracking-wider mb-2 text-ink">{title}</h3>
               <p className="text-xs text-ink/70 leading-relaxed">{desc}</p>
             </motion.div>
           </motion.div>
@@ -117,7 +117,7 @@ const MobileAnimatedCard = ({ icon, title, desc, delay, tooltip }: { icon: React
           <div className="w-10 h-10 rounded-full bg-[#5984c4]/10 flex items-center justify-center mb-4">
             {icon}
           </div>
-          <h4 className="text-sm font-bold uppercase tracking-wider mb-2 text-ink">{title}</h4>
+          <h3 className="text-sm font-bold uppercase tracking-wider mb-2 text-ink">{title}</h3>
           <p className="text-xs text-ink/70 leading-relaxed">{desc}</p>
         </motion.div>
       </motion.div>

@@ -19,7 +19,7 @@ export default function RegisterPage() {
         {/* Background Image */}
         <Image 
           src="/img-1.webp"
-          alt="Laboratory Background"
+          alt="The Looksmaxxing Lab NAD+, Glow, and MOTS-C research peptide vials displayed on an open longevity-science magazine spread"
           fill
           className="object-cover object-center z-0"
           priority

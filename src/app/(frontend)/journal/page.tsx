@@ -18,6 +18,23 @@ export const metadata: Metadata = {
   }
 }
 
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Journal', item: `${siteUrl}/journal` },
+  ],
+}
+
 export default function JournalPage() {
-  return <JournalClient />
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <JournalClient />
+    </>
+  )
 }

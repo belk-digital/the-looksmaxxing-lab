@@ -97,8 +97,8 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
               {order.paymentMethod === 'zelle' && (
                 <div className="flex justify-center mb-4 mt-2">
                   <Image 
-                    src="/Payment Details/zelle-payment-qr.jpeg" 
-                    alt="Zelle QR Code" 
+                    src="/Payment Details/zelle-payment-qr.jpeg"
+                    alt="Zelle payment QR code for completing your Looksmaxxing Lab order"
                     width={200} 
                     height={200} 
                     className="rounded-xl border-2 border-yellow-200 shadow-sm"

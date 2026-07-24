@@ -60,7 +60,7 @@ export function AboutTeaser() {
           style={{ y: textY, willChange: 'transform' }}
           className="relative z-10 w-full flex flex-col items-center justify-center text-center px-6 pointer-events-none transform-gpu"
         >
-          <span className="text-label-md uppercase tracking-widest text-[#5984c4] mb-6 md:mb-8 block font-bold">
+          <span className="text-label-md uppercase tracking-widest text-[#2563EB] mb-6 md:mb-8 block font-bold">
             THE LAB
           </span>
           <h2 className="text-[10vw] sm:text-[8vw] md:text-[6vw] font-display text-ink leading-[0.9] tracking-tight max-w-[95%] md:max-w-[70%] drop-shadow-sm">
@@ -96,7 +96,7 @@ export function AboutTeaser() {
         
         <div className="flex flex-col text-center md:text-left">
           <div className="w-12 h-12 rounded-full bg-[#5984c4]/10 flex items-center justify-center mb-6 mx-auto md:mx-0">
-            <span className="text-[#5984c4] font-bold">01</span>
+            <span className="text-[#2563EB] font-bold">01</span>
           </div>
           <h3 className="text-xl font-display font-bold text-ink mb-4">
             ≥99% HPLC Purity — Every Batch, No Exceptions
@@ -108,7 +108,7 @@ export function AboutTeaser() {
 
         <div className="flex flex-col text-center md:text-left">
           <div className="w-12 h-12 rounded-full bg-[#5984c4]/10 flex items-center justify-center mb-6 mx-auto md:mx-0">
-            <span className="text-[#5984c4] font-bold">02</span>
+            <span className="text-[#2563EB] font-bold">02</span>
           </div>
           <h3 className="text-xl font-display font-bold text-ink mb-4">
             LC-MS Verified Peptide Identity
@@ -120,7 +120,7 @@ export function AboutTeaser() {
 
         <div className="flex flex-col text-center md:text-left">
           <div className="w-12 h-12 rounded-full bg-[#5984c4]/10 flex items-center justify-center mb-6 mx-auto md:mx-0">
-            <span className="text-[#5984c4] font-bold">03</span>
+            <span className="text-[#2563EB] font-bold">03</span>
           </div>
           <h3 className="text-xl font-display font-bold text-ink mb-4">
             COA with Every Order — Full Transparency

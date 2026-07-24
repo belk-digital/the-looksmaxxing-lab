@@ -92,9 +92,9 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
             >
-              <Image 
-                src={img} 
-                alt={productName ? `${productName} - View ${idx + 1}` : `Product view ${idx + 1}`}
+              <Image
+                src={img}
+                alt={productName ? `${productName} research peptide vial, photo ${idx + 1} of ${images.length}` : `Research peptide vial, photo ${idx + 1} of ${images.length}`}
                 fill
                 priority={idx === 0}
                 className="object-cover transition-transform duration-base ease-out group-hover:scale-[1.75]"
@@ -125,9 +125,9 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
                   )}
                 aria-label={`View image ${idx + 1}`}
               >
-                <Image 
+                <Image
                   src={img}
-                  alt={productName ? `${productName} - Thumbnail ${idx + 1}` : `Thumbnail ${idx + 1}`}
+                  alt={productName ? `${productName} research peptide vial thumbnail ${idx + 1}` : `Product thumbnail ${idx + 1}`}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 80px, 80px"

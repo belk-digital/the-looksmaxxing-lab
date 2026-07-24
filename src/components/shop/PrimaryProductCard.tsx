@@ -102,6 +102,7 @@ function SlideToAddButton({ product }: { product: Product }) {
         dragSnapToOrigin={true}
         onDragEnd={handleDragEnd}
         whileTap={{ scale: 0.98 }}
+        aria-label={isMultiVariant ? `Select options for ${product.name}` : `Add ${product.name} to cart`}
         className={`absolute left-1 w-[32px] h-[32px] sm:w-[44px] sm:h-[44px] rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-10 shadow-sm transition-colors duration-300 ${
           isAdded ? 'bg-green-600 text-white' : 'bg-[#1A1A1A] text-white'
         }`}
@@ -202,14 +203,14 @@ export function PrimaryProductCard({ product, size = 'small', id }: PrimaryProdu
 
         <Image
           src={product.image}
-          alt={product.name}
+          alt={`${product.name} research peptide vial`}
           fill
           className={`object-cover transition-transform duration-700 ease-out-quart ${product.hoverImage ? 'group-hover:-translate-x-full' : 'group-hover:scale-105'}`}
         />
         {product.hoverImage && (
           <Image
             src={product.hoverImage}
-            alt={`${product.name} alternate view`}
+            alt={`${product.name} research peptide vial — alternate view`}
             fill
             unoptimized
             className="object-cover absolute inset-0 translate-x-full transition-transform duration-700 ease-out-quart group-hover:translate-x-0"
@@ -222,6 +223,8 @@ export function PrimaryProductCard({ product, size = 'small', id }: PrimaryProdu
           whileHover={isPending ? {} : { scale: 1.05 }}
           whileTap={isPending ? {} : { scale: 0.9 }}
           onClick={handleWishlistClick}
+          aria-label={inWishlist ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
+          aria-pressed={inWishlist}
           className={`absolute top-3 right-3 sm:top-4 sm:right-4 p-1.5 sm:p-2.5 rounded-full backdrop-blur-xl transition-colors z-20 shadow-[0_4px_16px_rgba(0,0,0,0.05)] border flex items-center justify-center disabled:opacity-70 ${
             inWishlist 
               ? 'bg-red-500/15 text-red-500 border-red-500/20 hover:bg-red-500/25' 

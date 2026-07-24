@@ -60,16 +60,17 @@ const FooterContent = () => {
             Quiet updates on new compounds, lab notes, and exclusive availability.
           </p>
           <form className="flex w-full max-w-[280px] gap-0 border-b border-cream/20 hover:border-cream transition-colors pb-2" onSubmit={handleSubscribe}>
-            <input 
-              type="email" 
-              placeholder="Enter your research email address" 
+            <input
+              type="email"
+              aria-label="Research email address"
+              placeholder="Enter your research email address"
               required
               disabled={isSubscribing}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-transparent border-none text-cream placeholder:text-cream/30 focus:outline-none flex-1 px-0 h-6 text-xs disabled:opacity-50"
+              className="bg-transparent border-none text-cream placeholder:text-cream/40 focus:outline-none flex-1 px-0 h-11 text-xs disabled:opacity-50"
             />
-            <button type="submit" disabled={isSubscribing} className="shrink-0 flex items-center justify-center text-cream/50 hover:text-white transition-colors disabled:opacity-50">
+            <button type="submit" disabled={isSubscribing} aria-label="Subscribe to newsletter" className="shrink-0 flex items-center justify-center w-11 h-11 -mr-2 text-cream/70 hover:text-white transition-colors disabled:opacity-50">
               {isSubscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
             </button>
           </form>
@@ -128,8 +129,8 @@ const FooterContent = () => {
       <div className="w-full flex flex-col lg:flex-row justify-between items-start gap-12 mb-0">
         
         <div className="w-full lg:w-1/2 text-left">
-          <p className="text-[10px] text-cream/40 leading-relaxed max-w-[500px]">
-            <strong className="text-cream/60">FDA Disclaimer:</strong> These statements have not been evaluated by the Food and Drug Administration. These products are not intended to diagnose, treat, cure, or prevent any disease. All products offered are for laboratory and research use only. They are not intended for human consumption.
+          <p className="text-[10px] text-cream/70 leading-relaxed max-w-[500px]">
+            <strong className="text-cream/90">FDA Disclaimer:</strong> These statements have not been evaluated by the Food and Drug Administration. These products are not intended to diagnose, treat, cure, or prevent any disease. All products offered are for laboratory and research use only. They are not intended for human consumption.
           </p>
         </div>
 
@@ -139,11 +140,11 @@ const FooterContent = () => {
           <Link href="/refund" className="text-[10px] text-cream/70 hover:text-white uppercase tracking-widest transition-colors font-medium">Refund</Link>
           <Link href="/disclaimer" className="text-[10px] text-cream/70 hover:text-white uppercase tracking-widest transition-colors font-medium">Disclaimer</Link>
           <div className="flex flex-col items-start lg:items-end w-full lg:w-auto mt-4 lg:mt-0 gap-1">
-            <p className="text-[10px] text-cream/30 uppercase tracking-widest font-medium">
+            <p className="text-[10px] text-cream/60 uppercase tracking-widest font-medium">
               © {new Date().getFullYear()} The Looksmaxxing Lab.
             </p>
-            <p className="text-[10px] text-cream/30 uppercase tracking-widest font-medium">
-              Designed and developed by <a href="https://www.belkdigital.com/" target="_blank" rel="noopener noreferrer" className="text-cream/50 hover:text-white transition-colors">Belk Digital</a>
+            <p className="text-[10px] text-cream/60 uppercase tracking-widest font-medium">
+              Designed and developed by <a href="https://www.belkdigital.com/" target="_blank" rel="noopener noreferrer" className="text-cream/80 underline underline-offset-2 hover:text-white transition-colors">Belk Digital</a>
             </p>
           </div>
         </div>

@@ -183,8 +183,8 @@ export default function AboutClient() {
                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
              >
                <Image 
-                 src="/Featured Images/about-page-hero.webp" 
-                 alt="Laboratory environment" 
+                 src="/Featured Images/about-page-hero.webp"
+                 alt="Silhouette of a researcher examining a sample through a laboratory microscope"
                  fill 
                  className="object-cover object-[75%_center] md:object-center"
                  priority

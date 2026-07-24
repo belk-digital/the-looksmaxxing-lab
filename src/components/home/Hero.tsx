@@ -38,10 +38,12 @@ const MagneticButton = ({ children, className, variant = "default", size = "defa
 const slides = [
   {
     image: '/temp-homepage/summer-hero-7.webp',
+    alt: 'The Looksmaxxing Lab Retatrutide (30mg) and Glow (70mg) research peptide vials splashing through water, research use only',
     desktopBgClass: 'bg-[#ede4f4]', // Purplish
   },
   {
     image: '/temp-homepage/summer-hero-9.webp',
+    alt: 'The Looksmaxxing Lab Glutathione (200mg) research peptide vial nestled in a chilled steel coupe glass with frosted dark grapes',
     desktopBgClass: 'bg-[#ffffff]', // White
   }
 ]
@@ -101,7 +103,7 @@ export function Hero() {
             <Image
               key={slide.image}
               src={slide.image}
-              alt={`The Looksmaxxing Lab - Slide ${index + 1}`}
+              alt={slide.alt}
               fill
               quality={100}
               className={`object-cover object-center transition-opacity duration-1000 ${

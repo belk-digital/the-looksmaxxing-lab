@@ -73,7 +73,7 @@ export function HolographicProductCard({ product }: { product: StandardProduct }
           >
             <Image
               src={product.image}
-              alt={product.name}
+              alt={`${product.name} research peptide vial`}
               fill
               className="object-contain drop-shadow-2xl"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

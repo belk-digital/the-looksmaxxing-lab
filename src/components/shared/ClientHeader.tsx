@@ -288,7 +288,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
             </Link>
 
             {/* Mobile Hamburger */}
-            <button onClick={() => setMobileMenuOpen(true)} className={`xl:hidden p-1 -mr-1 transition-colors ${textColor}`}>
+            <button onClick={() => setMobileMenuOpen(true)} aria-label="Open menu" className={`xl:hidden p-1 -mr-1 transition-colors ${textColor}`}>
               <Menu size={20} strokeWidth={1.5} />
             </button>
           </div>
@@ -427,7 +427,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                                 />
                               </div>
                               <div className="flex flex-col items-start px-1 border-l border-transparent group-hover/product:border-black transition-colors duration-300 pl-3">
-                                <h5 className="text-[11px] xl:text-[12px] font-bold text-black uppercase tracking-[0.15em] mb-1.5 line-clamp-1">{prod.name}</h5>
+                                <p className="text-[11px] xl:text-[12px] font-bold text-black uppercase tracking-[0.15em] mb-1.5 line-clamp-1">{prod.name}</p>
                                 <div className="flex items-center gap-3">
                                   <p className="text-[10px] font-bold text-gray-500 tracking-widest">${prod.price}</p>
                                   <span className="text-[10px] text-black opacity-0 -translate-x-2 group-hover/product:opacity-100 group-hover/product:translate-x-0 transition-all duration-300">&rarr;</span>

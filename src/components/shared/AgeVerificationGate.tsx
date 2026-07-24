@@ -54,8 +54,8 @@ export function AgeVerificationGate({ initialVerified }: AgeVerificationGateProp
           {/* Image Section */}
           <div className="relative w-full h-[35vh] md:h-full md:w-1/2 flex-shrink-0">
             <Image 
-              src="/Featured Images/vials-on-magazine.webp" 
-              alt="Research Laboratory" 
+              src="/Featured Images/vials-on-magazine.webp"
+              alt="The Looksmaxxing Lab NAD+, Glow, and MOTS-C research peptide vials displayed on an open longevity-science magazine spread"
               fill 
               priority
               quality={100}

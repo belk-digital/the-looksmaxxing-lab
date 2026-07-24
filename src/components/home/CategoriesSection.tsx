@@ -67,9 +67,9 @@ function CategoryCard({ category, index }: { category: typeof CATEGORIES[0], ind
 
       {/* Bottom Half - Image Area */}
       <div className="relative w-full h-[55%] overflow-hidden bg-white">
-        <Image 
+        <Image
           src={imageSrc}
-          alt={category.name}
+          alt={`${category.displayName} peptide research category — ${category.name}`}
           fill
           className="object-cover object-center transition-transform duration-700 ease-out-quart group-hover:scale-110"
         />

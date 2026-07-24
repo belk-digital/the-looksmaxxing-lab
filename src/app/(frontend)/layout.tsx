@@ -55,7 +55,10 @@ export const metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {},
+  verification: {
+    ...(process.env.GOOGLE_SITE_VERIFICATION && { google: process.env.GOOGLE_SITE_VERIFICATION }),
+    ...(process.env.BING_SITE_VERIFICATION && { other: { 'msvalidate.01': process.env.BING_SITE_VERIFICATION } }),
+  },
 }
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
@@ -69,7 +72,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
 
   return (
     <ClerkProvider>
-      <html lang="en" className={`min-h-screen ${fontDisplay.variable} ${fontSans.variable}`} suppressHydrationWarning>
+      <html lang="en-US" className={`min-h-screen ${fontDisplay.variable} ${fontSans.variable}`} suppressHydrationWarning>
         <head>
           <Script id="google-tag-manager" strategy="afterInteractive">
             {`
@@ -93,10 +96,20 @@ export default async function FrontendLayout({ children }: { children: React.Rea
                 description: 'US-based supplier of research-grade peptides and COA-verified research compounds for scientific laboratory use.',
                 foundingDate: '2024',
                 sameAs: ['https://www.instagram.com/thelooksmaxxinglab'],
+                address: {
+                  '@type': 'PostalAddress',
+                  addressCountry: 'US',
+                },
+                areaServed: {
+                  '@type': 'Country',
+                  name: 'United States',
+                },
                 contactPoint: {
                   '@type': 'ContactPoint',
                   contactType: 'customer service',
                   url: `${siteUrl}/contact`,
+                  areaServed: 'US',
+                  availableLanguage: ['English'],
                 },
                 makesOffer: {
                   '@type': 'OfferCatalog',

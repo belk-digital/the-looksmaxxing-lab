@@ -51,7 +51,7 @@ export function HomeFeaturedProductCard({ product, id, index = 0 }: HomeFeatured
           <div className="relative w-full h-full transition-transform duration-500 ease-out-quart group-hover:scale-110">
             <Image
               src={product.image}
-              alt={product.name}
+              alt={`${product.name} research peptide vial`}
               fill
               className="object-contain mix-blend-multiply drop-shadow-sm"
             />
