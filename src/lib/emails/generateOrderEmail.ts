@@ -99,9 +99,24 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
   ` : '';
 
   let manualPaymentBanner = '';
-  if ((order.paymentMethod === 'apple_pay' || order.paymentMethod === 'zelle') && order.paymentStatus === 'unpaid') {
-    const paymentContact = order.paymentMethod === 'apple_pay' ? 'support@thelooksmaxxinglab.com (Apple Pay)' : 'support@thelooksmaxxinglab.com (Zelle)';
-    manualPaymentBanner = `
+  if (order.paymentStatus === 'unpaid') {
+    if (order.paymentMethod === 'stripe_link') {
+      manualPaymentBanner = `
+          <!-- Manual Payment Instructions -->
+          <tr>
+            <td style="padding: 0 40px 20px 40px;">
+              <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 24px; border-radius: 8px; text-align: center;">
+                <h3 style="margin: 0 0 12px 0; color: #166534; font-size: 18px; font-weight: 700;">Order Received & Awaiting Payment</h3>
+                <p style="margin: 0; color: #166534; font-size: 14px; line-height: 1.5;">
+                  Your order has been placed successfully. Our team will contact you shortly with a secure payment link via SMS or email to complete your payment of <strong>${formatMoney(total)}</strong>.
+                </p>
+              </div>
+            </td>
+          </tr>
+      `;
+    } else if (order.paymentMethod === 'apple_pay' || order.paymentMethod === 'zelle') {
+      const paymentContact = order.paymentMethod === 'apple_pay' ? 'support@thelooksmaxxinglab.com (Apple Pay)' : 'support@thelooksmaxxinglab.com (Zelle)';
+      manualPaymentBanner = `
           <!-- Manual Payment Instructions -->
           <tr>
             <td style="padding: 0 40px 20px 40px;">
@@ -119,7 +134,8 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
               </div>
             </td>
           </tr>
-    `;
+      `;
+    }
   }
 
 

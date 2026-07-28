@@ -190,6 +190,7 @@ export const Orders: CollectionConfig = {
       type: 'select',
       options: [
         { label: 'Stripe (Credit Card)', value: 'stripe' },
+        { label: 'Credit / Debit Card (Manual Link)', value: 'stripe_link' },
         { label: 'Apple Pay (Manual)', value: 'apple_pay' },
         { label: 'Zelle (Manual)', value: 'zelle' },
       ],

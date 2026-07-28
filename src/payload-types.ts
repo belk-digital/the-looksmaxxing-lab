@@ -669,7 +669,7 @@ export interface Order {
     country?: string | null;
   };
   status: 'pending' | 'paid' | 'fulfilled' | 'shipped' | 'completed' | 'refunded' | 'cancelled';
-  paymentMethod: 'stripe' | 'apple_pay' | 'zelle';
+  paymentMethod: 'stripe' | 'stripe_link' | 'apple_pay' | 'zelle';
   paymentStatus: 'unpaid' | 'authorized' | 'captured' | 'refunded';
   fulfillmentStatus: 'unfulfilled' | 'partial' | 'fulfilled';
   /**

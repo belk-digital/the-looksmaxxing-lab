@@ -81,18 +81,26 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
           </FadeUp>
         </div>
 
-        {(order.paymentMethod === 'apple_pay' || order.paymentMethod === 'zelle') && order.paymentStatus === 'unpaid' && (
+        {(order.paymentMethod === 'apple_pay' || order.paymentMethod === 'zelle' || order.paymentMethod === 'stripe_link') && order.paymentStatus === 'unpaid' && (
           <FadeUp delay={0.15} className="w-full max-w-2xl mb-10 print:hidden">
-            <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-2xl flex flex-col gap-4 text-center shadow-sm">
-              <h2 className="text-lg font-bold text-yellow-900">Action Required: Complete Your Payment</h2>
-              <p className="text-sm text-yellow-800">
-                Your order has been placed successfully, but it is currently <strong>unpaid</strong>. <br className="hidden sm:block" />
-                Please pay <strong>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(order.total)}</strong> via {order.paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'} to:
-              </p>
-              
-              <p className="text-xs sm:text-sm text-yellow-900 bg-yellow-100/50 px-3 py-2 rounded-lg border border-yellow-200/50 max-w-md mx-auto mb-4">
-                <strong>Important:</strong> You must include your Order Number (<strong>#{order.id}</strong>) in the payment notes so we can verify your payment and process your order.
-              </p>
+            {order.paymentMethod === 'stripe_link' ? (
+              <div className="bg-green-50 border border-green-200 p-6 rounded-2xl flex flex-col gap-4 text-center shadow-sm">
+                <h2 className="text-lg font-bold text-green-900">Order Received & Awaiting Payment</h2>
+                <p className="text-sm text-green-800">
+                  Your order has been placed successfully. Our team will contact you shortly with a secure payment link via SMS or email to complete your payment of <strong>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(order.total)}</strong>.
+                </p>
+              </div>
+            ) : (
+              <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-2xl flex flex-col gap-4 text-center shadow-sm">
+                <h2 className="text-lg font-bold text-yellow-900">Action Required: Complete Your Payment</h2>
+                <p className="text-sm text-yellow-800">
+                  Your order has been placed successfully, but it is currently <strong>unpaid</strong>. <br className="hidden sm:block" />
+                  Please pay <strong>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(order.total)}</strong> via {order.paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'} to:
+                </p>
+                
+                <p className="text-xs sm:text-sm text-yellow-900 bg-yellow-100/50 px-3 py-2 rounded-lg border border-yellow-200/50 max-w-md mx-auto mb-4">
+                  <strong>Important:</strong> You must include your Order Number (<strong>#{order.id}</strong>) in the payment notes so we can verify your payment and process your order.
+                </p>
 
               {order.paymentMethod === 'zelle' && (
                 <div className="flex justify-center mb-4 mt-2">
@@ -106,12 +114,13 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
                 </div>
               )}
 
-              <div className="bg-white py-3 px-4 sm:px-6 rounded-xl border border-yellow-200 inline-block max-w-full mx-auto shadow-sm">
-                <span className="font-mono text-sm sm:text-lg font-bold text-ink break-all">
-                  support@thelooksmaxxinglab.com
-                </span>
+                <div className="bg-white py-3 px-4 sm:px-6 rounded-xl border border-yellow-200 inline-block max-w-full mx-auto shadow-sm">
+                  <span className="font-mono text-sm sm:text-lg font-bold text-ink break-all">
+                    support@thelooksmaxxinglab.com
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
           </FadeUp>
         )}
 
@@ -158,7 +167,7 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
                     </div>
                     <div>
                       <p className="text-ink/40 text-[10px] sm:text-xs font-medium uppercase tracking-wider mb-1">Payment Method</p>
-                      <p className="font-bold text-ink">{order.paymentMethod === 'stripe' ? 'Credit / Debit Card' : order.paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'}</p>
+                      <p className="font-bold text-ink">{order.paymentMethod === 'stripe' ? 'Credit / Debit Card' : order.paymentMethod === 'stripe_link' ? 'Credit / Debit Card' : order.paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'}</p>
                     </div>
                     <div>
                       <p className="text-ink/40 text-[10px] sm:text-xs font-medium uppercase tracking-wider mb-1">Payment Status</p>

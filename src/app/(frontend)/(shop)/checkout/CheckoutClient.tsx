@@ -126,7 +126,7 @@ export function CheckoutClient() {
   const [couponCode, setCouponCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; freeShipping: boolean; description: string } | null>(null)
   const [isVerifyingCoupon, setIsVerifyingCoupon] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'apple_pay' | 'zelle'>('stripe')
+  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'stripe_link' | 'apple_pay' | 'zelle'>('stripe_link')
 
   // Order Calculations
   const subtotal = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
@@ -402,7 +402,7 @@ export function CheckoutClient() {
                         </div>
                         <div className="flex flex-col flex-1 justify-center py-1">
                           <span className="text-sm font-bold text-ink leading-tight">{item.product?.name}</span>
-                          {item.variantSku && !['DEFAULT', 'DEFAULT TITLE'].includes(item.variantSku.toUpperCase()) && (
+                          {item.variantSku && !['DEFAULT', 'DEFAULT TITLE'].includes(String(item.variantSku).toUpperCase()) && (
                             <span className="text-[10px] uppercase tracking-widest text-ink/40 mt-1">{item.variantSku}</span>
                           )}
                         </div>
@@ -686,8 +686,7 @@ export function CheckoutClient() {
                 
                 <div className="flex flex-col gap-3 mb-4">
                   {[
-                    { id: 'stripe', label: 'Credit / Debit Card' },
-                    { id: 'apple_pay', label: 'Apple Pay' },
+                    { id: 'stripe_link', label: 'Credit / Debit Card' },
                     { id: 'zelle', label: 'Zelle' },
                   ].map((method) => (
                     <label key={method.id} className={`flex items-center gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${paymentMethod === method.id ? 'border-ink bg-ink/5' : 'border-slate-100 bg-white hover:border-ink/30'}`}>
@@ -696,7 +695,7 @@ export function CheckoutClient() {
                         name="paymentMethod" 
                         value={method.id} 
                         checked={paymentMethod === method.id} 
-                        onChange={() => setPaymentMethod(method.id as 'stripe' | 'apple_pay' | 'zelle')}
+                        onChange={() => setPaymentMethod(method.id as 'stripe' | 'stripe_link' | 'apple_pay' | 'zelle')}
                         className="w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0" 
                       />
                       <span className="text-sm font-bold text-ink">{method.label}</span>
@@ -740,42 +739,44 @@ export function CheckoutClient() {
                     <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-white -z-10" />
                     
                     <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-3xl bg-ink/5 flex items-center justify-center text-ink/80 mb-1 sm:mb-2 ring-1 ring-inset ring-ink/10 shadow-sm">
-                      {paymentMethod === 'apple_pay' ? (
-                        <Smartphone size={28} strokeWidth={1.5} className="sm:w-8 sm:h-8 w-7 h-7" />
-                      ) : (
-                        <Wallet size={28} strokeWidth={1.5} className="sm:w-8 sm:h-8 w-7 h-7" />
-                      )}
+                      <Wallet size={28} strokeWidth={1.5} className="sm:w-8 sm:h-8 w-7 h-7" />
                     </div>
 
                     <div className="flex flex-col gap-3 sm:gap-4 items-center max-w-md w-full">
                       <h3 className="text-xl sm:text-2xl font-display font-bold text-ink">
-                        Pay with {paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'}
+                        Pay with {paymentMethod === 'stripe_link' ? 'Credit / Debit Card' : 'Zelle'}
                       </h3>
                       
                       <div className="bg-[#fafafa] border border-ink/5 rounded-2xl p-4 sm:p-6 text-left w-full mt-1 sm:mt-2">
-                        <ul className="flex flex-col gap-4 sm:gap-5">
-                          <li className="flex gap-3 sm:gap-4 text-[13px] sm:text-sm text-ink/80">
-                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-ink text-white flex items-center justify-center text-xs font-bold mt-0.5">1</span>
-                            <div>
-                              <strong className="block text-ink mb-0.5">Place Your Order</strong>
-                              Click the button below to secure your items and generate your unique order number.
-                            </div>
-                          </li>
-                          <li className="flex gap-3 sm:gap-4 text-[13px] sm:text-sm text-ink/80">
-                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-ink text-white flex items-center justify-center text-xs font-bold mt-0.5">2</span>
-                            <div>
-                              <strong className="block text-ink mb-0.5">Get Payment Details</strong>
-                              On the next page, you'll receive our official {paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'} contact details.
-                            </div>
-                          </li>
-                          <li className="flex gap-3 sm:gap-4 text-[13px] sm:text-sm text-ink/80">
-                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-ink text-white flex items-center justify-center text-xs font-bold mt-0.5">3</span>
-                            <div>
-                              <strong className="block text-ink mb-0.5">Send Payment</strong>
-                              Transfer the exact total and include your order number in the payment notes to complete your purchase.
-                            </div>
-                          </li>
-                        </ul>
+                        {paymentMethod === 'stripe_link' ? (
+                          <p className="text-sm text-ink/80 leading-relaxed font-medium">
+                            Continue with placing your order below. Our team will contact you shortly with a secure payment link via SMS or email to complete your payment.
+                          </p>
+                        ) : (
+                          <ul className="flex flex-col gap-4 sm:gap-5">
+                            <li className="flex gap-3 sm:gap-4 text-[13px] sm:text-sm text-ink/80">
+                              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-ink text-white flex items-center justify-center text-xs font-bold mt-0.5">1</span>
+                              <div>
+                                <strong className="block text-ink mb-0.5">Place Your Order</strong>
+                                Click the button below to secure your items and generate your unique order number.
+                              </div>
+                            </li>
+                            <li className="flex gap-3 sm:gap-4 text-[13px] sm:text-sm text-ink/80">
+                              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-ink text-white flex items-center justify-center text-xs font-bold mt-0.5">2</span>
+                              <div>
+                                <strong className="block text-ink mb-0.5">Get Payment Details</strong>
+                                On the next page, you'll receive our official Zelle contact details.
+                              </div>
+                            </li>
+                            <li className="flex gap-3 sm:gap-4 text-[13px] sm:text-sm text-ink/80">
+                              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-ink text-white flex items-center justify-center text-xs font-bold mt-0.5">3</span>
+                              <div>
+                                <strong className="block text-ink mb-0.5">Send Payment</strong>
+                                Transfer the exact total and include your order number in the payment notes to complete your purchase.
+                              </div>
+                            </li>
+                          </ul>
+                        )}
                       </div>
                     </div>
 
@@ -786,7 +787,7 @@ export function CheckoutClient() {
                       size="lg" 
                       className="w-full max-w-md mt-4 h-16 rounded-full text-sm font-bold tracking-widest uppercase shadow-[0_8px_20px_rgb(0,0,0,0.15)] hover:-translate-y-0.5 transition-all text-white disabled:opacity-50 disabled:hover:translate-y-0"
                     >
-                      {isProcessing ? <Loader2 className="animate-spin" /> : `Place ${paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'} Order`}
+                      {isProcessing ? <Loader2 className="animate-spin" /> : `Place ${paymentMethod === 'stripe_link' ? 'Order' : 'Zelle Order'}`}
                     </Button>
                   </div>
                 )}
@@ -817,7 +818,7 @@ export function CheckoutClient() {
                     </div>
                     <div className="flex flex-col flex-1 justify-center py-1">
                       <span className="text-sm font-bold text-ink leading-tight">{item.product?.name}</span>
-                      {(item.variantTitle || item.variantSku) && !['DEFAULT', 'DEFAULT TITLE'].includes((item.variantTitle || item.variantSku || '').toUpperCase()) && (
+                      {(item.variantTitle || item.variantSku) && !['DEFAULT', 'DEFAULT TITLE'].includes(String(item.variantTitle || item.variantSku || '').toUpperCase()) && (
                         <span className="text-[10px] font-bold uppercase tracking-widest text-ink/40 mt-1">{item.variantTitle || item.variantSku}</span>
                       )}
                     </div>
