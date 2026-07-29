@@ -37,14 +37,10 @@ const MagneticButton = ({ children, className, variant = "default", size = "defa
 
 const slides = [
   {
-    image: '/temp-homepage/summer-hero-7.webp',
-    alt: 'The Looksmaxxing Lab Retatrutide (30mg) and Glow (70mg) research peptide vials splashing through water, research use only',
-    desktopBgClass: 'bg-[#ede4f4]', // Purplish
-  },
-  {
-    image: '/temp-homepage/summer-hero-9.webp',
-    alt: 'The Looksmaxxing Lab Glutathione (200mg) research peptide vial nestled in a chilled steel coupe glass with frosted dark grapes',
+    image: '/Featured Images/nad-glp-3-vials-on-ice.webp',
+    alt: 'The Looksmaxxing Lab NAD+ and GLP-3 (Rt) research peptide vials on ice',
     desktopBgClass: 'bg-[#ffffff]', // White
+
   }
 ]
 
@@ -137,7 +133,7 @@ export function Hero() {
 
           <div className="gsap-reveal overflow-hidden mb-8 lg:mb-12">
             <p className="text-sm md:text-base lg:text-body-lg text-white/90 lg:text-ink/80 max-w-[480px]">
-              U.S.-manufactured peptides produced in pharmacy-grade facilities. Independently verified for 99%+ purity, identity, and precision. <br/><br/>Exceptional quality. Uncompromising standards.
+              U.S.-manufactured compounds produced in cGMP- and ISO-certified laboratories. Independently verified for 99%+ purity. <br/><br/>Engineered for precision research. Trusted for consistency.
             </p>
           </div>
 

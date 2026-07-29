@@ -121,7 +121,7 @@ export default function PeptideCalculatorPage() {
   )
 
   return (
-    <main className="bg-white min-h-screen overflow-x-hidden w-full">
+    <main className="bg-white min-h-screen overflow-x-clip w-full">
       
       {/* ============================================
           SECTION 1: CALCULATOR (SPLIT SCREEN)
@@ -129,7 +129,7 @@ export default function PeptideCalculatorPage() {
       <section className="flex flex-col lg:flex-row w-full">
         
         {/* LEFT COLUMN: INPUTS */}
-        <div className="w-full lg:w-1/2 min-h-[50vh] lg:min-h-screen pt-24 sm:pt-28 pb-12 px-5 sm:px-8 lg:px-12 xl:px-16 flex flex-col relative bg-white text-ink border-b lg:border-b-0 lg:border-r border-ink/10">
+        <div className="w-full lg:w-1/2 min-h-[50vh] lg:min-h-screen pt-32 sm:pt-36 lg:pt-40 pb-12 px-5 sm:px-8 lg:px-12 xl:px-16 flex flex-col relative bg-white text-ink border-b lg:border-b-0 lg:border-r border-ink/10">
           
           <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.25] mix-blend-multiply z-0">
             <filter id="noiseLight">

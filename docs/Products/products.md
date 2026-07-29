@@ -28,10 +28,10 @@ MOTS-C 40mg	$133
 NAD+ 500mg	$63
 NAD+ 1000mg	$103
 Oxytocin 10mg	$63
-Retatrutide 10mg	$100
-Retatrutide 20mg	$155
-Retatrutide 30mg	$185
-Retatrutide 60mg	$300
+GLP-3 (Rt) 10mg	$100
+GLP-3 (Rt) 20mg	$155
+GLP-3 (Rt) 30mg	$185
+GLP-3 (Rt) 60mg	$300
 Selank 10mg	$58
 Semaglutide 5mg	$48
 Semaglutide 10mg	$65

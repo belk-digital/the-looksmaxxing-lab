@@ -42,7 +42,7 @@ const SAMPLE_COAS: COA[] = [
   { id: 12, product: 'Tesamorelin (2mg)', category: 'Growth', purity: '99.1%', batch: 'TES-2604-C', analyzed: 'Apr 18, 2026', coaUrl: null },
   { id: 13, product: 'AOD-9604 (2mg)', category: 'Metabolic', purity: '99.4%', batch: 'AOD-2605-A', analyzed: 'May 10, 2026', coaUrl: '/pdfs/sample.pdf' },
   { id: 14, product: 'Tirzepatide (5mg)', category: 'Metabolic', purity: '99.7%', batch: 'TIR-2601-B', analyzed: 'Jan 30, 2026', coaUrl: '/pdfs/sample.pdf' },
-  { id: 15, product: 'Retatrutide (2mg)', category: 'Metabolic', purity: '99.8%', batch: 'RET-2602-A', analyzed: 'Feb 20, 2026', coaUrl: '/pdfs/sample.pdf' },
+  { id: 15, product: 'GLP-3 (Rt) (2mg)', category: 'Metabolic', purity: '99.8%', batch: 'RET-2602-A', analyzed: 'Feb 20, 2026', coaUrl: '/pdfs/sample.pdf' },
 ]
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')

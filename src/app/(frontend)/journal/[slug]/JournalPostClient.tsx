@@ -34,19 +34,8 @@ export default function JournalPostPage({ slug }: { slug: string }) {
         style={{ scaleX }}
       />
 
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="px-6 max-w-[720px] mx-auto pt-28 md:pt-32">
-        <ol className="flex flex-wrap items-center gap-2 text-label-sm uppercase tracking-wider text-ink-muted">
-          <li><Link href="/" className="hover:text-gold transition-colors">Home</Link></li>
-          <li aria-hidden="true">/</li>
-          <li><Link href="/journal" className="hover:text-gold transition-colors">Journal</Link></li>
-          <li aria-hidden="true">/</li>
-          <li aria-current="page" className="text-ink truncate max-w-[240px] md:max-w-none">{post.title}</li>
-        </ol>
-      </nav>
-
-      {/* Hero Image */}
-      <div className="w-full h-[60vh] relative mb-16 md:mb-24 mt-8">
+      {/* Hero Header Section */}
+      <div className="relative w-full min-h-[60vh] md:min-h-[70vh] flex flex-col justify-end pt-32 pb-16 md:pb-24 mb-12 md:mb-20">
         <Image
           src={post.heroImage}
           alt={post.title}
@@ -54,30 +43,45 @@ export default function JournalPostPage({ slug }: { slug: string }) {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-ink/20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/50 to-ink/90" />
+        
+        <div className="relative z-10 px-6 max-w-[800px] mx-auto w-full">
+          {/* Breadcrumb */}
+          <nav aria-label="Breadcrumb" className="mb-8 md:mb-10">
+            <ol className="flex flex-wrap items-center justify-center gap-2 text-label-sm uppercase tracking-wider text-cream-sand">
+              <li><Link href="/" className="hover:text-gold transition-colors">Home</Link></li>
+              <li aria-hidden="true" className="text-cream/40">/</li>
+              <li><Link href="/journal" className="hover:text-gold transition-colors">Journal</Link></li>
+              <li aria-hidden="true" className="text-cream/40">/</li>
+              <li aria-current="page" className="text-cream truncate max-w-[200px] md:max-w-none">{post.title}</li>
+            </ol>
+          </nav>
+
+          <FadeUp>
+            {/* Meta Row */}
+            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 text-label-sm md:text-label-md uppercase tracking-wider text-gold mb-6 text-center">
+              <span>{post.category}</span>
+              <span className="text-cream/40">·</span>
+              <span className="text-cream/80">{post.date}</span>
+              <span className="text-cream/40">·</span>
+              <span className="text-cream/80">{post.readTime}</span>
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-editorial-lg md:text-display-sm lg:text-display-md font-serif text-cream mb-6 md:mb-8 text-center leading-[1.2] md:leading-[1.1]">
+              {post.title}
+            </h1>
+
+            {/* Author */}
+            <div className="text-body-sm md:text-body-md text-cream/80 text-center">
+              By <span className="text-cream font-medium">{post.author}</span>
+            </div>
+          </FadeUp>
+        </div>
       </div>
 
       <article className="px-6 max-w-[720px] mx-auto">
         <FadeUp>
-          {/* Meta Row */}
-          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 text-label-md uppercase tracking-wider text-gold mb-8 text-center">
-            <span>{post.category}</span>
-            <span className="text-ink-muted">·</span>
-            <span className="text-ink-muted">{post.date}</span>
-            <span className="text-ink-muted">·</span>
-            <span className="text-ink-muted">{post.readTime}</span>
-          </div>
-
-          {/* Headline */}
-          <h1 className="text-display-lg font-serif text-ink mb-8 text-center leading-[1.1]">
-            {post.title}
-          </h1>
-
-          {/* Author */}
-          <div className="text-body-md text-ink-muted text-center mb-16">
-            By <span className="text-ink font-medium">{post.author}</span>
-          </div>
-
           {/* Body */}
           <div className="text-body-lg text-ink leading-relaxed space-y-8 pb-16">
             {post.content}

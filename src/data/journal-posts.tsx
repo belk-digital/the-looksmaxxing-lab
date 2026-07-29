@@ -187,45 +187,45 @@ const KISSPEPTIN_MOTSC_FAQS = [
       }
     ]
 
-const TESAMORELIN_RETATRUTIDE_FAQS = [
+const TESAMORELIN_GLP_3_RT_FAQS = [
       {
-        question: "What is the core mechanistic difference between Tesamorelin and Retatrutide?",
-        answer: "Tesamorelin is a stabilized analog of Growth Hormone Releasing Hormone (GHRH) that acts on the pituitary to stimulate endogenous growth hormone and downstream IGF-1 secretion. Retatrutide is a triple agonist that simultaneously engages GLP-1, GIP, and glucagon receptors to drive appetite suppression and multi-pathway metabolic signaling."
+        question: "What is the core mechanistic difference between Tesamorelin and GLP-3 (Rt)?",
+        answer: "Tesamorelin is a stabilized analog of Growth Hormone Releasing Hormone (GHRH) that acts on the pituitary to stimulate endogenous growth hormone and downstream IGF-1 secretion. GLP-3 (Rt) is a triple agonist that simultaneously engages GLP-1, GIP, and glucagon receptors to drive appetite suppression and multi-pathway metabolic signaling."
       },
       {
         question: "Which compound is more specifically studied for visceral fat reduction?",
-        answer: "Tesamorelin has the most robust body of research specifically targeting visceral adipose tissue (VAT) reduction through the GH/IGF-1 axis, with published models showing measurable VAT reduction independent of significant subcutaneous fat or total body weight change. Retatrutide is studied for broader, more aggressive total-body metabolic effects."
+        answer: "Tesamorelin has the most robust body of research specifically targeting visceral adipose tissue (VAT) reduction through the GH/IGF-1 axis, with published models showing measurable VAT reduction independent of significant subcutaneous fat or total body weight change. GLP-3 (Rt) is studied for broader, more aggressive total-body metabolic effects."
       },
       {
-        question: "What does 'triple agonist' mean in the context of Retatrutide research?",
-        answer: "A triple agonist peptide is engineered to bind and activate three distinct receptor types within a single molecule — in Retatrutide's case, GLP-1, GIP, and glucagon receptors. This multi-receptor engagement is studied for producing more pronounced metabolic and appetite-regulation effects than single- or dual-agonist compounds."
+        question: "What does 'triple agonist' mean in the context of GLP-3 (Rt) research?",
+        answer: "A triple agonist peptide is engineered to bind and activate three distinct receptor types within a single molecule — in GLP-3 (Rt)'s case, GLP-1, GIP, and glucagon receptors. This multi-receptor engagement is studied for producing more pronounced metabolic and appetite-regulation effects than single- or dual-agonist compounds."
       },
       {
-        question: "Can Tesamorelin and Retatrutide be studied together in the same protocol?",
+        question: "Can Tesamorelin and GLP-3 (Rt) be studied together in the same protocol?",
         answer: "Yes. Because they act through non-overlapping receptor systems — one via the GHRH/pituitary/IGF-1 axis, the other via GLP-1/GIP/glucagon receptors — researchers frequently combine them in comparative body-composition models to observe complementary effects on visceral fat and lean mass preservation."
       },
       {
         question: "Does rapid fat reduction from these compounds affect tissue laxity in research models?",
-        answer: "Rapid adipocyte volume reduction from metabolic peptide research can outpace the rate of fibroblast-driven collagen remodeling, a phenomenon explored in our companion article on GLP-1 agonists and tissue laxity. Researchers studying Retatrutide protocols should account for this mechanical dynamic when designing dermal or structural-integrity assays."
+        answer: "Rapid adipocyte volume reduction from metabolic peptide research can outpace the rate of fibroblast-driven collagen remodeling, a phenomenon explored in our companion article on GLP-1 agonists and tissue laxity. Researchers studying GLP-3 (Rt) protocols should account for this mechanical dynamic when designing dermal or structural-integrity assays."
       },
       {
-        question: "How long is the researched half-life of Tesamorelin versus Retatrutide?",
-        answer: "Tesamorelin carries a trans-3-hexenoyl modification that improves resistance to enzymatic degradation but still requires frequent dosing intervals in research protocols. Retatrutide's engineered structure allows for an extended half-life supporting less frequent administration schedules in laboratory models — always confirm exact figures against your specific protocol's published data."
+        question: "How long is the researched half-life of Tesamorelin versus GLP-3 (Rt)?",
+        answer: "Tesamorelin carries a trans-3-hexenoyl modification that improves resistance to enzymatic degradation but still requires frequent dosing intervals in research protocols. GLP-3 (Rt)'s engineered structure allows for an extended half-life supporting less frequent administration schedules in laboratory models — always confirm exact figures against your specific protocol's published data."
       },
       {
-        question: "How should Tesamorelin and Retatrutide be stored?",
+        question: "How should Tesamorelin and GLP-3 (Rt) be stored?",
         answer: "Both are lyophilized peptides requiring storage at -20°C prior to reconstitution. Once reconstituted with bacteriostatic water, both compounds should be refrigerated at 2°C to 8°C and used within the stability window defined by your experimental protocol to prevent hydrolytic degradation."
       },
       {
-        question: "What purity standards apply to Tesamorelin and Retatrutide research compounds?",
+        question: "What purity standards apply to Tesamorelin and GLP-3 (Rt) research compounds?",
         answer: "Both compounds are synthesized via automated Solid-Phase Peptide Synthesis and purified through preparative HPLC to remove truncated sequences. Final identity and molecular weight confirmation is performed via Electrospray Ionization Mass Spectrometry (ESI-MS), with every batch verified to a ≥99% purity floor."
       },
       {
-        question: "Where can I verify the purity of The Looksmaxxing Lab's Tesamorelin and Retatrutide?",
+        question: "Where can I verify the purity of The Looksmaxxing Lab's Tesamorelin and GLP-3 (Rt)?",
         answer: "Every production batch is tested by an independent, third-party US laboratory. Lot-specific Certificates of Analysis for both compounds are publicly available in our COA Library, allowing researchers to verify identity and purity before use."
       },
       {
-        question: "Do I need a prescription to order Tesamorelin or Retatrutide for laboratory research?",
+        question: "Do I need a prescription to order Tesamorelin or GLP-3 (Rt) for laboratory research?",
         answer: "No. Both compounds sold by The Looksmaxxing Lab are classified strictly as Research Use Only (RUO) laboratory reagents. They are not approved therapeutics and are not intended for human consumption, so no prescription is required for qualified researchers."
       }
     ]
@@ -359,30 +359,30 @@ const RECON_STORAGE_FAQS = [
       }
     ]
 
-const RETATRUTIDE_FAQS = [
+const GLP_3_RT_FAQS = [
       {
-        question: "What is retatrutide?",
-        answer: "Retatrutide (LY-3437943) is a synthetic peptide engineered to simultaneously activate three metabolic receptors: GLP-1, GIP, and glucagon. Developed by Eli Lilly, it is the first triple receptor agonist to reach Phase 3 clinical trials. Research-grade retatrutide is used in laboratory settings to study multi-receptor metabolic signaling and is not intended for human consumption."
+        question: "What is GLP-3 (Rt)?",
+        answer: "GLP-3 (Rt) (LY-3437943) is a synthetic peptide engineered to simultaneously activate three metabolic receptors: GLP-1, GIP, and glucagon. Developed by Eli Lilly, it is the first triple receptor agonist to reach Phase 3 clinical trials. Research-grade GLP-3 (Rt) is used in laboratory settings to study multi-receptor metabolic signaling and is not intended for human consumption."
       },
       {
-        question: "How does retatrutide work?",
-        answer: "Retatrutide activates three G protein-coupled receptors in a single molecule. GLP-1R activation drives insulin secretion and appetite signaling. GIPR activation provides a complementary insulinotropic pathway. GCGR activation promotes hepatic fat oxidation and increases basal energy expenditure. The combined effect creates a broader metabolic research profile than single or dual agonist compounds."
+        question: "How does GLP-3 (Rt) work?",
+        answer: "GLP-3 (Rt) activates three G protein-coupled receptors in a single molecule. GLP-1R activation drives insulin secretion and appetite signaling. GIPR activation provides a complementary insulinotropic pathway. GCGR activation promotes hepatic fat oxidation and increases basal energy expenditure. The combined effect creates a broader metabolic research profile than single or dual agonist compounds."
       },
       {
-        question: "What is the difference between retatrutide and tirzepatide?",
-        answer: "Tirzepatide is a dual agonist activating GLP-1 and GIP receptors. Retatrutide adds a third target — the glucagon receptor — which introduces direct hepatic fat oxidation and elevated energy expenditure not present in dual-agonist compounds. In published Phase 2 data, the highest retatrutide dose cohort demonstrated approximately 24% body weight reduction versus approximately 21% for tirzepatide's highest dose, though direct head-to-head comparison trials have not been conducted."
+        question: "What is the difference between GLP-3 (Rt) and tirzepatide?",
+        answer: "Tirzepatide is a dual agonist activating GLP-1 and GIP receptors. GLP-3 (Rt) adds a third target — the glucagon receptor — which introduces direct hepatic fat oxidation and elevated energy expenditure not present in dual-agonist compounds. In published Phase 2 data, the highest GLP-3 (Rt) dose cohort demonstrated approximately 24% body weight reduction versus approximately 21% for tirzepatide's highest dose, though direct head-to-head comparison trials have not been conducted."
       },
       {
-        question: "What is the difference between retatrutide and semaglutide?",
-        answer: "Semaglutide is a single GLP-1 receptor agonist. Retatrutide engages three receptors simultaneously — GLP-1R, GIPR, and GCGR. The additional receptor targets add metabolic pathways (GIP-mediated insulinotropic enhancement and glucagon-mediated hepatic fat oxidation) that semaglutide cannot access through GLP-1 agonism alone."
+        question: "What is the difference between GLP-3 (Rt) and semaglutide?",
+        answer: "Semaglutide is a single GLP-1 receptor agonist. GLP-3 (Rt) engages three receptors simultaneously — GLP-1R, GIPR, and GCGR. The additional receptor targets add metabolic pathways (GIP-mediated insulinotropic enhancement and glucagon-mediated hepatic fat oxidation) that semaglutide cannot access through GLP-1 agonism alone."
       },
       {
-        question: "Is retatrutide FDA-approved?",
-        answer: "No. As of mid-2026, retatrutide remains an investigational compound in Eli Lilly's Phase 3 TRIUMPH clinical trial program. No regulatory approval or NDA filing has occurred. Research-grade retatrutide is available for laboratory use only and is not a substitute for the investigational drug product studied in clinical trials."
+        question: "Is GLP-3 (Rt) FDA-approved?",
+        answer: "No. As of mid-2026, GLP-3 (Rt) remains an investigational compound in Eli Lilly's Phase 3 TRIUMPH clinical trial program. No regulatory approval or NDA filing has occurred. Research-grade GLP-3 (Rt) is available for laboratory use only and is not a substitute for the investigational drug product studied in clinical trials."
       },
       {
-        question: "Where can I buy retatrutide peptide for research?",
-        answer: "The Looksmaxxing Lab supplies research-grade retatrutide synthesized in US-based, ISO-certified facilities with ≥99% HPLC purity, LC-MS molecular identity verification, and lot-specific COA documentation. All products are for research use only."
+        question: "Where can I buy GLP-3 (Rt) peptide for research?",
+        answer: "The Looksmaxxing Lab supplies research-grade GLP-3 (Rt) synthesized in US-based, ISO-certified facilities with ≥99% HPLC purity, LC-MS molecular identity verification, and lot-specific COA documentation. All products are for research use only."
       }
     ]
 
@@ -416,7 +416,7 @@ const MOTSC_FAQS = [
 const GLP3_FAQS = [
       {
         question: "What is GLP-3 peptide?",
-        answer: "GLP-3 is a synthetic research peptide that functions as a triple receptor agonist, simultaneously engaging glucagon-like peptide-1 receptors (GLP-1R), glucose-dependent insulinotropic polypeptide receptors (GIPR), and glucagon receptors (GCGR). It is modeled after the investigational compound retatrutide and is used in laboratory settings as a reference compound for studying multi-receptor metabolic signaling. It is not intended for human consumption."
+        answer: "GLP-3 is a synthetic research peptide that functions as a triple receptor agonist, simultaneously engaging glucagon-like peptide-1 receptors (GLP-1R), glucose-dependent insulinotropic polypeptide receptors (GIPR), and glucagon receptors (GCGR). It is modeled after the investigational compound GLP-3 (Rt) and is used in laboratory settings as a reference compound for studying multi-receptor metabolic signaling. It is not intended for human consumption."
       },
       {
         question: "How does GLP-3 differ from GLP-1 peptides like semaglutide?",
@@ -427,8 +427,8 @@ const GLP3_FAQS = [
         answer: "Tirzepatide is a dual agonist targeting GLP-1 and GIP receptors. GLP-3 adds a third receptor target — the glucagon receptor (GCGR) — creating a broader engagement profile. In preclinical models, this triple-agonist mechanism has been associated with additional metabolic effects, including direct hepatic fat oxidation, that dual agonists do not produce."
       },
       {
-        question: "Is GLP-3 the same as retatrutide?",
-        answer: "GLP-3 is the research peptide community's designation for a triple GLP-1/GIP/glucagon receptor agonist modeled after Eli Lilly's investigational compound retatrutide (LY-3437943). Research-grade GLP-3 is used as a laboratory reference compound and is structurally distinct from the clinical drug product studied in Eli Lilly's TRIUMPH trial program."
+        question: "Is GLP-3 the same as GLP-3 (Rt)?",
+        answer: "GLP-3 is the research peptide community's designation for a triple GLP-1/GIP/glucagon receptor agonist modeled after Eli Lilly's investigational compound GLP-3 (Rt) (LY-3437943). Research-grade GLP-3 is used as a laboratory reference compound and is structurally distinct from the clinical drug product studied in Eli Lilly's TRIUMPH trial program."
       },
       {
         question: "What purity standard should GLP-3 meet for research?",
@@ -442,52 +442,52 @@ const GLP3_FAQS = [
 
 const SEMA_TIRZ_RETA_FAQS = [
       {
-        question: "What is the core difference between semaglutide, tirzepatide, and retatrutide?",
-        answer: "The core difference is receptor coverage. Semaglutide is a single agonist that targets only the GLP-1 receptor. Tirzepatide is a dual agonist targeting both the GLP-1 and GIP receptors. Retatrutide is a triple agonist, adding glucagon receptor (GCGR) activity on top of GLP-1 and GIP. Each additional receptor target introduces a distinct metabolic pathway into the compound's mechanism, which is why they are studied as progressively more complex research models rather than interchangeable substitutes."
+        question: "What is the core difference between semaglutide, tirzepatide, and GLP-3 (Rt)?",
+        answer: "The core difference is receptor coverage. Semaglutide is a single agonist that targets only the GLP-1 receptor. Tirzepatide is a dual agonist targeting both the GLP-1 and GIP receptors. GLP-3 (Rt) is a triple agonist, adding glucagon receptor (GCGR) activity on top of GLP-1 and GIP. Each additional receptor target introduces a distinct metabolic pathway into the compound's mechanism, which is why they are studied as progressively more complex research models rather than interchangeable substitutes."
       },
       {
         question: "How does GIP receptor agonism change tirzepatide's mechanism compared to semaglutide?",
         answer: "GIP (glucose-dependent insulinotropic polypeptide) receptor activation works synergistically with GLP-1 signaling to enhance insulin secretion and has been associated with improved insulin sensitivity and lipid metabolism in adipose tissue research models. By engaging both receptors simultaneously, tirzepatide produces a broader metabolic signaling profile than GLP-1 agonism alone, which is the mechanistic basis researchers cite for its comparatively larger effect sizes in published trial data."
       },
       {
-        question: "What does the added glucagon receptor component in retatrutide contribute mechanistically?",
-        answer: "Glucagon receptor (GCGR) agonism adds a distinct hepatic pathway: it is associated with increased energy expenditure and direct stimulation of hepatic fat oxidation. In the pivotal Phase 2 trial (Jastreboff et al., 2023, NEJM), retatrutide's highest-dose cohort showed measurable reductions in hepatic fat fraction via MRI-PDFF imaging, an effect attributed specifically to this third receptor pathway rather than to GLP-1 or GIP agonism alone."
+        question: "What does the added glucagon receptor component in GLP-3 (Rt) contribute mechanistically?",
+        answer: "Glucagon receptor (GCGR) agonism adds a distinct hepatic pathway: it is associated with increased energy expenditure and direct stimulation of hepatic fat oxidation. In the pivotal Phase 2 trial (Jastreboff et al., 2023, NEJM), GLP-3 (Rt)'s highest-dose cohort showed measurable reductions in hepatic fat fraction via MRI-PDFF imaging, an effect attributed specifically to this third receptor pathway rather than to GLP-1 or GIP agonism alone."
       },
       {
         question: "What are the molecular structures and amino acid lengths of each compound?",
-        answer: "Semaglutide is a 31-amino-acid peptide. Tirzepatide and retatrutide are both 39-amino-acid peptides. All three share a C18 fatty diacid moiety that enables non-covalent albumin binding, which is the structural feature responsible for extending their circulating half-lives from the minutes-long half-life of native incretin hormones to a multi-day research window suitable for infrequent dosing protocols."
+        answer: "Semaglutide is a 31-amino-acid peptide. Tirzepatide and GLP-3 (Rt) are both 39-amino-acid peptides. All three share a C18 fatty diacid moiety that enables non-covalent albumin binding, which is the structural feature responsible for extending their circulating half-lives from the minutes-long half-life of native incretin hormones to a multi-day research window suitable for infrequent dosing protocols."
       },
       {
         question: "How do the published half-lives of the three compounds compare?",
-        answer: "Semaglutide's albumin-binding modification extends its half-life to approximately 7 days. Tirzepatide's engineered structure produces a comparable multi-day half-life, commonly cited around 5 days. Retatrutide's alpha-aminoisobutyric acid (Aib) substitution and fatty diacid moiety similarly support an extended half-life suitable for once-weekly research dosing. Researchers should always confirm the exact figure against the specific batch's published data rather than relying on a single universal number, as reported ranges vary slightly across sources."
+        answer: "Semaglutide's albumin-binding modification extends its half-life to approximately 7 days. Tirzepatide's engineered structure produces a comparable multi-day half-life, commonly cited around 5 days. GLP-3 (Rt)'s alpha-aminoisobutyric acid (Aib) substitution and fatty diacid moiety similarly support an extended half-life suitable for once-weekly research dosing. Researchers should always confirm the exact figure against the specific batch's published data rather than relying on a single universal number, as reported ranges vary slightly across sources."
       },
       {
         question: "What did the published Phase 2 and Phase 3 trial data show for each compound?",
-        answer: "Semaglutide's STEP trial program reported mean weight reductions of roughly 15% at 68 weeks. Tirzepatide's SURMOUNT-1 trial reported reductions of roughly 21% at 72 weeks with the highest studied dose. Retatrutide's Phase 2 trial (Jastreboff et al., 2023, NEJM) reported reductions exceeding 24% at 48 weeks in its highest-dose cohort, with Phase 3 TRIUMPH-1 topline data reported in May 2026 confirming a dose-dependent effect at 80 weeks. It is essential to understand that this trial data describes the investigational drug product studied in controlled human clinical trials — it does not describe or validate the properties of research-grade peptide material sold for laboratory use."
+        answer: "Semaglutide's STEP trial program reported mean weight reductions of roughly 15% at 68 weeks. Tirzepatide's SURMOUNT-1 trial reported reductions of roughly 21% at 72 weeks with the highest studied dose. GLP-3 (Rt)'s Phase 2 trial (Jastreboff et al., 2023, NEJM) reported reductions exceeding 24% at 48 weeks in its highest-dose cohort, with Phase 3 TRIUMPH-1 topline data reported in May 2026 confirming a dose-dependent effect at 80 weeks. It is essential to understand that this trial data describes the investigational drug product studied in controlled human clinical trials — it does not describe or validate the properties of research-grade peptide material sold for laboratory use."
       },
       {
         question: "Which of the three compounds has the most published long-term data?",
-        answer: "Semaglutide has the longest publication history and the largest cumulative body of trial data, having entered clinical development earliest of the three. Tirzepatide has a substantial and maturing dataset from the SURMOUNT program. Retatrutide is the newest of the three, with its evidence base still expanding through the ongoing TRIUMPH Phase 3 program, meaning its long-term data is comparatively less extensive than the other two at this stage."
+        answer: "Semaglutide has the longest publication history and the largest cumulative body of trial data, having entered clinical development earliest of the three. Tirzepatide has a substantial and maturing dataset from the SURMOUNT program. GLP-3 (Rt) is the newest of the three, with its evidence base still expanding through the ongoing TRIUMPH Phase 3 program, meaning its long-term data is comparatively less extensive than the other two at this stage."
       },
       {
-        question: "Are semaglutide, tirzepatide, and retatrutide interchangeable in a research protocol?",
+        question: "Are semaglutide, tirzepatide, and GLP-3 (Rt) interchangeable in a research protocol?",
         answer: "No. Because each compound engages a different combination of receptors, substituting one for another mid-protocol introduces an uncontrolled mechanistic variable rather than a simple dose adjustment. A study designed around single-receptor GLP-1 agonism will not produce comparable data if the compound is swapped for a dual or triple agonist partway through, even at a matched administered dose."
       },
       {
         question: "How should researchers choose between a single, dual, or triple agonist for a given study?",
-        answer: "Selection should follow directly from the research question. Studies isolating GLP-1 receptor signaling specifically should use semaglutide. Studies investigating GIP-GLP-1 synergy or its effect on insulin sensitivity should use tirzepatide. Studies examining glucagon-mediated hepatic effects alongside incretin signaling — such as hepatic fat oxidation or energy expenditure — require a triple agonist like retatrutide, since neither of the other two compounds engages that pathway at all."
+        answer: "Selection should follow directly from the research question. Studies isolating GLP-1 receptor signaling specifically should use semaglutide. Studies investigating GIP-GLP-1 synergy or its effect on insulin sensitivity should use tirzepatide. Studies examining glucagon-mediated hepatic effects alongside incretin signaling — such as hepatic fat oxidation or energy expenditure — require a triple agonist like GLP-3 (Rt), since neither of the other two compounds engages that pathway at all."
       },
       {
         question: "What purity and identity verification standards should this class of compound meet?",
         answer: "Given the length and structural complexity of all three peptides (31 and 39 amino acids respectively), researchers should require ≥99% purity confirmed by independent third-party HPLC testing, LC-MS or ESI-MS molecular weight verification confirming structural identity, and a lot-specific Certificate of Analysis for every batch. Long-chain peptides of this size are particularly prone to truncated synthesis byproducts, making independent identity confirmation as important as the purity percentage itself."
       },
       {
-        question: "How should semaglutide, tirzepatide, and retatrutide be reconstituted and stored?",
+        question: "How should semaglutide, tirzepatide, and GLP-3 (Rt) be reconstituted and stored?",
         answer: "All three follow the same general handling principles as other lyophilized research peptides: reconstitute with bacteriostatic water, direct the stream gently down the vial wall, swirl rather than shake, and store the reconstituted solution refrigerated at 2-8°C. Lyophilized (unreconstituted) vials should be kept frozen at -20°C until use. See our full Peptide Reconstitution & Storage Guide for the complete step-by-step protocol and stability windows."
       },
       {
         question: "Do these compounds require a prescription to purchase for research purposes?",
-        answer: "No. The semaglutide, tirzepatide, and retatrutide offered by The Looksmaxxing Lab are classified strictly as Research Use Only (RUO) laboratory reagents. They are not FDA-approved therapeutic products, are not for human consumption, and do not require a prescription for qualified researchers procuring them for laboratory use."
+        answer: "No. The semaglutide, tirzepatide, and GLP-3 (Rt) offered by The Looksmaxxing Lab are classified strictly as Research Use Only (RUO) laboratory reagents. They are not FDA-approved therapeutic products, are not for human consumption, and do not require a prescription for qualified researchers procuring them for laboratory use."
       },
       {
         question: "Can these three compounds be studied together in a single comparative protocol?",
@@ -498,8 +498,8 @@ const SEMA_TIRZ_RETA_FAQS = [
         answer: "The most frequent confounders are inconsistent dosing schedules between compounds, unverified purity or identity of the research material itself, and mismatched administration technique across cohorts. Because these compounds are structurally similar but mechanistically distinct, even small procedural inconsistencies can be misattributed to a genuine receptor-driven effect. Documenting batch-level COA data and standardizing every non-compound variable is essential to isolating the true mechanistic comparison."
       },
       {
-        question: "Where can researchers verify the purity of The Looksmaxxing Lab's semaglutide, tirzepatide, and retatrutide?",
-        answer: "Every production batch of our semaglutide, tirzepatide, and retatrutide is tested by an independent, third-party US laboratory using HPLC and LC-MS. Lot-specific, downloadable Certificates of Analysis for all three compounds are publicly available in our COA Library."
+        question: "Where can researchers verify the purity of The Looksmaxxing Lab's semaglutide, tirzepatide, and GLP-3 (Rt)?",
+        answer: "Every production batch of our semaglutide, tirzepatide, and GLP-3 (Rt) is tested by an independent, third-party US laboratory using HPLC and LC-MS. Lot-specific, downloadable Certificates of Analysis for all three compounds are publicly available in our COA Library."
       }
     ]
 
@@ -1012,18 +1012,18 @@ export const JOURNAL_POSTS: JournalPost[] = [
   },
   {
     slug: 'tesamorelin-vs-retatrutide-visceral-fat-research',
-    title: 'Tesamorelin vs. Retatrutide: Comparing Visceral Fat Research Compounds in Female Physiology Studies',
+    title: 'Tesamorelin vs. GLP-3 (Rt): Comparing Visceral Fat Research Compounds in Female Physiology Studies',
     category: 'Studies',
     date: 'May 28, 2026',
     readTime: '27 min read',
-    excerpt: 'A rigorous comparative analysis of Tesamorelin, a GHRH analog with documented visceral fat research applications, and Retatrutide, a triple GLP-1/GIP/glucagon agonist, for designing female-physiology body composition protocols.',
-    heroImage: '/journal-images/tesamorelin-retatrutide-visceral-fat-hero.webp',
+    excerpt: 'A rigorous comparative analysis of Tesamorelin, a GHRH analog with documented visceral fat research applications, and GLP-3 (Rt), a triple GLP-1/GIP/glucagon agonist, for designing female-physiology body composition protocols.',
+    heroImage: '/journal-images/tesamorelin-glp-3-visceral-fat-hero.webp',
     author: 'The Looksmaxxing Lab Research Team',
-    faqs: TESAMORELIN_RETATRUTIDE_FAQS,
+    faqs: TESAMORELIN_GLP_3_RT_FAQS,
     content: (
       <>
         <p className="first-letter:text-7xl first-letter:font-serif first-letter:float-left first-letter:mr-4 first-letter:text-ink first-letter:mt-2">
-          Not all adipose tissue behaves the same way in laboratory models, and not all research peptides target it through the same mechanism. As female-physiology body composition research has matured, two compounds have emerged as the dominant reference points for investigating visceral fat specifically: <Link href="/products/tesamorelin" className="text-blue-600 underline hover:text-blue-800">Tesamorelin</Link>, a stabilized Growth Hormone Releasing Hormone (GHRH) analog with a uniquely well-documented visceral-fat research profile, and <Link href="/products/retatrutide" className="text-blue-600 underline hover:text-blue-800">Retatrutide</Link>, an engineered triple agonist peptide studied for aggressive, multi-pathway metabolic effects.
+          Not all adipose tissue behaves the same way in laboratory models, and not all research peptides target it through the same mechanism. As female-physiology body composition research has matured, two compounds have emerged as the dominant reference points for investigating visceral fat specifically: <Link href="/products/tesamorelin" className="text-blue-600 underline hover:text-blue-800">Tesamorelin</Link>, a stabilized Growth Hormone Releasing Hormone (GHRH) analog with a uniquely well-documented visceral-fat research profile, and <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link>, an engineered triple agonist peptide studied for aggressive, multi-pathway metabolic effects.
         </p>
 
         <p>
@@ -1036,7 +1036,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
           Before comparing the two compounds, it is essential to understand why researchers treat visceral adipose tissue as mechanistically distinct from subcutaneous fat. Visceral fat accumulates around and within the abdominal organs, is metabolically active, and is independently associated in the research literature with insulin resistance, systemic inflammation, and cardiometabolic risk markers. Subcutaneous fat, by contrast, sits beneath the dermis and behaves as a comparatively inert energy reservoir. A compound that reduces total body weight does not necessarily reduce visceral fat specifically — which is precisely why VAT-targeted research is treated as its own specialized subfield.
         </p>
 
-        <Image src="/journal-images/tesamorelin-retatrutide-visceral-fat-diagram.webp" alt="Diagram comparing visceral fat and subcutaneous fat in the human abdomen" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+        <Image src="/journal-images/tesamorelin-glp-3-visceral-fat-diagram.webp" alt="Diagram comparing visceral fat and subcutaneous fat in the human abdomen" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Tesamorelin: A GHRH Analog With a Documented Visceral Fat Profile</h2>
 
@@ -1050,22 +1050,22 @@ export const JOURNAL_POSTS: JournalPost[] = [
           What distinguishes Tesamorelin from most other metabolic research peptides is the specificity of its published visceral-fat data. Research models tracking Tesamorelin administration over multi-month protocols have measured meaningful visceral adipose tissue reduction, with comparatively modest change to subcutaneous fat or total body weight — a signature research profile that makes it an unusually precise tool for VAT-specific investigation rather than blunt, non-specific weight-reduction study designs.
         </p>
 
-        <Image src="/journal-images/tesamorelin-retatrutide-ghrh-binding.webp" alt="Illustration of Tesamorelin GHRH analog binding to pituitary receptors" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+        <Image src="/journal-images/tesamorelin-glp-3-ghrh-binding.webp" alt="Illustration of Tesamorelin GHRH analog binding to pituitary receptors" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
           Because growth hormone signaling also intersects with lean mass and connective tissue biology, Tesamorelin is frequently a comparator compound in research models investigating body composition, waist-to-hip ratio changes, and IGF-1-driven metabolic markers in female-physiology-focused protocols specifically.
         </p>
 
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Retatrutide: A Triple GLP-1/GIP/Glucagon Agonist</h2>
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">GLP-3 (Rt): A Triple GLP-1/GIP/Glucagon Agonist</h2>
 
         <p>
-          <Link href="/products/retatrutide" className="text-blue-600 underline hover:text-blue-800">Retatrutide</Link> represents a structurally distinct research approach. Rather than acting upstream through the GH/IGF-1 axis, Retatrutide is engineered as a triple agonist — a single peptide capable of simultaneously binding and activating GLP-1, GIP, and glucagon receptors. This tri-pathway engagement is studied for producing more pronounced appetite suppression, glycemic modulation, and overall metabolic rate effects than single- or dual-agonist compounds. For a complete breakdown of this mechanism, published Phase 2/3 evidence, and sourcing standards, see our dedicated guide, <Link href="/journal/retatrutide-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">Retatrutide Peptide: Complete Research Guide to the Triple Agonist</Link>.
+          <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> represents a structurally distinct research approach. Rather than acting upstream through the GH/IGF-1 axis, GLP-3 (Rt) is engineered as a triple agonist — a single peptide capable of simultaneously binding and activating GLP-1, GIP, and glucagon receptors. This tri-pathway engagement is studied for producing more pronounced appetite suppression, glycemic modulation, and overall metabolic rate effects than single- or dual-agonist compounds. For a complete breakdown of this mechanism, published Phase 2/3 evidence, and sourcing standards, see our dedicated guide, <Link href="/journal/glp-3-rt-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt) Peptide: Complete Research Guide to the Triple Agonist</Link>.
         </p>
 
-        <Image src="/journal-images/tesamorelin-retatrutide-triple-agonist.webp" alt="Diagram of a triple-agonist peptide binding GLP-1, GIP, and glucagon receptors" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+        <Image src="/journal-images/tesamorelin-glp-3-triple-agonist.webp" alt="Diagram of a triple-agonist peptide binding GLP-1, GIP, and glucagon receptors" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          The addition of glucagon receptor activity is particularly notable in the research literature — unlike GLP-1 and GIP, which primarily influence insulin secretion and appetite, glucagon receptor engagement is studied for its role in increasing energy expenditure, making Retatrutide a research subject of significant interest for models investigating total metabolic rate alongside appetite regulation.
+          The addition of glucagon receptor activity is particularly notable in the research literature — unlike GLP-1 and GIP, which primarily influence insulin secretion and appetite, glucagon receptor engagement is studied for its role in increasing energy expenditure, making GLP-3 (Rt) a research subject of significant interest for models investigating total metabolic rate alongside appetite regulation.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comparative Mechanism Table</h2>
@@ -1076,7 +1076,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
               <tr className="border-b-2 border-ink">
                 <th className="text-left py-3 pr-4 font-bold text-ink">Attribute</th>
                 <th className="text-left py-3 pr-4 font-bold text-ink">Tesamorelin</th>
-                <th className="text-left py-3 font-bold text-ink">Retatrutide</th>
+                <th className="text-left py-3 font-bold text-ink">GLP-3 (Rt)</th>
               </tr>
             </thead>
             <tbody className="text-ink-muted">
@@ -1109,10 +1109,10 @@ export const JOURNAL_POSTS: JournalPost[] = [
           </table>
         </div>
 
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Why Researchers Stack Tesamorelin and Retatrutide</h2>
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Why Researchers Stack Tesamorelin and GLP-3 (Rt)</h2>
 
         <p>
-          Because Tesamorelin and Retatrutide act on entirely non-overlapping receptor systems, researchers building comprehensive body-composition models frequently combine them. The rationale is straightforward: Retatrutide's tri-pathway engagement drives aggressive appetite suppression and total metabolic effect, while Tesamorelin's GH/IGF-1 axis stimulation is studied for supporting lean tissue preservation alongside visceral-fat-specific reduction — together offering a more complete body-recomposition research model than either compound alone.
+          Because Tesamorelin and GLP-3 (Rt) act on entirely non-overlapping receptor systems, researchers building comprehensive body-composition models frequently combine them. The rationale is straightforward: GLP-3 (Rt)'s tri-pathway engagement drives aggressive appetite suppression and total metabolic effect, while Tesamorelin's GH/IGF-1 axis stimulation is studied for supporting lean tissue preservation alongside visceral-fat-specific reduction — together offering a more complete body-recomposition research model than either compound alone.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Dose-Response Considerations and Titration Study Design</h2>
@@ -1122,49 +1122,49 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </p>
 
         <p>
-          Retatrutide's triple-agonist design introduces a different titration challenge entirely. Because the compound simultaneously engages three separate receptor systems, researchers frequently observe that gastrointestinal tolerability markers (a common variable tracked in GLP-1-class research models) become the practical ceiling on titration speed long before receptor saturation is reached. Slow, incremental dose-escalation protocols are therefore standard practice across published Retatrutide research designs, allowing investigators to separate genuine metabolic signaling effects from transient tolerability-driven confounds.
+          GLP-3 (Rt)'s triple-agonist design introduces a different titration challenge entirely. Because the compound simultaneously engages three separate receptor systems, researchers frequently observe that gastrointestinal tolerability markers (a common variable tracked in GLP-1-class research models) become the practical ceiling on titration speed long before receptor saturation is reached. Slow, incremental dose-escalation protocols are therefore standard practice across published GLP-3 (Rt) research designs, allowing investigators to separate genuine metabolic signaling effects from transient tolerability-driven confounds.
         </p>
 
         <p>
-          When the two compounds are studied in combination, researchers typically stagger titration schedules — establishing a stable Tesamorelin dosing baseline before layering in a slowly escalating Retatrutide protocol — to isolate the marginal contribution of each compound to the overall body-composition outcome being measured.
+          When the two compounds are studied in combination, researchers typically stagger titration schedules — establishing a stable Tesamorelin dosing baseline before layering in a slowly escalating GLP-3 (Rt) protocol — to isolate the marginal contribution of each compound to the overall body-composition outcome being measured.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Tissue Laxity: A Critical Consideration for Rapid Fat-Loss Protocols</h2>
 
         <p>
-          Any protocol involving aggressive adipocyte volume reduction — as is frequently studied with high-potency compounds like Retatrutide — must account for the mechanical relationship between fat pad volume and the overlying dermal extracellular matrix. As explored in detail in our companion article on <Link href="/journal/glp-1-tissue-laxity" className="text-blue-600 underline hover:text-blue-800">GLP-1 agonists and tissue laxity</Link>, when adipocytes shrink faster than local fibroblasts can remodel the surrounding collagen network, the result is measurable tissue laxity in research models. Investigators studying aggressive metabolic peptides often pair their protocols with structural compounds like <Link href="/products/ghk-cu" className="text-blue-600 underline hover:text-blue-800">GHK-Cu</Link> to study whether concurrent fibroblast stimulation can offset this mechanical mismatch.
+          Any protocol involving aggressive adipocyte volume reduction — as is frequently studied with high-potency compounds like GLP-3 (Rt) — must account for the mechanical relationship between fat pad volume and the overlying dermal extracellular matrix. As explored in detail in our companion article on <Link href="/journal/glp-1-tissue-laxity" className="text-blue-600 underline hover:text-blue-800">GLP-1 agonists and tissue laxity</Link>, when adipocytes shrink faster than local fibroblasts can remodel the surrounding collagen network, the result is measurable tissue laxity in research models. Investigators studying aggressive metabolic peptides often pair their protocols with structural compounds like <Link href="/products/ghk-cu" className="text-blue-600 underline hover:text-blue-800">GHK-Cu</Link> to study whether concurrent fibroblast stimulation can offset this mechanical mismatch.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comparative Positioning Among Metabolic Research Peptides</h2>
 
         <p>
-          Placing Tesamorelin and Retatrutide within the broader landscape of metabolic research peptides helps clarify why researchers select one, the other, or both for a given protocol. Single-agonist compounds such as Semaglutide, discussed extensively in our companion article on <Link href="/journal/glp-1-tissue-laxity" className="text-blue-600 underline hover:text-blue-800">GLP-1 agonists and tissue laxity</Link>, act on a single receptor pathway and are typically studied for broad appetite suppression and total weight-reduction effects rather than VAT-specific outcomes. Dual-agonist compounds such as Tirzepatide add GIP receptor activity on top of the GLP-1 pathway, producing a more pronounced metabolic effect than single-agonist compounds but still without the glucagon-receptor-driven energy expenditure component unique to triple agonists.
+          Placing Tesamorelin and GLP-3 (Rt) within the broader landscape of metabolic research peptides helps clarify why researchers select one, the other, or both for a given protocol. Single-agonist compounds such as Semaglutide, discussed extensively in our companion article on <Link href="/journal/glp-1-tissue-laxity" className="text-blue-600 underline hover:text-blue-800">GLP-1 agonists and tissue laxity</Link>, act on a single receptor pathway and are typically studied for broad appetite suppression and total weight-reduction effects rather than VAT-specific outcomes. Dual-agonist compounds such as Tirzepatide add GIP receptor activity on top of the GLP-1 pathway, producing a more pronounced metabolic effect than single-agonist compounds but still without the glucagon-receptor-driven energy expenditure component unique to triple agonists.
         </p>
 
         <p>
-          Retatrutide's addition of glucagon receptor engagement places it at the most mechanistically aggressive end of this spectrum, which is precisely why researchers studying total metabolic rate — rather than appetite suppression alone — frequently select it as their reference triple-agonist compound. Tesamorelin, by contrast, occupies an entirely separate category. It is not a GLP-1-class compound at all, and its research value lies specifically in its documented visceral-fat specificity via the GH/IGF-1 axis rather than broad appetite or weight-reduction effects.
+          GLP-3 (Rt)'s addition of glucagon receptor engagement places it at the most mechanistically aggressive end of this spectrum, which is precisely why researchers studying total metabolic rate — rather than appetite suppression alone — frequently select it as their reference triple-agonist compound. Tesamorelin, by contrast, occupies an entirely separate category. It is not a GLP-1-class compound at all, and its research value lies specifically in its documented visceral-fat specificity via the GH/IGF-1 axis rather than broad appetite or weight-reduction effects.
         </p>
 
         <p>
-          This positioning explains why the two compounds are so frequently studied in combination rather than as substitutes for one another: Retatrutide answers questions about aggressive, multi-pathway metabolic modulation, while Tesamorelin answers a narrower, more specific question about visceral adipose tissue and lean mass preservation via growth hormone signaling. Researchers designing a comprehensive female-physiology body-composition model benefit from treating the two compounds as complementary instruments rather than interchangeable options.
+          This positioning explains why the two compounds are so frequently studied in combination rather than as substitutes for one another: GLP-3 (Rt) answers questions about aggressive, multi-pathway metabolic modulation, while Tesamorelin answers a narrower, more specific question about visceral adipose tissue and lean mass preservation via growth hormone signaling. Researchers designing a comprehensive female-physiology body-composition model benefit from treating the two compounds as complementary instruments rather than interchangeable options.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">E-E-A-T Focus: Sourcing High-Purity Metabolic Peptides</h2>
 
         <p>
-          Tesamorelin's 44-amino-acid sequence and Retatrutide's engineered 39-amino-acid triple-agonist structure are both exceptionally difficult to synthesize without introducing truncated variants or coupling errors. A compromised sequence in either compound can competitively occupy receptor sites without producing the intended signaling activity, corrupting research outcomes and, in impure gray-market material, introducing toxic byproducts into sensitive laboratory models.
+          Tesamorelin's 44-amino-acid sequence and GLP-3 (Rt)'s engineered 39-amino-acid triple-agonist structure are both exceptionally difficult to synthesize without introducing truncated variants or coupling errors. A compromised sequence in either compound can competitively occupy receptor sites without producing the intended signaling activity, corrupting research outcomes and, in impure gray-market material, introducing toxic byproducts into sensitive laboratory models.
         </p>
 
-        <Image src="/journal-images/tesamorelin-retatrutide-comparative-lab-analysis.webp" alt="Laboratory desk comparing two research peptide vials with HPLC documentation" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+        <Image src="/journal-images/tesamorelin-glp-3-comparative-lab-analysis.webp" alt="Laboratory desk comparing two research peptide vials with HPLC documentation" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          Every batch of <Link href="/products/tesamorelin" className="text-blue-600 underline hover:text-blue-800">Tesamorelin</Link> and <Link href="/products/retatrutide" className="text-blue-600 underline hover:text-blue-800">Retatrutide</Link> sold by <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> is synthesized via Solid-Phase Peptide Synthesis, purified through preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">HPLC</Link>, and verified via Electrospray Ionization Mass Spectrometry (ESI-MS) at an independent, third-party US laboratory. Every lot is documented at a ≥99% purity floor, with results available in our publicly accessible <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link>. Researchers should also use our <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution Calculator</Link> — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution guide</Link> — to ensure precise molar dosing across both compounds.
+          Every batch of <Link href="/products/tesamorelin" className="text-blue-600 underline hover:text-blue-800">Tesamorelin</Link> and <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> sold by <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> is synthesized via Solid-Phase Peptide Synthesis, purified through preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">HPLC</Link>, and verified via Electrospray Ionization Mass Spectrometry (ESI-MS) at an independent, third-party US laboratory. Every lot is documented at a ≥99% purity floor, with results available in our publicly accessible <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link>. Researchers should also use our <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution Calculator</Link> — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution guide</Link> — to ensure precise molar dosing across both compounds.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Building a Reproducible Research Protocol</h2>
 
         <p>
-          Reproducibility across replicate cohorts is the single most important design consideration when studying either compound. For Tesamorelin, this means standardizing the timing of visceral-fat imaging assessments relative to dosing intervals, since GH pulse-driven IGF-1 elevation follows a predictable but time-sensitive curve that can meaningfully skew comparative measurements if sampling windows are inconsistent across cohorts. For Retatrutide, reproducibility depends heavily on controlling for baseline dietary intake and activity level, since the compound's appetite-suppression effect can otherwise introduce substantial inter-subject variability unrelated to the peptide's direct receptor activity.
+          Reproducibility across replicate cohorts is the single most important design consideration when studying either compound. For Tesamorelin, this means standardizing the timing of visceral-fat imaging assessments relative to dosing intervals, since GH pulse-driven IGF-1 elevation follows a predictable but time-sensitive curve that can meaningfully skew comparative measurements if sampling windows are inconsistent across cohorts. For GLP-3 (Rt), reproducibility depends heavily on controlling for baseline dietary intake and activity level, since the compound's appetite-suppression effect can otherwise introduce substantial inter-subject variability unrelated to the peptide's direct receptor activity.
         </p>
 
         <p>
@@ -1174,7 +1174,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
 
         <div className="space-y-6">
-          {TESAMORELIN_RETATRUTIDE_FAQS.map((faq, idx) => (
+          {TESAMORELIN_GLP_3_RT_FAQS.map((faq, idx) => (
             <div key={idx}>
               <h4 className="font-bold text-ink">{faq.question}</h4>
               <p className="text-ink-muted">{faq.answer}</p>
@@ -1290,7 +1290,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </p>
 
         <p>
-          Against Tesamorelin-based protocols (a stabilized GHRH analog explored in depth in our companion article on Tesamorelin and Retatrutide), the CJC-1295 + Ipamorelin combination is distinguished by its dual-receptor mechanism. Tesamorelin research relies solely on GHRH receptor stimulation, whereas the CJC-1295 + Ipamorelin design deliberately recruits a second, independent ghrelin-receptor pathway. This makes the combination a frequent reference point in literature specifically investigating whether dual-pathway GH stimulation produces measurably different downstream research outcomes compared to single-pathway GHRH stimulation alone.
+          Against Tesamorelin-based protocols (a stabilized GHRH analog explored in depth in our companion article on Tesamorelin and GLP-3 (Rt)), the CJC-1295 + Ipamorelin combination is distinguished by its dual-receptor mechanism. Tesamorelin research relies solely on GHRH receptor stimulation, whereas the CJC-1295 + Ipamorelin design deliberately recruits a second, independent ghrelin-receptor pathway. This makes the combination a frequent reference point in literature specifically investigating whether dual-pathway GH stimulation produces measurably different downstream research outcomes compared to single-pathway GHRH stimulation alone.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Practical Considerations for Reconstitution and Dosing Frequency</h2>
@@ -1526,7 +1526,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Applying This Across Compound Classes</h2>
 
         <p>
-          Purity and identity verification matter identically across every category of research compound, though the synthesis complexity — and therefore the risk of truncation — scales with peptide length. Long-chain metabolic peptides such as <Link href="/products/semaglutide" className="text-blue-600 underline hover:text-blue-800">Semaglutide</Link>, <Link href="/products/tirzepatide" className="text-blue-600 underline hover:text-blue-800">Tirzepatide</Link>, and <Link href="/products/retatrutide" className="text-blue-600 underline hover:text-blue-800">Retatrutide</Link> are considerably harder to synthesize cleanly than short sequences, making independent verification especially important.
+          Purity and identity verification matter identically across every category of research compound, though the synthesis complexity — and therefore the risk of truncation — scales with peptide length. Long-chain metabolic peptides such as <Link href="/products/semaglutide" className="text-blue-600 underline hover:text-blue-800">Semaglutide</Link>, <Link href="/products/tirzepatide" className="text-blue-600 underline hover:text-blue-800">Tirzepatide</Link>, and <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> are considerably harder to synthesize cleanly than short sequences, making independent verification especially important.
         </p>
 
         <p>
@@ -1737,32 +1737,32 @@ export const JOURNAL_POSTS: JournalPost[] = [
     )
   },
   {
-    slug: 'retatrutide-peptide-triple-agonist-research-guide',
-    title: 'Retatrutide Peptide: Complete Research Guide to the GLP-1/GIP/Glucagon Triple Agonist',
+    slug: 'glp-3-rt-peptide-triple-agonist-research-guide',
+    title: 'GLP-3 (Rt) Peptide: Complete Research Guide to the GLP-1/GIP/Glucagon Triple Agonist',
     category: 'Guidelines',
     date: 'July 24, 2026',
     readTime: '22 min read',
-    excerpt: 'A comprehensive guide to retatrutide — the GLP-1/GIP/glucagon triple agonist reshaping metabolic peptide research — covering molecular architecture, receptor pharmacology, Phase 2/3 evidence, and research-grade sourcing standards.',
-    heroImage: '/journal-images/retatrutide-triple-agonist-research-hero.webp',
+    excerpt: 'A comprehensive guide to GLP-3 (Rt) — the GLP-1/GIP/glucagon triple agonist reshaping metabolic peptide research — covering molecular architecture, receptor pharmacology, Phase 2/3 evidence, and research-grade sourcing standards.',
+    heroImage: '/journal-images/glp-3-triple-agonist-research-hero.webp',
     author: 'The Looksmaxxing Lab Research Team',
-    faqs: RETATRUTIDE_FAQS,
+    faqs: GLP_3_RT_FAQS,
     content: (
       <>
         <p className="first-letter:text-7xl first-letter:font-serif first-letter:float-left first-letter:mr-4 first-letter:text-ink first-letter:mt-2">
-          Retatrutide has become one of the most intensely studied peptide compounds in metabolic research, generating search volume that exceeds every other emerging peptide in the research community as of mid-2026. Developed by Eli Lilly under the designation LY-3437943, <Link href="/products/retatrutide" className="text-blue-600 underline hover:text-blue-800">retatrutide</Link> is a synthetic peptide engineered to simultaneously activate three metabolic receptor systems: the glucagon-like peptide-1 receptor (GLP-1R), the glucose-dependent insulinotropic polypeptide receptor (GIPR), and the glucagon receptor (GCGR).
+          GLP-3 (Rt) has become one of the most intensely studied peptide compounds in metabolic research, generating search volume that exceeds every other emerging peptide in the research community as of mid-2026. Developed by Eli Lilly under the designation LY-3437943, <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> is a synthetic peptide engineered to simultaneously activate three metabolic receptor systems: the glucagon-like peptide-1 receptor (GLP-1R), the glucose-dependent insulinotropic polypeptide receptor (GIPR), and the glucagon receptor (GCGR).
         </p>
 
         <p>
-          This triple-agonist architecture makes retatrutide mechanistically distinct from every approved or widely studied incretin compound, and it explains the rapid expansion of research interest across academic, institutional, and independent laboratories. This guide provides a comprehensive, research-oriented overview of retatrutide's molecular design, receptor pharmacology, published preclinical and clinical evidence, and practical considerations for laboratory procurement. It is written for researchers and peptide scientists — not consumers. All compounds referenced are for research use only.
+          This triple-agonist architecture makes GLP-3 (Rt) mechanistically distinct from every approved or widely studied incretin compound, and it explains the rapid expansion of research interest across academic, institutional, and independent laboratories. This guide provides a comprehensive, research-oriented overview of GLP-3 (Rt)'s molecular design, receptor pharmacology, published preclinical and clinical evidence, and practical considerations for laboratory procurement. It is written for researchers and peptide scientists — not consumers. All compounds referenced are for research use only.
         </p>
 
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Molecular Architecture: How Retatrutide Is Engineered</h2>
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Molecular Architecture: How GLP-3 (Rt) Is Engineered</h2>
 
         <p>
-          Retatrutide is a 39-amino-acid synthetic peptide with several structural modifications that distinguish it from native incretin hormones and earlier-generation analogs. The molecular design reflects a deliberate engineering strategy to achieve balanced multi-receptor agonism with a pharmacokinetic profile suitable for once-weekly research dosing: an amino acid backbone resistant to DPP-4 and neutral endopeptidase degradation, alpha-aminoisobutyric acid (Aib) substitution at key positions for steric protection against proteolytic cleavage, and a C18 fatty diacid moiety enabling non-covalent albumin binding that extends half-life from minutes to days.
+          GLP-3 (Rt) is a 39-amino-acid synthetic peptide with several structural modifications that distinguish it from native incretin hormones and earlier-generation analogs. The molecular design reflects a deliberate engineering strategy to achieve balanced multi-receptor agonism with a pharmacokinetic profile suitable for once-weekly research dosing: an amino acid backbone resistant to DPP-4 and neutral endopeptidase degradation, alpha-aminoisobutyric acid (Aib) substitution at key positions for steric protection against proteolytic cleavage, and a C18 fatty diacid moiety enabling non-covalent albumin binding that extends half-life from minutes to days.
         </p>
 
-        <Image src="/journal-images/retatrutide-triple-receptor-binding.webp" alt="Molecular diagram of retatrutide binding three separate metabolic receptors" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+        <Image src="/journal-images/glp-3-triple-receptor-binding.webp" alt="Molecular diagram of GLP-3 (Rt) binding three separate metabolic receptors" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">The Three-Receptor Mechanism: Why Triple Agonism Matters for Research</h2>
 
@@ -1773,13 +1773,13 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h3 className="text-xl font-bold text-ink mt-8 mb-4">First Axis: GLP-1R — Appetite Regulation and Insulin Secretion</h3>
 
         <p>
-          GLP-1 receptor activation drives glucose-dependent insulin secretion, suppresses postprandial glucagon release, delays gastric emptying, and modulates central appetite signaling in the hypothalamus. This is the mechanism shared with semaglutide, liraglutide, and the GLP-1 agonist research class broadly — the foundational layer of retatrutide's activity profile.
+          GLP-1 receptor activation drives glucose-dependent insulin secretion, suppresses postprandial glucagon release, delays gastric emptying, and modulates central appetite signaling in the hypothalamus. This is the mechanism shared with semaglutide, liraglutide, and the GLP-1 agonist research class broadly — the foundational layer of GLP-3 (Rt)'s activity profile.
         </p>
 
         <h3 className="text-xl font-bold text-ink mt-8 mb-4">Second Axis: GIPR — Complementary Insulinotropic Signaling</h3>
 
         <p>
-          GIP receptor co-activation provides a second insulinotropic pathway that operates additively with GLP-1R signaling. Published research on dual GLP-1/GIP agonism — studied extensively through tirzepatide — has demonstrated that combined activation produces greater glycemic improvement and body weight effects than GLP-1R agonism alone in preclinical and clinical models. Retatrutide retains this dual layer and builds upon it.
+          GIP receptor co-activation provides a second insulinotropic pathway that operates additively with GLP-1R signaling. Published research on dual GLP-1/GIP agonism — studied extensively through tirzepatide — has demonstrated that combined activation produces greater glycemic improvement and body weight effects than GLP-1R agonism alone in preclinical and clinical models. GLP-3 (Rt) retains this dual layer and builds upon it.
         </p>
 
         <h3 className="text-xl font-bold text-ink mt-8 mb-4">Third Axis: GCGR — Hepatic Fat Oxidation and Energy Expenditure</h3>
@@ -1788,12 +1788,12 @@ export const JOURNAL_POSTS: JournalPost[] = [
           The glucagon receptor arm is the differentiating mechanism. In preclinical models, GCGR agonism promotes hepatic fat oxidation through enhanced lipid mobilization and beta-oxidation in hepatocytes, and drives an increase in basal energy expenditure — a thermogenic effect mediated by the liver that operates independently of appetite suppression. This pathway is not accessible through GLP-1 or GLP-1/GIP agonism alone, and represents the mechanistic advancement that separates triple agonists from all prior compound classes.
         </p>
 
-        <Image src="/journal-images/retatrutide-hepatic-fat-oxidation-pathway.webp" alt="Illustration of glucagon receptor activation driving hepatic fat oxidation in liver tissue" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+        <Image src="/journal-images/glp-3-hepatic-fat-oxidation-pathway.webp" alt="Illustration of glucagon receptor activation driving hepatic fat oxidation in liver tissue" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Published Research Data: Phase 2 and Phase 3 Evidence</h2>
 
         <p>
-          The pivotal Phase 2 trial, published in the New England Journal of Medicine (Jastreboff et al., 2023), randomized 338 adults with obesity to multiple retatrutide dose tiers or placebo over 48 weeks. The highest-dose cohort (12 mg) demonstrated mean body weight reductions exceeding 24% from baseline — the largest single-compound reduction reported in a controlled obesity trial at the time. The study also reported reductions in hepatic fat fraction measured by MRI-PDFF, suggesting direct hepatic effects attributable to the glucagon receptor component.
+          The pivotal Phase 2 trial, published in the New England Journal of Medicine (Jastreboff et al., 2023), randomized 338 adults with obesity to multiple GLP-3 (Rt) dose tiers or placebo over 48 weeks. The highest-dose cohort (12 mg) demonstrated mean body weight reductions exceeding 24% from baseline — the largest single-compound reduction reported in a controlled obesity trial at the time. The study also reported reductions in hepatic fat fraction measured by MRI-PDFF, suggesting direct hepatic effects attributable to the glucagon receptor component.
         </p>
 
         <p>
@@ -1801,10 +1801,10 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </p>
 
         <p>
-          It is essential for researchers to understand that this clinical trial data pertains to Eli Lilly's investigational drug product — not research-grade peptide material. Research-grade retatrutide is for laboratory use only.
+          It is essential for researchers to understand that this clinical trial data pertains to Eli Lilly's investigational drug product — not research-grade peptide material. Research-grade GLP-3 (Rt) is for laboratory use only.
         </p>
 
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Retatrutide vs. Tirzepatide vs. Semaglutide: Research Compound Comparison</h2>
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">GLP-3 (Rt) vs. Tirzepatide vs. Semaglutide: Research Compound Comparison</h2>
 
         <div className="overflow-x-auto my-8">
           <table className="w-full border-collapse text-body-md">
@@ -1813,7 +1813,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
                 <th className="text-left py-3 pr-4 font-bold text-ink">Parameter</th>
                 <th className="text-left py-3 pr-4 font-bold text-ink">Semaglutide</th>
                 <th className="text-left py-3 pr-4 font-bold text-ink">Tirzepatide</th>
-                <th className="text-left py-3 font-bold text-ink">Retatrutide</th>
+                <th className="text-left py-3 font-bold text-ink">GLP-3 (Rt)</th>
               </tr>
             </thead>
             <tbody className="text-ink-muted">
@@ -1846,31 +1846,31 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </div>
 
         <p>
-          This comparison underscores why retatrutide occupies a distinct position in the research landscape: it subsumes the mechanisms of both prior generations while adding the glucagon-mediated hepatic pathway that is generating the most active experimental questions in metabolic peptide science. For a deeper comparative analysis against GHRH-axis compounds, see our companion article on <Link href="/journal/tesamorelin-vs-retatrutide-visceral-fat-research" className="text-blue-600 underline hover:text-blue-800">Tesamorelin vs. Retatrutide in visceral fat research</Link>.
+          This comparison underscores why GLP-3 (Rt) occupies a distinct position in the research landscape: it subsumes the mechanisms of both prior generations while adding the glucagon-mediated hepatic pathway that is generating the most active experimental questions in metabolic peptide science. For a deeper comparative analysis against GHRH-axis compounds, see our companion article on <Link href="/journal/tesamorelin-vs-retatrutide-visceral-fat-research" className="text-blue-600 underline hover:text-blue-800">Tesamorelin vs. GLP-3 (Rt) in visceral fat research</Link>.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">A Note on GLP-3 Nomenclature</h2>
 
         <p>
-          Researchers will frequently encounter the term "GLP-3" used within the peptide research community to describe this same triple-receptor mechanism class. GLP-3 is not a distinct compound — it is a research-community designation for a triple GLP-1/GIP/glucagon agonist modeled after retatrutide's receptor profile. Our companion guide, <Link href="/journal/glp-3-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">GLP-3 Peptide: Triple Receptor Agonism and Mechanism of Action</Link>, covers this nomenclature distinction and the broader triple-agonist research landscape in more detail.
+          Researchers will frequently encounter the term "GLP-3" used within the peptide research community to describe this same triple-receptor mechanism class. GLP-3 is not a distinct compound — it is a research-community designation for a triple GLP-1/GIP/glucagon agonist modeled after GLP-3 (Rt)'s receptor profile. Our companion guide, <Link href="/journal/glp-3-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">GLP-3 Peptide: Triple Receptor Agonism and Mechanism of Action</Link>, covers this nomenclature distinction and the broader triple-agonist research landscape in more detail.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Research-Grade Sourcing: Purity and Verification Standards</h2>
 
         <p>
-          The rapid expansion of retatrutide research demand has brought a corresponding increase in vendor proliferation, making sourcing diligence more important than ever. Researchers should apply the same verification standards used for any critical reference compound: independent third-party HPLC testing confirming ≥99% peptide purity, LC-MS molecular weight verification ruling out truncated or misidentified material, lot-specific COA documentation publicly accessible for independent verification, and US-based synthesis in ISO-certified facilities.
+          The rapid expansion of GLP-3 (Rt) research demand has brought a corresponding increase in vendor proliferation, making sourcing diligence more important than ever. Researchers should apply the same verification standards used for any critical reference compound: independent third-party HPLC testing confirming ≥99% peptide purity, LC-MS molecular weight verification ruling out truncated or misidentified material, lot-specific COA documentation publicly accessible for independent verification, and US-based synthesis in ISO-certified facilities.
         </p>
 
-        <Image src="/journal-images/retatrutide-hplc-purity-verification.webp" alt="Laboratory HPLC purity verification of a research-grade retatrutide peptide batch" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+        <Image src="/journal-images/glp-3-hplc-purity-verification.webp" alt="Laboratory HPLC purity verification of a research-grade GLP-3 (Rt) peptide batch" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> manufactures <Link href="/products/retatrutide" className="text-blue-600 underline hover:text-blue-800">retatrutide</Link> research peptide in US-based facilities, with every batch independently verified by third-party HPLC and LC-MS analysis. Lot-specific Certificates of Analysis are available in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution protocols, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>, and use the <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Calculator</Link> for concentration calculations.
+          <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> manufactures <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> research peptide in US-based facilities, with every batch independently verified by third-party HPLC and LC-MS analysis. Lot-specific Certificates of Analysis are available in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution protocols, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>, and use the <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Calculator</Link> for concentration calculations.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
 
         <div className="space-y-6">
-          {RETATRUTIDE_FAQS.map((faq, idx) => (
+          {GLP_3_RT_FAQS.map((faq, idx) => (
             <div key={idx}>
               <h4 className="font-bold text-ink">{faq.question}</h4>
               <p className="text-ink-muted">{faq.answer}</p>
@@ -1966,7 +1966,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
                 <td className="py-3">Approved (2017)</td>
               </tr>
               <tr>
-                <td className="py-3 pr-4 font-medium text-ink">Retatrutide</td>
+                <td className="py-3 pr-4 font-medium text-ink">GLP-3 (Rt)</td>
                 <td className="py-3 pr-4">Triple GLP-1/GIP/GCGR agonism</td>
                 <td className="py-3 pr-4">GLP-1R + GIPR + GCGR</td>
                 <td className="py-3">Phase 3</td>
@@ -2033,7 +2033,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">What Is GLP-3 Peptide? Defining the Triple-Agonist Class</h2>
 
         <p>
-          In current research nomenclature, GLP-3 refers to a synthetic peptide analog modeled after the investigational compound <Link href="/journal/retatrutide-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">retatrutide</Link> (LY-3437943), developed by Eli Lilly. The designation "GLP-3" is used within the research peptide community to distinguish this triple-receptor compound class from single-pathway GLP-1 analogs and dual GLP-1/GIP agonists. It is not a naturally occurring peptide hormone; rather, it is a synthetic construct engineered to co-activate three distinct metabolic receptor systems within a single molecular framework.
+          In current research nomenclature, GLP-3 refers to a synthetic peptide analog modeled after the investigational compound <Link href="/journal/glp-3-rt-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> (LY-3437943), developed by Eli Lilly. The designation "GLP-3" is used within the research peptide community to distinguish this triple-receptor compound class from single-pathway GLP-1 analogs and dual GLP-1/GIP agonists. It is not a naturally occurring peptide hormone; rather, it is a synthetic construct engineered to co-activate three distinct metabolic receptor systems within a single molecular framework.
         </p>
 
         <p>
@@ -2106,7 +2106,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Preclinical Evidence Base: What Published Research Shows</h2>
 
         <p>
-          The scientific interest in GLP-3's triple-agonist mechanism is grounded in published preclinical and early-phase clinical data on the parent compound retatrutide. A Phase 2 trial published in the New England Journal of Medicine (Jastreboff et al., 2023) evaluated retatrutide in 338 adults with obesity over 48 weeks, with the highest-dose cohort demonstrating mean body weight reductions exceeding 24% from baseline. Subsequent Phase 2 data in type 2 diabetes populations (Rosenstock et al., Lancet, 2023) demonstrated significant HbA1c reductions alongside body weight effects. The Phase 3 TRIUMPH program reported topline results from TRIUMPH-1 in May 2026, confirming the dose-dependent weight reduction profile at 80 weeks. For a full breakdown of this trial data and the compound's molecular architecture, see our companion guide, <Link href="/journal/retatrutide-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">Retatrutide Peptide: Complete Research Guide to the Triple Agonist</Link>.
+          The scientific interest in GLP-3's triple-agonist mechanism is grounded in published preclinical and early-phase clinical data on the parent compound GLP-3 (Rt). A Phase 2 trial published in the New England Journal of Medicine (Jastreboff et al., 2023) evaluated GLP-3 (Rt) in 338 adults with obesity over 48 weeks, with the highest-dose cohort demonstrating mean body weight reductions exceeding 24% from baseline. Subsequent Phase 2 data in type 2 diabetes populations (Rosenstock et al., Lancet, 2023) demonstrated significant HbA1c reductions alongside body weight effects. The Phase 3 TRIUMPH program reported topline results from TRIUMPH-1 in May 2026, confirming the dose-dependent weight reduction profile at 80 weeks. For a full breakdown of this trial data and the compound's molecular architecture, see our companion guide, <Link href="/journal/glp-3-rt-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt) Peptide: Complete Research Guide to the Triple Agonist</Link>.
         </p>
 
         <p>
@@ -2154,19 +2154,19 @@ export const JOURNAL_POSTS: JournalPost[] = [
     )
   },
   {
-    slug: 'semaglutide-vs-tirzepatide-vs-retatrutide-comparison',
-    title: 'Semaglutide vs. Tirzepatide vs. Retatrutide: A Head-to-Head Research Comparison',
+    slug: 'semaglutide-vs-tirzepatide-vs-glp-3-comparison',
+    title: 'Semaglutide vs. Tirzepatide vs. GLP-3 (Rt): A Head-to-Head Research Comparison',
     category: 'Studies',
     date: 'July 28, 2026',
     readTime: '19 min read',
     excerpt: 'A structural and mechanistic comparison of the three leading incretin research compounds — single, dual, and triple receptor agonists — covering molecular architecture, published trial data, and sourcing standards for laboratory use.',
-    heroImage: '/journal-images/semaglutide-tirzepatide-retatrutide-comparison-hero.webp',
+    heroImage: '/journal-images/semaglutide-tirzepatide-glp-3-comparison-hero.webp',
     author: 'The Looksmaxxing Lab Research Team',
     faqs: SEMA_TIRZ_RETA_FAQS,
     content: (
       <>
         <p className="first-letter:text-7xl first-letter:font-serif first-letter:float-left first-letter:mr-4 first-letter:text-ink first-letter:mt-2">
-          In under a decade, incretin-based research compounds have progressed from single-receptor GLP-1 agonism to dual and now triple-receptor agonism, with each generation adding a distinct metabolic pathway to the underlying mechanism. Semaglutide, tirzepatide, and retatrutide represent these three successive stages, and they are frequently discussed as though they were interchangeable variations on the same compound. Mechanistically, they are not. Each targets a different combination of receptors, is built on a different (if related) molecular scaffold, and is supported by a different depth of published trial data. For researchers designing a comparative protocol — or simply deciding which compound answers a specific research question — understanding those structural and mechanistic distinctions matters more than any single headline efficacy number.
+          In under a decade, incretin-based research compounds have progressed from single-receptor GLP-1 agonism to dual and now triple-receptor agonism, with each generation adding a distinct metabolic pathway to the underlying mechanism. Semaglutide, tirzepatide, and GLP-3 (Rt) represent these three successive stages, and they are frequently discussed as though they were interchangeable variations on the same compound. Mechanistically, they are not. Each targets a different combination of receptors, is built on a different (if related) molecular scaffold, and is supported by a different depth of published trial data. For researchers designing a comparative protocol — or simply deciding which compound answers a specific research question — understanding those structural and mechanistic distinctions matters more than any single headline efficacy number.
         </p>
 
         <p>
@@ -2175,14 +2175,14 @@ export const JOURNAL_POSTS: JournalPost[] = [
 
         <div className="border-l-4 border-gold bg-ink/5 rounded-r-xl p-6 my-10">
           <p className="text-body-lg text-ink font-medium m-0">
-            <strong>Quick answer:</strong> Semaglutide is a single GLP-1 receptor agonist (31 amino acids). Tirzepatide is a dual GLP-1/GIP receptor agonist (39 amino acids). Retatrutide is a triple GLP-1/GIP/glucagon receptor agonist (39 amino acids). Each additional receptor target adds a distinct metabolic pathway — GIP synergy for tirzepatide, hepatic fat oxidation and energy expenditure for retatrutide — and published trial data shows a corresponding step-up in mean weight-related outcomes across the three, from roughly 15% (semaglutide, STEP trials) to roughly 21% (tirzepatide, SURMOUNT-1) to over 24% (retatrutide, Phase 2). All three are Research Use Only compounds, not interchangeable substitutes for one another in a research protocol.
+            <strong>Quick answer:</strong> Semaglutide is a single GLP-1 receptor agonist (31 amino acids). Tirzepatide is a dual GLP-1/GIP receptor agonist (39 amino acids). GLP-3 (Rt) is a triple GLP-1/GIP/glucagon receptor agonist (39 amino acids). Each additional receptor target adds a distinct metabolic pathway — GIP synergy for tirzepatide, hepatic fat oxidation and energy expenditure for GLP-3 (Rt) — and published trial data shows a corresponding step-up in mean weight-related outcomes across the three, from roughly 15% (semaglutide, STEP trials) to roughly 21% (tirzepatide, SURMOUNT-1) to over 24% (GLP-3 (Rt), Phase 2). All three are Research Use Only compounds, not interchangeable substitutes for one another in a research protocol.
           </p>
         </div>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">The Incretin Research Landscape: From Single to Multi-Receptor Agonism</h2>
 
         <p>
-          Native GLP-1 (glucagon-like peptide-1) is an endogenous incretin hormone secreted by intestinal L-cells in response to nutrient intake, with a plasma half-life measured in minutes due to rapid degradation by the enzyme DPP-4. The entire modern class of metabolic research peptides exists because pharmaceutical chemists found ways to engineer around that limitation — first by stabilizing GLP-1 receptor agonism into a once-weekly research compound (semaglutide), then by adding a second receptor target to broaden the mechanism (tirzepatide), and most recently by adding a third (retatrutide). Each step in that progression was not simply a matter of increasing potency at the same target; it introduced an entirely new signaling pathway into the compound's biology, which is why the three compounds are best understood as three distinct research tools rather than three strengths of the same tool.
+          Native GLP-1 (glucagon-like peptide-1) is an endogenous incretin hormone secreted by intestinal L-cells in response to nutrient intake, with a plasma half-life measured in minutes due to rapid degradation by the enzyme DPP-4. The entire modern class of metabolic research peptides exists because pharmaceutical chemists found ways to engineer around that limitation — first by stabilizing GLP-1 receptor agonism into a once-weekly research compound (semaglutide), then by adding a second receptor target to broaden the mechanism (tirzepatide), and most recently by adding a third (GLP-3 (Rt)). Each step in that progression was not simply a matter of increasing potency at the same target; it introduced an entirely new signaling pathway into the compound's biology, which is why the three compounds are best understood as three distinct research tools rather than three strengths of the same tool.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Semaglutide: Single-Agonist GLP-1 Mechanism</h2>
@@ -2197,13 +2197,13 @@ export const JOURNAL_POSTS: JournalPost[] = [
           <Link href="/products/tirzepatide" className="text-blue-600 underline hover:text-blue-800">Tirzepatide</Link> extends this approach by engaging a second receptor. Its 39-amino-acid sequence is engineered to activate both the GLP-1 receptor and the GIP (glucose-dependent insulinotropic polypeptide) receptor simultaneously. GIP is itself a native incretin hormone, and in research models GIP receptor agonism has been associated with synergistic enhancement of insulin secretion and favorable effects on adipose tissue lipid metabolism. The practical research implication is that tirzepatide does not simply amplify GLP-1 signaling — it introduces a second, mechanistically distinct pathway that interacts with the first, which is the leading explanation in the literature for why its published effect sizes exceed those of GLP-1 agonism alone.
         </p>
 
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Retatrutide: The Triple Agonist and the Glucagon Receptor Component</h2>
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">GLP-3 (Rt): The Triple Agonist and the Glucagon Receptor Component</h2>
 
         <p>
-          <Link href="/products/retatrutide" className="text-blue-600 underline hover:text-blue-800">Retatrutide</Link> adds a third receptor target on top of tirzepatide's dual-agonist foundation: the glucagon receptor (GCGR). Its 39-amino-acid backbone incorporates alpha-aminoisobutyric acid (Aib) substitutions at key positions for steric protection against proteolytic cleavage, alongside the same C18 fatty diacid moiety used for albumin binding in the other two compounds. Glucagon receptor agonism is mechanistically distinct from incretin signaling — it is associated in research models with increased energy expenditure and direct stimulation of hepatic fat oxidation, a pathway neither semaglutide nor tirzepatide engages at all. For a full breakdown of retatrutide's molecular architecture and standalone research profile, see our companion guide, <Link href="/journal/retatrutide-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">Retatrutide Peptide: Complete Research Guide to the Triple Agonist</Link>.
+          <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> adds a third receptor target on top of tirzepatide's dual-agonist foundation: the glucagon receptor (GCGR). Its 39-amino-acid backbone incorporates alpha-aminoisobutyric acid (Aib) substitutions at key positions for steric protection against proteolytic cleavage, alongside the same C18 fatty diacid moiety used for albumin binding in the other two compounds. Glucagon receptor agonism is mechanistically distinct from incretin signaling — it is associated in research models with increased energy expenditure and direct stimulation of hepatic fat oxidation, a pathway neither semaglutide nor tirzepatide engages at all. For a full breakdown of GLP-3 (Rt)'s molecular architecture and standalone research profile, see our companion guide, <Link href="/journal/glp-3-rt-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt) Peptide: Complete Research Guide to the Triple Agonist</Link>.
         </p>
 
-        <Image src="/journal-images/glp1-gip-gcgr-receptor-mechanism-diagram.webp" alt="Diagram comparing GLP-1, GIP, and glucagon receptor engagement across semaglutide, tirzepatide, and retatrutide research mechanisms" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+        <Image src="/journal-images/glp1-gip-gcgr-receptor-mechanism-diagram.webp" alt="Diagram comparing GLP-1, GIP, and glucagon receptor engagement across semaglutide, tirzepatide, and GLP-3 (Rt) research mechanisms" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Head-to-Head Structural and Mechanistic Comparison</h2>
 
@@ -2213,7 +2213,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
               <th className="text-left py-3 pr-4 font-serif text-ink">Property</th>
               <th className="text-left py-3 pr-4 font-serif text-ink">Semaglutide</th>
               <th className="text-left py-3 pr-4 font-serif text-ink">Tirzepatide</th>
-              <th className="text-left py-3 font-serif text-ink">Retatrutide</th>
+              <th className="text-left py-3 font-serif text-ink">GLP-3 (Rt)</th>
             </tr>
           </thead>
           <tbody>
@@ -2259,23 +2259,23 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Published Efficacy Data: What the Clinical Trials Show</h2>
 
         <p>
-          Semaglutide's STEP clinical trial program reported mean body weight reductions of approximately 15% from baseline at 68 weeks in adults with obesity. Tirzepatide's SURMOUNT-1 trial reported mean reductions of approximately 21% at 72 weeks with the highest studied dose. Retatrutide's pivotal Phase 2 trial (Jastreboff et al., 2023, New England Journal of Medicine) randomized 338 adults with obesity across multiple dose tiers over 48 weeks, with the highest-dose (12 mg) cohort demonstrating mean reductions exceeding 24% from baseline — the largest single-compound reduction reported in a controlled obesity trial at the time of publication. That same trial reported measurable reductions in hepatic fat fraction via MRI-PDFF imaging, an effect specifically attributed to the added glucagon receptor pathway. Subsequent Phase 2 data in type 2 diabetes populations (Rosenstock et al., 2023, Lancet) demonstrated significant HbA1c reductions alongside the body-weight effect, and the Phase 3 TRIUMPH-1 program reported topline results in May 2026 confirming a dose-dependent effect at 80 weeks.
+          Semaglutide's STEP clinical trial program reported mean body weight reductions of approximately 15% from baseline at 68 weeks in adults with obesity. Tirzepatide's SURMOUNT-1 trial reported mean reductions of approximately 21% at 72 weeks with the highest studied dose. GLP-3 (Rt)'s pivotal Phase 2 trial (Jastreboff et al., 2023, New England Journal of Medicine) randomized 338 adults with obesity across multiple dose tiers over 48 weeks, with the highest-dose (12 mg) cohort demonstrating mean reductions exceeding 24% from baseline — the largest single-compound reduction reported in a controlled obesity trial at the time of publication. That same trial reported measurable reductions in hepatic fat fraction via MRI-PDFF imaging, an effect specifically attributed to the added glucagon receptor pathway. Subsequent Phase 2 data in type 2 diabetes populations (Rosenstock et al., 2023, Lancet) demonstrated significant HbA1c reductions alongside the body-weight effect, and the Phase 3 TRIUMPH-1 program reported topline results in May 2026 confirming a dose-dependent effect at 80 weeks.
         </p>
 
         <p>
-          It is essential for researchers to understand what this data does and does not represent. These figures describe the FDA-regulated investigational or approved drug product as studied in large, controlled human clinical trials — not the properties of research-grade peptide material sold for laboratory use. Research-grade semaglutide, tirzepatide, and retatrutide are used in preclinical settings to study receptor pharmacology, GPCR signal transduction, and comparative multi-receptor mechanism; they are not for human use, and the clinical trial outcomes above should not be interpreted as claims about research reagent products.
+          It is essential for researchers to understand what this data does and does not represent. These figures describe the FDA-regulated investigational or approved drug product as studied in large, controlled human clinical trials — not the properties of research-grade peptide material sold for laboratory use. Research-grade semaglutide, tirzepatide, and GLP-3 (Rt) are used in preclinical settings to study receptor pharmacology, GPCR signal transduction, and comparative multi-receptor mechanism; they are not for human use, and the clinical trial outcomes above should not be interpreted as claims about research reagent products.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Why Receptor Count Changes the Research Question</h2>
 
         <p>
-          A study designed to isolate GLP-1 receptor signaling specifically should use semaglutide, since it is the only one of the three compounds engaging exactly one receptor with no confounding cross-talk from GIP or glucagon pathways. A study investigating GIP-GLP-1 synergy — for instance, its effect on insulin sensitivity in adipose tissue models — requires tirzepatide, because semaglutide cannot produce that interaction and retatrutide introduces a third, uncontrolled variable (glucagon signaling) into the same comparison. A study specifically examining glucagon-mediated hepatic effects, such as hepatic fat oxidation or systemic energy expenditure, requires retatrutide, since neither of the other two compounds engages the glucagon receptor at all. Choosing the wrong compound for a given research question is one of the more common avoidable design errors in comparative incretin research.
+          A study designed to isolate GLP-1 receptor signaling specifically should use semaglutide, since it is the only one of the three compounds engaging exactly one receptor with no confounding cross-talk from GIP or glucagon pathways. A study investigating GIP-GLP-1 synergy — for instance, its effect on insulin sensitivity in adipose tissue models — requires tirzepatide, because semaglutide cannot produce that interaction and GLP-3 (Rt) introduces a third, uncontrolled variable (glucagon signaling) into the same comparison. A study specifically examining glucagon-mediated hepatic effects, such as hepatic fat oxidation or systemic energy expenditure, requires GLP-3 (Rt), since neither of the other two compounds engages the glucagon receptor at all. Choosing the wrong compound for a given research question is one of the more common avoidable design errors in comparative incretin research.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Designing a Comparative Protocol Across All Three Compounds</h2>
 
         <p>
-          Researchers running head-to-head comparative protocols across semaglutide, tirzepatide, and retatrutide typically hold every non-compound variable constant across matched cohorts: identical administration route, identical dosing schedule and time-of-day, identical reconstitution and storage handling, and identical outcome-measurement protocol. This is what allows any observed difference in outcome to be attributed specifically to the receptor combination each compound engages, rather than to procedural drift between cohorts. Because all three compounds share a broadly similar molecular scaffold — long-chain peptides in the 31-39 amino acid range with a fatty-acid albumin-binding modification — the primary confounders in this type of comparison tend to be sourcing-related (unverified purity or identity of the research material) rather than structural.
+          Researchers running head-to-head comparative protocols across semaglutide, tirzepatide, and GLP-3 (Rt) typically hold every non-compound variable constant across matched cohorts: identical administration route, identical dosing schedule and time-of-day, identical reconstitution and storage handling, and identical outcome-measurement protocol. This is what allows any observed difference in outcome to be attributed specifically to the receptor combination each compound engages, rather than to procedural drift between cohorts. Because all three compounds share a broadly similar molecular scaffold — long-chain peptides in the 31-39 amino acid range with a fatty-acid albumin-binding modification — the primary confounders in this type of comparison tend to be sourcing-related (unverified purity or identity of the research material) rather than structural.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Purity, Sourcing, and Verifying Research-Grade Material</h2>
@@ -2284,7 +2284,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
           Long-chain peptides in this class — 31 to 39 amino acids — are considerably more prone to synthesis errors than shorter research peptides. During Solid-Phase Peptide Synthesis (SPPS), each additional amino acid coupling step carries a small statistical chance of failure, and these small per-step inefficiencies compound over a sequence this long, producing truncated byproducts alongside the correct full-length peptide. Truncated sequences can competitively bind the target receptors without activating them, introducing noise into a research protocol that can be difficult to distinguish from a genuine biological result. This is why researchers should require ≥99% purity confirmed by independent third-party HPLC testing, LC-MS or ESI-MS molecular weight verification confirming structural identity against the theoretical value, and a lot-specific Certificate of Analysis accompanying every batch. Our full <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">guide to reading a peptide Certificate of Analysis</Link> covers exactly what to look for in this documentation.
         </p>
 
-        <Image src="/journal-images/hplc-lab-verification-metabolic-peptide-vials.webp" alt="Laboratory HPLC verification workflow for research-grade semaglutide, tirzepatide, and retatrutide vials" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+        <Image src="/journal-images/hplc-lab-verification-metabolic-peptide-vials.webp" alt="Laboratory HPLC verification workflow for research-grade semaglutide, tirzepatide, and GLP-3 (Rt) vials" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Reconstitution and Storage Considerations</h2>
 
@@ -2295,25 +2295,25 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Adverse Event Signals Reported in Published Trials</h2>
 
         <p>
-          Across all three trial programs, the most consistently reported adverse events in the published literature were gastrointestinal in nature — nausea, diarrhea, constipation, and vomiting — generally described as dose-dependent and more frequent during initial dose-escalation phases. The STEP, SURMOUNT, and retatrutide Phase 2/TRIUMPH trial publications each report broadly comparable gastrointestinal event rates across the three compounds, with no single compound standing out as categorically better tolerated in the published data. Cardiovascular and metabolic laboratory parameters (heart rate, blood pressure, lipid panels) were monitored throughout each program as standard trial safety endpoints. As with the efficacy data discussed above, this safety information describes the clinical trial population studied under the investigational or approved drug product and does not constitute safety data for research-grade reagent material, which is not evaluated or intended for administration to human subjects.
+          Across all three trial programs, the most consistently reported adverse events in the published literature were gastrointestinal in nature — nausea, diarrhea, constipation, and vomiting — generally described as dose-dependent and more frequent during initial dose-escalation phases. The STEP, SURMOUNT, and GLP-3 (Rt) Phase 2/TRIUMPH trial publications each report broadly comparable gastrointestinal event rates across the three compounds, with no single compound standing out as categorically better tolerated in the published data. Cardiovascular and metabolic laboratory parameters (heart rate, blood pressure, lipid panels) were monitored throughout each program as standard trial safety endpoints. As with the efficacy data discussed above, this safety information describes the clinical trial population studied under the investigational or approved drug product and does not constitute safety data for research-grade reagent material, which is not evaluated or intended for administration to human subjects.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Beyond Triple Agonism: Where This Research Category Is Heading</h2>
 
         <p>
-          Retatrutide's triple-receptor mechanism is not necessarily the endpoint of this research trajectory. Investigational compounds engaging four or more receptor targets simultaneously — sometimes referred to in the research community by shorthand designations such as GLP-3 — are already being studied as reference compounds for even broader multi-receptor pharmacology. For researchers tracking this category, our companion guide on <Link href="/journal/glp-3-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">GLP-3: Triple Receptor Agonism and What Researchers Need to Know</Link> covers how this next generation of research compounds builds on the same structural principles — albumin-binding fatty acid modifications and Aib-substituted backbones — that distinguish semaglutide, tirzepatide, and retatrutide from native incretin hormones.
+          GLP-3 (Rt)'s triple-receptor mechanism is not necessarily the endpoint of this research trajectory. Investigational compounds engaging four or more receptor targets simultaneously — sometimes referred to in the research community by shorthand designations such as GLP-3 — are already being studied as reference compounds for even broader multi-receptor pharmacology. For researchers tracking this category, our companion guide on <Link href="/journal/glp-3-peptide-triple-agonist-research-guide" className="text-blue-600 underline hover:text-blue-800">GLP-3: Triple Receptor Agonism and What Researchers Need to Know</Link> covers how this next generation of research compounds builds on the same structural principles — albumin-binding fatty acid modifications and Aib-substituted backbones — that distinguish semaglutide, tirzepatide, and GLP-3 (Rt) from native incretin hormones.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Practical Considerations for Labs Stocking All Three Compounds</h2>
 
         <p>
-          Laboratories maintaining semaglutide, tirzepatide, and retatrutide simultaneously for comparative research should apply a few practical safeguards beyond individual compound handling. Vials should be clearly and separately labeled by compound and lot number to prevent mix-ups during multi-cohort studies, particularly since all three share a similar lyophilized powder appearance. Maintaining a single shared administration and reconstitution log across the full comparative protocol — rather than separate logs per compound — makes it easier to audit whether an observed cross-compound difference in outcome correlates with anything other than the receptor-targeting profile itself, such as a difference in reconstitution date or storage duration between the three vials at the time of use.
+          Laboratories maintaining semaglutide, tirzepatide, and GLP-3 (Rt) simultaneously for comparative research should apply a few practical safeguards beyond individual compound handling. Vials should be clearly and separately labeled by compound and lot number to prevent mix-ups during multi-cohort studies, particularly since all three share a similar lyophilized powder appearance. Maintaining a single shared administration and reconstitution log across the full comparative protocol — rather than separate logs per compound — makes it easier to audit whether an observed cross-compound difference in outcome correlates with anything other than the receptor-targeting profile itself, such as a difference in reconstitution date or storage duration between the three vials at the time of use.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Sourcing Standards at The Looksmaxxing Lab</h2>
 
         <p>
-          <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> synthesizes semaglutide, tirzepatide, and retatrutide in US-based, ISO-certified facilities, with every batch independently verified by third-party HPLC and LC-MS testing and lot-specific COA documentation published in our <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis Library</Link>. Researchers can review current availability across all three compounds in our <Link href="/shop" className="text-blue-600 underline hover:text-blue-800">shop</Link>. All products are strictly Research Use Only.
+          <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> synthesizes semaglutide, tirzepatide, and GLP-3 (Rt) in US-based, ISO-certified facilities, with every batch independently verified by third-party HPLC and LC-MS testing and lot-specific COA documentation published in our <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis Library</Link>. Researchers can review current availability across all three compounds in our <Link href="/shop" className="text-blue-600 underline hover:text-blue-800">shop</Link>. All products are strictly Research Use Only.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
@@ -2497,9 +2497,9 @@ export const JOURNAL_POSTS_FAQS: Record<string, {question: string; answer: strin
   'cjc-1295-ipamorelin-muscle-recovery-research': JOURNAL_POSTS[5].faqs,
   'peptide-coa-hplc-purity-testing-guide': JOURNAL_POSTS[6].faqs,
   'peptide-reconstitution-storage-guide': JOURNAL_POSTS[7].faqs,
-  'retatrutide-peptide-triple-agonist-research-guide': JOURNAL_POSTS[8].faqs,
+  'glp-3-rt-peptide-triple-agonist-research-guide': JOURNAL_POSTS[8].faqs,
   'mots-c-peptide-mitochondrial-exercise-mimetic-research': JOURNAL_POSTS[9].faqs,
   'glp-3-peptide-triple-agonist-research-guide': JOURNAL_POSTS[10].faqs,
-  'semaglutide-vs-tirzepatide-vs-retatrutide-comparison': JOURNAL_POSTS[11].faqs,
+  'semaglutide-vs-tirzepatide-vs-glp-3-comparison': JOURNAL_POSTS[11].faqs,
   'nad-plus-peptide-mitochondrial-sirtuin-research-guide': JOURNAL_POSTS[12].faqs
 }

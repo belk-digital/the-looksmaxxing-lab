@@ -101,6 +101,33 @@ const nextConfig: NextConfig = {
         source: '/feed',
         destination: '/journal',
         permanent: true,
+      },
+      // 8. Product Renames
+      {
+        source: '/products/retatrutide',
+        destination: '/products/glp-3',
+        permanent: true,
+      },
+      {
+        source: '/shop/retatrutide',
+        destination: '/shop/glp-3',
+        permanent: true,
+      },
+      // 9. BAC Water to Reconstitution Solution
+      {
+        source: '/bac-water',
+        destination: '/reconstitution-solution',
+        permanent: true,
+      },
+      {
+        source: '/products/bac-water',
+        destination: '/products/reconstitution-solution',
+        permanent: true,
+      },
+      {
+        source: '/shop/bac-water',
+        destination: '/shop/reconstitution-solution',
+        permanent: true,
       }
     ]
   },

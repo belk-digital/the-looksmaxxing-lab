@@ -24,7 +24,7 @@ const PILLARS = [
     title: "Cold-Chain Logistics — Molecular Integrity, Guaranteed",
     description: "Peptides are structurally fragile molecules. Thermal degradation begins at room temperature and accelerates over time. We store all inventory in climate-controlled, medical-grade refrigeration and ship using validated cold-chain packaging specifically designed to maintain peptide integrity from our facility to your bench — regardless of transit conditions.",
     icon: Snowflake,
-    image: "/Featured%20Images/nad-retatrutide-vials-on-ice.webp"
+    image: "/Featured%20Images/nad-glp-3-vials-on-ice.webp"
   }
 ]
 

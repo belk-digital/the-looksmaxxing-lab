@@ -126,7 +126,7 @@ export function CheckoutClient() {
   const [couponCode, setCouponCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; freeShipping: boolean; description: string } | null>(null)
   const [isVerifyingCoupon, setIsVerifyingCoupon] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'stripe_link' | 'apple_pay' | 'zelle'>('stripe_link')
+  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'stripe_link' | 'apple_pay' | 'zelle'>('zelle')
 
   // Order Calculations
   const subtotal = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
@@ -686,7 +686,7 @@ export function CheckoutClient() {
                 
                 <div className="flex flex-col gap-3 mb-4">
                   {[
-                    { id: 'stripe_link', label: 'Credit / Debit Card' },
+                    // { id: 'stripe_link', label: 'Credit / Debit Card' },
                     { id: 'zelle', label: 'Zelle' },
                   ].map((method) => (
                     <label key={method.id} className={`flex items-center gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${paymentMethod === method.id ? 'border-ink bg-ink/5' : 'border-slate-100 bg-white hover:border-ink/30'}`}>

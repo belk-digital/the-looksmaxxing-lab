@@ -7,7 +7,7 @@ dotenv.config({ path: path.resolve(process.cwd(), '.env') })
 
 const IMAGE_MAP: Record<string, string[]> = {
   'tirzepatide': ['tirzepatide-10mg.jpg', 'terzepatide-10mg.PNG'],
-  'retatrutide': ['retatrutide-10mg.jpg', 'retatrutide-10mg.PNG'],
+  'glp-3': ['glp-3-10mg.jpg', 'glp-3-10mg.PNG'],
   'semaglutide': ['semaglutide-10mg.PNG'],
   'glow-blend': ['glow-70mg.jpg', 'glow-70mg.PNG'],
   'klow-blend': ['klow-50mg.jpg', 'klow-50-10-10-10mg.PNG'],
