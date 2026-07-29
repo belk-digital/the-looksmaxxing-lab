@@ -37,10 +37,14 @@ const MagneticButton = ({ children, className, variant = "default", size = "defa
 
 const slides = [
   {
-    image: '/Featured Images/nad-glp-3-vials-on-ice.webp',
-    alt: 'The Looksmaxxing Lab NAD+ and GLP-3 (Rt) research peptide vials on ice',
-    desktopBgClass: 'bg-[#ffffff]', // White
-
+    image: '/temp-homepage/summer-hero-7.webp',
+    alt: 'The Looksmaxxing Lab GLP-3 (Rt) (30mg) and Glow (70mg) research peptide vials splashing through water, research use only',
+    desktopBgClass: 'bg-[#ede4f4]', // Purplish
+  },
+  {
+    image: '/Featured Images/mt-2-water-ripple.webp',
+    alt: 'The Looksmaxxing Lab MT-2 research peptide vial in water ripples',
+    desktopBgClass: 'bg-[#e6f3ff]', // Light Blue
   }
 ]
 
