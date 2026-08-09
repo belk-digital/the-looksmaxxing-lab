@@ -17,10 +17,12 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setError(null)
 
     try {
       const result = await signIn('credentials', {
@@ -30,14 +32,14 @@ export default function LoginPage() {
       })
 
       if (result?.error) {
-        toast.error('Invalid credentials. If this is your first time logging in since our upgrade, please reset your password.')
+        setError('Invalid credentials. If you haven\'t logged in since the upgrade, please reset your password.')
       } else {
         toast.success('Successfully logged in')
         router.push('/account')
         router.refresh()
       }
     } catch (error) {
-      toast.error('An error occurred during login')
+      setError('An error occurred during login. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -155,6 +157,12 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
+
+            {error && (
+              <div className="text-red-500 text-xs font-bold bg-red-50 p-3 border border-red-100">
+                {error}
+              </div>
+            )}
 
             <button
               type="submit"

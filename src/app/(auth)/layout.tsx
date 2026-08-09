@@ -1,4 +1,5 @@
 import '@/app/globals.css'
+import { Toaster } from '@/components/ui/sonner'
 
 import type { Metadata } from 'next'
 
@@ -20,6 +21,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         suppressHydrationWarning
       >
         {children}
+        <div className="text-black">
+          <Toaster />
+        </div>
       </body>
     </html>
   )
