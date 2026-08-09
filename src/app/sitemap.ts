@@ -4,7 +4,7 @@ import configPromise from '@payload-config'
 import { JOURNAL_POSTS } from '@/data/journal-posts'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+  const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
   const payload = await getPayload({ config: configPromise })
 
   const staticPages: MetadataRoute.Sitemap = [

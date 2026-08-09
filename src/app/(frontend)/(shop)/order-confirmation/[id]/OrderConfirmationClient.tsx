@@ -106,7 +106,7 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
                 <div className="flex justify-center mb-4 mt-2">
                   <Image 
                     src="/Payment Details/zelle-payment-qr.jpeg"
-                    alt="Zelle payment QR code for completing your Looksmaxxing Lab order"
+                    alt="Zelle payment QR code for completing your Longevia Research order"
                     width={200} 
                     height={200} 
                     className="rounded-xl border-2 border-yellow-200 shadow-sm"
@@ -116,7 +116,7 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
 
                 <div className="bg-white py-3 px-4 sm:px-6 rounded-xl border border-yellow-200 inline-block max-w-full mx-auto shadow-sm">
                   <span className="font-mono text-sm sm:text-lg font-bold text-ink break-all">
-                    support@thelooksmaxxinglab.com
+                    support@longeviaresearch.com
                   </span>
                 </div>
               </div>
@@ -130,8 +130,8 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
             
             {/* Print Branding Header */}
             <div className="hidden print:flex items-center justify-between py-4 px-0 border-b border-ink/10">
-              <h1 className="text-2xl font-display font-bold tracking-tight text-ink uppercase">The Looksmaxxing Lab</h1>
-              <p className="text-sm font-medium text-ink/60">thelooksmaxxinglab.com</p>
+              <h1 className="text-2xl font-display font-bold tracking-tight text-ink uppercase">Longevia Research</h1>
+              <p className="text-sm font-medium text-ink/60">longeviaresearch.com</p>
             </div>
 
             {/* Invoice Header */}
@@ -257,7 +257,7 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
               <button onClick={() => window.print()} className="flex items-center gap-2 hover:text-ink transition-colors font-medium">
                 <Printer size={16} /> Print Receipt
               </button>
-              <span className="text-center sm:text-left">Questions? <a href="mailto:support@thelooksmaxxinglab.com" className="text-ink underline hover:no-underline font-medium">Contact Support</a></span>
+              <span className="text-center sm:text-left">Questions? <a href="mailto:support@longeviaresearch.com" className="text-ink underline hover:no-underline font-medium">Contact Support</a></span>
             </div>
           </div>
         </FadeUp>

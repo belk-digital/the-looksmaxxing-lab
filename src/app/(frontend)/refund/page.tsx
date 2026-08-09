@@ -4,18 +4,18 @@ import Link from 'next/link'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { EyebrowHeading } from '@/components/editorial/EyebrowHeading'
 
-const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
-  title: 'Refund & Returns Policy | The Looksmaxxing Lab',
-  description: 'The Looksmaxxing Lab operates an all-sales-final policy on research peptides. Learn why, and what is covered instead — free replacement for damaged, incorrect, or COA-mismatched orders.',
+  title: 'Refund & Returns Policy',
+  description: 'Longevia Research operates an all-sales-final policy on research peptides. Learn why, and what is covered instead - free replacement for damaged, incorrect, or COA-mismatched orders.',
   alternates: {
     canonical: `${siteUrl}/refund`,
   },
   openGraph: {
-    title: 'Refund & Returns Policy | The Looksmaxxing Lab',
-    description: 'The Looksmaxxing Lab operates an all-sales-final policy on research peptides. See what is covered instead.',
-    images: [{ url: '/og/og-home.webp', width: 1200, height: 630, alt: 'The Looksmaxxing Lab — Refund & Returns Policy' }],
+    title: 'Refund & Returns Policy',
+    description: 'Longevia Research operates an all-sales-final policy on research peptides. See what is covered instead.',
+    images: [{ url: '/og/og-home.webp', width: 1200, height: 630, alt: 'Longevia Research — Refund & Returns Policy' }],
     url: `${siteUrl}/refund`,
     type: 'website',
   },
@@ -50,7 +50,7 @@ export default function RefundPage() {
           <p className="text-label-sm uppercase tracking-wider text-ink-muted mb-10">Effective Date: January 2026</p>
 
           <p className="text-body-lg text-ink-muted leading-relaxed mb-10">
-            Please read this policy carefully before ordering. Because of the strict chain-of-custody, stability, and quality-control requirements attached to every batch we ship, The Looksmaxxing Lab operates on an all-sales-final basis.
+            Please read this policy carefully before ordering. Because of the strict chain-of-custody, stability, and quality-control requirements attached to every batch we ship, Longevia Research operates on an all-sales-final basis.
           </p>
 
           <div className="border-l-4 border-gold bg-ink/5 rounded-r-xl p-6 mb-16">
@@ -85,7 +85,7 @@ export default function RefundPage() {
             <section>
               <h2 className="text-editorial-md font-serif text-ink mb-4">03. How to Report an Issue</h2>
               <ol className="list-decimal pl-6 space-y-2 text-ink-muted">
-                <li>Contact our support team within 48 hours of delivery via the <Link href="/contact" className="text-gold underline hover:text-ink transition-colors">Contact page</Link> or <a href="mailto:support@thelooksmaxxinglab.com" className="text-gold underline hover:text-ink transition-colors">support@thelooksmaxxinglab.com</a>, with your order number and a description of the issue.</li>
+                <li>Contact our support team within 48 hours of delivery via the <Link href="/contact" className="text-gold underline hover:text-ink transition-colors">Contact page</Link> or <a href="mailto:support@longeviaresearch.com" className="text-gold underline hover:text-ink transition-colors">support@longeviaresearch.com</a>, with your order number and a description of the issue.</li>
                 <li>Include photos of the product, vial label, and outer packaging as received.</li>
                 <li>Our team reviews each report and responds within 3–5 business days.</li>
                 <li>Verified cases are resolved with a replacement shipment at no additional cost — we do not issue cash or store-credit refunds.</li>
@@ -107,7 +107,7 @@ export default function RefundPage() {
               <ul className="list-disc pl-6 space-y-2 text-ink-muted">
                 <li>All products are for laboratory and research use only. Misuse for any human or veterinary purpose voids all replacement eligibility.</li>
                 <li>Replacement approval is subject to verification and is granted at our discretion, in accordance with applicable law.</li>
-                <li>The Looksmaxxing Lab reserves the right to update this policy at any time; the effective date above reflects the most recent revision.</li>
+                <li>Longevia Research reserves the right to update this policy at any time; the effective date above reflects the most recent revision.</li>
               </ul>
             </section>
 
@@ -116,8 +116,8 @@ export default function RefundPage() {
               <p className="text-ink-muted mb-6">
                 Reach our team via the <Link href="/contact" className="text-gold underline hover:text-ink transition-colors">Contact page</Link>, or email us directly with your order number and photos.
               </p>
-              <a href="mailto:support@thelooksmaxxinglab.com" className="text-lg font-medium text-ink hover:text-gold transition-colors underline underline-offset-4">
-                support@thelooksmaxxinglab.com
+              <a href="mailto:support@longeviaresearch.com" className="text-lg font-medium text-ink hover:text-gold transition-colors underline underline-offset-4">
+                support@longeviaresearch.com
               </a>
             </section>
           </div>

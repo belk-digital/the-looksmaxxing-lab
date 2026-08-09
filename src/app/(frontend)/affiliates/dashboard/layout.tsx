@@ -10,7 +10,7 @@ import config from '@payload-config'
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 export const metadata = {
-  title: 'Affiliate Dashboard | The Looksmaxxing Lab',
+  title: 'Affiliate Dashboard | Longevia Research',
 }
 
 export default async function AffiliateDashboardLayout({ children }: { children: React.ReactNode }) {

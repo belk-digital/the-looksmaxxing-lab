@@ -9,26 +9,26 @@ import { Container } from '@/components/ui/container'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
 const CATEGORIES = [
-  { name: 'bioregulators', displayName: 'Bioregulators', slug: 'bioregulators', number: '01', description: 'Short-chain peptide bioregulators. Research-grade purity, lot-specific COA.' },
-  { name: 'cellular health research', displayName: 'Cellular Health', slug: 'cellular-health', number: '02', description: 'Compounds studied for cellular repair and longevity applications.' },
-  { name: 'cognitive function studies', displayName: 'Cognitive Function', slug: 'cognitive-function', number: '03', description: 'Peptides associated with neurological and cognitive function research.' },
-  { name: 'essentials', displayName: 'Essentials', slug: 'essentials', number: '04', description: 'Core research compounds — the foundational stack for any peptide lab.' },
-  { name: 'growth factor research peptides', displayName: 'Growth Factor', slug: 'growth-factor', number: '05', description: 'Growth factor peptides for tissue and recovery research. LC-MS verified.' },
-  { name: 'metabolic research peptides', displayName: 'Metabolic', slug: 'metabolic', number: '06', description: 'GLP-1 and metabolic peptides for body composition and metabolic research.' },
-  { name: 'receptor agonist research peptides', displayName: 'Receptor Agonist', slug: 'receptor-agonist', number: '07', description: 'Receptor-targeting peptides for advanced research protocols.' },
-  { name: 'recovery research peptides', displayName: 'Recovery', slug: 'recovery', number: '08', description: 'Tissue repair and recovery peptides. Includes BPC-157 and TB-500.' }
+  { name: 'Longevity Research', displayName: 'Longevity Research', slug: 'longevity-research', number: '01', description: 'Compounds targeting cellular aging and longevity protocols.' },
+  { name: 'Hormonal Health', displayName: 'Hormonal Health', slug: 'hormonal-health', number: '02', description: 'Peptides studied for endocrine system support and balance.' },
+  { name: 'Cognitive & Nootropic', displayName: 'Cognitive & Nootropic', slug: 'cognitive-nootropic', number: '03', description: 'Peptides associated with neurological and cognitive function research.' },
+  { name: 'Mitochondrial & Cellular Energy', displayName: 'Mitochondrial & Cellular Energy', slug: 'mitochondrial-cellular-energy', number: '04', description: 'Compounds targeting mitochondrial optimization and ATP production.' },
+  { name: 'Growth Hormone Secretagogues', displayName: 'Growth Hormone Secretagogues', slug: 'growth-hormone-secretagogues', number: '05', description: 'Growth factor peptides for tissue and recovery research. LC-MS verified.' },
+  { name: 'Metabolic Research', displayName: 'Metabolic Research', slug: 'metabolic-research', number: '06', description: 'GLP-1 and metabolic peptides for body composition and metabolic research.' },
+  { name: 'Immune Regulation', displayName: 'Immune Regulation', slug: 'immune-regulation', number: '07', description: 'Peptides investigated for immune system modulation and support.' },
+  { name: 'Recovery & Tissue Repair', displayName: 'Recovery & Tissue Repair', slug: 'recovery-tissue-repair', number: '08', description: 'Tissue repair and recovery peptides. Includes BPC-157 and TB-500.' }
 ]
 
 // Re-using the premium generated images as placeholders
 const CATEGORY_IMAGES = [
-  '/Featured%20Images/bioregulators-category-image.webp', // Bioregulators
-  '/Featured%20Images/blue-petri-dishes.webp', // Cellular Health
-  '/Featured%20Images/white-blue-dna-helix.webp', // Cognitive Function
-  '/Featured%20Images/mt-2-water-ripple.webp', // Essentials
-  '/Featured%20Images/microscopic-liquid-drops.webp', // Growth Factor
-  '/Featured%20Images/vials-on-magazine.webp', // Metabolic (MOTS-C / NAD+)
-  '/Featured%20Images/clear-dropper-side-profile.webp', // Receptor Agonist
-  '/Featured%20Images/tb-500-water-splash.webp' // Recovery (TB-500)
+  '/Featured%20Images/thick-gel-pouring.webp', // 1
+  '/Featured%20Images/blue-petri-dishes.webp', // 2
+  '/Featured%20Images/white-blue-dna-helix.webp', // 3
+  '/Featured%20Images/category-4.JPG', // 4
+  '/Featured%20Images/microscopic-liquid-drops.webp', // 5
+  '/Featured%20Images/category-6.png', // 6
+  '/Featured%20Images/clear-dropper-side-profile.webp', // 7
+  '/Featured%20Images/category-8.png' // 8
 ]
 
 const CARD_COLORS = [
@@ -51,15 +51,15 @@ function CategoryCard({ category, index }: { category: typeof CATEGORIES[0], ind
     <Link href={`/shop?category=${encodeURIComponent(category.name)}`} className="group relative flex flex-col w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[9/14] overflow-hidden rounded-[1rem] sm:rounded-[1.5rem] bg-white cursor-pointer shadow-md hover:shadow-xl border border-slate-100 transition-all duration-500">
 
       {/* Top Half - Text Area */}
-      <div className={`relative flex flex-col justify-between p-4 sm:p-6 lg:p-8 h-[45%] transition-colors duration-500 ${bgColor}`}>
+      <div className={`relative p-4 sm:p-6 lg:p-8 h-[45%] transition-colors duration-500 ${bgColor}`}>
         {/* Top: Category Name */}
-        <h3 className="text-xl sm:text-3xl lg:text-4xl xl:text-5xl font-display text-ink tracking-tight leading-[0.9] max-w-[80%]">
+        <h3 className="text-xl sm:text-3xl lg:text-4xl xl:text-5xl font-display text-ink tracking-tight leading-[0.95] max-w-[80%]">
           {category.displayName}
         </h3>
         
         {/* Bottom: Number */}
-        <div className="flex justify-end items-end">
-          <span className="text-2xl sm:text-5xl lg:text-6xl xl:text-[5.5rem] font-display text-ink leading-[0.8] mb-[-2px] sm:mb-[-4px]">
+        <div className="absolute bottom-2 right-3 sm:bottom-3 sm:right-4 lg:bottom-4 lg:right-5">
+          <span className="text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-display text-ink leading-[0.8]">
             {num}
           </span>
         </div>
@@ -101,7 +101,7 @@ export function CategoriesSection() {
 
   return (
     <div className="w-full bg-white">
-      <section ref={containerRef} className="py-16 sm:py-24 lg:py-32 w-full max-w-[92%] lg:max-w-[90%] mx-auto overflow-visible">
+      <section ref={containerRef} className="pt-8 sm:pt-12 lg:pt-16 pb-16 sm:pb-24 lg:pb-32 w-full max-w-[92%] lg:max-w-[90%] mx-auto overflow-visible">
         <div className="flex flex-col items-center text-center mb-10 lg:mb-20">
           <FadeUp>
             <span className="text-label-md uppercase tracking-wider text-[#5984c4] mb-3 lg:mb-4 block font-bold">

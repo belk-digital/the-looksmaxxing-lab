@@ -144,7 +144,7 @@ export function FaqCarousel({
       style={{ height: `${faqs.length * 80}vh` }} // Make section taller based on number of FAQs
     >
       <div 
-        className="sticky top-0 h-[100dvh] w-full flex flex-col justify-start pt-4 lg:pt-8 pb-4 lg:pb-8 overflow-hidden md:cursor-none"
+        className="sticky top-0 h-[100dvh] w-full flex flex-col justify-start pt-4 lg:pt-8 xl:pt-12 2xl:pt-24 pb-4 lg:pb-8 xl:pb-0 2xl:pb-0 overflow-hidden md:cursor-none"
         onPointerMove={(e) => {
           cursorX.set(e.clientX);
           cursorY.set(e.clientY);
@@ -189,20 +189,20 @@ export function FaqCarousel({
         <div className="max-w-[1400px] mx-auto px-6 w-full relative z-10">
           
           {/* Header */}
-          <div className="mb-6 lg:mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 lg:gap-12">
+          <div className="mb-6 lg:mb-8 xl:mb-4 2xl:mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 lg:gap-12 xl:gap-8 2xl:gap-12">
             <FadeUp className="max-w-2xl">
               {sectionLabel && (
                 <span className={`text-label-md uppercase tracking-widest mb-4 block font-bold ${isDark ? 'text-gold' : 'text-[#5984c4]'}`}>
                   {sectionLabel}
                 </span>
               )}
-              <h2 className={`text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-serif tracking-tight leading-[1.1] ${titleClass}`}>
+              <h2 className={`text-3xl sm:text-4xl md:text-5xl xl:text-4xl 2xl:text-6xl font-serif tracking-tight leading-[1.1] ${titleClass}`}>
                 {title} <span className={isDark ? 'text-gold' : 'text-[#1c4477]'}>{accentTitle}</span>
               </h2>
             </FadeUp>
             
-            <FadeUp delay={0.1} className="max-w-xs md:text-right">
-              <p className={`text-sm lg:text-base leading-relaxed mb-6 ${descClass}`}>
+            <FadeUp delay={0.1} className="max-w-xs xl:max-w-sm 2xl:max-w-xs md:text-right">
+              <p className={`text-sm lg:text-base xl:text-sm 2xl:text-base leading-relaxed mb-6 ${descClass}`}>
                 {description}
               </p>
               <div 
@@ -243,7 +243,7 @@ export function FaqCarousel({
         {/* We moved this outside the max-w-[1400px] wrapper. This ensures the overflow-x-auto container 
             spans the entire physical screen, meaning shadows can NEVER be clipped by an invisible wrapper edge! */}
         <div className="w-full relative z-10 flex-1 min-h-0 flex flex-col md:[&_*]:!cursor-none">
-          <div ref={scrollRef} className="w-full overflow-x-auto hide-scrollbar pb-8 pt-8 lg:pb-24 lg:pt-16 -mt-8 lg:-mt-16 flex-1 min-h-0 flex flex-col">
+          <div ref={scrollRef} className="w-full overflow-x-auto hide-scrollbar pb-8 pt-8 lg:pb-24 lg:pt-16 xl:pb-4 xl:pt-8 2xl:pb-12 2xl:pt-16 -mt-8 lg:-mt-16 xl:-mt-8 2xl:-mt-16 flex-1 min-h-0 flex flex-col">
             <motion.div 
               className="flex gap-6 py-8 flex-1 min-h-0"
               // We use layout to allow cards to flex smoothly, removing explicit x translation
@@ -287,7 +287,7 @@ export function FaqCarousel({
                     {/* Inner wrapper allows text to naturally wrap based on the card's current width */}
                     <div className="w-full flex flex-col relative z-10 pb-5 md:pb-6 lg:pb-8">
                       {/* Let the question fill the width on active cards, but lock it on inactive cards to prevent reflow during transition */}
-                      <h3 className={`text-lg md:text-xl lg:text-2xl font-serif leading-tight mb-4 md:mb-6 w-full ${isActive ? 'max-w-none' : 'max-w-[216px] lg:max-w-[184px] line-clamp-4'}`}>
+                      <h3 className={`text-lg md:text-xl lg:text-2xl xl:text-xl 2xl:text-2xl font-serif leading-tight mb-4 md:mb-6 w-full ${isActive ? 'max-w-none' : 'max-w-[216px] lg:max-w-[184px] line-clamp-4'}`}>
                         {faq.question}
                       </h3>
 
@@ -297,7 +297,7 @@ export function FaqCarousel({
                           isActive ? 'max-h-[1000px] opacity-100 mt-2' : 'max-h-0 opacity-0'
                         }`}
                       >
-                        <p className={`text-xs lg:text-sm leading-relaxed font-light ${
+                        <p className={`text-xs lg:text-sm xl:text-xs 2xl:text-sm leading-relaxed font-light ${
                           isActive 
                             ? (isDark ? 'text-ink/70' : 'text-white/80') 
                             : ''

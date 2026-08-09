@@ -1,10 +1,10 @@
-# The Looksmaxxing Lab — Full Site Reference
+# Longevia Research — Full Site Reference
 
 > US-based supplier of research-grade peptides and COA-verified research compounds for scientific laboratory use. Every batch is independently HPLC tested to ≥99% purity with a full Certificate of Analysis. Research Use Only (RUO).
 
 ## Company Overview
 
-The Looksmaxxing Lab is a US-based research peptide supplier founded in 2024. We synthesize, purify, and distribute high-purity research compounds for academic institutions, independent laboratories, and qualified researchers worldwide. All compounds are manufactured using Solid-Phase Peptide Synthesis (SPPS), purified via preparative High-Performance Liquid Chromatography (HPLC), and independently verified by third-party laboratories.
+Longevia Research is a US-based research peptide supplier founded in 2024. We synthesize, purify, and distribute high-purity research compounds for academic institutions, independent laboratories, and qualified researchers worldwide. All compounds are manufactured using Solid-Phase Peptide Synthesis (SPPS), purified via preparative High-Performance Liquid Chromatography (HPLC), and independently verified by third-party laboratories.
 
 Our quality system guarantees:
 - ≥99% purity on every compound
@@ -139,4 +139,4 @@ URL: /products/lipo-c
 
 ## Compliance Notice
 
-All products sold by The Looksmaxxing Lab are classified Research Use Only (RUO). They are not approved by the FDA, EMA, or any regulatory authority for human consumption, veterinary treatment, cosmetic application, or therapeutic use of any kind. The Looksmaxxing Lab makes no therapeutic, health, performance, or cosmetic claims. Purchasers must be qualified researchers using compounds exclusively for in vitro or preclinical research.
+All products sold by Longevia Research are classified Research Use Only (RUO). They are not approved by the FDA, EMA, or any regulatory authority for human consumption, veterinary treatment, cosmetic application, or therapeutic use of any kind. Longevia Research makes no therapeutic, health, performance, or cosmetic claims. Purchasers must be qualified researchers using compounds exclusively for in vitro or preclinical research.

@@ -45,7 +45,7 @@ const SAMPLE_COAS: COA[] = [
   { id: 15, product: 'GLP-3 (Rt) (2mg)', category: 'Metabolic', purity: '99.8%', batch: 'RET-2602-A', analyzed: 'Feb 20, 2026', coaUrl: '/pdfs/sample.pdf' },
 ]
 
-const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 const schemaBreadcrumbList = {
   '@context': 'https://schema.org',
@@ -59,12 +59,12 @@ const schemaBreadcrumbList = {
 const schemaCollectionPage = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
-  name: 'Certificates of Analysis | The Looksmaxxing Lab',
+  name: 'Certificates of Analysis',
   url: `${siteUrl}/certificates`,
-  description: 'Independent, third-party Certificates of Analysis (HPLC and mass spectrometry verified) for research peptide batches sold by The Looksmaxxing Lab.',
+  description: 'Independent, third-party Certificates of Analysis (HPLC and mass spectrometry verified) for research peptide batches sold by Longevia Research.',
   isPartOf: {
     '@type': 'WebSite',
-    name: 'The Looksmaxxing Lab',
+    name: 'Longevia Research',
     url: siteUrl,
   },
 }
@@ -220,8 +220,8 @@ export default function CertificatesPage() {
             <FadeUp>
               <div className="relative w-full aspect-square md:aspect-[4/3] rounded-sm overflow-hidden">
                 <Image 
-                  src="/hero-image.webp"
-                  alt="TB-500 (Thymosin Beta-4) research peptide vial splashing through water, ≥98% purity research-grade compound from The Looksmaxxing Lab"
+                  src="/New Images/glow-and-nad-bg-image.webp"
+                  alt="TB-500 (Thymosin Beta-4) research peptide vial splashing through water, ≥98% purity research-grade compound from Longevia Research"
                   fill 
                   className="object-cover"
                 />

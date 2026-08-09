@@ -1,17 +1,17 @@
 import type { Metadata } from 'next'
 import FaqClient from './FaqClient'
 
-const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
   title: 'Research Peptide FAQ | Purity, Ordering & Storage',
-  description: 'Answers to every question about research peptides, looksmaxxing, purity standards, COA verification, ordering, and storage. US-synthesized compounds. Research use only.',
+  description: 'Answers to every question about research peptides, longevia, purity standards, COA verification, ordering, and storage. US-synthesized compounds. Research use only.',
   alternates: {
     canonical: `${siteUrl}/faq`,
   },
   openGraph: {
-    images: [{ url: '/og/og-faq.webp', width: 1200, height: 630, alt: 'Research Peptide FAQ — The Looksmaxxing Lab' }],
-    title: 'Research Peptide FAQ | The Looksmaxxing Lab',
+    images: [{ url: '/og/og-faq.webp', width: 1200, height: 630, alt: 'Research Peptide FAQ — Longevia Research' }],
+    title: 'Research Peptide FAQ',
     description: 'Frequently asked questions about research peptides, purity standards, COA verification, ordering, and storage.',
     url: `${siteUrl}/faq`,
   },
@@ -26,13 +26,13 @@ export default function FAQPage() {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://www.thelooksmaxxinglab.com"
+        "item": "https://longeviaresearch.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "FAQ",
-        "item": "https://www.thelooksmaxxinglab.com/faq"
+        "item": "https://longeviaresearch.com/faq"
       }
     ]
   };
@@ -43,10 +43,26 @@ export default function FAQPage() {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "What is looksmaxxing?",
+        "name": "What is Longevia Research?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Looksmaxxing is the practice of systematically optimizing physical appearance through controllable habits — skincare, grooming, fitness, nutrition, and sleep. The Looksmaxxing Lab focuses on evidence-based softmaxxing. All research products are strictly for laboratory use only."
+          "text": "Longevia Research is a premier US-based supplier of research-grade peptides and biochemicals. We are dedicated to providing the scientific community with the highest purity compounds, backed by independent third-party testing, to accelerate laboratory discovery."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What sets Longevia Research apart from other suppliers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our commitment to absolute transparency. Every compound we sell is synthesized in ISO-certified US laboratories and independently verified for ≥99% HPLC purity. We do not sell overseas-sourced raw powders, and every order ships with a lot-specific Certificate of Analysis."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are your research compounds safe for human use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. All products sold by Longevia Research are strictly for in-vitro laboratory research and scientific study only. They are not intended for human consumption, aesthetic treatment, or clinical application."
         }
       },
       {
@@ -62,7 +78,7 @@ export default function FAQPage() {
         "name": "What purity level is research-grade?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Research-grade peptides must meet or exceed 99% HPLC purity. The Looksmaxxing Lab enforces a strict 99%+ purity floor verified by independent third-party HPLC and LC-MS testing on every production batch."
+          "text": "Research-grade peptides must meet or exceed 99% HPLC purity. Longevia Research enforces a strict 99%+ purity floor verified by independent third-party HPLC and LC-MS testing on every production batch."
         }
       },
       {
@@ -99,14 +115,6 @@ export default function FAQPage() {
       },
       {
         "@type": "Question",
-        "name": "Is looksmaxxing safe?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Evidence-based softmaxxing — skincare, grooming, fitness, and healthy lifestyle — is safe and widely practised. Concerns arise with hardmaxxing approaches promoting extreme modification. Our research compounds are for laboratory use only, not for self-administration."
-        }
-      },
-      {
-        "@type": "Question",
         "name": "What is HPLC purity testing?",
         "acceptedAnswer": {
           "@type": "Answer",
@@ -127,9 +135,9 @@ export default function FAQPage() {
   const schemaWebPage = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Research Peptide FAQ — The Looksmaxxing Lab",
-    "url": "https://www.thelooksmaxxinglab.com/faq",
-    "description": "Answers to questions about research peptides, looksmaxxing, purity, ordering, and compliance.",
+    "name": "Research Peptide FAQ — Longevia Research",
+    "url": "https://longeviaresearch.com/faq",
+    "description": "Answers to questions about research peptides, longevia, purity, ordering, and compliance.",
     "mainEntity": schemaFAQPage
   };
 

@@ -42,7 +42,7 @@ export function HomePreloaderWrapper({ children, isBot = false }: { children: Re
     const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)
     
     // Check if the preloader has already been shown in this browser session
-    const hasPlayed = sessionStorage.getItem('looksmaxxingPreloaderPlayed')
+    const hasPlayed = sessionStorage.getItem('longeviaPreloaderPlayed')
     
     if (hasPlayed === 'true' || isBot) {
       // Immediately hide preloader and set ready without animation
@@ -52,7 +52,7 @@ export function HomePreloaderWrapper({ children, isBot = false }: { children: Re
     }
 
     // Mark as played for future navigations
-    sessionStorage.setItem('looksmaxxingPreloaderPlayed', 'true')
+    sessionStorage.setItem('longeviaPreloaderPlayed', 'true')
 
     const tl = gsap.timeline({
       onComplete: () => {
@@ -134,8 +134,8 @@ export function HomePreloaderWrapper({ children, isBot = false }: { children: Re
              style={{ opacity: 0, willChange: 'transform' }}
            >
              <Image 
-               src="/Featured%20Images/vial-no-bg.webp"
-               alt="Research-grade peptide vial loading animation - The Looksmaxxing Lab"
+               src="/New Images/longevia-vial.webp"
+               alt="Research-grade peptide vial loading animation - Longevia Research"
                fill
                className="object-contain"
                priority
@@ -149,9 +149,9 @@ export function HomePreloaderWrapper({ children, isBot = false }: { children: Re
            className="absolute bottom-12 md:bottom-[10%] flex flex-col items-center gap-4 text-ink/50"
            style={{ opacity: 0 }}
          >
-           <span className="font-serif text-3xl font-bold tracking-tighter text-currentColor">TLML</span>
+           <span className="font-serif text-3xl font-bold tracking-tighter text-currentColor">Longevia</span>
            <span className="text-[10px] md:text-label-sm uppercase tracking-[0.3em] font-bold text-center">
-             The Looksmaxxing Lab
+             Longevia Research
            </span>
          </div>
 

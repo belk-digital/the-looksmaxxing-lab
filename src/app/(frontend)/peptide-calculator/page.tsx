@@ -3,14 +3,14 @@ import PeptideCalculatorPage from './PeptideCalculatorClient'
 
 export const metadata: Metadata = {
   openGraph: {
-    images: [{ url: '/og/og-calculator.webp', width: 1200, height: 630, alt: 'Peptide Reconstitution Calculator — The Looksmaxxing Lab' }],
+    images: [{ url: '/og/og-calculator.webp', width: 1200, height: 630, alt: 'Peptide Reconstitution Calculator — Longevia Research' }],
   },
-  title: 'Peptide Reconstitution Calculator — Free Tool | Looksmaxxing Lab',
-  description: 'Free peptide reconstitution calculator. Enter your vial size, BAC water volume, and target dose to get exact IU syringe units, concentration, and total doses. No signup — instant results.',
+  title: 'Peptide Reconstitution Calculator - Free Tool',
+  description: 'Free peptide reconstitution calculator. Enter your vial size, BAC water volume, and target dose to get exact IU syringe units, concentration, and total doses. No signup - instant results.',
   alternates: {
-    canonical: 'https://www.thelooksmaxxinglab.com/peptide-calculator',
+    canonical: 'https://longeviaresearch.com/peptide-calculator',
     languages: {
-      'en-US': 'https://www.thelooksmaxxinglab.com/peptide-calculator',
+      'en-US': 'https://longeviaresearch.com/peptide-calculator',
     },
   },
 }
@@ -67,7 +67,7 @@ export default function Page() {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Peptide Reconstitution Calculator",
-    "url": "https://www.thelooksmaxxinglab.com/peptide-calculator",
+    "url": "https://longeviaresearch.com/peptide-calculator",
     "description": "Free online peptide reconstitution calculator. Enter vial size, BAC water volume, and target dose to get exact IU syringe units, concentration, and total doses.",
     "applicationCategory": "HealthApplication",
     "operatingSystem": "Web Browser",
@@ -78,7 +78,7 @@ export default function Page() {
     },
     "creator": {
       "@type": "Organization",
-      "name": "The Looksmaxxing Lab"
+      "name": "Longevia Research"
     }
   }
 
@@ -124,13 +124,13 @@ export default function Page() {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://www.thelooksmaxxinglab.com"
+        "item": "https://longeviaresearch.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Peptide Calculator",
-        "item": "https://www.thelooksmaxxinglab.com/peptide-calculator"
+        "item": "https://longeviaresearch.com/peptide-calculator"
       }
     ]
   }

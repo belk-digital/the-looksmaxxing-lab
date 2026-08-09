@@ -23,12 +23,12 @@ const CONTACT_FAQS = [
   { question: 'Where is my tracking number?', answer: 'Tracking numbers are automatically emailed as soon as your shipping label is created. You can also view your tracking status by logging into your account dashboard.' },
   { question: 'My package was damaged in transit, what do I do?', answer: 'If your vials arrive compromised, please use the contact form above to reach out within 48 hours of delivery. Include your order number and we will request photos of the damaged items to expedite a replacement.' },
   { question: 'How can I get a copy of my batch COA?', answer: 'Certificates of Analysis (COAs) are included with every shipment and are also available digitally. You can download past COAs directly from your Order History in your account dashboard, or request them via the Quality & COAs contact email.' },
-  { question: 'Do you offer wholesale pricing for laboratories?', answer: 'Yes, we offer special pricing tiers for bulk acquisition by licensed laboratories and academic institutions. Please select "Wholesale" in the contact form department dropdown or email support@thelooksmaxxinglab.com directly.' },
+  { question: 'Do you offer wholesale pricing for laboratories?', answer: 'Yes, we offer special pricing tiers for bulk acquisition by licensed laboratories and academic institutions. Please select "Wholesale" in the contact form department dropdown or email support@longeviaresearch.com directly.' },
   { question: 'Why was my order cancelled?', answer: 'Orders may be cancelled if our fraud detection system flags an issue with the payment method, or if there is any communication indicating the intent to misuse our research-only products for human consumption.' },
   { question: 'Do you ship internationally?', answer: 'Yes, we ship worldwide. However, it is the sole responsibility of the researcher to ensure that the importation of our research compounds complies with all local and national regulations in the destination country.' }
 ]
 
-const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 const schemaBreadcrumbList = {
   '@context': 'https://schema.org',
@@ -208,8 +208,8 @@ export default function ContactPage() {
                 <div className="space-y-10">
                   <div>
                     <span className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Support</span>
-                    <a href="mailto:support@thelooksmaxxinglab.com" className="text-lg lg:text-xl font-medium text-ink hover:text-[#5984c4] transition-colors underline underline-offset-4">
-                      support@thelooksmaxxinglab.com
+                    <a href="mailto:support@longeviaresearch.com" className="text-lg lg:text-xl font-medium text-ink hover:text-[#5984c4] transition-colors underline underline-offset-4">
+                      support@longeviaresearch.com
                     </a>
                     <p className="text-sm text-gray-500 mt-2">
                       Responses typically within 12 hours.

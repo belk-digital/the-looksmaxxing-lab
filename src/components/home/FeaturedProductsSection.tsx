@@ -52,7 +52,7 @@ export function FeaturedProductsSection({ products = [] }: { products?: Product[
   if (CAROUSEL_PRODUCTS.length === 0) return null;
 
   return (
-    <section className="w-full bg-white relative z-20 py-24 sm:py-32">
+    <section className="w-full bg-white relative z-20 pt-24 sm:pt-32 pb-8 sm:pb-12">
       <Container size="wide" className="px-6 md:px-12 lg:px-16">
         
         {/* Header matching reference image */}

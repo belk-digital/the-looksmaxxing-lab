@@ -50,7 +50,7 @@ const FooterContent = () => {
         <div className="w-full lg:w-5/12 flex flex-col items-start text-left">
           {/* Logo */}
           <div className="flex items-center mb-8">
-            <span className="font-serif text-4xl lg:text-5xl font-bold tracking-tighter text-cream">TLML</span>
+            <span className="font-serif text-4xl lg:text-5xl font-bold tracking-tighter text-cream">Longevia</span>
           </div>
 
           <h2 className="text-sm font-medium mb-1 tracking-wide text-cream/90">
@@ -141,7 +141,7 @@ const FooterContent = () => {
           <Link href="/disclaimer" className="text-[10px] text-cream/70 hover:text-white uppercase tracking-widest transition-colors font-medium">Disclaimer</Link>
           <div className="flex flex-col items-start lg:items-end w-full lg:w-auto mt-4 lg:mt-0 gap-1">
             <p className="text-[10px] text-cream/60 uppercase tracking-widest font-medium">
-              © {new Date().getFullYear()} The Looksmaxxing Lab.
+              © {new Date().getFullYear()} Longevia Research.
             </p>
             <p className="text-[10px] text-cream/60 uppercase tracking-widest font-medium">
               Designed and developed by <a href="https://www.belkdigital.com/" target="_blank" rel="noopener noreferrer" className="text-cream/80 underline underline-offset-2 hover:text-white transition-colors">Belk Digital</a>
@@ -159,7 +159,7 @@ const FooterContent = () => {
         aria-hidden="true"
         className="text-[14vw] font-sans font-bold text-cream/20 tracking-tighter whitespace-nowrap m-0 p-0"
       >
-        The Looksmaxxing Lab. Precision. Purity. Performance. &bull; The Looksmaxxing Lab. Precision. Purity. Performance.
+        Longevia Research. Precision. Purity. Performance. &bull; Longevia Research. Precision. Purity. Performance.
       </motion.div>
     </div>
   </div>

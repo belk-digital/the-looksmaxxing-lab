@@ -15,7 +15,7 @@ export async function getFeaturedProducts() {
     })
 
     return products.docs.map((p: any) => {
-      const imageUrl = p.images?.[0]?.image?.url || '/hero-image.webp'
+      const imageUrl = p.images?.[0]?.image?.url || '/New Images/glow-and-nad-bg-image.webp'
       // Use the actual description and truncate it if it's too long
       const rawDesc = p.description || ''
       const shortDesc = rawDesc.length > 120 ? rawDesc.substring(0, 117) + '...' : rawDesc

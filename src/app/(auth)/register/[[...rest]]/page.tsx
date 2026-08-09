@@ -1,15 +1,61 @@
 'use client'
 
-import React from 'react'
-import { SignUp } from '@clerk/nextjs'
+import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
 import { Space_Grotesk } from 'next/font/google'
+import { toast } from 'sonner'
+import { registerUser } from '@/app/(frontend)/actions/auth'
+import { signIn } from 'next-auth/react'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 export default function RegisterPage() {
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    const formData = new FormData(e.currentTarget)
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+
+    try {
+      const result = await registerUser(formData)
+
+      if (result.error) {
+        toast.error(result.error)
+        setIsLoading(false)
+        return
+      }
+
+      toast.success('Account created successfully!')
+      
+      // Auto login after registration
+      const signInResult = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
+
+      if (signInResult?.error) {
+        router.push('/login')
+      } else {
+        router.push('/account')
+        router.refresh()
+      }
+    } catch (error) {
+      toast.error('An error occurred during registration')
+      setIsLoading(false)
+    }
+  }
+
   return (
     <main className="min-h-screen flex flex-col lg:flex-row bg-white selection:bg-black/10">
       
@@ -18,8 +64,8 @@ export default function RegisterPage() {
         
         {/* Background Image */}
         <Image 
-          src="/img-1.webp"
-          alt="The Looksmaxxing Lab NAD+, Glow, and MOTS-C research peptide vials displayed on an open longevity-science magazine spread"
+          src="/New Images/vials-on-magazine.webp"
+          alt="Longevia Research NAD+, Glow, and MOTS-C research peptide vials displayed on an open longevity-science magazine spread"
           fill
           className="object-cover object-center z-0"
           priority
@@ -34,7 +80,7 @@ export default function RegisterPage() {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Return
           </Link>
-          <div className="font-serif text-xl font-bold tracking-tighter text-white drop-shadow-sm">TLML</div>
+          <div className="font-serif text-xl font-bold tracking-tighter text-white drop-shadow-sm">Longevia</div>
         </div>
 
         {/* Center Content */}
@@ -43,61 +89,115 @@ export default function RegisterPage() {
             Join The Lab
           </h2>
           <h1 className={`text-4xl lg:text-5xl leading-[1.1] font-bold tracking-tighter text-white mb-6 ${spaceGrotesk.className}`}>
-            Create an account to begin.
+            Access premium research materials.
           </h1>
           <p className="text-white/80 text-sm leading-relaxed max-w-[320px]">
-            Register to manage your subscriptions, view exclusive pricing, and explore premium research materials.
+            Create an account to track your orders, manage your subscriptions, and join our affiliate program.
           </p>
         </div>
       </div>
 
       {/* Right Column - Form */}
       <div className="w-full lg:w-[55%] flex items-center justify-center p-8 lg:p-24 bg-white relative">
-        <div className="w-full max-w-[420px] flex flex-col items-center">
-          <div className="flex flex-col items-center justify-center w-full">
-            <SignUp 
-              path="/register"
-              routing="path"
-              signInUrl="/login"
-              forceRedirectUrl="/account"
-              appearance={{
-                variables: {
-                  colorPrimary: '#000000', 
-                  colorBackground: '#ffffff',
-                  borderRadius: '0px',
-                  fontFamily: 'inherit',
-                },
-                elements: {
-                  rootBox: 'w-full flex justify-center !overflow-visible',
-                  cardBox: 'shadow-none bg-transparent !overflow-visible',
-                  card: 'bg-white shadow-none w-full p-0 m-0 border-none ring-0 !overflow-visible',
-                  headerTitle: `text-2xl font-bold tracking-tight text-black mb-1 ${spaceGrotesk.className}`,
-                  headerSubtitle: 'text-sm text-gray-500 mb-4',
-                  footerAction: 'justify-center mt-8',
-                  footerActionText: 'text-[11px] text-gray-500 uppercase tracking-widest',
-                  footerActionLink: 'text-[11px] text-black font-bold uppercase tracking-widest hover:underline transition-all',
-                  formButtonPrimary: 'bg-black hover:bg-gray-900 text-white w-full rounded-none h-14 text-xs font-bold uppercase tracking-[0.2em] transition-colors flex items-center justify-center mt-4',
-                  formFieldInput: 'border border-gray-200 focus:border-black focus:ring-1 focus:ring-black focus:outline-none bg-white h-14 text-black rounded-none placeholder:text-gray-400 transition-all px-4 shadow-none',
-                  formFieldLabel: 'text-[10px] font-bold uppercase tracking-[0.1em] text-gray-800 mb-1',
-                  dividerLine: 'bg-gray-200',
-                  dividerText: 'text-[10px] font-bold uppercase tracking-[0.1em] text-gray-400 px-4',
-                  socialButtonsBlockButton: 'border border-gray-200 bg-white hover:bg-gray-50 h-14 rounded-none transition-colors mb-4 relative !overflow-visible',
-                  socialButtonsBlockButtonText: 'text-xs font-bold text-black tracking-wide',
-                  formFieldAction: 'text-black hover:underline text-[10px] font-bold uppercase tracking-[0.1em] transition-all',
-                  identityPreview: 'bg-gray-50 border border-gray-200 rounded-none text-black p-4 mb-4',
-                  identityPreviewText: 'text-sm font-medium text-black',
-                  identityPreviewEditButton: 'text-gray-500 hover:text-black transition-colors',
-                  footer: 'hidden', // Completely hides the Clerk branding and default links
-                }
-              }} 
-            />
-            
-            {/* Custom Footer without branding */}
-            <div className="mt-8 text-center border-t border-gray-100 pt-8 w-full max-w-[400px]">
-              <span className="text-[10px] text-gray-500 uppercase tracking-widest">Already have an account? </span>
-              <Link href="/login" className="text-[10px] text-black font-bold uppercase tracking-widest hover:underline transition-all">Sign In</Link>
+        <div className="w-full max-w-[420px] flex flex-col">
+          <h2 className={`text-2xl font-bold tracking-tight text-black mb-1 ${spaceGrotesk.className}`}>
+            Create Account
+          </h2>
+          <p className="text-sm text-gray-500 mb-8">
+            Already have an account? <Link href="/login" className="text-black font-bold hover:underline transition-all">Sign In</Link>
+          </p>
+          
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <button
+              type="button"
+              onClick={() => signIn('google', { callbackUrl: '/account' })}
+              className="bg-white border border-gray-200 hover:bg-gray-50 text-black w-full h-[52px] text-sm font-medium transition-all flex items-center justify-center gap-3"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+              </svg>
+              Continue with Google
+            </button>
+
+            <div className="relative flex items-center py-2">
+              <div className="flex-grow border-t border-gray-200"></div>
+              <span className="flex-shrink-0 mx-4 text-[10px] text-gray-400 uppercase tracking-widest font-bold">Or</span>
+              <div className="flex-grow border-t border-gray-200"></div>
             </div>
-          </div>
+            <div className="flex flex-col">
+              <label className="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-800 mb-1" htmlFor="email">
+                Email Address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                className="border border-gray-200 focus:border-black focus:ring-1 focus:ring-black focus:outline-none bg-white h-14 text-black rounded-none transition-all px-4"
+              />
+            </div>
+            
+            <div className="flex flex-col">
+              <label className="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-800 mb-1" htmlFor="password">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  minLength={8}
+                  className="border border-gray-200 focus:border-black focus:ring-1 focus:ring-black focus:outline-none bg-white h-14 text-black rounded-none transition-all px-4 w-full pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-800 mb-1" htmlFor="confirmPassword">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  minLength={8}
+                  className="border border-gray-200 focus:border-black focus:ring-1 focus:ring-black focus:outline-none bg-white h-14 text-black rounded-none transition-all px-4 w-full pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors"
+                >
+                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="bg-black hover:bg-gray-900 disabled:opacity-50 text-white w-full rounded-none h-14 text-xs font-bold uppercase tracking-[0.2em] transition-colors flex items-center justify-center mt-4"
+            >
+              {isLoading ? 'Creating Account...' : 'Create Account'}
+            </button>
+
+
+
+
+          </form>
         </div>
       </div>
     </main>

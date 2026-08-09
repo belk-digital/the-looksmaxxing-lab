@@ -7,7 +7,7 @@ import { Space_Grotesk } from 'next/font/google'
 import { LayoutDashboard, Link as LinkIcon, Target, DollarSign, WalletCards, Settings, LogOut, Medal } from 'lucide-react'
 import { motion } from 'framer-motion'
 
-import { useClerk } from '@clerk/nextjs'
+import { signOut } from 'next-auth/react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog'
 import { useState } from 'react'
 
@@ -29,7 +29,7 @@ export function AffiliateSidebar({
   tier?: string
 }) {
   const pathname = usePathname() || ''
-  const { signOut } = useClerk()
+
   const [open, setOpen] = useState(false)
   
   return (
@@ -128,7 +128,7 @@ export function AffiliateSidebar({
                 </button>
               </DialogClose>
               <button 
-                onClick={() => signOut({ redirectUrl: '/' })}
+                onClick={() => signOut({ callbackUrl: '/' })}
                 className="px-6 py-3.5 rounded-full text-[11px] font-bold uppercase tracking-[0.15em] text-white bg-red-500 hover:bg-red-600 transition-colors shadow-md w-full sm:w-auto text-center"
               >
                 Yes, Sign Out

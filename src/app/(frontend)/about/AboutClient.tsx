@@ -17,7 +17,7 @@ import { getFeaturedProducts } from '@/app/(frontend)/actions/getFeaturedProduct
 const ABOUT_FAQS: FaqItem[] = [
   {
     question: "Are your products intended for human consumption?",
-    answer: "No. All products sold by The Looksmaxxing Lab are strictly for laboratory and research use only. They are not intended for human consumption, clinical diagnosis, therapeutic application, or veterinary use. These statements have not been evaluated by the FDA. Purchasers confirm they are qualified researchers using compounds in compliance with all applicable regulations."
+    answer: "No. All products sold by Longevia Research are strictly for laboratory and research use only. They are not intended for human consumption, clinical diagnosis, therapeutic application, or veterinary use. These statements have not been evaluated by the FDA. Purchasers confirm they are qualified researchers using compounds in compliance with all applicable regulations."
   },
   {
     question: "Do you provide Certificates of Analysis (COA)?",
@@ -45,31 +45,31 @@ const SEO_COMPOUNDS = [
   {
     title: "BPC-157 (Body Protection Compound-157)",
     desc: "A 15-amino-acid synthetic pentadecapeptide studied extensively for its modulation of growth hormone receptor expression and angiogenic signaling in tissue repair research. One of the most-researched recovery compounds in preclinical literature.",
-    image: "/Featured%20Images/vial-no-bg.webp",
+    image: "/New Images/longevia-vial.webp",
     link: "/shop/bpc-157-blend"
   },
   {
     title: "TB-500 (Thymosin Beta-4 Fragment)",
     desc: "A synthetic analogue of the naturally occurring Thymosin Beta-4 protein, studied for its role in actin upregulation, cellular migration, and connective tissue research assays. A core compound in recovery and tissue biology studies.",
-    image: "/Featured%20Images/vial-no-bg.webp",
+    image: "/New Images/longevia-vial.webp",
     link: "/shop/tb-500"
   },
   {
     title: "GHK-Cu (Glycine-Histidine-Lysine Copper Complex)",
     desc: "A naturally occurring copper-binding tripeptide found in human plasma, extensively studied for its roles in tissue remodeling, collagen synthesis signaling, and antioxidant pathway research. A foundational compound in skin biology and cellular health research.",
-    image: "/Featured%20Images/vial-no-bg.webp",
+    image: "/New Images/longevia-vial.webp",
     link: "/shop/ghk-cu"
   },
   {
-    title: "Tirzepatide — Dual GIP/GLP-1 Receptor Agonist",
+    title: "Tirzepatide - Dual GIP/GLP-1 Receptor Agonist",
     desc: "A synthetic dual incretin mimetic studied for its simultaneous agonism of both GIP (glucose-dependent insulinotropic polypeptide) and GLP-1 receptors, with robust applications in glycemic control and metabolic research models.",
-    image: "/Featured%20Images/vial-no-bg.webp",
+    image: "/New Images/longevia-vial.webp",
     link: "/shop/tirzepatide"
   },
   {
-    title: "Semaglutide — GLP-1 Analogue Research Compound",
+    title: "Semaglutide - GLP-1 Analogue Research Compound",
     desc: "A GLP-1 receptor agonist analogue studied extensively for its potent effects on appetite-regulating hormone pathways and energy homeostasis in metabolic research. One of the most widely referenced compounds in GLP-1 class receptor research.",
-    image: "/Featured%20Images/vial-no-bg.webp",
+    image: "/New Images/longevia-vial.webp",
     link: "/shop/semaglutide"
   }
 ];
@@ -114,9 +114,9 @@ export default function AboutClient() {
   const services = [
     {
       id: "01",
-      title: "Retail Research Peptides — Single & Multi-Vial Orders",
+      title: "Retail Research Peptides - Single & Multi-Vial Orders",
       desc: "Our complete catalog of 24+ research-grade peptides available for immediate dispatch in single or multi-vial quantities. All retail orders include a lot-specific COA, ship from US-based facilities, and are available for standard or 2-day expedited delivery.",
-      image: "/Featured%20Images/three-floating-vials.webp"
+      image: "/New Images/three-flying-vials.webp"
     },
     {
       id: "02",
@@ -126,7 +126,7 @@ export default function AboutClient() {
     },
     {
       id: "03",
-      title: "Custom Synthesis Inquiries — Bespoke Research Compounds",
+      title: "Custom Synthesis Inquiries - Bespoke Research Compounds",
       desc: "For researchers requiring compounds outside our standard catalog — specific sequence modifications, non-standard vial formats, or large-scale custom production runs — our team works with our synthesis partners to fulfill bespoke laboratory requirements.",
       image: "/Featured%20Images/scientist-at-microscope.webp"
     }
@@ -184,7 +184,7 @@ export default function AboutClient() {
              >
                <Image 
                  src="/Featured Images/about-page-hero.webp"
-                 alt="Silhouette of a researcher examining a sample through a laboratory microscope"
+                 alt="Longevia Research — Silhouette of a researcher examining a high-purity laboratory sample"
                  fill 
                  className="object-cover object-[75%_center] md:object-center"
                  priority
@@ -192,7 +192,7 @@ export default function AboutClient() {
                <div className="absolute inset-0 bg-[#5984c4]/20 group-hover:bg-[#5984c4]/10 transition-colors duration-700" />
              </motion.div>
              
-             <h1 className="sr-only">The Looksmaxxing Lab — US-Based Research Peptide Supplier</h1>
+             <h1 className="sr-only">Longevia Research — US-Based Research Peptide Supplier</h1>
              
              {/* Center Overlay Text inside Window */}
              <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-4">
@@ -214,7 +214,7 @@ export default function AboutClient() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="text-base md:text-lg lg:text-xl text-ink/70 max-w-[1000px] mx-auto text-center mt-6 sm:mt-12 leading-relaxed px-6"
           >
-            The Looksmaxxing Lab is a US-based research peptide supplier founded in 2024 and dedicated to one standard: absolute quality. We synthesize every compound in ISO-certified, US-based laboratories, verify each batch at &ge;99% purity through independent HPLC and LC-MS testing, and ship with a lot-specific Certificate of Analysis on every single order. No exceptions.
+            Longevia Research is a US-based research peptide supplier founded in 2024 and dedicated to one standard: absolute quality. We synthesize every compound in ISO-certified, US-based laboratories, verify each batch at &ge;99% purity through independent HPLC and LC-MS testing, and ship with a lot-specific Certificate of Analysis on every single order. No exceptions.
           </motion.p>
 
           <motion.div
@@ -280,8 +280,8 @@ export default function AboutClient() {
         <div className="max-w-[900px] mx-auto relative z-10">
           
           <FadeUp className="text-center mb-16 md:mb-24 lg:mb-40">
-            <h2 className="text-label-md uppercase tracking-widest text-[#5984c4] mb-6 font-bold">About The Looksmaxxing Lab: Our Pillars</h2>
-            <h3 className="text-3xl md:text-4xl lg:text-6xl font-serif text-ink tracking-tight px-4">The Three Pillars of The Looksmaxxing Standard</h3>
+            <h2 className="text-label-md uppercase tracking-widest text-[#5984c4] mb-6 font-bold">About Longevia Research: Our Pillars</h2>
+            <h3 className="text-3xl md:text-4xl lg:text-6xl font-serif text-ink tracking-tight px-4">The Three Pillars of The longevia Standard</h3>
           </FadeUp>
 
           <div className="relative w-full pb-[20vh]">
@@ -348,7 +348,7 @@ export default function AboutClient() {
                 <div className="flex flex-col justify-center py-2 lg:py-4">
                   <h3 className="text-2xl md:text-3xl lg:text-5xl font-serif text-ink mb-4 md:mb-6 lg:mb-8 tracking-tight leading-[1.1]">Our Philosophy: Absolute Transparency, Always</h3>
                   <p className="text-sm md:text-base lg:text-xl text-ink/70 leading-relaxed max-w-3xl font-light">
-                    Transparency is not a selling point here — it is a baseline requirement. Researchers cannot produce reliable data from an unknown compound. Every batch that ships from The Looksmaxxing Lab carries an independently generated <Link href="/certificates" className="underline hover:text-ink">COA</Link> specifying its exact <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="underline hover:text-ink">HPLC purity percentage</Link>, LC-MS mass spectrometry identity confirmation, and endotoxin test results. Every batch that fails our &ge;99% HPLC threshold is destroyed, not discounted or redirected. Full stop.
+                    Transparency is not a selling point here — it is a baseline requirement. Researchers cannot produce reliable data from an unknown compound. Every batch that ships from Longevia Research carries an independently generated <Link href="/certificates" className="underline hover:text-ink">COA</Link> specifying its exact <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="underline hover:text-ink">HPLC purity percentage</Link>, LC-MS mass spectrometry identity confirmation, and endotoxin test results. Every batch that fails our &ge;99% HPLC threshold is destroyed, not discounted or redirected. Full stop.
                   </p>
                 </div>
               </div>
@@ -382,7 +382,7 @@ export default function AboutClient() {
                 <div className="flex flex-col justify-center py-2 lg:py-4">
                   <h3 className="text-2xl md:text-3xl lg:text-5xl font-serif text-ink mb-4 md:mb-6 lg:mb-8 tracking-tight leading-[1.1]">Our Journey: Built by Researchers, for Researchers</h3>
                   <p className="text-sm md:text-base lg:text-xl text-ink/70 leading-relaxed max-w-3xl font-light">
-                    The Looksmaxxing Lab was built out of a specific frustration: an industry selling research peptides with self-issued COAs, inconsistent purity standards, and overseas-sourced raw powders. We built a different infrastructure from the ground up — partnering exclusively with accredited, US-based analytical laboratories, establishing domestic synthesis protocols, and making every batch’s test data publicly accessible. The standard we built is the standard we always wished existed when we were on the other side of the order.
+                    Longevia Research was built out of a specific frustration: an industry selling research peptides with self-issued COAs, inconsistent purity standards, and overseas-sourced raw powders. We built a different infrastructure from the ground up — partnering exclusively with accredited, US-based analytical laboratories, establishing domestic synthesis protocols, and making every batch’s test data publicly accessible. The standard we built is the standard we always wished existed when we were on the other side of the order.
                   </p>
                 </div>
               </div>
@@ -438,7 +438,7 @@ export default function AboutClient() {
               </div>
               <div className="md:max-w-md lg:max-w-lg pb-2">
                 <p className="text-base md:text-lg text-ink-muted leading-relaxed font-light md:text-right">
-                  The Looksmaxxing Lab serves individual researchers, institutional laboratories, and large-scale research programs. Whether you need a single vial or a bulk fulfillment arrangement, every order — regardless of size — is synthesized to the same &ge;99% HPLC standard, ships from our US-based facilities, and includes full third-party COA documentation.
+                  Longevia Research serves individual researchers, institutional laboratories, and large-scale research programs. Whether you need a single vial or a bulk fulfillment arrangement, every order — regardless of size — is synthesized to the same &ge;99% HPLC standard, ships from our US-based facilities, and includes full third-party COA documentation.
                 </p>
               </div>
             </div>
@@ -559,7 +559,7 @@ export default function AboutClient() {
       <FaqCarousel 
         faqs={ABOUT_FAQS}
         title="Frequently Asked Questions"
-        accentTitle="About The Looksmaxxing Lab"
+        accentTitle="About Longevia Research"
         description="Quick answers about our products, purity standards, and shipping. For the complete support center, visit our FAQ page."
         theme="light"
         bottomLink={{ text: "For more questions, visit our complete Support Center", href: "/faq" }}
@@ -592,7 +592,7 @@ export default function AboutClient() {
                 className="absolute -left-[5%] md:left-[5%] top-[10%] w-[300px] md:w-[400px] h-[400px] md:h-[500px] opacity-[0.15] pointer-events-none"
                 style={{ willChange: 'transform' }}
               >
-                <Image src="/Featured%20Images/vial-no-bg.webp" alt="Research peptide vial watermark representing high-purity laboratory synthesis" fill className="object-contain" />
+                <Image src="/New Images/longevia-vial.webp" alt="Longevia Research — Peptide vial watermark representing high-purity ISO-certified laboratory synthesis" fill className="object-contain" />
               </motion.div>
 
               {/* Floating Transparent Vial 2 */}
@@ -602,7 +602,7 @@ export default function AboutClient() {
                 className="absolute -right-[10%] md:-right-[5%] bottom-[5%] w-[400px] md:w-[500px] h-[500px] md:h-[600px] opacity-[0.1] pointer-events-none"
                 style={{ willChange: 'transform' }}
               >
-                <Image src="/Featured%20Images/vial-no-bg.webp" alt="Research peptide vial watermark representing high-purity laboratory synthesis" fill className="object-contain" />
+                <Image src="/New Images/longevia-vial.webp" alt="Longevia Research — Peptide vial watermark representing high-purity ISO-certified laboratory synthesis" fill className="object-contain" />
               </motion.div>
 
               {/* Scientific Rings */}

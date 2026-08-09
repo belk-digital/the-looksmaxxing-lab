@@ -45,7 +45,7 @@ export async function GET(req: Request) {
           // Send the abandoned cart email
           // You can put your custom HTML design here
           await resend.emails.send({
-            from: process.env.RESEND_FROM_EMAIL || 'research@thelooksmaxxinglab.com',
+            from: process.env.RESEND_FROM_EMAIL || 'research@longeviaresearch.com',
             to: user.email,
             subject: 'Did you leave research materials behind?',
             html: `<!DOCTYPE html>
@@ -77,7 +77,7 @@ export async function GET(req: Request) {
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="container">
       <tr>
         <td class="header">
-          <a href="https://thelooksmaxxinglab.com" class="logo">TLML</a>
+          <a href="https://longeviaresearch.com" class="logo">Longevia</a>
         </td>
       </tr>
       <tr>
@@ -90,14 +90,14 @@ export async function GET(req: Request) {
           <p>
             Return to the lab to secure your synthesis.
           </p>
-          <a href="https://thelooksmaxxinglab.com/cart" class="btn">Return to Cart</a>
+          <a href="https://longeviaresearch.com/cart" class="btn">Return to Cart</a>
         </td>
       </tr>
       <tr>
         <td class="footer">
           <p class="disclaimer">
             <strong>FDA Disclaimer:</strong> These statements have not been evaluated by the Food and Drug Administration. These products are not intended to diagnose, treat, cure, or prevent any disease. All products offered are for laboratory and research use only. They are not intended for human consumption.<br><br>
-            © 2026 The Looksmaxxing Lab. All rights reserved.
+            © 2026 Longevia Research. All rights reserved.
           </p>
         </td>
       </tr>

@@ -122,7 +122,7 @@ export const useCartStore = create<CartState>()(
       closeCart: () => set({ isOpen: false }),
     }),
     {
-      name: 'looksmaxxing-cart-storage',
+      name: 'longevia-cart-storage',
     },
   ),
 )

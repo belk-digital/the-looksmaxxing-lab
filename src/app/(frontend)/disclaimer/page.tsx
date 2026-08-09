@@ -4,18 +4,18 @@ import Link from 'next/link'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { EyebrowHeading } from '@/components/editorial/EyebrowHeading'
 
-const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
-  title: 'Medical & Research-Use Disclaimer | The Looksmaxxing Lab',
-  description: 'All content and products from The Looksmaxxing Lab are for research use only. Not for human or veterinary use, diagnosis, or treatment. No medical advice is provided.',
+  title: 'Medical & Research-Use Disclaimer',
+  description: 'All content and products from Longevia Research are for research use only. Not for human or veterinary use, diagnosis, or treatment. No medical advice is provided.',
   alternates: {
     canonical: `${siteUrl}/disclaimer`,
   },
   openGraph: {
-    title: 'Medical & Research-Use Disclaimer | The Looksmaxxing Lab',
-    description: 'All content and products from The Looksmaxxing Lab are for research use only. No medical advice is provided.',
-    images: [{ url: '/og/og-home.webp', width: 1200, height: 630, alt: 'The Looksmaxxing Lab — Medical Disclaimer' }],
+    title: 'Medical & Research-Use Disclaimer',
+    description: 'All content and products from Longevia Research are for research use only. No medical advice is provided.',
+    images: [{ url: '/og/og-home.webp', width: 1200, height: 630, alt: 'Longevia Research — Medical Disclaimer' }],
     url: `${siteUrl}/disclaimer`,
     type: 'website',
   },
@@ -50,28 +50,28 @@ export default function DisclaimerPage() {
           <p className="text-label-sm uppercase tracking-wider text-ink-muted mb-10">Effective Date: January 2026</p>
 
           <p className="text-body-lg text-ink-muted leading-relaxed mb-16">
-            The information provided on this website, and every product sold by The Looksmaxxing Lab, is intended solely for laboratory and academic research. Nothing here is intended for human or veterinary use, diagnosis, or treatment of any condition.
+            The information provided on this website, and every product sold by Longevia Research, is intended solely for laboratory and academic research. Nothing here is intended for human or veterinary use, diagnosis, or treatment of any condition.
           </p>
 
           <div className="space-y-14 text-body-lg text-ink leading-relaxed">
             <section>
               <h2 className="text-editorial-md font-serif text-ink mb-4">01. No Medical Advice</h2>
               <p className="text-ink-muted">
-                Content on this site — including product descriptions, purity documentation, and our <Link href="/journal" className="text-gold underline hover:text-ink transition-colors">Science Journal</Link> — does not constitute medical advice. The Looksmaxxing Lab is not a healthcare provider, and all material is presented for informational and educational purposes only. Always consult a licensed medical or scientific professional before acting on any information found on this site.
+                Content on this site — including product descriptions, purity documentation, and our <Link href="/journal" className="text-gold underline hover:text-ink transition-colors">Science Journal</Link> — does not constitute medical advice. Longevia Research is not a healthcare provider, and all material is presented for informational and educational purposes only. Always consult a licensed medical or scientific professional before acting on any information found on this site.
               </p>
             </section>
 
             <section>
               <h2 className="text-editorial-md font-serif text-ink mb-4">02. Product Usage Limitation</h2>
               <p className="text-ink-muted">
-                Every product offered by The Looksmaxxing Lab is intended exclusively for controlled laboratory or research environments. Any use outside this context, including self-administration, is strictly prohibited and may violate local, state, or federal law. Users are responsible for ensuring all handling, storage, and application comply with applicable research protocols — see our <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-gold underline hover:text-ink transition-colors">COA verification guide</Link> and <Link href="/journal/peptide-reconstitution-storage-guide" className="text-gold underline hover:text-ink transition-colors">reconstitution and storage guide</Link> before beginning any protocol.
+                Every product offered by Longevia Research is intended exclusively for controlled laboratory or research environments. Any use outside this context, including self-administration, is strictly prohibited and may violate local, state, or federal law. Users are responsible for ensuring all handling, storage, and application comply with applicable research protocols — see our <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-gold underline hover:text-ink transition-colors">COA verification guide</Link> and <Link href="/journal/peptide-reconstitution-storage-guide" className="text-gold underline hover:text-ink transition-colors">reconstitution and storage guide</Link> before beginning any protocol.
               </p>
             </section>
 
             <section>
               <h2 className="text-editorial-md font-serif text-ink mb-4">03. Liability</h2>
               <p className="text-ink-muted">
-                The Looksmaxxing Lab assumes no responsibility or liability for the misuse of any product, improper handling, or adverse effects resulting from unauthorized use. By accessing this website or purchasing our products, you acknowledge that The Looksmaxxing Lab is not liable for any direct, indirect, or consequential damages arising from your actions.
+                Longevia Research assumes no responsibility or liability for the misuse of any product, improper handling, or adverse effects resulting from unauthorized use. By accessing this website or purchasing our products, you acknowledge that Longevia Research is not liable for any direct, indirect, or consequential damages arising from your actions.
               </p>
             </section>
 
@@ -91,11 +91,11 @@ export default function DisclaimerPage() {
               <p className="text-ink-muted mb-6">
                 Reach our team via the <Link href="/contact" className="text-gold underline hover:text-ink transition-colors">Contact page</Link>, or email us directly.
               </p>
-              <a href="mailto:support@thelooksmaxxinglab.com" className="text-lg font-medium text-ink hover:text-gold transition-colors underline underline-offset-4">
-                support@thelooksmaxxinglab.com
+              <a href="mailto:support@longeviaresearch.com" className="text-lg font-medium text-ink hover:text-gold transition-colors underline underline-offset-4">
+                support@longeviaresearch.com
               </a>
               <p className="text-ink-muted mt-6 text-body-sm">
-                By accessing this website or purchasing our products, you agree to comply with this Disclaimer and acknowledge that The Looksmaxxing Lab is not responsible for any misuse or unauthorized application of its research materials.
+                By accessing this website or purchasing our products, you agree to comply with this Disclaimer and acknowledge that Longevia Research is not responsible for any misuse or unauthorized application of its research materials.
               </p>
             </section>
           </div>

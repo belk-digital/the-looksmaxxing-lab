@@ -22,7 +22,7 @@ const PILLARS = [
     id: '03',
     title: 'US-Based Synthesis & Fulfillment — Zero Overseas Powders',
     desc: 'Every compound is synthesized in ISO-certified, US-based peptide laboratories using solid-phase peptide synthesis (SPPS). We do not source raw powders from overseas suppliers and do not use third-party bulk brokers. Complete molecular traceability from synthesis to your bench.',
-    image: '/Featured%20Images/three-floating-vials.webp'
+    image: '/New Images/three-flying-vials.webp'
   },
   {
     id: '04',

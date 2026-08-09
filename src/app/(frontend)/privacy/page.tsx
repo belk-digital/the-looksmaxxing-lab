@@ -4,18 +4,18 @@ import Link from 'next/link'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { EyebrowHeading } from '@/components/editorial/EyebrowHeading'
 
-const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | The Looksmaxxing Lab',
-  description: 'How The Looksmaxxing Lab collects, uses, and protects your personal information when you browse, create an account, or order research peptides.',
+  title: 'Privacy Policy',
+  description: 'How Longevia Research collects, uses, and protects your personal information when you browse, create an account, or order research peptides.',
   alternates: {
     canonical: `${siteUrl}/privacy`,
   },
   openGraph: {
-    title: 'Privacy Policy | The Looksmaxxing Lab',
-    description: 'How The Looksmaxxing Lab collects, uses, and protects your personal information.',
-    images: [{ url: '/og/og-home.webp', width: 1200, height: 630, alt: 'The Looksmaxxing Lab — Privacy Policy' }],
+    title: 'Privacy Policy',
+    description: 'How Longevia Research collects, uses, and protects your personal information.',
+    images: [{ url: '/og/og-home.webp', width: 1200, height: 630, alt: 'Longevia Research — Privacy Policy' }],
     url: `${siteUrl}/privacy`,
     type: 'website',
   },
@@ -50,7 +50,7 @@ export default function PrivacyPage() {
           <p className="text-label-sm uppercase tracking-wider text-ink-muted mb-10">Effective Date: January 2026</p>
 
           <p className="text-body-lg text-ink-muted leading-relaxed mb-16">
-            Your privacy matters to us. This Privacy Policy explains what information The Looksmaxxing Lab collects, how we use it, and the choices you have. By using this website, you consent to the practices described below.
+            Your privacy matters to us. This Privacy Policy explains what information Longevia Research collects, how we use it, and the choices you have. By using this website, you consent to the practices described below.
           </p>
 
           <div className="space-y-14 text-body-lg text-ink leading-relaxed">
@@ -104,13 +104,13 @@ export default function PrivacyPage() {
                 <li>Object to or restrict certain uses of your data.</li>
               </ul>
               <p className="text-ink-muted mt-4">
-                To exercise any of these rights, email <a href="mailto:support@thelooksmaxxinglab.com" className="text-gold underline hover:text-ink transition-colors">support@thelooksmaxxinglab.com</a>.
+                To exercise any of these rights, email <a href="mailto:support@longeviaresearch.com" className="text-gold underline hover:text-ink transition-colors">support@longeviaresearch.com</a>.
               </p>
             </section>
 
             <section>
               <h2 className="text-editorial-md font-serif text-ink mb-4">06. Research-Use Products Disclaimer</h2>
-              <p className="text-ink-muted mb-4">All products sold by The Looksmaxxing Lab are strictly Research Use Only:</p>
+              <p className="text-ink-muted mb-4">All products sold by Longevia Research are strictly Research Use Only:</p>
               <ul className="list-disc pl-6 space-y-2 text-ink-muted">
                 <li>Not for human or veterinary use.</li>
                 <li>Not intended for diagnosis, treatment, or any therapeutic purpose.</li>
@@ -130,8 +130,8 @@ export default function PrivacyPage() {
               <p className="text-ink-muted mb-6">
                 Reach our team via the <Link href="/contact" className="text-gold underline hover:text-ink transition-colors">Contact page</Link>, or email us directly.
               </p>
-              <a href="mailto:support@thelooksmaxxinglab.com" className="text-lg font-medium text-ink hover:text-gold transition-colors underline underline-offset-4">
-                support@thelooksmaxxinglab.com
+              <a href="mailto:support@longeviaresearch.com" className="text-lg font-medium text-ink hover:text-gold transition-colors underline underline-offset-4">
+                support@longeviaresearch.com
               </a>
             </section>
           </div>

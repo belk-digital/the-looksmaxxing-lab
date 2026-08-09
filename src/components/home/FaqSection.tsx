@@ -5,7 +5,7 @@ import { FaqCarousel, FaqItem } from '@/components/shared/FaqCarousel'
 const FAQS: FaqItem[] = [
   {
     question: "What is the purity standard for your research peptides?",
-    answer: <>Every research peptide sold by The Looksmaxxing Lab must meet or exceed a strictly enforced ≥99% purity threshold. We verify this standard through independent, third-party High-Performance Liquid Chromatography (HPLC) and Liquid Chromatography–Mass Spectrometry (LC-MS) testing for every production batch — not random samples. Any batch that tests below this threshold is immediately discarded. See our full <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="underline hover:text-gold transition-colors">guide to HPLC purity testing</Link> for how to read the results.</>
+    answer: <>Every research peptide sold by Longevia Research must meet or exceed a strictly enforced ≥99% purity threshold. We verify this standard through independent, third-party High-Performance Liquid Chromatography (HPLC) and Liquid Chromatography–Mass Spectrometry (LC-MS) testing for every production batch — not random samples. Any batch that tests below this threshold is immediately discarded. See our full <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="underline hover:text-gold transition-colors">guide to HPLC purity testing</Link> for how to read the results.</>
   },
   {
     question: "How can I access the Certificate of Analysis (COA) for my order?",
@@ -13,15 +13,15 @@ const FAQS: FaqItem[] = [
   },
   {
     question: "Are these products intended for human consumption?",
-    answer: "No. All products sold by The Looksmaxxing Lab are strictly for laboratory and research use only. They are not intended to diagnose, treat, cure, or prevent any disease, and are not for human or animal consumption. These statements have not been evaluated by the FDA."
+    answer: "No. All products sold by Longevia Research are strictly for laboratory and research use only. They are not intended to diagnose, treat, cure, or prevent any disease, and are not for human or animal consumption. These statements have not been evaluated by the FDA."
   },
   {
     question: "What are your shipping and fulfillment times?",
     answer: <>All orders are fulfilled from our US-based facilities. We offer standard shipping (3–5 business days) and expedited 2-day shipping on orders over $300. Orders placed before 2 PM EST typically ship same day. All peptides are dispatched using validated cold-chain packaging to maintain molecular integrity in transit — see our <Link href="/journal/peptide-reconstitution-storage-guide" className="underline hover:text-gold transition-colors">reconstitution and storage guide</Link> for handling once your order arrives.</>
   },
   {
-    question: "What is looksmaxxing — and how do peptides relate to it?",
-    answer: "Looksmaxxing is the practice of systematically optimizing one's physical appearance through controllable factors such as skincare, fitness, grooming, and diet. Research peptides are studied in the context of skin collagen, tissue recovery, body composition, and hair density — areas directly relevant to appearance optimization. Our compounds are for research use only and are not offered as cosmetic or medical products."
+    question: "Why choose Longevia Research for laboratory peptides?",
+    answer: "Longevia Research guarantees ≥99% HPLC purity for all compounds, verified by independent US laboratories. Every order ships with a lot-specific Certificate of Analysis to ensure your research data is perfectly reliable."
   },
   {
     question: "How are your research peptides synthesized?",
@@ -33,7 +33,7 @@ const FAQS: FaqItem[] = [
   },
   {
     question: "How do I verify that a peptide vendor is legitimate and properly tested?",
-    answer: "The three non-negotiable markers of a legitimate research peptide supplier are: (1) independent third-party HPLC and LC-MS testing — not in-house testing — for every batch; (2) a publicly accessible COA library with lot-traceable documentation; and (3) US-based synthesis, not merely US-based fulfillment of overseas-sourced raw powders. The Looksmaxxing Lab meets all three criteria on every order."
+    answer: "The three non-negotiable markers of a legitimate research peptide supplier are: (1) independent third-party HPLC and LC-MS testing — not in-house testing — for every batch; (2) a publicly accessible COA library with lot-traceable documentation; and (3) US-based synthesis, not merely US-based fulfillment of overseas-sourced raw powders. Longevia Research meets all three criteria on every order."
   }
 ]
 

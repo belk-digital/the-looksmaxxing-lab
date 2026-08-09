@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { Container } from '@/components/ui/container'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
-import { CheckCircle2, ShieldCheck, FileSearch, ArrowUpRight } from 'lucide-react'
+import { CheckCircle2, ShieldCheck, FileSearch, ArrowUpRight, FlaskConical, Activity, Eye, BadgeCheck } from 'lucide-react'
 
 // Desktop Animated HUD Card
 const AnimatedHUDCard = ({
@@ -54,7 +54,7 @@ const AnimatedHUDCard = ({
           <motion.div 
             variants={lineVariants}
             style={{ transformOrigin: isLeft ? 'right center' : 'left center' }}
-            className={`absolute top-1/2 h-[1px] bg-[#5984c4]/40 group-hover:bg-[#5984c4]/80 transition-colors duration-500 z-0 ${isLeft ? 'left-[240px] right-[150px]' : 'left-[150px] right-[240px]'}`} 
+            className={`absolute top-1/2 h-[1px] bg-[#5984c4]/40 group-hover:bg-[#5984c4]/80 transition-colors duration-500 z-0 ${isLeft ? 'left-[240px] lg:right-[180px] xl:right-[200px]' : 'right-[240px] lg:left-[180px] xl:left-[200px]'}`} 
           >
             {/* Single dot at the start (closest to the vial) */}
             <div className={`absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[#5984c4]/80 group-hover:bg-[#5984c4] transition-colors duration-500 ${isLeft ? 'right-0' : 'left-0'}`} />
@@ -172,7 +172,7 @@ export function CoaSection() {
             </FadeUp>
             <FadeUp delay={0.1}>
               <h2 className="text-[12vw] md:text-5xl lg:text-7xl font-display leading-[0.9] tracking-tight text-ink">
-                Verified Purity.<br/>Every Single Batch.
+                7X Tested.<br/>On Every Single Batch.
               </h2>
             </FadeUp>
             <FadeUp delay={0.2}>
@@ -183,53 +183,92 @@ export function CoaSection() {
          </div>
 
          {/* Interactive Arena (Vial & Desktop HUD) */}
-         <div className="relative w-full h-[350px] sm:h-[450px] lg:h-[700px] flex items-center justify-center">
+         <div className="relative w-full h-[350px] sm:h-[450px] lg:h-[900px] xl:h-[1000px] flex items-center justify-center">
             
             {/* The Central "Hologram" Vial */}
             <motion.div 
               style={{ rotateX, rotateY }}
-              className="relative w-[140px] sm:w-[180px] lg:w-[300px] aspect-[1/2.2] z-20 pointer-events-none perspective-[1000px]"
+              animate={{ y: [-10, 10, -10] }}
+              transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+              className="relative w-[140px] sm:w-[180px] lg:w-[360px] xl:w-[400px] aspect-[1/2.2] z-20 pointer-events-none perspective-[1000px]"
             >
                <Image 
-                 src="/Featured%20Images/vial-no-bg.webp"
-                 alt="Single precision research peptide vial with Certificate of Analysis document — The Looksmaxxing Lab"
+                 src="/New Images/longevia-vial.webp"
+                 alt="Single precision research peptide vial with Certificate of Analysis document — Longevia Research"
                  fill
-                 className="object-contain"
+                 className="object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.4)]"
                  priority
                />
             </motion.div>
 
-            {/* Desktop HUD: Metric 1 (Middle Left) */}
+            {/* Desktop HUD: Metric 1 (Left 1) */}
             <AnimatedHUDCard 
               direction="left"
               delay={0.1}
-              positionClass="top-[40%] left-[5%] xl:left-[10%] right-[50%]"
+              positionClass="top-[5%] left-[2%] xl:left-[8%] right-[50%]"
               icon={<CheckCircle2 className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
-              title="≥99% HPLC Purity"
-              desc="Stringent chromatographic isolation for every compound — verified before any order ships."
-              tooltip="HPLC separates compound mixtures by molecular polarity, confirming concentration and purity to ≥99%."
+              title="≥99% HPLC PURITY ANALYSIS"
+              desc="Stringent chromatographic isolation for every compound – verified before any order ships."
             />
 
-            {/* Desktop HUD: Metric 2 (Top Right) */}
+            {/* Desktop HUD: Metric 2 (Right 1) */}
+            <AnimatedHUDCard 
+              direction="right"
+              delay={0.2}
+              positionClass="top-[15%] right-[2%] xl:right-[8%] left-[50%]"
+              icon={<FileSearch className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
+              title="MASS SPECTROMETRY (LC-MS Identity)"
+              desc="Confirms exact molecular match through mass spectrometry analysis."
+            />
+
+            {/* Desktop HUD: Metric 3 (Left 2) */}
+            <AnimatedHUDCard 
+              direction="left"
+              delay={0.3}
+              positionClass="top-[30%] left-[2%] xl:left-[8%] right-[50%]"
+              icon={<ShieldCheck className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
+              title="ENDOTOXIN-FREE"
+              desc="Limulus Amebocyte Lysate (LAL) testing confirms endotoxin levels are well below research-safe thresholds."
+            />
+
+            {/* Desktop HUD: Metric 4 (Right 2) */}
             <AnimatedHUDCard 
               direction="right"
               delay={0.4}
-              positionClass="top-[15%] right-[5%] xl:right-[10%] left-[50%]"
-              icon={<FileSearch className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
-              title="Mass Spectrometry (LC-MS)"
-              desc="Exact molecular weight verification confirms you are receiving the compound on the label."
-              tooltip="LC-MS cross-references molecular mass against known peptide databases. Cannot be faked."
+              positionClass="top-[45%] right-[2%] xl:right-[8%] left-[50%]"
+              icon={<FlaskConical className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
+              title="STERILITY VERIFICATION"
+              desc="Microbial sterility tests performed in ISO/IEC 17025 Lab."
             />
 
-            {/* Desktop HUD: Metric 3 (Bottom Right) */}
+            {/* Desktop HUD: Metric 5 (Left 3) */}
+            <AnimatedHUDCard 
+              direction="left"
+              delay={0.5}
+              positionClass="top-[55%] left-[2%] xl:left-[8%] right-[50%]"
+              icon={<Activity className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
+              title="CONTENT QUANTIFICATION"
+              desc="Confirms labeled potency and concentration."
+            />
+
+            {/* Desktop HUD: Metric 6 (Right 3) */}
             <AnimatedHUDCard 
               direction="right"
+              delay={0.6}
+              positionClass="top-[75%] right-[2%] xl:right-[8%] left-[50%]"
+              icon={<Eye className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
+              title="APPEARANCE & PHYSICAL CHECK"
+              desc="Inspects visual quality and physical integrity."
+            />
+
+            {/* Desktop HUD: Metric 7 (Left 4) */}
+            <AnimatedHUDCard 
+              direction="left"
               delay={0.7}
-              positionClass="bottom-[20%] right-[5%] xl:right-[10%] left-[50%]"
-              icon={<ShieldCheck className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
-              title="Endotoxin-Free"
-              desc="Limulus Amebocyte Lysate (LAL) testing confirms endotoxin levels below research-safe thresholds."
-              tooltip="Endotoxin contamination invalidates in-vitro research results. We test and confirm absence."
+              positionClass="top-[80%] left-[2%] xl:left-[8%] right-[50%]"
+              icon={<BadgeCheck className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
+              title="ILS LAB"
+              desc="Third Party Verified – Independently reviewed and verified by ILS Labs."
             />
 
          </div>
@@ -239,23 +278,44 @@ export function CoaSection() {
             <MobileAnimatedCard 
               delay={0.1}
               icon={<CheckCircle2 className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
-              title="≥99% HPLC Purity"
-              desc="Stringent chromatographic isolation for every compound — verified before any order ships."
-              tooltip="HPLC separates compound mixtures by molecular polarity, confirming concentration and purity to ≥99%."
+              title="≥99% HPLC PURITY ANALYSIS"
+              desc="Stringent chromatographic isolation for every compound – verified before any order ships."
+            />
+            <MobileAnimatedCard 
+              delay={0.2}
+              icon={<FileSearch className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
+              title="MASS SPECTROMETRY (LC-MS Identity)"
+              desc="Confirms exact molecular match through mass spectrometry analysis."
+            />
+            <MobileAnimatedCard 
+              delay={0.3}
+              icon={<ShieldCheck className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
+              title="ENDOTOXIN-FREE"
+              desc="Limulus Amebocyte Lysate (LAL) testing confirms endotoxin levels are well below research-safe thresholds."
             />
             <MobileAnimatedCard 
               delay={0.4}
-              icon={<FileSearch className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
-              title="Mass Spectrometry (LC-MS)"
-              desc="Exact molecular weight verification confirms you are receiving the compound on the label."
-              tooltip="LC-MS cross-references molecular mass against known peptide databases. Cannot be faked."
+              icon={<FlaskConical className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
+              title="STERILITY VERIFICATION"
+              desc="Microbial sterility tests performed in ISO/IEC 17025 Lab."
+            />
+            <MobileAnimatedCard 
+              delay={0.5}
+              icon={<Activity className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
+              title="CONTENT QUANTIFICATION"
+              desc="Confirms labeled potency and concentration."
+            />
+            <MobileAnimatedCard 
+              delay={0.6}
+              icon={<Eye className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
+              title="APPEARANCE & PHYSICAL CHECK"
+              desc="Inspects visual quality and physical integrity."
             />
             <MobileAnimatedCard 
               delay={0.7}
-              icon={<ShieldCheck className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
-              title="Endotoxin-Free"
-              desc="Limulus Amebocyte Lysate (LAL) testing confirms endotoxin levels below research-safe thresholds."
-              tooltip="Endotoxin contamination invalidates in-vitro research results. We test and confirm absence."
+              icon={<BadgeCheck className="w-5 h-5 text-[#5984c4]" strokeWidth={1.5} />}
+              title="ILS LAB"
+              desc="Third Party Verified – Independently reviewed and verified by ILS Labs."
             />
          </div>
 

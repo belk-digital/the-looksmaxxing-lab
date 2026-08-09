@@ -18,13 +18,13 @@ const PILLARS = [
     title: "99%+ Purity Floor — Any Batch Below This Gets Discarded",
     description: "We enforce a non-negotiable 99% purity minimum across our entire catalog. Every single batch is independently tested by third-party laboratories using both HPLC chromatography and LC-MS mass spectrometry. If a batch fails to meet this threshold — for any reason — it is discarded immediately and never fulfilled.",
     icon: ShieldCheck,
-    image: "/Featured%20Images/three-floating-vials.webp"
+    image: "/New Images/three-flying-vials.webp"
   },
   {
     title: "Cold-Chain Logistics — Molecular Integrity, Guaranteed",
     description: "Peptides are structurally fragile molecules. Thermal degradation begins at room temperature and accelerates over time. We store all inventory in climate-controlled, medical-grade refrigeration and ship using validated cold-chain packaging specifically designed to maintain peptide integrity from our facility to your bench — regardless of transit conditions.",
     icon: Snowflake,
-    image: "/Featured%20Images/nad-glp-3-vials-on-ice.webp"
+    image: "/New Images/motsc-and-retatrutide-on-ice.webp"
   }
 ]
 
@@ -57,12 +57,12 @@ export function WhatSetsUsApart() {
             <div className="w-5/12 flex flex-col">
               <FadeUp>
                 <span className="text-label-md uppercase tracking-widest text-[#5984c4] mb-4 block font-bold">
-                  THE LOOKSMAXXING STANDARD
+                  THE longevia STANDARD
                 </span>
               </FadeUp>
               <FadeUp delay={0.1}>
                 <h2 className="text-[clamp(2rem,5vh,3.5rem)] font-display text-ink leading-[0.9] tracking-tight mb-4 lg:mb-6">
-                  The Looksmaxxing Standard: Why Purity Matters
+                  The longevia Standard: Why Purity Matters
                 </h2>
               </FadeUp>
               <FadeUp delay={0.2}>
@@ -183,12 +183,12 @@ export function WhatSetsUsApart() {
           <div className="flex flex-col mb-12">
             <FadeUp>
               <span className="text-label-md uppercase tracking-widest text-[#5984c4] mb-4 block font-bold">
-                THE LOOKSMAXXING STANDARD
+                THE longevia STANDARD
               </span>
             </FadeUp>
             <FadeUp delay={0.1}>
               <h2 className="text-[10vw] sm:text-display-sm font-display text-ink leading-[0.9] tracking-tight mb-6">
-                The Looksmaxxing Standard: Why Purity Matters
+                The longevia Standard: Why Purity Matters
               </h2>
             </FadeUp>
             <FadeUp delay={0.2}>

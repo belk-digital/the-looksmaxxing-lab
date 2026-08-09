@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'www.thelooksmaxxinglab.com',
+        hostname: 'longeviaresearch.com',
         port: '',
         pathname: '/**',
       },
@@ -49,16 +49,16 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // 1. Non-www to www redirect (already existed and is correct)
+      // 1. WWW to Non-WWW redirect
       {
         source: '/:path*',
         has: [
           {
             type: 'host',
-            value: 'thelooksmaxxinglab.com',
+            value: 'www.longeviaresearch.com',
           },
         ],
-        destination: 'https://www.thelooksmaxxinglab.com/:path*',
+        destination: 'https://longeviaresearch.com/:path*',
         permanent: true,
       },
       // 2. Legacy WooCommerce product URLs to Next.js product URLs

@@ -5,7 +5,7 @@ import { OrderConfirmationClient } from './OrderConfirmationClient'
 import { notFound } from 'next/navigation'
 
 export const metadata = {
-  title: 'Order Confirmed | The Looksmaxxing Lab',
+  title: 'Order Confirmed',
   robots: { index: false, follow: false },
 }
 
@@ -46,11 +46,12 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
   // 2. Check User Auth (Logged in user returning to the page)
   if (!isAuthorized) {
      try {
-       const { auth } = await import('@clerk/nextjs/server')
-       const { userId } = await auth()
-       if (userId && order.owner) {
+       const { getServerSession } = await import('next-auth/next')
+       const { authOptions } = await import('@/lib/auth')
+       const session = await getServerSession(authOptions)
+       if (session?.user?.email && order.owner) {
           const ownerDoc = typeof order.owner === 'object' ? order.owner : await payload.findByID({ collection: 'users', id: order.owner });
-          if (ownerDoc && ownerDoc.clerkUserId === userId) {
+          if (ownerDoc && ownerDoc.email === session.user.email) {
              isAuthorized = true;
           }
        }

@@ -122,8 +122,8 @@ export function AffiliatesLandingClient({ userStatus }: Props) {
                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
              >
                <Image 
-                 src="/Featured%20Images/affiliates-hero.webp"
-                 alt="Research-grade peptide vial surrounded by a digital DNA helix and molecular network overlay, representing The Looksmaxxing Lab affiliate research program"
+                 src="/New Images/hero-image-longevia.webp"
+                 alt="Research-grade peptide vial surrounded by a digital DNA helix and molecular network overlay, representing Longevia Research affiliate research program"
                  fill 
                  className="object-cover object-center"
                  priority
@@ -426,7 +426,7 @@ export function AffiliatesLandingClient({ userStatus }: Props) {
           <StaggerChildren className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               { title: "High Conversion Rates", desc: "The built-in 15% customer discount significantly improves conversion rates compared to programs without discounts. Your audience receives immediate value." },
-              { title: "15% Commission", desc: "Strong earning potential in the scientific products niche. Many lab supplies programs offer only 5-10%—our rate is among the best in biotech." },
+              { title: "15% Commission", desc: "Strong earning potential in the scientific products niche. Many lab supplies programs offer only 5-10%-our rate is among the best in biotech." },
               { title: "No Technical Setup", desc: "Join in minutes with zero coding or website requirements. Perfect for beginners exploring affiliate marketing opportunities." },
               { title: "Growing Market", desc: "The research peptide industry continues expanding. Promote products with genuine demand from laboratories and scientific professionals." },
               { title: "Premium Quality", desc: "We maintain rigorous quality standards with third-party testing and purity verification. Confidently promote products knowing they meet specifications." },
@@ -676,7 +676,7 @@ export function AffiliatesLandingClient({ userStatus }: Props) {
                   Become an Affiliate Now
                 </Button>
               </Link>
-              <p className="text-sm text-gray-400">Questions? Contact us at <a href="mailto:support@thelooksmaxxinglab.com" className="text-[#5984c4] hover:underline">support@thelooksmaxxinglab.com</a></p>
+              <p className="text-sm text-gray-400">Questions? Contact us at <a href="mailto:support@longeviaresearch.com" className="text-[#5984c4] hover:underline">support@longeviaresearch.com</a></p>
             </div>
           </div>
         </FadeUp>

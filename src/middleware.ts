@@ -1,30 +1,33 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-import { NextResponse } from 'next/server'
+import { withAuth } from "next-auth/middleware"
+import { NextResponse } from "next/server"
 
-const isProtectedRoute = createRouteMatcher([
-  '/account(.*)',
-  '/affiliates/dashboard(.*)',
-])
-
-const isAdminRoute = createRouteMatcher(['/admin(.*)'])
-
-export default clerkMiddleware(async (auth, req) => {
-  const path = req.nextUrl.pathname
-
-  if (isAdminRoute(req) || path.startsWith('/api')) {
+export default withAuth(
+  function middleware(req) {
     return NextResponse.next()
-  }
+  },
+  {
+    callbacks: {
+      authorized: ({ req, token }) => {
+        const path = req.nextUrl.pathname
+        
+        // Admin routes are not handled by NextAuth (handled by Payload config)
+        if (path.startsWith('/admin')) {
+          return true
+        }
 
-  if (path.startsWith('/login') || path.startsWith('/register')) {
-    return NextResponse.next()
+        // Protect specific frontend routes
+        if (path.startsWith('/account') || path.startsWith('/affiliates/dashboard')) {
+          return !!token
+        }
+        
+        return true
+      },
+    },
+    pages: {
+      signIn: '/login',
+    }
   }
-
-  if (isProtectedRoute(req)) {
-    await auth.protect()
-  }
-
-  return NextResponse.next()
-})
+)
 
 export const config = {
   matcher: [

@@ -1,17 +1,17 @@
 import type { Metadata } from 'next'
 import AboutClient from './AboutClient'
 
-const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
-  title: 'About The Looksmaxxing Lab | US Research Peptide Supplier',
-  description: 'The Looksmaxxing Lab is a premier US-based research peptide supplier. We synthesize compounds for cellular regeneration, metabolic study, and structural repair at ≥99% HPLC purity with independent COA verification.',
+  title: 'About Longevia Research | US Research Peptide Supplier',
+  description: 'Longevia Research is a premier US-based research peptide supplier. We synthesize compounds for cellular regeneration, metabolic study, and structural repair at ≥99% HPLC purity with independent COA verification.',
   alternates: {
     canonical: `${siteUrl}/about`,
   },
   openGraph: {
-    images: [{ url: '/og/og-about.webp', width: 1200, height: 630, alt: 'About The Looksmaxxing Lab' }],
-    title: 'About The Looksmaxxing Lab | US Research Peptide Supplier',
+    images: [{ url: '/og/og-about.webp', width: 1200, height: 630, alt: 'About Longevia Research' }],
+    title: 'About Longevia Research | US Research Peptide Supplier',
     description: 'US-based research peptide supplier. Synthesizing compounds for cellular regeneration, metabolic study, and structural repair at ≥99% HPLC purity.',
     url: `${siteUrl}/about`,
   },
@@ -21,12 +21,12 @@ export default function AboutPage() {
   const schemaAboutPage = {
     "@context": "https://schema.org",
     "@type": "AboutPage",
-    "name": "About The Looksmaxxing Lab",
-    "url": "https://www.thelooksmaxxinglab.com/about",
-    "description": "About The Looksmaxxing Lab — US-based research peptide supplier founded in 2024. Mission, philosophy, quality standards, and compound catalog.",
+    "name": "About Longevia Research",
+    "url": "https://longeviaresearch.com/about",
+    "description": "About Longevia Research — US-based research peptide supplier founded in 2024. Mission, philosophy, quality standards, and compound catalog.",
     "mainEntity": {
       "@type": "Organization",
-      "name": "The Looksmaxxing Lab"
+      "name": "Longevia Research"
     }
   };
 
@@ -38,13 +38,13 @@ export default function AboutPage() {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://www.thelooksmaxxinglab.com"
+        "item": "https://longeviaresearch.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "About",
-        "item": "https://www.thelooksmaxxinglab.com/about"
+        "item": "https://longeviaresearch.com/about"
       }
     ]
   };
@@ -52,7 +52,7 @@ export default function AboutPage() {
   const schemaItemList = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "name": "Research Peptide Catalog — The Looksmaxxing Lab",
+    "name": "Research Peptide Catalog — Longevia Research",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "BPC-157" },
       { "@type": "ListItem", "position": 2, "name": "TB-500" },

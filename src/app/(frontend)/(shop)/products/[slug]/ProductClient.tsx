@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import { StockIndicator } from '@/components/ui/stock-indicator'
 import { useCartStore } from '@/lib/cart/store'
 import { useWishlistStore } from '@/lib/wishlist/store'
-import { useAuth } from '@clerk/nextjs'
+import { useSession } from 'next-auth/react'
 import { toast } from 'sonner'
 
 import { ImageGallery } from '@/components/shop/ImageGallery'
@@ -230,7 +230,8 @@ export function ProductClient({ product }: ProductClientProps) {
   const addItemToWishlist = useWishlistStore(state => state.addItem)
   const removeItemFromWishlist = useWishlistStore(state => state.removeItem)
   const isWishlistedGlobal = useWishlistStore(state => state.hasItem(product.id))
-  const { isSignedIn } = useAuth()
+  const { status } = useSession()
+  const isSignedIn = status === 'authenticated'
   
   const [inWishlist, setInWishlist] = useState(false)
   const [isWishlistPending, setIsWishlistPending] = useState(false)

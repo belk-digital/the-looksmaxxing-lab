@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 import JournalPostClient from './JournalPostClient'
 import { JOURNAL_POSTS } from '@/data/journal-posts'
 
-const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export async function generateStaticParams() {
   return JOURNAL_POSTS.map((p) => ({ slug: p.slug }))
@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = JOURNAL_POSTS.find(p => p.slug === slug)
   
   const title = post?.title || 'Science Journal'
-  const description = post?.excerpt || 'Research and clinical guidelines from The Looksmaxxing Lab.'
+  const description = post?.excerpt || 'Research and clinical guidelines from Longevia Research.'
   let imageUrl = post?.heroImage
   
   if (imageUrl && imageUrl.startsWith('/')) {
@@ -35,16 +35,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description,
       images: imageUrl
         ? [{ url: imageUrl, width: 1200, height: 630, alt: title }]
-        : [{ url: '/hero-image.webp', width: 1200, height: 630, alt: 'Science Journal Post' }],
+        : [{ url: '/New Images/glow-and-nad-bg-image.webp', width: 1200, height: 630, alt: 'Science Journal Post' }],
       type: 'article',
       url: postUrl,
-      siteName: 'The Looksmaxxing Lab',
+      siteName: 'Longevia Research',
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: imageUrl ? [imageUrl] : ['/hero-image.webp'],
+      images: imageUrl ? [imageUrl] : ['/New Images/glow-and-nad-bg-image.webp'],
     },
   }
 }
@@ -75,7 +75,7 @@ export default async function JournalPostPage({ params }: { params: Promise<{ sl
     },
     publisher: {
       '@type': 'Organization',
-      name: 'The Looksmaxxing Lab',
+      name: 'Longevia Research',
       logo: {
         '@type': 'ImageObject',
         url: `${siteUrl}/icon.png`,

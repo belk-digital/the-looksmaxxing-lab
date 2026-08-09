@@ -70,8 +70,8 @@ export default function JournalIndexPage() {
                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
              >
                <Image 
-                 src="/img-1.webp"
-                 alt="The Looksmaxxing Lab NAD+, Glow, and MOTS-C research peptide vials displayed on an open longevity-science magazine spread"
+                 src="/New Images/vials-on-magazine.webp"
+                 alt="Longevia Research NAD+, Glow, and MOTS-C research peptide vials displayed on an open longevity-science magazine spread"
                  fill 
                  className="object-cover object-center"
                  priority

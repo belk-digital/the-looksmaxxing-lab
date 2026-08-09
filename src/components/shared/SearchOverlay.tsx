@@ -12,14 +12,14 @@ interface SearchOverlayProps {
 }
 
 const QUICK_CATEGORIES = [
-  { name: 'Metabolic Research', icon: Zap, href: '/shop/metabolic' },
-  { name: 'Growth Factor Research', icon: Sparkles, href: '/shop/growth-factor' },
-  { name: 'Recovery Research', icon: BatteryCharging, href: '/shop/recovery' },
-  { name: 'Cellular Health Research', icon: Dna, href: '/shop/cellular-health' },
-  { name: 'Bioregulators', icon: Activity, href: '/shop/bioregulators' },
-  { name: 'Cognitive Research', icon: Brain, href: '/shop/cognitive' },
-  { name: 'Essentials', icon: ShieldPlus, href: '/shop/essentials' },
-  { name: 'Receptor Agonist', icon: Network, href: '/shop/receptor-agonist' },
+  { name: 'Longevity Research', icon: Activity, href: '/shop?category=Longevity%20Research' },
+  { name: 'Hormonal Health', icon: Dna, href: '/shop?category=Hormonal%20Health' },
+  { name: 'Cognitive & Nootropic', icon: Brain, href: '/shop?category=Cognitive%20%26%20Nootropic' },
+  { name: 'Mitochondrial & Cellular Energy', icon: BatteryCharging, href: '/shop?category=Mitochondrial%20%26%20Cellular%20Energy' },
+  { name: 'Growth Hormone Secretagogues', icon: Sparkles, href: '/shop?category=Growth%20Hormone%20Secretagogues' },
+  { name: 'Metabolic Research', icon: Zap, href: '/shop?category=Metabolic%20Research' },
+  { name: 'Immune Regulation', icon: ShieldPlus, href: '/shop?category=Immune%20Regulation' },
+  { name: 'Recovery & Tissue Repair', icon: Network, href: '/shop?category=Recovery%20%26%20Tissue%20Repair' },
 ]
 
 export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {

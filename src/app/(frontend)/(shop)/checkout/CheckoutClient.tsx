@@ -11,8 +11,9 @@ import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useCartStore } from '@/lib/cart/store'
 import { verifyCoupon, getUserDefaultAddress, getUserMaxxPoints, getUserAddresses } from '../actions'
+import { updateAddress } from '../account/addresses/actions'
 import { toast } from 'sonner'
-import { useUser } from '@clerk/nextjs'
+import { useSession } from 'next-auth/react'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 import { StripeCheckoutForm } from './StripeCheckoutForm'
@@ -25,7 +26,8 @@ const stripePromise = typeof window !== 'undefined' ? loadStripe(process.env.NEX
 
 export function CheckoutClient() {
   const { items, couponCode: storedCouponCode, setCoupon } = useCartStore()
-  const { user } = useUser()
+  const { data: session } = useSession()
+  const user = session?.user
   
   // Mobile summary toggle
   const [mobileSummaryOpen, setMobileSummaryOpen] = useState(true)
@@ -41,6 +43,7 @@ export function CheckoutClient() {
   // Address Selection State
   const [addresses, setAddresses] = useState<any[]>([])
   const [selectedAddressId, setSelectedAddressId] = useState<string | 'new'>('new')
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null)
 
   // Form State
   const [isProcessing, setIsProcessing] = useState(false)
@@ -65,9 +68,9 @@ export function CheckoutClient() {
       
       setFormData(prev => ({
         ...prev,
-        email: user.primaryEmailAddress?.emailAddress || prev.email,
-        firstName: user.firstName || prev.firstName,
-        lastName: user.lastName || prev.lastName,
+        email: user.email || prev.email,
+        firstName: user.name?.split(' ')[0] || prev.firstName,
+        lastName: user.name?.split(' ').slice(1).join(' ') || prev.lastName,
       }))
 
       try {
@@ -96,6 +99,32 @@ export function CheckoutClient() {
     
     prefillData()
   }, [user])
+
+  const refreshAddresses = async () => {
+    try {
+      const userAddresses = await getUserAddresses()
+      if (userAddresses) {
+        setAddresses(userAddresses)
+        // If the edited address was selected, update form data
+        if (selectedAddressId !== 'new') {
+          const selected = userAddresses.find((a: any) => String(a.id) === selectedAddressId)
+          if (selected) {
+            setFormData(prev => ({
+              ...prev,
+              address: selected.line1,
+              apartment: selected.line2 || '',
+              city: selected.city,
+              state: selected.state,
+              zip: selected.postalCode,
+              phone: selected.phone || ''
+            }))
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Failed to refresh addresses:', err)
+    }
+  }
 
   // Shipping State
   const [availableShippingMethods, setAvailableShippingMethods] = useState<any[]>([])
@@ -259,9 +288,9 @@ export function CheckoutClient() {
       const { createPayloadOrder } = await import('./actions')
       const orderRes = await createPayloadOrder(
         items, shippingMethod, appliedCoupon?.code, isRedeemingPoints, 
-        { ...formData, email: user?.primaryEmailAddress?.emailAddress || formData.email }, 
+        { ...formData, email: user?.email || formData.email }, 
         'free_order', 
-        user?.id as string
+        user?.email as string
       )
 
       if (orderRes.error || !orderRes.orderId) {
@@ -294,9 +323,9 @@ export function CheckoutClient() {
       const { createPayloadOrder } = await import('./actions')
       const orderRes = await createPayloadOrder(
         items, shippingMethod, appliedCoupon?.code, isRedeemingPoints, 
-        { ...formData, email: user?.primaryEmailAddress?.emailAddress || formData.email }, 
+        { ...formData, email: user?.email || formData.email }, 
         'manual', 
-        user?.id as string,
+        user?.email as string,
         paymentMethod
       )
 
@@ -580,32 +609,91 @@ export function CheckoutClient() {
                 
                 {user && addresses.length > 0 && (
                   <div className="flex flex-col gap-3 mb-4">
-                    {addresses.map((addr) => (
-                      <label key={addr.id} className={`flex items-start gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${selectedAddressId === String(addr.id) ? 'border-ink bg-ink/5' : 'border-slate-100 bg-white hover:border-ink/30'}`}>
-                        <input 
-                          type="radio" 
-                          name="addressSelection" 
-                          value={addr.id} 
-                          checked={selectedAddressId === String(addr.id)}
-                          onChange={() => setSelectedAddressId(String(addr.id))}
-                          className="mt-0.5 w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0 shrink-0" 
-                        />
-                        <div className="flex flex-col flex-1">
-                          <div className="flex items-start justify-between w-full">
-                            <span className="text-sm font-bold text-ink leading-tight">
-                              {addr.firstName} {addr.lastName}
-                            </span>
-                            {addr.isDefaultShipping && (
-                              <span className="text-[10px] font-bold uppercase tracking-widest text-ink/60 bg-white border border-slate-100 shadow-sm px-2 py-0.5 rounded-md shrink-0">
-                                Default
-                              </span>
-                            )}
+                    {addresses.map((addr) => {
+                      if (editingAddressId === String(addr.id)) {
+                        return (
+                          <div key={addr.id} className="flex flex-col gap-4 p-5 rounded-2xl border border-ink/30 bg-white animate-in fade-in zoom-in-95 duration-200">
+                            <form action={async (formData) => {
+                              setIsProcessing(true)
+                              const result = await updateAddress(String(addr.id), formData)
+                              if (result.success) {
+                                toast.success('Address updated')
+                                setEditingAddressId(null)
+                                await refreshAddresses()
+                              } else {
+                                toast.error(result.error || 'Failed to update address')
+                              }
+                              setIsProcessing(false)
+                            }} className="flex flex-col gap-4">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <Input name="firstName" defaultValue={addr.firstName} placeholder="First Name" className="h-14 rounded-2xl bg-cream/50" required />
+                                <Input name="lastName" defaultValue={addr.lastName} placeholder="Last Name" className="h-14 rounded-2xl bg-cream/50" required />
+                              </div>
+                              <Input name="line1" defaultValue={addr.line1} placeholder="Address" className="h-14 rounded-2xl bg-cream/50" required />
+                              <Input name="line2" defaultValue={addr.line2} placeholder="Apartment, suite, etc. (optional)" className="h-14 rounded-2xl bg-cream/50" />
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <Input name="city" defaultValue={addr.city} placeholder="City" className="h-14 rounded-2xl bg-cream/50" required />
+                                <Input name="state" defaultValue={addr.state} placeholder="State" className="h-14 rounded-2xl bg-cream/50" required />
+                                <Input name="zip" defaultValue={addr.postalCode} placeholder="ZIP Code" className="h-14 rounded-2xl bg-cream/50" required />
+                              </div>
+                              <Input name="phone" defaultValue={addr.phone} placeholder="Phone (for delivery updates)" type="tel" className="h-14 rounded-2xl bg-cream/50" required />
+                              <div className="flex items-center gap-3">
+                                <Checkbox id={`default-${addr.id}`} name="isDefault" defaultChecked={addr.isDefaultShipping} />
+                                <label htmlFor={`default-${addr.id}`} className="text-sm text-ink/70">Set as default delivery address</label>
+                              </div>
+                              <div className="flex items-center gap-3 mt-2">
+                                <Button type="submit" disabled={isProcessing} className="flex-1 h-12 rounded-xl bg-ink text-cream font-bold uppercase tracking-widest text-xs">
+                                  {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Address'}
+                                </Button>
+                                <Button type="button" onClick={() => setEditingAddressId(null)} disabled={isProcessing} variant="outline" className="flex-1 h-12 rounded-xl text-ink font-bold uppercase tracking-widest text-xs border-ink/20 hover:bg-ink/5">
+                                  Cancel
+                                </Button>
+                              </div>
+                            </form>
                           </div>
-                          <span className="text-xs text-ink/70 mt-1.5">{addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}</span>
-                          <span className="text-xs text-ink/70 mt-0.5">{addr.city}, {addr.state} {addr.postalCode}</span>
+                        )
+                      }
+                      
+                      return (
+                        <div key={addr.id} className="relative group">
+                          <label className={`flex items-start gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${selectedAddressId === String(addr.id) ? 'border-ink bg-ink/5' : 'border-slate-100 bg-white hover:border-ink/30'}`}>
+                            <input 
+                              type="radio" 
+                              name="addressSelection" 
+                              value={addr.id} 
+                              checked={selectedAddressId === String(addr.id)}
+                              onChange={() => setSelectedAddressId(String(addr.id))}
+                              className="mt-0.5 w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0 shrink-0" 
+                            />
+                            <div className="flex flex-col flex-1">
+                              <div className="flex items-start justify-between w-full pr-8">
+                                <span className="text-sm font-bold text-ink leading-tight">
+                                  {addr.firstName} {addr.lastName}
+                                </span>
+                                {addr.isDefaultShipping && (
+                                  <span className="text-[10px] font-bold uppercase tracking-widest text-ink/60 bg-white border border-slate-100 shadow-sm px-2 py-0.5 rounded-md shrink-0">
+                                    Default
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-xs text-ink/70 mt-1.5">{addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}</span>
+                              <span className="text-xs text-ink/70 mt-0.5">{addr.city}, {addr.state} {addr.postalCode}</span>
+                            </div>
+                          </label>
+                          <button 
+                            type="button" 
+                            onClick={(e) => {
+                              e.preventDefault()
+                              setEditingAddressId(String(addr.id))
+                            }}
+                            className="absolute top-4 right-4 p-2 text-ink/40 hover:text-ink hover:bg-ink/5 rounded-full transition-colors opacity-100 lg:opacity-0 lg:group-hover:opacity-100 focus:opacity-100"
+                            aria-label="Edit address"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                          </button>
                         </div>
-                      </label>
-                    ))}
+                      )
+                    })}
 
                     <label className={`flex items-center gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${selectedAddressId === 'new' ? 'border-ink bg-ink/5' : 'border-slate-100 bg-white hover:border-ink/30'}`}>
                       <input 

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
   title: 'Certificates of Analysis (COA) | Third-Party Lab Verified',
@@ -9,8 +9,8 @@ export const metadata: Metadata = {
     canonical: `${siteUrl}/certificates`,
   },
   openGraph: {
-    images: [{ url: '/og/og-certificates.webp', width: 1200, height: 630, alt: 'Certificates of Analysis — The Looksmaxxing Lab' }],
-    title: 'Certificates of Analysis | The Looksmaxxing Lab',
+    images: [{ url: '/og/og-certificates.webp', width: 1200, height: 630, alt: 'Certificates of Analysis — Longevia Research' }],
+    title: 'Certificates of Analysis | Longevia Research',
     description: 'Download COA documents for all research peptides. Third-party HPLC verified, ≥99% purity guaranteed.',
     url: `${siteUrl}/certificates`,
   },

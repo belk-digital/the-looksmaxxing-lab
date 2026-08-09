@@ -5,17 +5,17 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { getShopProducts } from '../(shop)/actions'
 
-const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
   title: 'Shop Research Peptides | 30+ COA-Verified Compounds',
-  description: 'Browse 30+ research-grade peptides and compounds — BPC-157, Semaglutide, Tirzepatide, NAD+, and more. Every batch ≥99% HPLC purity with Certificate of Analysis. Research use only.',
+  description: 'Browse 30+ research-grade peptides and compounds - BPC-157, Semaglutide, Tirzepatide, NAD+, and more. Every batch ≥99% HPLC purity with Certificate of Analysis. Research use only.',
   alternates: {
     canonical: `${siteUrl}/shop`,
   },
   openGraph: {
-    images: [{ url: '/og/og-shop.webp', width: 1200, height: 630, alt: 'Shop Research Peptides — The Looksmaxxing Lab' }],
-    title: 'Shop Research Peptides | The Looksmaxxing Lab',
+    images: [{ url: '/og/og-shop.webp', width: 1200, height: 630, alt: 'Shop Research Peptides — Longevia Research' }],
+    title: 'Shop Research Peptides',
     description: 'Browse 30+ COA-verified research peptides. ≥99% HPLC purity, batch-traceable. US-based supplier.',
     url: `${siteUrl}/shop`,
   },
@@ -70,7 +70,7 @@ export default async function ShopPage() {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'Research Peptides & Compounds',
-    description: 'Browse 30+ research-grade peptides and compounds from The Looksmaxxing Lab.',
+    description: 'Browse 30+ research-grade peptides and compounds from Longevia Research.',
     url: `${siteUrl}/shop`,
     mainEntity: {
       '@type': 'ItemList',

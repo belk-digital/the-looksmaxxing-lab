@@ -1,24 +1,25 @@
 import Link from 'next/link'
 import { Heart, ShoppingCart, User } from 'lucide-react'
-import { auth } from '@clerk/nextjs/server'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/lib/auth'
 import { getPayload } from 'payload'
 import configPromise from '@/payload.config'
 import { ClientHeader } from './ClientHeader'
 
 export async function Header() {
   try {
-    const { userId } = await auth()
+    const session = await getServerSession(authOptions)
     let cartItemCount = 0
     let wishlistItemCount = 0
     let initialWishlistItems: any[] = []
     let initialCartItems: any[] = []
 
-    if (userId) {
+    if (session?.user?.email) {
       const payload = await getPayload({ config: configPromise })
       
       const payloadUsers = await payload.find({
         collection: 'users',
-        where: { clerkUserId: { equals: userId } },
+        where: { email: { equals: session.user.email } },
         limit: 1,
         overrideAccess: true,
       })
@@ -77,7 +78,7 @@ export async function Header() {
       }
     }
 
-    return <ClientHeader cartItemCount={cartItemCount} wishlistItemCount={wishlistItemCount} isLoggedIn={!!userId} categories={[]} initialWishlistItems={initialWishlistItems} initialCartItems={initialCartItems} />
+    return <ClientHeader cartItemCount={cartItemCount} wishlistItemCount={wishlistItemCount} isLoggedIn={!!session?.user} categories={[]} initialWishlistItems={initialWishlistItems} initialCartItems={initialCartItems} />
   } catch (error) {
     console.error('Error in Header Server Component:', error);
     return <ClientHeader cartItemCount={0} wishlistItemCount={0} isLoggedIn={false} categories={[]} initialWishlistItems={[]} initialCartItems={[]} />

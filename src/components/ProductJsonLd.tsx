@@ -33,7 +33,7 @@ export function ProductJsonLd({
   reviewCount,
   reviews,
 }: ProductJsonLdProps) {
-  const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+  const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
   const productUrl = `${siteUrl}/products/${slug}`
 
   const imageUrls = images.map((img) =>
@@ -90,7 +90,7 @@ export function ProductJsonLd({
     itemCondition: 'https://schema.org/NewCondition',
     seller: {
       '@type': 'Organization',
-      name: 'The Looksmaxxing Lab',
+      name: 'Longevia Research',
     },
     hasMerchantReturnPolicy: returnPolicy,
     shippingDetails,
@@ -104,7 +104,7 @@ export function ProductJsonLd({
     url: productUrl,
     brand: {
       '@type': 'Brand',
-      name: 'The Looksmaxxing Lab',
+      name: 'Longevia Research',
     },
     category: categories[0] || 'Research Peptides',
     ...(sku && { sku }),

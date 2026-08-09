@@ -49,12 +49,12 @@ const GHK_FAQS = [
         answer: "During tissue remodeling, GHK-Cu acts as a biological feedback signal. It suppresses pro-inflammatory cytokines (like TGF-beta1), stimulates the removal of damaged, fibrotic proteins via controlled MMP activation, and simultaneously promotes the orderly deposition of new collagen and glycosaminoglycans, leading to tissue that resembles healthy skin rather than scar tissue."
       },
       {
-        question: "Where can I find the purity verification for The Looksmaxxing Lab's GHK-Cu?",
+        question: "Where can I find the purity verification for Longevia Research's GHK-Cu?",
         answer: "Every single batch of our GHK-Cu undergoes independent, third-party HPLC and LC-MS testing at a certified US laboratory. The lot-specific documentation is publicly available in our COA Library."
       },
       {
         question: "Do I need a medical prescription to purchase GHK-Cu for laboratory research?",
-        answer: "No. The GHK-Cu offered by The Looksmaxxing Lab is classified strictly for Research Use Only (RUO). It is an investigational laboratory reagent, not an FDA-approved therapeutic drug, and therefore does not require a prescription for qualified researchers."
+        answer: "No. The GHK-Cu offered by Longevia Research is classified strictly for Research Use Only (RUO). It is an investigational laboratory reagent, not an FDA-approved therapeutic drug, and therefore does not require a prescription for qualified researchers."
       }
     ]
 
@@ -88,12 +88,12 @@ const GLP1_FAQS = [
         answer: "Because of their immense length, synthesizing metabolic peptides is incredibly difficult and prone to errors. Independent High-Performance Liquid Chromatography (HPLC) is strictly required to separate the target peptide from truncated sequences or toxic impurities, ensuring a clinical purity level of ≥99%."
       },
       {
-        question: "Where can I find the purity results for The Looksmaxxing Lab's metabolic peptides?",
+        question: "Where can I find the purity results for Longevia Research's metabolic peptides?",
         answer: "Every production batch of our Semaglutide and Tirzepatide is tested by an independent, third-party US laboratory. You can find the lot-specific, downloadable test results for all metabolic and structural peptides in our COA Library."
       },
       {
         question: "Can I order Tirzepatide or Semaglutide without a medical prescription?",
-        answer: "Yes, but strictly for laboratory research. The compounds sold by The Looksmaxxing Lab are classified as Research Use Only (RUO) laboratory reagents. They are strictly not for human consumption or therapeutic intervention, and thus do not require a prescription for qualified researchers."
+        answer: "Yes, but strictly for laboratory research. The compounds sold by Longevia Research are classified as Research Use Only (RUO) laboratory reagents. They are strictly not for human consumption or therapeutic intervention, and thus do not require a prescription for qualified researchers."
       },
       {
         question: "How do I calculate the correct concentration for my in-vitro assays?",
@@ -135,12 +135,12 @@ const BPC_FAQS = [
         answer: "During the synthesis of 15-amino acid (BPC-157) or 43-amino acid (TB-4) sequences, errors can occur resulting in truncated peptides. Independent HPLC separates and quantifies the compound to ensure a ≥99% purity level, ensuring researchers are not inadvertently introducing toxic impurities into their pristine models."
       },
       {
-        question: "Where can I verify the purity of The Looksmaxxing Lab's regenerative peptides?",
+        question: "Where can I verify the purity of Longevia Research's regenerative peptides?",
         answer: "Every batch is tested by an independent, third-party US laboratory. The lot-specific documentation for BPC-157, TB-500, and all other compounds is publicly available in our COA Library."
       },
       {
         question: "Do I need a prescription to order BPC-157 or TB-500?",
-        answer: "No. The compounds sold by The Looksmaxxing Lab are classified strictly as Research Use Only (RUO) laboratory reagents. They are strictly not for human consumption or therapeutic use, and thus do not require a medical prescription for qualified researchers."
+        answer: "No. The compounds sold by Longevia Research are classified strictly as Research Use Only (RUO) laboratory reagents. They are strictly not for human consumption or therapeutic use, and thus do not require a medical prescription for qualified researchers."
       }
     ]
 
@@ -221,12 +221,12 @@ const TESAMORELIN_GLP_3_RT_FAQS = [
         answer: "Both compounds are synthesized via automated Solid-Phase Peptide Synthesis and purified through preparative HPLC to remove truncated sequences. Final identity and molecular weight confirmation is performed via Electrospray Ionization Mass Spectrometry (ESI-MS), with every batch verified to a ≥99% purity floor."
       },
       {
-        question: "Where can I verify the purity of The Looksmaxxing Lab's Tesamorelin and GLP-3 (Rt)?",
+        question: "Where can I verify the purity of Longevia Research's Tesamorelin and GLP-3 (Rt)?",
         answer: "Every production batch is tested by an independent, third-party US laboratory. Lot-specific Certificates of Analysis for both compounds are publicly available in our COA Library, allowing researchers to verify identity and purity before use."
       },
       {
         question: "Do I need a prescription to order Tesamorelin or GLP-3 (Rt) for laboratory research?",
-        answer: "No. Both compounds sold by The Looksmaxxing Lab are classified strictly as Research Use Only (RUO) laboratory reagents. They are not approved therapeutics and are not intended for human consumption, so no prescription is required for qualified researchers."
+        answer: "No. Both compounds sold by Longevia Research are classified strictly as Research Use Only (RUO) laboratory reagents. They are not approved therapeutics and are not intended for human consumption, so no prescription is required for qualified researchers."
       }
     ]
 
@@ -264,7 +264,7 @@ const CJC_IPAMORELIN_FAQS = [
         answer: "Both peptides should be synthesized via Solid-Phase Peptide Synthesis and purified through preparative HPLC to eliminate truncated sequences. Final molecular weight confirmation via Electrospray Ionization Mass Spectrometry (ESI-MS) should document a purity floor of ≥99% on every batch."
       },
       {
-        question: "Where can I find COA documentation for The Looksmaxxing Lab's GH-axis peptides?",
+        question: "Where can I find COA documentation for Longevia Research's GH-axis peptides?",
         answer: "Every production batch of our CJC-1295, Ipamorelin, and CJC-1295 + Ipamorelin blend is tested by an independent, third-party US laboratory. Lot-specific Certificates of Analysis are publicly available in our COA Library."
       },
       {
@@ -307,12 +307,12 @@ const COA_HPLC_FAQS = [
         answer: "A legitimate, batch-specific COA references a unique lot or batch number that should also appear printed on the vial's label. If a supplier presents the identical COA document for every order regardless of when it was purchased, or the document has no visible lot number, that is a strong indicator the documentation is not tied to the actual product shipped and should not be relied upon."
       },
       {
-        question: "Where can I find COA documentation for The Looksmaxxing Lab's peptides?",
-        answer: "Every production batch sold by The Looksmaxxing Lab is sent to an independent, ISO-certified US laboratory for HPLC and LC-MS analysis before it is released for sale. Lot-specific, downloadable Certificates of Analysis for every compound in our catalog are publicly available in our Certificates of Analysis (COA) Library."
+        question: "Where can I find COA documentation for Longevia Research's peptides?",
+        answer: "Every production batch sold by Longevia Research is sent to an independent, ISO-certified US laboratory for HPLC and LC-MS analysis before it is released for sale. Lot-specific, downloadable Certificates of Analysis for every compound in our catalog are publicly available in our Certificates of Analysis (COA) Library."
       },
       {
         question: "Do I need a prescription to order COA-verified research peptides?",
-        answer: "No. The compounds sold by The Looksmaxxing Lab are classified strictly as Research Use Only (RUO) laboratory reagents. They are not FDA-approved therapeutics and are not intended for human or veterinary consumption, so no medical prescription is required for qualified researchers."
+        answer: "No. The compounds sold by Longevia Research are classified strictly as Research Use Only (RUO) laboratory reagents. They are not FDA-approved therapeutics and are not intended for human or veterinary consumption, so no medical prescription is required for qualified researchers."
       }
     ]
 
@@ -355,7 +355,7 @@ const RECON_STORAGE_FAQS = [
       },
       {
         question: "Do I need a prescription to order bacteriostatic water or research peptides?",
-        answer: "No. Bacteriostatic water and the research peptides sold by The Looksmaxxing Lab are classified strictly as Research Use Only (RUO) laboratory reagents, not FDA-approved therapeutics, and are not intended for human or veterinary consumption. No medical prescription is required for qualified researchers."
+        answer: "No. Bacteriostatic water and the research peptides sold by Longevia Research are classified strictly as Research Use Only (RUO) laboratory reagents, not FDA-approved therapeutics, and are not intended for human or veterinary consumption. No medical prescription is required for qualified researchers."
       }
     ]
 
@@ -382,7 +382,7 @@ const GLP_3_RT_FAQS = [
       },
       {
         question: "Where can I buy GLP-3 (Rt) peptide for research?",
-        answer: "The Looksmaxxing Lab supplies research-grade GLP-3 (Rt) synthesized in US-based, ISO-certified facilities with ≥99% HPLC purity, LC-MS molecular identity verification, and lot-specific COA documentation. All products are for research use only."
+        answer: "Longevia Research supplies research-grade GLP-3 (Rt) synthesized in US-based, ISO-certified facilities with ≥99% HPLC purity, LC-MS molecular identity verification, and lot-specific COA documentation. All products are for research use only."
       }
     ]
 
@@ -409,7 +409,7 @@ const MOTSC_FAQS = [
       },
       {
         question: "Where can I buy MOTS-c peptide for research?",
-        answer: "The Looksmaxxing Lab supplies research-grade MOTS-c synthesized in US-based, ISO-certified facilities with ≥99% HPLC purity, LC-MS identity verification, and lot-specific COA documentation. All products are for research use only."
+        answer: "Longevia Research supplies research-grade MOTS-c synthesized in US-based, ISO-certified facilities with ≥99% HPLC purity, LC-MS identity verification, and lot-specific COA documentation. All products are for research use only."
       }
     ]
 
@@ -436,7 +436,7 @@ const GLP3_FAQS = [
       },
       {
         question: "Where can I buy GLP-3 peptide for research?",
-        answer: "The Looksmaxxing Lab is expanding its catalog to include research-grade GLP-3 synthesized in US-based, ISO-certified facilities with ≥99% HPLC purity, LC-MS identity verification, and lot-specific COA documentation. Visit our shop to view current triple-agonist research compound availability. All products are for research use only."
+        answer: "Longevia Research is expanding its catalog to include research-grade GLP-3 synthesized in US-based, ISO-certified facilities with ≥99% HPLC purity, LC-MS identity verification, and lot-specific COA documentation. Visit our shop to view current triple-agonist research compound availability. All products are for research use only."
       }
     ]
 
@@ -487,7 +487,7 @@ const SEMA_TIRZ_RETA_FAQS = [
       },
       {
         question: "Do these compounds require a prescription to purchase for research purposes?",
-        answer: "No. The semaglutide, tirzepatide, and GLP-3 (Rt) offered by The Looksmaxxing Lab are classified strictly as Research Use Only (RUO) laboratory reagents. They are not FDA-approved therapeutic products, are not for human consumption, and do not require a prescription for qualified researchers procuring them for laboratory use."
+        answer: "No. The semaglutide, tirzepatide, and GLP-3 (Rt) offered by Longevia Research are classified strictly as Research Use Only (RUO) laboratory reagents. They are not FDA-approved therapeutic products, are not for human consumption, and do not require a prescription for qualified researchers procuring them for laboratory use."
       },
       {
         question: "Can these three compounds be studied together in a single comparative protocol?",
@@ -498,7 +498,7 @@ const SEMA_TIRZ_RETA_FAQS = [
         answer: "The most frequent confounders are inconsistent dosing schedules between compounds, unverified purity or identity of the research material itself, and mismatched administration technique across cohorts. Because these compounds are structurally similar but mechanistically distinct, even small procedural inconsistencies can be misattributed to a genuine receptor-driven effect. Documenting batch-level COA data and standardizing every non-compound variable is essential to isolating the true mechanistic comparison."
       },
       {
-        question: "Where can researchers verify the purity of The Looksmaxxing Lab's semaglutide, tirzepatide, and GLP-3 (Rt)?",
+        question: "Where can researchers verify the purity of Longevia Research's semaglutide, tirzepatide, and GLP-3 (Rt)?",
         answer: "Every production batch of our semaglutide, tirzepatide, and GLP-3 (Rt) is tested by an independent, third-party US laboratory using HPLC and LC-MS. Lot-specific, downloadable Certificates of Analysis for all three compounds are publicly available in our COA Library."
       }
     ]
@@ -554,14 +554,14 @@ const NAD_FAQS = [
       },
       {
         question: "Does NAD+ require a prescription to purchase for research purposes?",
-        answer: "No. The NAD+ offered by The Looksmaxxing Lab is classified strictly as a Research Use Only (RUO) laboratory reagent. It is not an FDA-approved therapeutic product, is not for human consumption, and does not require a prescription for qualified researchers procuring it for laboratory use."
+        answer: "No. The NAD+ offered by Longevia Research is classified strictly as a Research Use Only (RUO) laboratory reagent. It is not an FDA-approved therapeutic product, is not for human consumption, and does not require a prescription for qualified researchers procuring it for laboratory use."
       },
       {
         question: "What research applications is NAD+ most commonly used for?",
         answer: "Current research applications span cellular senescence and biological aging models, mitochondrial function and bioenergetics studies, exercise physiology and metabolic rate research, and investigations into the interplay between DNA damage response (via PARP) and sirtuin-mediated longevity pathways."
       },
       {
-        question: "Where can researchers verify the purity of The Looksmaxxing Lab's NAD+?",
+        question: "Where can researchers verify the purity of Longevia Research's NAD+?",
         answer: "Every production batch of our NAD+ is tested by an independent, third-party US laboratory using HPLC and mass spectrometry. Lot-specific, downloadable Certificate of Analysis documentation is publicly available in our COA Library."
       }
     ]
@@ -575,7 +575,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '25 min read',
     excerpt: 'An exhaustive, heavily cited review of how the GHK-Cu copper peptide interacts with dermal fibroblasts, modulates the extracellular matrix, and up-regulates collagen synthesis in high-purity research environments.',
     heroImage: '/journal-images/ghk_cu_molecular_science_1783383163855.webp',
-    author: 'The Looksmaxxing Lab Research Team',
+    author: 'Longevia Research Research Team',
     faqs: GHK_FAQS,
     content: (
       <>
@@ -637,10 +637,10 @@ export const JOURNAL_POSTS: JournalPost[] = [
           For principal investigators and independent researchers conducting sensitive assays on fibroblast activation or cellular senescence, the chemical purity of the GHK-Cu compound is absolutely non-negotiable. Contaminants, residual heavy metals, or truncated peptide sequences (which can frequently occur during poorly managed Solid-Phase Peptide Synthesis) can dramatically skew experimental results, trigger un-targeted immune or inflammatory responses in cellular cultures, or completely nullify the peptide's highly specific signaling capabilities.
         </p>
 
-        <Image src="/journal-images/hplc_chromatogram_lab_1783383609531.webp" alt="HPLC Chromatogram Lab Screen verifying peptide purity at The Looksmaxxing Lab" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+        <Image src="/journal-images/hplc_chromatogram_lab_1783383609531.webp" alt="HPLC Chromatogram Lab Screen verifying peptide purity at Longevia Research" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          At <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link>, we enforce a strict, industry-leading <strong>≥99% purity floor</strong>. We do not rely on in-house testing or manufacturer claims. Every single production batch of <Link href="/products/ghk-cu" className="text-blue-600 underline hover:text-blue-800">GHK-Cu</Link> is quarantined and sent to an independent, third-party, ISO-certified laboratory within the United States for rigorous <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">High-Performance Liquid Chromatography (HPLC)</Link> and Liquid Chromatography–Mass Spectrometry (LC-MS) analysis.
+          At <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link>, we enforce a strict, industry-leading <strong>≥99% purity floor</strong>. We do not rely on in-house testing or manufacturer claims. Every single production batch of <Link href="/products/ghk-cu" className="text-blue-600 underline hover:text-blue-800">GHK-Cu</Link> is quarantined and sent to an independent, third-party, ISO-certified laboratory within the United States for rigorous <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">High-Performance Liquid Chromatography (HPLC)</Link> and Liquid Chromatography–Mass Spectrometry (LC-MS) analysis.
         </p>
 
         <p>
@@ -674,7 +674,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '28 min read',
     excerpt: 'An in-depth, clinical exploration of how GLP-1 and GIP receptor agonists (like Semaglutide and Tirzepatide) impact subcutaneous adipocytes and cause the mechanical failure of the extracellular matrix.',
     heroImage: '/journal-images/glp1_tissue_metabolism_1783383217631.webp',
-    author: 'The Looksmaxxing Lab Research Team',
+    author: 'Longevia Research Research Team',
     faqs: GLP1_FAQS,
     content: (
       <>
@@ -683,7 +683,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </p>
 
         <p>
-          However, the scientific community—and particularly researchers focused on biological optimization, dermatological resilience, and aesthetic biology (often termed "looksmaxxing")—has recently turned its hyper-focused attention to a severe secondary physiological consequence of these peptides: the phenomenon colloquially referred to in clinical circles as "GLP-1 Face" or metabolic-induced tissue laxity.
+          However, the scientific community—and particularly researchers focused on biological optimization, dermatological resilience, and aesthetic biology (often termed "longevia")—has recently turned its hyper-focused attention to a severe secondary physiological consequence of these peptides: the phenomenon colloquially referred to in clinical circles as "GLP-1 Face" or metabolic-induced tissue laxity.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Adipocyte Biology and Extracellular Architecture</h2>
@@ -723,7 +723,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
           Metabolic peptides are exceptionally complex, long-chain biological molecules. <Link href="/products/semaglutide" className="text-blue-600 underline hover:text-blue-800">Semaglutide</Link>, for instance, is a 31-amino acid polypeptide with a highly specific structural modification (an attachment of a C18 fatty diacid) that significantly extends its half-life by promoting tight binding to serum albumin. <Link href="/products/tirzepatide" className="text-blue-600 underline hover:text-blue-800">Tirzepatide</Link> is an even more complex 39-amino acid sequence.
         </p>
 
-        <Image src="/journal-images/peptide_vial_cold_chain_1783383637051.webp" alt="Lyophilized metabolic peptide vial in cold-chain storage at The Looksmaxxing Lab" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+        <Image src="/journal-images/peptide_vial_cold_chain_1783383637051.webp" alt="Lyophilized metabolic peptide vial in cold-chain storage at Longevia Research" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
           During Solid-Phase Peptide Synthesis (SPPS), synthesizing amino acid chains of this tremendous length is highly prone to deletion errors, oxidation, or incomplete coupling reactions, resulting in truncated peptide sequences. If researchers utilize impure, "gray market" compounds, these truncated sequences can competitively inhibit the target GLP-1 receptors without activating them, resulting in unpredictable metabolic responses, or worse, trigger severe immunogenic and allergic reactions in the test subject. This is why purchasing compounds with verified HPLC and mass spectrometry data is absolutely paramount — see our full <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">guide to reading a peptide Certificate of Analysis</Link> for how to verify this before use.
@@ -754,7 +754,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '26 min read',
     excerpt: 'Understanding the stark mechanistic and biochemical differences between BPC-157 (an angiogenic mastermind) and TB-500 (an actin up-regulator) for designing optimal experimental protocols in soft tissue repair.',
     heroImage: '/journal-images/bpc157_tb500_cellular_healing_1783383266702.webp',
-    author: 'The Looksmaxxing Lab Research Team',
+    author: 'Longevia Research Research Team',
     faqs: BPC_FAQS,
     content: (
       <>
@@ -838,7 +838,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '24 min read',
     excerpt: 'A detailed research review of Kisspeptin-10, the master regulator of the HPG axis, and MOTS-C, a mitochondrial-derived peptide with sex-dimorphic expression, and why researchers increasingly study them together in female physiology models.',
     heroImage: '/journal-images/kisspeptin-mots-c-hormonal-research-hero.webp',
-    author: 'The Looksmaxxing Lab Research Team',
+    author: 'Longevia Research Research Team',
     faqs: KISSPEPTIN_MOTSC_FAQS,
     content: (
       <>
@@ -964,7 +964,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/kisspeptin-mots-c-hplc-verification.webp" alt="HPLC chromatogram verifying peptide purity in a research laboratory" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          At <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link>, every batch of <Link href="/products/kisspeptin" className="text-blue-600 underline hover:text-blue-800">Kisspeptin-10</Link> and <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-C</Link> is synthesized via Solid-Phase Peptide Synthesis (SPPS), purified using preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">High-Performance Liquid Chromatography (HPLC)</Link> to eliminate truncated or deletion sequences, and verified for exact molecular weight through Electrospray Ionization Mass Spectrometry (ESI-MS). We maintain a strict ≥99% purity floor across every production lot, and all results are independently confirmed by a third-party, ISO-certified US laboratory — never relying solely on in-house or manufacturer claims.
+          At <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link>, every batch of <Link href="/products/kisspeptin" className="text-blue-600 underline hover:text-blue-800">Kisspeptin-10</Link> and <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-C</Link> is synthesized via Solid-Phase Peptide Synthesis (SPPS), purified using preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">High-Performance Liquid Chromatography (HPLC)</Link> to eliminate truncated or deletion sequences, and verified for exact molecular weight through Electrospray Ionization Mass Spectrometry (ESI-MS). We maintain a strict ≥99% purity floor across every production lot, and all results are independently confirmed by a third-party, ISO-certified US laboratory — never relying solely on in-house or manufacturer claims.
         </p>
 
         <p>
@@ -1018,7 +1018,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '27 min read',
     excerpt: 'A rigorous comparative analysis of Tesamorelin, a GHRH analog with documented visceral fat research applications, and GLP-3 (Rt), a triple GLP-1/GIP/glucagon agonist, for designing female-physiology body composition protocols.',
     heroImage: '/journal-images/tesamorelin-glp-3-visceral-fat-hero.webp',
-    author: 'The Looksmaxxing Lab Research Team',
+    author: 'Longevia Research Research Team',
     faqs: TESAMORELIN_GLP_3_RT_FAQS,
     content: (
       <>
@@ -1158,7 +1158,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/tesamorelin-glp-3-comparative-lab-analysis.webp" alt="Laboratory desk comparing two research peptide vials with HPLC documentation" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          Every batch of <Link href="/products/tesamorelin" className="text-blue-600 underline hover:text-blue-800">Tesamorelin</Link> and <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> sold by <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> is synthesized via Solid-Phase Peptide Synthesis, purified through preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">HPLC</Link>, and verified via Electrospray Ionization Mass Spectrometry (ESI-MS) at an independent, third-party US laboratory. Every lot is documented at a ≥99% purity floor, with results available in our publicly accessible <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link>. Researchers should also use our <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution Calculator</Link> — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution guide</Link> — to ensure precise molar dosing across both compounds.
+          Every batch of <Link href="/products/tesamorelin" className="text-blue-600 underline hover:text-blue-800">Tesamorelin</Link> and <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> sold by <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> is synthesized via Solid-Phase Peptide Synthesis, purified through preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">HPLC</Link>, and verified via Electrospray Ionization Mass Spectrometry (ESI-MS) at an independent, third-party US laboratory. Every lot is documented at a ≥99% purity floor, with results available in our publicly accessible <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link>. Researchers should also use our <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution Calculator</Link> — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution guide</Link> — to ensure precise molar dosing across both compounds.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Building a Reproducible Research Protocol</h2>
@@ -1192,7 +1192,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '26 min read',
     excerpt: 'An in-depth mechanistic guide to CJC-1295 (a GHRH analog) and Ipamorelin (a selective ghrelin receptor agonist), and why their dual-pathway growth hormone stimulation is a cornerstone of muscle recovery and body composition research.',
     heroImage: '/journal-images/cjc-1295-ipamorelin-muscle-recovery-hero.webp',
-    author: 'The Looksmaxxing Lab Research Team',
+    author: 'Longevia Research Research Team',
     faqs: CJC_IPAMORELIN_FAQS,
     content: (
       <>
@@ -1332,7 +1332,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </p>
 
         <p>
-          Every batch of <Link href="/products/cjc-1295-no-dac" className="text-blue-600 underline hover:text-blue-800">CJC-1295</Link>, <Link href="/products/ipamorelin" className="text-blue-600 underline hover:text-blue-800">Ipamorelin</Link>, and the combined <Link href="/products/cjc-ipamorelin" className="text-blue-600 underline hover:text-blue-800">CJC-1295 + Ipamorelin blend</Link> sold by <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> is synthesized via Solid-Phase Peptide Synthesis, purified through preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">HPLC</Link>, and verified via Electrospray Ionization Mass Spectrometry (ESI-MS) at an independent, third-party US laboratory, with a documented ≥99% purity floor on every lot.
+          Every batch of <Link href="/products/cjc-1295-no-dac" className="text-blue-600 underline hover:text-blue-800">CJC-1295</Link>, <Link href="/products/ipamorelin" className="text-blue-600 underline hover:text-blue-800">Ipamorelin</Link>, and the combined <Link href="/products/cjc-ipamorelin" className="text-blue-600 underline hover:text-blue-800">CJC-1295 + Ipamorelin blend</Link> sold by <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> is synthesized via Solid-Phase Peptide Synthesis, purified through preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">HPLC</Link>, and verified via Electrospray Ionization Mass Spectrometry (ESI-MS) at an independent, third-party US laboratory, with a documented ≥99% purity floor on every lot.
         </p>
 
         <Image src="/journal-images/cjc-1295-ipamorelin-coa-certificate.webp" alt="Certificate of Analysis documentation beside a research peptide vial" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
@@ -1372,7 +1372,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '17 min read',
     excerpt: 'A researcher\'s guide to Certificates of Analysis: how HPLC measures purity, how mass spectrometry confirms molecular identity, how to read a real chromatogram, and how to spot an unreliable supplier.',
     heroImage: '/journal-images/peptide-coa-hplc-purity-guide-hero.webp',
-    author: 'The Looksmaxxing Lab Research Team',
+    author: 'Longevia Research Research Team',
     faqs: COA_HPLC_FAQS,
     content: (
       <>
@@ -1397,7 +1397,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </p>
 
         <p>
-          At <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link>, every production batch — from <Link href="/products/bpc-157" className="text-blue-600 underline hover:text-blue-800">BPC-157</Link> to <Link href="/products/semaglutide" className="text-blue-600 underline hover:text-blue-800">Semaglutide</Link> — is quarantined until an independent, ISO-certified US laboratory returns a full HPLC and LC-MS report. Every lot-specific COA in our catalog is published, unedited, in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link> so researchers can verify a vial before it ever enters a protocol.
+          At <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link>, every production batch — from <Link href="/products/bpc-157" className="text-blue-600 underline hover:text-blue-800">BPC-157</Link> to <Link href="/products/semaglutide" className="text-blue-600 underline hover:text-blue-800">Semaglutide</Link> — is quarantined until an independent, ISO-certified US laboratory returns a full HPLC and LC-MS report. Every lot-specific COA in our catalog is published, unedited, in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link> so researchers can verify a vial before it ever enters a protocol.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Where Impurities Actually Come From: A Brief Look at Peptide Synthesis</h2>
@@ -1476,7 +1476,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">E-E-A-T Focus: Why Independent, Third-Party Testing Matters</h2>
 
         <p>
-          In-house purity testing carries an unavoidable conflict of interest: the party synthesizing the compound is also the party grading its own homework. Independent verification removes that conflict by placing the analysis in the hands of a laboratory with no financial stake in the result. This is why every batch sold by The Looksmaxxing Lab is sent to an independent, ISO-certified US laboratory rather than tested internally — and why the resulting reports, not summarized claims, are published in full for every compound in our <Link href="/shop" className="text-blue-600 underline hover:text-blue-800">shop</Link>.
+          In-house purity testing carries an unavoidable conflict of interest: the party synthesizing the compound is also the party grading its own homework. Independent verification removes that conflict by placing the analysis in the hands of a laboratory with no financial stake in the result. This is why every batch sold by Longevia Research is sent to an independent, ISO-certified US laboratory rather than tested internally — and why the resulting reports, not summarized claims, are published in full for every compound in our <Link href="/shop" className="text-blue-600 underline hover:text-blue-800">shop</Link>.
         </p>
 
         <Image src="/journal-images/certificate-of-analysis-document-peptide-vial.webp" alt="Certificate of Analysis document with lot number beside a lyophilized research peptide vial" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
@@ -1558,7 +1558,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '18 min read',
     excerpt: 'A step-by-step protocol for reconstituting lyophilized research peptides, calculating concentration, and storing compounds correctly at every stage to preserve molecular integrity.',
     heroImage: '/journal-images/peptide-reconstitution-storage-guide-hero.webp',
-    author: 'The Looksmaxxing Lab Research Team',
+    author: 'Longevia Research Research Team',
     faqs: RECON_STORAGE_FAQS,
     content: (
       <>
@@ -1591,7 +1591,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/peptide-reconstitution-syringe-bacteriostatic-water.webp" alt="Syringe drawing bacteriostatic water to reconstitute a lyophilized research peptide vial on a lab bench" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          Our <Link href="/products/bac-water" className="text-blue-600 underline hover:text-blue-800">BAC Water</Link> is produced to the same laboratory-grade standard as every compound in our catalog and is the recommended diluent for reconstituting any peptide ordered from The Looksmaxxing Lab, unless a specific research protocol calls otherwise.
+          Our <Link href="/products/bac-water" className="text-blue-600 underline hover:text-blue-800">BAC Water</Link> is produced to the same laboratory-grade standard as every compound in our catalog and is the recommended diluent for reconstituting any peptide ordered from Longevia Research, unless a specific research protocol calls otherwise.
         </p>
 
         <h3 className="text-xl font-bold text-ink mt-8 mb-4">Why the Benzyl Alcohol Concentration Matters</h3>
@@ -1744,7 +1744,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '22 min read',
     excerpt: 'A comprehensive guide to GLP-3 (Rt) — the GLP-1/GIP/glucagon triple agonist reshaping metabolic peptide research — covering molecular architecture, receptor pharmacology, Phase 2/3 evidence, and research-grade sourcing standards.',
     heroImage: '/journal-images/glp-3-triple-agonist-research-hero.webp',
-    author: 'The Looksmaxxing Lab Research Team',
+    author: 'Longevia Research Research Team',
     faqs: GLP_3_RT_FAQS,
     content: (
       <>
@@ -1864,7 +1864,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/glp-3-hplc-purity-verification.webp" alt="Laboratory HPLC purity verification of a research-grade GLP-3 (Rt) peptide batch" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> manufactures <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> research peptide in US-based facilities, with every batch independently verified by third-party HPLC and LC-MS analysis. Lot-specific Certificates of Analysis are available in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution protocols, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>, and use the <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Calculator</Link> for concentration calculations.
+          <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> manufactures <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> research peptide in US-based facilities, with every batch independently verified by third-party HPLC and LC-MS analysis. Lot-specific Certificates of Analysis are available in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution protocols, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>, and use the <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Calculator</Link> for concentration calculations.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
@@ -1888,7 +1888,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '20 min read',
     excerpt: 'A research guide to MOTS-c, the mitochondrial-derived exercise mimetic peptide — covering AMPK activation, nuclear translocation, preclinical metabolic data, and sourcing standards for 2026.',
     heroImage: '/journal-images/mots-c-mitochondrial-exercise-mimetic-hero.webp',
-    author: 'The Looksmaxxing Lab Research Team',
+    author: 'Longevia Research Research Team',
     faqs: MOTSC_FAQS,
     content: (
       <>
@@ -1994,7 +1994,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/mots-c-research-grade-vial-lab-bench.webp" alt="Research-grade MOTS-c lyophilized peptide vial on a laboratory bench" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> supplies research-grade <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-c</Link>, synthesized in US-based, ISO-certified facilities with full independent verification. Lot-specific Certificates of Analysis are accessible in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution and storage protocols, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>, and use the <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Calculator</Link> for precise concentration calculations.
+          <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> supplies research-grade <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-c</Link>, synthesized in US-based, ISO-certified facilities with full independent verification. Lot-specific Certificates of Analysis are accessible in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution and storage protocols, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>, and use the <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Calculator</Link> for precise concentration calculations.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
@@ -2018,7 +2018,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '19 min read',
     excerpt: 'What is GLP-3 peptide? A research-grade guide to the triple GLP-1/GIP/glucagon receptor agonist — mechanism, receptor biology, preclinical data, and sourcing standards for 2026.',
     heroImage: '/journal-images/glp-3-triple-receptor-agonist-hero.webp',
-    author: 'The Looksmaxxing Lab Research Team',
+    author: 'Longevia Research Research Team',
     faqs: GLP3_FAQS,
     content: (
       <>
@@ -2131,7 +2131,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </p>
 
         <p>
-          <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> is expanding its catalog of triple-agonist research compounds, synthesized in US-based facilities and independently verified by third-party HPLC and LC-MS testing, with lot-specific COA documentation for every batch. Researchers can access our full <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link> and browse current availability in our <Link href="/shop" className="text-blue-600 underline hover:text-blue-800">shop</Link>.
+          <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> is expanding its catalog of triple-agonist research compounds, synthesized in US-based facilities and independently verified by third-party HPLC and LC-MS testing, with lot-specific COA documentation for every batch. Researchers can access our full <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link> and browse current availability in our <Link href="/shop" className="text-blue-600 underline hover:text-blue-800">shop</Link>.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Reconstitution and Storage Considerations</h2>
@@ -2161,7 +2161,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '19 min read',
     excerpt: 'A structural and mechanistic comparison of the three leading incretin research compounds — single, dual, and triple receptor agonists — covering molecular architecture, published trial data, and sourcing standards for laboratory use.',
     heroImage: '/journal-images/semaglutide-tirzepatide-glp-3-comparison-hero.webp',
-    author: 'The Looksmaxxing Lab Research Team',
+    author: 'Longevia Research Research Team',
     faqs: SEMA_TIRZ_RETA_FAQS,
     content: (
       <>
@@ -2310,10 +2310,10 @@ export const JOURNAL_POSTS: JournalPost[] = [
           Laboratories maintaining semaglutide, tirzepatide, and GLP-3 (Rt) simultaneously for comparative research should apply a few practical safeguards beyond individual compound handling. Vials should be clearly and separately labeled by compound and lot number to prevent mix-ups during multi-cohort studies, particularly since all three share a similar lyophilized powder appearance. Maintaining a single shared administration and reconstitution log across the full comparative protocol — rather than separate logs per compound — makes it easier to audit whether an observed cross-compound difference in outcome correlates with anything other than the receptor-targeting profile itself, such as a difference in reconstitution date or storage duration between the three vials at the time of use.
         </p>
 
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Sourcing Standards at The Looksmaxxing Lab</h2>
+        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Sourcing Standards at Longevia Research</h2>
 
         <p>
-          <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> synthesizes semaglutide, tirzepatide, and GLP-3 (Rt) in US-based, ISO-certified facilities, with every batch independently verified by third-party HPLC and LC-MS testing and lot-specific COA documentation published in our <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis Library</Link>. Researchers can review current availability across all three compounds in our <Link href="/shop" className="text-blue-600 underline hover:text-blue-800">shop</Link>. All products are strictly Research Use Only.
+          <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> synthesizes semaglutide, tirzepatide, and GLP-3 (Rt) in US-based, ISO-certified facilities, with every batch independently verified by third-party HPLC and LC-MS testing and lot-specific COA documentation published in our <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis Library</Link>. Researchers can review current availability across all three compounds in our <Link href="/shop" className="text-blue-600 underline hover:text-blue-800">shop</Link>. All products are strictly Research Use Only.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
@@ -2337,7 +2337,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '17 min read',
     excerpt: 'A research guide to NAD+ coenzyme biology — its role in mitochondrial ATP production, the sirtuin and PARP pathways, age-related decline, and the sourcing standards that apply to research-grade material.',
     heroImage: '/journal-images/nad-plus-mitochondrial-sirtuin-research-hero.webp',
-    author: 'The Looksmaxxing Lab Research Team',
+    author: 'Longevia Research Research Team',
     faqs: NAD_FAQS,
     content: (
       <>
@@ -2469,7 +2469,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </p>
 
         <p>
-          <Link href="/" className="text-blue-600 underline hover:text-blue-800">The Looksmaxxing Lab</Link> supplies research-grade <Link href="/products/nad-plus" className="text-blue-600 underline hover:text-blue-800">NAD+</Link> synthesized and verified to the same standard as every compound in our catalog, with independent third-party HPLC and mass spectrometry testing and lot-specific COA documentation available in our <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis Library</Link>. Current availability can be viewed in our <Link href="/shop" className="text-blue-600 underline hover:text-blue-800">shop</Link>. All products are strictly Research Use Only.
+          <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> supplies research-grade <Link href="/products/nad-plus" className="text-blue-600 underline hover:text-blue-800">NAD+</Link> synthesized and verified to the same standard as every compound in our catalog, with independent third-party HPLC and mass spectrometry testing and lot-specific COA documentation available in our <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis Library</Link>. Current availability can be viewed in our <Link href="/shop" className="text-blue-600 underline hover:text-blue-800">shop</Link>. All products are strictly Research Use Only.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>

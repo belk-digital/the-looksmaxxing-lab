@@ -37,14 +37,14 @@ const MagneticButton = ({ children, className, variant = "default", size = "defa
 
 const slides = [
   {
-    image: '/temp-homepage/summer-hero-7.webp',
-    alt: 'The Looksmaxxing Lab GLP-3 (Rt) (30mg) and Glow (70mg) research peptide vials splashing through water, research use only',
-    desktopBgClass: 'bg-[#ede4f4]', // Purplish
+    image: '/New Images/longevia-hero.webp',
+    alt: 'Longevia Research — Premium US-Synthesized Research Peptides',
+    desktopBgClass: 'bg-[#F3F4F6]', // Light gray to match the image background
   },
   {
-    image: '/Featured Images/mt-2-water-ripple.webp',
-    alt: 'The Looksmaxxing Lab MT-2 research peptide vial in water ripples',
-    desktopBgClass: 'bg-[#e6f3ff]', // Light Blue
+    image: '/New Images/motsc-and-retatrutide-on-ice.webp',
+    alt: 'Longevia Research — MOTS-c and Retatrutide Research Peptides on Ice',
+    desktopBgClass: 'bg-[#F9FAFB]', // Slightly different light gray
   }
 ]
 
@@ -88,17 +88,17 @@ export function Hero() {
       <div className="absolute inset-0 w-full h-full z-0 flex flex-col lg:flex-row">
         
         {/* Left Half (Desktop Solid Color) */}
-        <div className="hidden lg:block lg:w-1/2 h-full relative">
+        <div className="hidden lg:block lg:w-[55%] h-full relative">
           {slides.map((slide, index) => (
              <div 
-               key={slide.desktopBgClass}
+               key={slide.image}
                className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${slide.desktopBgClass} ${currentSlideIndex === index ? 'opacity-100' : 'opacity-0'}`}
              />
           ))}
         </div>
 
         {/* Right Half / Mobile Full Image */}
-        <div className="w-full h-full lg:w-1/2 relative bg-black">
+        <div className="w-full h-full lg:w-[45%] relative bg-black">
           {slides.map((slide, index) => (
             <Image
               key={slide.image}
@@ -122,16 +122,16 @@ export function Hero() {
       <div className="relative w-full h-full px-6 md:px-12 lg:px-16 flex flex-col items-center lg:items-start justify-center pt-32 lg:pt-[120px] pb-16 lg:pb-12 z-20">
         
         {/* Text & CTA restricted to left half on desktop */}
-        <div ref={textContainerRef} className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left mt-4 lg:mt-0 drop-shadow-md lg:drop-shadow-none lg:pr-8 xl:pr-16">
+        <div ref={textContainerRef} className="w-full lg:w-[55%] flex flex-col items-center lg:items-start text-center lg:text-left mt-4 lg:mt-0 drop-shadow-md lg:drop-shadow-none lg:pr-8 xl:pr-16">
           
           <div className="sr-only">
-            The Looksmaxxing Lab - The official store supplying US-synthesized research peptides for scientific excellence.
+            Longevia Research - The official store supplying US-synthesized research peptides for scientific excellence.
           </div>
 
 
           <div className="gsap-reveal overflow-hidden mb-5 lg:mb-8">
             <h1 className={`text-[clamp(2rem,6vw,3rem)] lg:text-[clamp(3.5rem,4.5vw,5.25rem)] leading-[1.05] font-bold tracking-tighter text-white lg:text-ink ${spaceGrotesk.className}`}>
-              The Summer '26 <br className="hidden lg:block" /> Research Collection is here.
+              Longevia Research: <br className="hidden lg:block" /> The Standard in US Peptides.
             </h1>
           </div>
 

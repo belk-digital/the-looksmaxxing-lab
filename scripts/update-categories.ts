@@ -1,63 +1,78 @@
+import { config } from 'dotenv'
+import path from 'path'
+config({ path: path.resolve(process.cwd(), '.env') })
+
+process.env.PAYLOAD_SECRET = process.env.PAYLOAD_SECRET || 'a202580d681449743587f244'
+process.env.DATABASE_URI = process.env.DATABASE_URI || 'postgresql://postgres.wfqndulqjkqgqxisvbtu:7bqXA+P-9rA8@aws-1-us-east-1.pooler.supabase.com:6543/postgres'
+
 import { getPayload } from 'payload'
-import config from '../src/payload.config'
-import 'dotenv/config'
+import configPromise from '../src/payload.config'
+import slugify from 'slugify'
+
+const NEW_CATEGORIES = [
+  'Longevity Research',
+  'Hormonal Health',
+  'Cognitive & Nootropic',
+  'Mitochondrial & Cellular Energy',
+  'Growth Hormone Secretagogues',
+  'Metabolic Research',
+  'Immune Regulation',
+  'Recovery & Tissue Repair'
+]
 
 async function run() {
-  console.log('Initializing Payload...')
-  const payload = await getPayload({ config })
-
+  console.log('Initializing payload...')
+  const payload = await getPayload({ config: configPromise })
+  
   console.log('Fetching existing categories...')
-  const existingCategories = await payload.find({
+  const existing = await payload.find({
     collection: 'categories',
-    limit: 1000,
+    limit: 100,
   })
-
-  console.log(`Deleting ${existingCategories.totalDocs} existing categories...`)
-  for (const doc of existingCategories.docs) {
-    try {
-      await payload.delete({
+  
+  for (let i = 0; i < NEW_CATEGORIES.length; i++) {
+    const newName = NEW_CATEGORIES[i]
+    const slug = slugify(newName, { lower: true, strict: true })
+    
+    if (existing.docs[i]) {
+      console.log(`Updating category ${existing.docs[i].name} -> ${newName}`)
+      await payload.update({
         collection: 'categories',
-        id: doc.id,
+        id: existing.docs[i].id,
+        data: {
+          name: newName,
+          slug,
+          isVisible: true,
+          sortOrder: i + 1,
+        }
       })
-    } catch (err: any) {
-      console.warn(`Could not delete category ${doc.name}: ${err.message}`)
-    }
-  }
-
-  const newCategories = [
-    'Bioregulators',
-    'Cellular Health Research',
-    'Cognitive Function Studies',
-    'Essentials',
-    'Growth Factor Research Peptides',
-    'Metabolic Research Peptides',
-    'Receptor Agonist Research Peptides',
-    'Recovery Research Peptides'
-  ]
-
-  console.log('Creating new categories...')
-  for (const cat of newCategories) {
-    const slug = cat.toLowerCase().replace(/ /g, '-')
-    try {
+    } else {
+      console.log(`Creating category ${newName}`)
       await payload.create({
         collection: 'categories',
         data: {
-          name: cat,
+          name: newName,
           slug,
           isVisible: true,
-        },
+          sortOrder: i + 1,
+        }
       })
-      console.log(`Created: ${cat}`)
-    } catch (err: any) {
-      console.error(`Failed to create ${cat}: ${err.message}`)
     }
   }
-
-  console.log('Categories update complete!')
+  
+  // If there are extra categories left over, disable or delete them
+  if (existing.docs.length > NEW_CATEGORIES.length) {
+    for (let i = NEW_CATEGORIES.length; i < existing.docs.length; i++) {
+      console.log(`Deleting extra category ${existing.docs[i].name}`)
+      await payload.delete({
+        collection: 'categories',
+        id: existing.docs[i].id,
+      })
+    }
+  }
+  
+  console.log('Categories updated successfully')
   process.exit(0)
 }
 
-run().catch((err) => {
-  console.error('Error during update:', err)
-  process.exit(1)
-})
+run().catch(console.error)

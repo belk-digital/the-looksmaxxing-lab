@@ -5,7 +5,8 @@ import configPromise from '@payload-config'
 import Stripe from 'stripe'
 import { verifyCoupon, getUserMaxxPoints } from '../actions'
 import { cookies } from 'next/headers'
-import { auth } from '@clerk/nextjs/server'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/lib/auth'
 import crypto from 'crypto'
 
 function signOrderCookie(orderId: string): string {
@@ -153,11 +154,11 @@ export async function createPaymentIntent(
   let clickCookie = cookieStore.get('affiliate_click_id')?.value || null
 
   if (affiliateRef) {
-    const { userId: clerkUserId } = await auth()
-    if (clerkUserId) {
+    const session = await getServerSession(authOptions)
+    if (session?.user?.email) {
       const userRes = await payload.find({
         collection: 'users',
-        where: { clerkUserId: { equals: clerkUserId } },
+        where: { email: { equals: session.user.email } },
         limit: 1,
         overrideAccess: true,
       })
@@ -305,11 +306,11 @@ export async function createPayloadOrder(
   try {
     // Verify authenticated user server-side instead of trusting client
     let payloadUserId = null
-    const { userId: clerkUserId } = await auth()
-    if (clerkUserId) {
+    const session = await getServerSession(authOptions)
+    if (session?.user?.email) {
        const userRes = await payload.find({
           collection: 'users',
-          where: { clerkUserId: { equals: clerkUserId } }
+          where: { email: { equals: session.user.email } }
        })
        if (userRes.docs.length > 0) {
           payloadUserId = userRes.docs[0].id
@@ -496,7 +497,7 @@ export async function notifyAdminFailedPayment(orderId: string, errorMessage: st
     `
 
     await payload.sendEmail({
-      to: 'support@thelooksmaxxinglab.com',
+      to: 'support@longeviaresearch.com',
       subject: `⚠️ Payment Failed - Order ${orderId}`,
       html: html,
     })

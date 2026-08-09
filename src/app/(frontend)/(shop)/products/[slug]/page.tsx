@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const product = docs[0]
   const title = product.seoTitle || product.name || 'Product'
   const description = product.seoDescription || product.description?.substring(0, 160) || ''
-  const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+  const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
   const productUrl = `${siteUrl}/products/${slug}`
 
   let imageUrl: string | undefined
@@ -60,17 +60,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title,
       description,
       images: imageUrl
-        ? [{ url: imageUrl, width: 1200, height: 630, alt: `${product.name} — The Looksmaxxing Lab` }]
-        : [{ url: '/hero-image.webp', width: 1200, height: 630, alt: 'The Looksmaxxing Lab' }],
+        ? [{ url: imageUrl, width: 1200, height: 630, alt: `${product.name} — Longevia Research` }]
+        : [{ url: '/New Images/glow-and-nad-bg-image.webp', width: 1200, height: 630, alt: 'Longevia Research' }],
       type: 'website',
       url: productUrl,
-      siteName: 'The Looksmaxxing Lab',
+      siteName: 'Longevia Research',
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: imageUrl ? [imageUrl] : ['/hero-image.webp'],
+      images: imageUrl ? [imageUrl] : ['/New Images/glow-and-nad-bg-image.webp'],
     },
     other: {
       'og:type': 'product',

@@ -197,7 +197,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
              >
                <Image 
-                 src="/hero-image.webp"
+                 src="/New Images/glow-and-nad-bg-image.webp"
                  alt="TB-500 (Thymosin Beta-4) research peptide vial splashing through water on a marble surface, ≥98% purity, research use only"
                  fill 
                  className="object-cover object-center"

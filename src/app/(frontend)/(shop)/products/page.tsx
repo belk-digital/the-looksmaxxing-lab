@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 export const metadata = {
   title: 'All Products | Research-Grade Peptides',
-  description: 'Browse all research-grade peptides and compounds from The Looksmaxxing Lab. ≥99% HPLC purity, COA-verified, batch-traceable. Research use only.',
+  description: 'Browse all research-grade peptides and compounds from Longevia Research. ≥99% HPLC purity, COA-verified, batch-traceable. Research use only.',
   robots: { index: false, follow: true },
 }
 

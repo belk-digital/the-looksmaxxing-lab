@@ -10,15 +10,18 @@ const WhatSetsUsApart = dynamic(() => import('@/components/home/WhatSetsUsApart'
 const CoaSection = dynamic(() => import('@/components/home/CoaSection').then(mod => mod.CoaSection))
 const JournalTeaser = dynamic(() => import('@/components/home/JournalTeaser').then(mod => mod.JournalTeaser))
 const FaqSection = dynamic(() => import('@/components/home/FaqSection').then(mod => mod.FaqSection))
+const NewsletterSection = dynamic(() => import('@/components/home/NewsletterSection').then(mod => mod.NewsletterSection))
 import { Metadata } from 'next'
 
-const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thelooksmaxxinglab.com').replace(/\/+$/, '')
+const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
   openGraph: {
-    images: [{ url: '/og/og-home.webp', width: 1200, height: 630, alt: 'The Looksmaxxing Lab — Research-Grade Peptides' }],
+    images: [{ url: '/og/og-home.webp', width: 1200, height: 630, alt: 'Longevia Research — Research-Grade Peptides' }],
   },
-  title: 'The Looksmaxxing Lab | Premium Research Peptides (US-Made)',
+  title: {
+    absolute: 'Longevia Research | Premium Research Peptides (US-Made)',
+  },
   description: 'Elevate your laboratory research with premium, US-synthesized peptides. We guarantee strict ≥99% HPLC purity through independent 3rd-party testing. Discover compounds for cellular regeneration, metabolic study, and structural repair with full COAs provided.',
   alternates: {
     canonical: '/',
@@ -54,6 +57,7 @@ export default async function Homepage() {
           <CoaSection />
           <JournalTeaser />
           <FaqSection />
+          <NewsletterSection />
         </div>
       </HomePreloaderWrapper>
 
@@ -92,10 +96,10 @@ export default async function Homepage() {
                 },
                 {
                   "@type": "Question",
-                  "name": "What is looksmaxxing and how do peptides relate to it?",
+                  "name": "Why choose Longevia Research for laboratory peptides?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Looksmaxxing is the practice of optimizing physical appearance through controllable factors. Research peptides are studied in relation to skin collagen, tissue recovery, body composition, and hair density. Our compounds are research use only."
+                    "text": "Longevia Research guarantees ≥99% HPLC purity for all compounds, verified by independent US laboratories. Every order ships with a lot-specific Certificate of Analysis to ensure your research data is perfectly reliable."
                   }
                 },
                 {

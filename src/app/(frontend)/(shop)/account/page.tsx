@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation'
 import type { Order, Address } from '@/payload-types'
 
 export const metadata = {
-  title: 'Account Overview | The Looksmaxxing Lab',
+  title: 'Account Overview',
   robots: { index: false, follow: false },
 }
 

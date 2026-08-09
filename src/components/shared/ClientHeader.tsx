@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
-import { ShoppingBag, Menu, Search, X, User } from 'lucide-react'
+import { ShoppingBag, Menu, Search, X, User, Calculator, BookOpen, HelpCircle } from 'lucide-react'
 import { MobileMenu } from './MobileMenu'
 import { useCartStore } from '@/lib/cart/store'
 import { useWishlistStore } from '@/lib/wishlist/store'
@@ -189,7 +189,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
           {/* Left: Logo (Mimicking the reference swirl) */}
           <div className="flex-1 xl:flex-none flex justify-start">
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-              <span className={`font-serif text-xl font-bold tracking-tighter ${textColor}`}>TLML</span>
+              <span className={`font-serif text-xl font-bold tracking-tighter ${textColor}`}>Longevia</span>
             </Link>
           </div>
 
@@ -223,18 +223,49 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                     </Link>
                   </div>
                   
-                  <Link href="/peptide-calculator" className={getNavLinkClass('/peptide-calculator')}>
-                    CALCULATOR
-                  </Link>
                   <Link href="/about" className={getNavLinkClass('/about')}>
                     ABOUT
                   </Link>
-                  <Link href="/journal" className={getNavLinkClass('/journal')}>
-                    JOURNAL
-                  </Link>
-                  <Link href="/faq" className={getNavLinkClass('/faq')}>
-                    FAQ
-                  </Link>
+
+                  <div className="relative h-full flex items-center group cursor-pointer">
+                    <span className={`flex items-center gap-1 text-[9px] xl:text-[10px] font-sans tracking-[0.2em] uppercase transition-all h-full border-b-[3px] mt-[3px] font-medium border-transparent ${textColor} opacity-50 group-hover:opacity-100`}>
+                      RESOURCES
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-70 group-hover:opacity-100 group-hover:rotate-180 transition-all duration-300"><path d="m6 9 6 6 6-6"/></svg>
+                    </span>
+                    <div className="absolute top-full pt-2 left-1/2 -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top group-hover:translate-y-0 translate-y-2">
+                      <div className="bg-white/95 backdrop-blur-md border border-black/5 shadow-2xl flex flex-col w-[280px] p-2.5 rounded-xl">
+                        <Link href="/peptide-calculator" className="flex flex-col items-start px-4 py-3.5 rounded-lg hover:bg-black/[0.04] transition-colors group/item">
+                          <div className="flex items-center gap-3">
+                            <div className="w-6 flex items-center justify-center text-ink transition-colors duration-300 mt-0.5">
+                              <Calculator size={18} strokeWidth={1.5} />
+                            </div>
+                            <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-ink">Peptide Calculator</span>
+                          </div>
+                          <span className="text-[11px] text-ink/50 mt-1.5 leading-snug text-left ml-9 font-medium">Advanced formulation tools & precise measurements</span>
+                        </Link>
+                        
+                        <Link href="/journal" className="flex flex-col items-start px-4 py-3.5 rounded-lg hover:bg-black/[0.04] transition-colors group/item mt-0.5">
+                          <div className="flex items-center gap-3">
+                            <div className="w-6 flex items-center justify-center text-ink transition-colors duration-300 mt-0.5">
+                              <BookOpen size={18} strokeWidth={1.5} />
+                            </div>
+                            <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-ink">Journal</span>
+                          </div>
+                          <span className="text-[11px] text-ink/50 mt-1.5 leading-snug text-left ml-9 font-medium">Clinical research, protocols & scientific findings</span>
+                        </Link>
+
+                        <Link href="/faq" className="flex flex-col items-start px-4 py-3.5 rounded-lg hover:bg-black/[0.04] transition-colors group/item mt-0.5">
+                          <div className="flex items-center gap-3">
+                            <div className="w-6 flex items-center justify-center text-ink transition-colors duration-300 mt-0.5">
+                              <HelpCircle size={18} strokeWidth={1.5} />
+                            </div>
+                            <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-ink">F.A.Q</span>
+                          </div>
+                          <span className="text-[11px] text-ink/50 mt-1.5 leading-snug text-left ml-9 font-medium">Common questions & detailed support guides</span>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
                   <Link href="/contact" className={getNavLinkClass('/contact')}>
                     CONTACT
                   </Link>

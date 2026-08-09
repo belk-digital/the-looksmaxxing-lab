@@ -6,7 +6,7 @@ import config from '@payload-config'
 import { redirect } from 'next/navigation'
 
 export const metadata = {
-  title: 'Saved Addresses | The Looksmaxxing Lab',
+  title: 'Saved Addresses',
   robots: { index: false, follow: false },
 }
 
