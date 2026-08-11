@@ -46,6 +46,7 @@ function CategoryCard({ category, index }: { category: typeof CATEGORIES[0], ind
   const imageSrc = CATEGORY_IMAGES[index % CATEGORY_IMAGES.length]
   const num = parseInt(category.number, 10)
   const bgColor = CARD_COLORS[index % CARD_COLORS.length]
+  const isLongName = category.displayName.split(' ').length >= 3
 
   return (
     <Link href={`/shop?category=${encodeURIComponent(category.name)}`} className="group relative flex flex-col w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[9/14] overflow-hidden rounded-[1rem] sm:rounded-[1.5rem] bg-white cursor-pointer shadow-md hover:shadow-xl border border-slate-100 transition-all duration-500">
@@ -53,13 +54,13 @@ function CategoryCard({ category, index }: { category: typeof CATEGORIES[0], ind
       {/* Top Half - Text Area */}
       <div className={`relative p-4 sm:p-6 lg:p-8 h-[45%] transition-colors duration-500 ${bgColor}`}>
         {/* Top: Category Name */}
-        <h3 className="text-xl sm:text-3xl lg:text-4xl xl:text-5xl font-display text-ink tracking-tight leading-[0.95] max-w-[80%]">
+        <h3 className={`font-display text-ink tracking-tight leading-[0.95] max-w-[80%] ${isLongName ? 'text-lg sm:text-2xl lg:text-3xl xl:text-2xl 2xl:text-4xl' : 'text-xl sm:text-3xl lg:text-4xl xl:text-3xl 2xl:text-5xl'}`}>
           {category.displayName}
         </h3>
-        
+
         {/* Bottom: Number */}
         <div className="absolute bottom-2 right-3 sm:bottom-3 sm:right-4 lg:bottom-4 lg:right-5">
-          <span className="text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-display text-ink leading-[0.8]">
+          <span className="text-2xl sm:text-4xl lg:text-5xl xl:text-4xl 2xl:text-6xl font-display text-ink leading-[0.8]">
             {num}
           </span>
         </div>

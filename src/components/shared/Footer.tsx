@@ -91,6 +91,7 @@ const FooterContent = () => {
             <h3 className="text-[11px] uppercase tracking-[0.2em] text-cream/80 font-medium">Connect</h3>
             <ul className="flex flex-col gap-4">
               <li><Link href="/contact" className="text-sm text-cream/50 hover:text-white transition-colors">Contact</Link></li>
+              <li><a href="mailto:support@longeviaresearch.com" className="text-sm text-cream/50 hover:text-white transition-colors">support@longeviaresearch.com</a></li>
             </ul>
           </div>
 

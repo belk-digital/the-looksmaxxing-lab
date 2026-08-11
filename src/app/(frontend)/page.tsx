@@ -51,10 +51,10 @@ export default async function Homepage() {
         <div className="flex flex-col w-full min-h-screen relative z-10 bg-white">
           <Hero />
           <FeaturedProductsSection products={products} />
+          <CoaSection />
           <CategoriesSection />
           <AboutTeaser />
           <WhatSetsUsApart />
-          <CoaSection />
           <JournalTeaser />
           <FaqSection />
           <NewsletterSection />

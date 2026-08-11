@@ -31,7 +31,7 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="w-full bg-white py-12 md:py-24 px-4 sm:px-6 relative z-20">
+    <section className="w-full max-w-[100vw] overflow-x-hidden bg-white py-12 md:py-24 px-4 sm:px-6 relative z-20">
       <div className="max-w-[1400px] mx-auto">
         <FadeUp>
           <div className="bg-[#f8fafd] border border-[#e8eff7] rounded-[2rem] md:rounded-[3rem] relative flex flex-col items-center py-12 lg:py-20 shadow-sm">

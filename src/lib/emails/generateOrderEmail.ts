@@ -16,7 +16,7 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
   const customerName = `${order.customerFirstName || ''} ${order.customerLastName || ''}`.trim() || 'Customer';
   const email = order.guestEmail || 'Customer';
   const shipAddr = order.shippingAddress || {};
-  const billAddr = order.billingAddress || {};
+  const billAddr = (order.billingAddress && order.billingAddress.line1) ? order.billingAddress : shipAddr;
 
   let itemsHtml = '';
   if (order.items && Array.isArray(order.items)) {
@@ -115,7 +115,13 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
           </tr>
       `;
     } else if (order.paymentMethod === 'apple_pay' || order.paymentMethod === 'zelle') {
-      const paymentContact = order.paymentMethod === 'apple_pay' ? 'support@longeviaresearch.com (Apple Pay)' : 'support@longeviaresearch.com (Zelle)';
+      const isZelle = order.paymentMethod === 'zelle';
+      const qrHtml = isZelle ? `
+                <div style="margin-bottom: 16px;">
+                  <img src="https://pub-4c2ad32bd46946819b7bd8c103044a10.r2.dev/email-assets/longevia-zelle-qr.jpeg" alt="Zelle QR Code" style="width: 200px; height: 200px; border-radius: 8px; border: 2px solid #FDE68A;" />
+                </div>
+      ` : '';
+
       manualPaymentBanner = `
           <!-- Manual Payment Instructions -->
           <tr>
@@ -123,10 +129,11 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
               <div style="background-color: #FEF3C7; border: 1px solid #FDE68A; padding: 24px; border-radius: 8px; text-align: center;">
                 <h3 style="margin: 0 0 12px 0; color: #92400E; font-size: 18px; font-weight: 700;">Action Required: Complete Your Payment</h3>
                 <p style="margin: 0 0 16px 0; color: #92400E; font-size: 14px; line-height: 1.5;">
-                  Your order has been placed but is currently unpaid. To complete your purchase and begin processing, please send <strong>${formatMoney(total)}</strong> to:
+                  Your order has been placed but is currently unpaid. To complete your purchase and begin processing, please send <strong>${formatMoney(total)}</strong> via ${isZelle ? 'Zelle' : 'Apple Pay'} to:
                 </p>
+                ${qrHtml}
                 <div style="background-color: #ffffff; padding: 12px; border-radius: 6px; display: inline-block; border: 1px solid #FDE68A; margin-bottom: 16px;">
-                  <strong style="font-size: 18px; color: #111827;">${paymentContact}</strong>
+                  <strong style="font-size: 18px; color: #111827;">support@longeviaresearch.com</strong>
                 </div>
                 <p style="margin: 0; color: #92400E; font-size: 13px;">
                   <strong>Important:</strong> You must include your Order Number (<strong>#${orderNumber}</strong>) in the payment notes.
@@ -257,6 +264,15 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
                       ${billAddr.line1 || ''} ${billAddr.line2 ? `<br>${billAddr.line2}` : ''}<br>
                       ${billAddr.city || ''}, ${billAddr.state || ''} ${billAddr.postalCode || ''}<br>
                       ${billAddr.country || ''}
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2" style="padding-top: 24px;">
+                    <p style="margin: 0 0 12px 0; font-size: 14px; font-weight: 700; color: #111827;">Contact Information</p>
+                    <p style="margin: 0; font-size: 14px; color: #4b5563; line-height: 1.5;">
+                      ${email}<br>
+                      ${order.customerPhone || 'Phone not provided'}
                     </p>
                   </td>
                 </tr>
