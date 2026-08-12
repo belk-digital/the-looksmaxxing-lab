@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { JOURNAL_POSTS } from '@/data/journal-posts'
+import { getCmsJournalPostSlugs } from '@/lib/blog/getPosts'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
@@ -119,6 +120,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   } catch (err) {
     console.error('Failed to map journal posts for sitemap', err)
+  }
+
+  try {
+    const cmsSlugs = await getCmsJournalPostSlugs()
+    journalPages.push(
+      ...cmsSlugs.map((slug) => ({
+        url: `${siteUrl}/journal/${slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.6,
+      })),
+    )
+  } catch (err) {
+    console.error('Failed to fetch CMS blog posts for sitemap', err)
   }
 
   return [...staticPages, ...productPages, ...journalPages]

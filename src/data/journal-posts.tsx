@@ -575,7 +575,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '25 min read',
     excerpt: 'An exhaustive, heavily cited review of how the GHK-Cu copper peptide interacts with dermal fibroblasts, modulates the extracellular matrix, and up-regulates collagen synthesis in high-purity research environments.',
     heroImage: '/journal-images/ghk_cu_molecular_science_1783383163855.webp',
-    author: 'Longevia Research Research Team',
+    author: 'Longevia Research Team',
     faqs: GHK_FAQS,
     content: (
       <>
@@ -674,7 +674,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '28 min read',
     excerpt: 'An in-depth, clinical exploration of how GLP-1 and GIP receptor agonists (like Semaglutide and Tirzepatide) impact subcutaneous adipocytes and cause the mechanical failure of the extracellular matrix.',
     heroImage: '/journal-images/glp1_tissue_metabolism_1783383217631.webp',
-    author: 'Longevia Research Research Team',
+    author: 'Longevia Research Team',
     faqs: GLP1_FAQS,
     content: (
       <>
@@ -754,7 +754,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '26 min read',
     excerpt: 'Understanding the stark mechanistic and biochemical differences between BPC-157 (an angiogenic mastermind) and TB-500 (an actin up-regulator) for designing optimal experimental protocols in soft tissue repair.',
     heroImage: '/journal-images/bpc157_tb500_cellular_healing_1783383266702.webp',
-    author: 'Longevia Research Research Team',
+    author: 'Longevia Research Team',
     faqs: BPC_FAQS,
     content: (
       <>
@@ -838,7 +838,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '24 min read',
     excerpt: 'A detailed research review of Kisspeptin-10, the master regulator of the HPG axis, and MOTS-C, a mitochondrial-derived peptide with sex-dimorphic expression, and why researchers increasingly study them together in female physiology models.',
     heroImage: '/journal-images/kisspeptin-mots-c-hormonal-research-hero.webp',
-    author: 'Longevia Research Research Team',
+    author: 'Longevia Research Team',
     faqs: KISSPEPTIN_MOTSC_FAQS,
     content: (
       <>
@@ -1018,7 +1018,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '27 min read',
     excerpt: 'A rigorous comparative analysis of Tesamorelin, a GHRH analog with documented visceral fat research applications, and GLP-3 (Rt), a triple GLP-1/GIP/glucagon agonist, for designing female-physiology body composition protocols.',
     heroImage: '/journal-images/tesamorelin-glp-3-visceral-fat-hero.webp',
-    author: 'Longevia Research Research Team',
+    author: 'Longevia Research Team',
     faqs: TESAMORELIN_GLP_3_RT_FAQS,
     content: (
       <>
@@ -1192,7 +1192,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '26 min read',
     excerpt: 'An in-depth mechanistic guide to CJC-1295 (a GHRH analog) and Ipamorelin (a selective ghrelin receptor agonist), and why their dual-pathway growth hormone stimulation is a cornerstone of muscle recovery and body composition research.',
     heroImage: '/journal-images/cjc-1295-ipamorelin-muscle-recovery-hero.webp',
-    author: 'Longevia Research Research Team',
+    author: 'Longevia Research Team',
     faqs: CJC_IPAMORELIN_FAQS,
     content: (
       <>
@@ -1372,7 +1372,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '17 min read',
     excerpt: 'A researcher\'s guide to Certificates of Analysis: how HPLC measures purity, how mass spectrometry confirms molecular identity, how to read a real chromatogram, and how to spot an unreliable supplier.',
     heroImage: '/journal-images/peptide-coa-hplc-purity-guide-hero.webp',
-    author: 'Longevia Research Research Team',
+    author: 'Longevia Research Team',
     faqs: COA_HPLC_FAQS,
     content: (
       <>
@@ -1558,7 +1558,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '18 min read',
     excerpt: 'A step-by-step protocol for reconstituting lyophilized research peptides, calculating concentration, and storing compounds correctly at every stage to preserve molecular integrity.',
     heroImage: '/journal-images/peptide-reconstitution-storage-guide-hero.webp',
-    author: 'Longevia Research Research Team',
+    author: 'Longevia Research Team',
     faqs: RECON_STORAGE_FAQS,
     content: (
       <>
@@ -1744,7 +1744,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '22 min read',
     excerpt: 'A comprehensive guide to GLP-3 (Rt) — the GLP-1/GIP/glucagon triple agonist reshaping metabolic peptide research — covering molecular architecture, receptor pharmacology, Phase 2/3 evidence, and research-grade sourcing standards.',
     heroImage: '/journal-images/glp-3-triple-agonist-research-hero.webp',
-    author: 'Longevia Research Research Team',
+    author: 'Longevia Research Team',
     faqs: GLP_3_RT_FAQS,
     content: (
       <>
@@ -1888,7 +1888,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '20 min read',
     excerpt: 'A research guide to MOTS-c, the mitochondrial-derived exercise mimetic peptide — covering AMPK activation, nuclear translocation, preclinical metabolic data, and sourcing standards for 2026.',
     heroImage: '/journal-images/mots-c-mitochondrial-exercise-mimetic-hero.webp',
-    author: 'Longevia Research Research Team',
+    author: 'Longevia Research Team',
     faqs: MOTSC_FAQS,
     content: (
       <>
@@ -2018,7 +2018,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '19 min read',
     excerpt: 'What is GLP-3 peptide? A research-grade guide to the triple GLP-1/GIP/glucagon receptor agonist — mechanism, receptor biology, preclinical data, and sourcing standards for 2026.',
     heroImage: '/journal-images/glp-3-triple-receptor-agonist-hero.webp',
-    author: 'Longevia Research Research Team',
+    author: 'Longevia Research Team',
     faqs: GLP3_FAQS,
     content: (
       <>
@@ -2161,7 +2161,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '19 min read',
     excerpt: 'A structural and mechanistic comparison of the three leading incretin research compounds — single, dual, and triple receptor agonists — covering molecular architecture, published trial data, and sourcing standards for laboratory use.',
     heroImage: '/journal-images/semaglutide-tirzepatide-glp-3-comparison-hero.webp',
-    author: 'Longevia Research Research Team',
+    author: 'Longevia Research Team',
     faqs: SEMA_TIRZ_RETA_FAQS,
     content: (
       <>
@@ -2337,7 +2337,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readTime: '17 min read',
     excerpt: 'A research guide to NAD+ coenzyme biology — its role in mitochondrial ATP production, the sirtuin and PARP pathways, age-related decline, and the sourcing standards that apply to research-grade material.',
     heroImage: '/journal-images/nad-plus-mitochondrial-sirtuin-research-hero.webp',
-    author: 'Longevia Research Research Team',
+    author: 'Longevia Research Team',
     faqs: NAD_FAQS,
     content: (
       <>

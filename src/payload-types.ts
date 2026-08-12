@@ -82,6 +82,7 @@ export interface Config {
     reviews: Review;
     shippingzones: Shippingzone;
     'blog-posts': BlogPost;
+    'blog-media': BlogMedia;
     pages: Page;
     'contact-messages': ContactMessage;
     'email-logs': EmailLog;
@@ -114,6 +115,7 @@ export interface Config {
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     shippingzones: ShippingzonesSelect<false> | ShippingzonesSelect<true>;
     'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
+    'blog-media': BlogMediaSelect<false> | BlogMediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     'email-logs': EmailLogsSelect<false> | EmailLogsSelect<true>;
@@ -826,6 +828,11 @@ export interface BlogPost {
   title: string;
   slug?: string | null;
   author: number | User;
+  featuredImage: number | BlogMedia;
+  /**
+   * Short summary shown on the journal listing cards and used as the default SEO/social description.
+   */
+  excerpt: string;
   content?: {
     root: {
       type: string;
@@ -843,8 +850,96 @@ export interface BlogPost {
   } | null;
   publishedAt?: string | null;
   status?: ('draft' | 'published') | null;
+  category: 'Emerging' | 'Guidelines' | 'Studies' | 'Guides';
+  relatedProducts?: (number | Product)[] | null;
+  /**
+   * e.g. '12 min read'. Leave blank to auto-calculate from content length when rendered.
+   */
+  readTime?: string | null;
+  /**
+   * Short factual bullet points summarizing the post. Used for AI answer-engine (AEO/GEO) extraction and the on-page "Key Takeaways" callout.
+   */
+  keyTakeaways?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Populates FAQPage schema.org markup and the on-page FAQ accordion.
+   */
+  faqs?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Peer-reviewed sources cited in this post (PubMed, DOI, journal links). Strengthens E-E-A-T trust signals.
+   */
+  references?:
+    | {
+        /**
+         * e.g. "Smith et al., 2023, Journal of Peptide Science"
+         */
+        citationText: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Primary target keyword/phrase for this post (editorial SEO guidance).
+   */
+  focusKeyphrase?: string | null;
+  /**
+   * Comma-separated secondary keywords for meta keywords / internal search relevance.
+   */
+  keywords?: string | null;
+  /**
+   * Overrides the <title> tag. Leave blank to fall back to the post title.
+   */
+  metaTitle?: string | null;
+  /**
+   * Overrides the meta description. Leave blank to fall back to the excerpt.
+   */
+  metaDescription?: string | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-media".
+ */
+export interface BlogMedia {
+  id: number;
+  /**
+   * Describe the image clearly for SEO/accessibility, e.g. "Researcher pipetting reconstituted GHK-Cu into a sterile vial".
+   */
+  alt: string;
+  caption?: string | null;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1269,6 +1364,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'blog-posts';
         value: number | BlogPost;
+      } | null)
+    | ({
+        relationTo: 'blog-media';
+        value: number | BlogMedia;
       } | null)
     | ({
         relationTo: 'pages';
@@ -1800,11 +1899,74 @@ export interface BlogPostsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   author?: T;
+  featuredImage?: T;
+  excerpt?: T;
   content?: T;
   publishedAt?: T;
   status?: T;
+  category?: T;
+  relatedProducts?: T;
+  readTime?: T;
+  keyTakeaways?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  references?:
+    | T
+    | {
+        citationText?: T;
+        url?: T;
+        id?: T;
+      };
+  focusKeyphrase?: T;
+  keywords?: T;
+  metaTitle?: T;
+  metaDescription?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-media_select".
+ */
+export interface BlogMediaSelect<T extends boolean = true> {
+  alt?: T;
+  caption?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

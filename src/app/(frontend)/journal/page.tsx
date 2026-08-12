@@ -1,6 +1,7 @@
 import React from 'react'
 import { Metadata } from 'next'
 import JournalClient from './JournalClient'
+import { getAllJournalPosts } from '@/lib/blog/getPosts'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
@@ -27,14 +28,16 @@ const breadcrumbSchema = {
   ],
 }
 
-export default function JournalPage() {
+export default async function JournalPage() {
+  const posts = await getAllJournalPosts()
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <JournalClient />
+      <JournalClient posts={posts} />
     </>
   )
 }

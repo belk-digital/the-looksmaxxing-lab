@@ -16,6 +16,7 @@
     "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/seed.ts",
     "seed:products": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/seed-all-products.ts",
     "seed:images": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/push-product-images.ts",
+    "import:blog": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/import-blog-post.ts",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",

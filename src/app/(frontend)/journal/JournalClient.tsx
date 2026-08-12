@@ -9,17 +9,15 @@ import { StaggerChildren, staggerItemVariants } from '@/components/motion/Stagge
 import { EyebrowHeading } from '@/components/editorial/EyebrowHeading'
 import { BlogPostCard } from '@/components/editorial/BlogPostCard'
 import { Button } from '@/components/ui/button'
-import { JOURNAL_POSTS } from '@/data/journal-posts'
+import type { UnifiedJournalPost } from '@/lib/blog/types'
 
 const CATEGORIES = ['All', 'Emerging', 'Guidelines', 'Studies', 'Guides']
 
-const SORTED_JOURNAL_POSTS = [...JOURNAL_POSTS].sort(
-  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-)
-
-export default function JournalIndexPage() {
+export default function JournalIndexPage({ posts }: { posts: UnifiedJournalPost[] }) {
   const [activeCategory, setActiveCategory] = useState('All')
-  const [featuredPost, ...remainingPosts] = SORTED_JOURNAL_POSTS
+
+  const filteredPosts = activeCategory === 'All' ? posts : posts.filter((p) => p.category === activeCategory)
+  const [featuredPost, ...remainingPosts] = filteredPosts
 
   // Hero Parallax
   const { scrollYProgress: heroScroll } = useScroll({
@@ -105,6 +103,7 @@ export default function JournalIndexPage() {
       </section>
 
       {/* Featured Post */}
+      {featuredPost && (
       <section className="px-4 md:px-6 mb-12 md:mb-16 max-w-[1280px] mx-auto">
         <FadeUp delay={0.1}>
           <div className="mb-6 px-2 lg:px-4">
@@ -138,6 +137,7 @@ export default function JournalIndexPage() {
           </Link>
         </FadeUp>
       </section>
+      )}
 
       {/* Filter Chips */}
       <section className="px-4 md:px-6 mb-12 max-w-[1280px] mx-auto flex justify-center">

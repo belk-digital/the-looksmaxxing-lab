@@ -16,6 +16,7 @@ import { Products } from './collections/Products'
 import { Carts } from './collections/Carts'
 import { Coupons } from './collections/Coupons'
 import { BlogPosts } from './collections/BlogPosts'
+import { BlogMedia } from './collections/BlogMedia'
 import { Pages } from './collections/Pages'
 import { ContactMessages } from './collections/ContactMessages'
 import { EmailLogs } from './collections/EmailLogs'
@@ -66,6 +67,7 @@ export default buildConfig({
     Reviews,
     ShippingZones,
     BlogPosts,
+    BlogMedia,
     Pages,
     ContactMessages,
     EmailLogs,
@@ -146,6 +148,16 @@ export default buildConfig({
             disableLocalStorage: true,
             disablePayloadAccessControl: true,
             prefix: 'COA',
+            generateFileURL: ({ filename, prefix }) => {
+              const publicUrl = process.env.R2_PUBLIC_URL || ''
+              const base = publicUrl.replace(/\/$/, '')
+              return prefix ? `${base}/${prefix}/${filename}` : `${base}/${filename}`
+            },
+          },
+          'blog-media': {
+            disableLocalStorage: true,
+            disablePayloadAccessControl: true,
+            prefix: 'Blog Images',
             generateFileURL: ({ filename, prefix }) => {
               const publicUrl = process.env.R2_PUBLIC_URL || ''
               const base = publicUrl.replace(/\/$/, '')
