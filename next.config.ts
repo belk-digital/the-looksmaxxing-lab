@@ -32,6 +32,12 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'pub-0ab0207d475a48e7b7e92a35418eace6.r2.dev',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'longeviaresearch.com',
         port: '',
         pathname: '/**',

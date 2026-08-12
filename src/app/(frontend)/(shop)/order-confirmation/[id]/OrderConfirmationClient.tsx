@@ -105,7 +105,7 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
               {order.paymentMethod === 'zelle' && (
                 <div className="flex justify-center mb-4 mt-2">
                   <Image 
-                    src="https://pub-4c2ad32bd46946819b7bd8c103044a10.r2.dev/email-assets/longevia-zelle-qr.jpeg"
+                    src="https://pub-0ab0207d475a48e7b7e92a35418eace6.r2.dev/email-assets/longevia-zelle-qr.jpeg"
                     alt="Zelle payment QR code for completing your Longevia Research order"
                     width={200} 
                     height={200} 

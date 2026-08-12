@@ -118,7 +118,7 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
       const isZelle = order.paymentMethod === 'zelle';
       const qrHtml = isZelle ? `
                 <div style="margin-bottom: 16px;">
-                  <img src="https://pub-4c2ad32bd46946819b7bd8c103044a10.r2.dev/email-assets/longevia-zelle-qr.jpeg" alt="Zelle QR Code" style="width: 200px; height: 200px; border-radius: 8px; border: 2px solid #FDE68A;" />
+                  <img src="https://pub-0ab0207d475a48e7b7e92a35418eace6.r2.dev/email-assets/longevia-zelle-qr.jpeg" alt="Zelle QR Code" style="width: 200px; height: 200px; border-radius: 8px; border: 2px solid #FDE68A;" />
                 </div>
       ` : '';
 

@@ -123,7 +123,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
                 areaServed: 'US',
                 availableLanguage: ['English'],
               },
-              makesOffer: {
+              hasOfferCatalog: {
                 '@type': 'OfferCatalog',
                 name: 'Research Peptides & Compounds',
                 url: `${siteUrl}/shop`,

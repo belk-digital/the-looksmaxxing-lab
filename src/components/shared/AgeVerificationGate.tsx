@@ -84,9 +84,9 @@ export function AgeVerificationGate({ initialVerified }: AgeVerificationGateProp
                 <span className="font-serif text-lg font-bold tracking-tighter uppercase text-cream block mb-6">
                   Longevia Research
                 </span>
-                <h1 className="font-display text-2xl leading-snug mb-3">
+                <h2 className="font-display text-2xl leading-snug mb-3">
                   US-manufactured, research-grade peptides.
-                </h1>
+                </h2>
                 <p className="text-xs text-cream/60 leading-relaxed">
                   You must be 21 years of age or older to enter. Please confirm the statements to continue.
                 </p>
