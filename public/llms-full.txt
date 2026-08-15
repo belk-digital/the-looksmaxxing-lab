@@ -133,7 +133,6 @@ URL: /products/lipo-c
 - FAQ: /faq
 - Certificates of Analysis: /certificates
 - Contact: /contact
-- Peptide Reconstitution Calculator: /peptide-calculator
 - Research Journal: /journal
 - Affiliate Program: /affiliates
 

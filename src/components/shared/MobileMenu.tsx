@@ -28,7 +28,7 @@ const CATEGORIES = [
 
 const DISCOVER_LINKS = [
   { label: 'Shop All Formulations', href: '/shop', icon: ShoppingBag },
-  { label: 'Peptide Calculator', href: '/peptide-calculator', icon: Calculator },
+  // { label: 'Peptide Calculator', href: '/peptide-calculator', icon: Calculator },
   { label: 'Scientific Journal', href: '/journal', icon: BookOpen },
   { label: 'Our Laboratory', href: '/about', icon: Microscope },
 ]

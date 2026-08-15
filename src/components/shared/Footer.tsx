@@ -107,7 +107,7 @@ const FooterContent = () => {
           <div className="flex flex-col gap-6">
             <h3 className="text-[11px] uppercase tracking-[0.2em] text-cream/80 font-medium">Resources</h3>
             <ul className="flex flex-col gap-4">
-              <li><Link href="/peptide-calculator" className="text-sm text-cream/50 hover:text-white transition-colors">Peptide Calculator</Link></li>
+              {/* <li><Link href="/peptide-calculator" className="text-sm text-cream/50 hover:text-white transition-colors">Peptide Calculator</Link></li> */}
               <li><Link href="/certificates" className="text-sm text-cream/50 hover:text-white transition-colors">COA Library</Link></li>
               <li><Link href="/faq" className="text-sm text-cream/50 hover:text-white transition-colors">FAQ</Link></li>
               <li><Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-sm text-cream/50 hover:text-white transition-colors">COA & Purity Guide</Link></li>

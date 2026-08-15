@@ -234,6 +234,7 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                     </span>
                     <div className="absolute top-full pt-2 left-1/2 -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top group-hover:translate-y-0 translate-y-2">
                       <div className="bg-white/95 backdrop-blur-md border border-black/5 shadow-2xl flex flex-col w-[280px] p-2.5 rounded-xl">
+                        {/* 
                         <Link href="/peptide-calculator" className="flex flex-col items-start px-4 py-3.5 rounded-lg hover:bg-black/[0.04] transition-colors group/item">
                           <div className="flex items-center gap-3">
                             <div className="w-6 flex items-center justify-center text-ink transition-colors duration-300 mt-0.5">
@@ -243,8 +244,9 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
                           </div>
                           <span className="text-[11px] text-ink/50 mt-1.5 leading-snug text-left ml-9 font-medium">Advanced formulation tools & precise measurements</span>
                         </Link>
+                        */}
                         
-                        <Link href="/journal" className="flex flex-col items-start px-4 py-3.5 rounded-lg hover:bg-black/[0.04] transition-colors group/item mt-0.5">
+                        <Link href="/journal" className="flex flex-col items-start px-4 py-3.5 rounded-lg hover:bg-black/[0.04] transition-colors group/item">
                           <div className="flex items-center gap-3">
                             <div className="w-6 flex items-center justify-center text-ink transition-colors duration-300 mt-0.5">
                               <BookOpen size={18} strokeWidth={1.5} />

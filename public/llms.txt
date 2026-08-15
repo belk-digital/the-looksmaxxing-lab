@@ -54,7 +54,6 @@ Longevia Research operates an all-sales-final policy. Once an order ships, we do
 - **Homepage**: [https://www.longeviaresearch.com/](https://www.longeviaresearch.com/)
 - **Shop All Products**: [https://www.longeviaresearch.com/shop](https://www.longeviaresearch.com/shop)
 - **Certificates of Analysis (COA Library)**: [https://www.longeviaresearch.com/certificates](https://www.longeviaresearch.com/certificates)
-- **Peptide Reconstitution Calculator**: [https://www.longeviaresearch.com/peptide-calculator](https://www.longeviaresearch.com/peptide-calculator)
 - **Affiliate Program**: [https://www.longeviaresearch.com/affiliates](https://www.longeviaresearch.com/affiliates)
 - **Research Journal**: [https://www.longeviaresearch.com/journal](https://www.longeviaresearch.com/journal)
   - **Guide: How to Read a Peptide COA (HPLC & Mass Spec)**: [https://www.longeviaresearch.com/journal/peptide-coa-hplc-purity-testing-guide](https://www.longeviaresearch.com/journal/peptide-coa-hplc-purity-testing-guide)

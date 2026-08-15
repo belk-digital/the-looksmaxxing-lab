@@ -97,7 +97,7 @@ const GLP1_FAQS = [
       },
       {
         question: "How do I calculate the correct concentration for my in-vitro assays?",
-        answer: "Molar concentration depends on the exact mass of the lyophilized powder and the precise volume of the diluent added. To easily calculate precise dosages for experimental applications, researchers should utilize our Peptide Reconstitution Calculator."
+        answer: "Molar concentration depends on the exact mass of the lyophilized powder and the precise volume of the diluent added. To easily calculate precise dosages for experimental applications, researchers should consult our Peptide Reconstitution and Storage Guide."
       }
     ]
 
@@ -331,7 +331,7 @@ const RECON_STORAGE_FAQS = [
       },
       {
         question: "How do I calculate the correct reconstitution volume for a peptide?",
-        answer: "Reconstitution volume determines the final concentration of the solution, expressed as mass per volume (for example, mcg/mL). The calculation depends on the total peptide mass in the vial (in mg) and the volume of bacteriostatic water added (in mL). Because this arithmetic directly determines dosing accuracy in a research protocol, we recommend using our Peptide Reconstitution Calculator rather than performing it manually."
+        answer: "Reconstitution volume determines the final concentration of the solution, expressed as mass per volume (for example, mcg/mL). The calculation depends on the total peptide mass in the vial (in mg) and the volume of bacteriostatic water added (in mL). Because this arithmetic directly determines dosing accuracy in a research protocol, we recommend referencing our step-by-step Peptide Reconstitution and Storage Guide."
       },
       {
         question: "Should I shake the vial after adding bacteriostatic water?",
@@ -978,7 +978,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </p>
 
         <p>
-          Regardless of protocol design, researchers should use the <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution Calculator</Link> to precisely determine molar concentrations for both Kisspeptin-10 and MOTS-C prior to any in-vitro or in-vivo assay, ensuring dosing accuracy across every replicate — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution and storage guide</Link> for the complete protocol.
+          Regardless of protocol design, researchers should precisely determine molar concentrations for both Kisspeptin-10 and MOTS-C prior to any in-vitro or in-vivo assay, ensuring dosing accuracy across every replicate — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution and storage guide</Link> for the complete protocol.
         </p>
 
         <Image src="/journal-images/kisspeptin-mots-c-cold-chain-storage.webp" alt="Lyophilized research peptide vial in cold-chain storage" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
@@ -1158,7 +1158,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/tesamorelin-glp-3-comparative-lab-analysis.webp" alt="Laboratory desk comparing two research peptide vials with HPLC documentation" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          Every batch of <Link href="/products/tesamorelin" className="text-blue-600 underline hover:text-blue-800">Tesamorelin</Link> and <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> sold by <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> is synthesized via Solid-Phase Peptide Synthesis, purified through preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">HPLC</Link>, and verified via Electrospray Ionization Mass Spectrometry (ESI-MS) at an independent, third-party US laboratory. Every lot is documented at a ≥99% purity floor, with results available in our publicly accessible <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link>. Researchers should also use our <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution Calculator</Link> — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution guide</Link> — to ensure precise molar dosing across both compounds.
+          Every batch of <Link href="/products/tesamorelin" className="text-blue-600 underline hover:text-blue-800">Tesamorelin</Link> and <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> sold by <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> is synthesized via Solid-Phase Peptide Synthesis, purified through preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">HPLC</Link>, and verified via Electrospray Ionization Mass Spectrometry (ESI-MS) at an independent, third-party US laboratory. Every lot is documented at a ≥99% purity floor, with results available in our publicly accessible <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link>. Researchers should also consult our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution guide</Link> to ensure precise molar dosing across both compounds.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Building a Reproducible Research Protocol</h2>
@@ -1338,7 +1338,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/cjc-1295-ipamorelin-coa-certificate.webp" alt="Certificate of Analysis documentation beside a research peptide vial" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          Full lot-specific documentation is available in our publicly accessible <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link>. To ensure dosing precision across both compounds, researchers should calculate exact molar concentrations using our <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution Calculator</Link> prior to any experimental protocol — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution and storage guide</Link> for the complete step-by-step process.
+          Full lot-specific documentation is available in our publicly accessible <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link>. To ensure dosing precision across both compounds, researchers should calculate exact molar concentrations prior to any experimental protocol — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution and storage guide</Link> for the complete step-by-step process.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Building a Reproducible Research Protocol</h2>
@@ -1643,13 +1643,13 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </ol>
 
         <p>
-          To calculate the exact volume of bacteriostatic water needed for your target concentration before starting this process, use our <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution Calculator</Link>.
+          Calculate the exact volume of bacteriostatic water needed for your target concentration based on the vial mass before starting this process.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Calculating Concentration</h2>
 
         <p>
-          Reconstitution volume directly determines the final concentration of the solution, typically expressed in micrograms per milliliter (mcg/mL). The relationship is straightforward: total peptide mass in the vial (in mg, converted to mcg) divided by the volume of bacteriostatic water added (in mL) yields the concentration per mL. For example, a 5mg vial reconstituted with 2mL of bacteriostatic water yields a concentration of 2,500 mcg/mL. Because this figure directly determines dosing accuracy for any downstream research protocol, manual arithmetic errors here are one of the most common sources of experimental inconsistency — our <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">reconstitution calculator</Link> is built specifically to eliminate that risk.
+          Reconstitution volume directly determines the final concentration of the solution, typically expressed in micrograms per milliliter (mcg/mL). The relationship is straightforward: total peptide mass in the vial (in mg, converted to mcg) divided by the volume of bacteriostatic water added (in mL) yields the concentration per mL. For example, a 5mg vial reconstituted with 2mL of bacteriostatic water yields a concentration of 2,500 mcg/mL. Because this figure directly determines dosing accuracy for any downstream research protocol, calculating dilution accurately is essential to eliminate experimental inconsistency.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Storage Temperatures at Every Stage</h2>
@@ -1700,7 +1700,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">A Worked Example: From Vial to Vial-Ready Solution</h2>
 
         <p>
-          Consider a 10mg vial of a lyophilized peptide reconstituted with 2mL of bacteriostatic water. Converting 10mg to micrograms gives 10,000mcg; dividing by the 2mL volume yields a concentration of 5,000mcg/mL, or 5mcg per 0.001mL (1 microliter) drawn. If a research protocol calls for a 250mcg dose, the corresponding draw volume would be 0.05mL — a figure precise enough that most researchers prefer to work with an insulin syringe marked in fine unit increments rather than estimating by eye. This is exactly the kind of arithmetic where a dedicated calculator removes a persistent source of protocol-to-protocol inconsistency, which is why we built our <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution Calculator</Link> to handle the conversion automatically from vial mass, diluent volume, and target dose.
+          Consider a 10mg vial of a lyophilized peptide reconstituted with 2mL of bacteriostatic water. Converting 10mg to micrograms gives 10,000mcg; dividing by the 2mL volume yields a concentration of 5,000mcg/mL, or 5mcg per 0.001mL (1 microliter) drawn. If a research protocol calls for a 250mcg dose, the corresponding draw volume would be 0.05mL — a figure precise enough that most researchers prefer to work with an insulin syringe marked in fine unit increments rather than estimating by eye. This standardized arithmetic ensures consistent protocol-to-protocol conversions from vial mass, diluent volume, and target dose.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Maintaining a Reproducible Storage Log</h2>
@@ -1864,7 +1864,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/glp-3-hplc-purity-verification.webp" alt="Laboratory HPLC purity verification of a research-grade GLP-3 (Rt) peptide batch" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> manufactures <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> research peptide in US-based facilities, with every batch independently verified by third-party HPLC and LC-MS analysis. Lot-specific Certificates of Analysis are available in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution protocols, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>, and use the <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Calculator</Link> for concentration calculations.
+          <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> manufactures <Link href="/products/glp-3" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> research peptide in US-based facilities, with every batch independently verified by third-party HPLC and LC-MS analysis. Lot-specific Certificates of Analysis are available in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution protocols and concentration calculations, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
@@ -1994,7 +1994,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/mots-c-research-grade-vial-lab-bench.webp" alt="Research-grade MOTS-c lyophilized peptide vial on a laboratory bench" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> supplies research-grade <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-c</Link>, synthesized in US-based, ISO-certified facilities with full independent verification. Lot-specific Certificates of Analysis are accessible in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution and storage protocols, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>, and use the <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Calculator</Link> for precise concentration calculations.
+          <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> supplies research-grade <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-c</Link>, synthesized in US-based, ISO-certified facilities with full independent verification. Lot-specific Certificates of Analysis are accessible in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution and storage protocols, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
@@ -2137,7 +2137,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Reconstitution and Storage Considerations</h2>
 
         <p>
-          GLP-3 is supplied as a lyophilized (freeze-dried) powder requiring reconstitution prior to laboratory use. Researchers should follow standard peptide reconstitution protocols using bacteriostatic water, calculating concentration based on the desired experimental parameters — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link> for the step-by-step protocol, and the <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Calculator</Link> for concentration and volume calculations. Post-reconstitution, GLP-3 should be stored under refrigeration (2–8°C) and protected from light; lyophilized material prior to reconstitution should be stored frozen (−20°C) for long-term stability.
+          GLP-3 is supplied as a lyophilized (freeze-dried) powder requiring reconstitution prior to laboratory use. Researchers should follow standard peptide reconstitution protocols using bacteriostatic water, calculating concentration based on the desired experimental parameters — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link> for the step-by-step protocol and volume calculations. Post-reconstitution, GLP-3 should be stored under refrigeration (2–8°C) and protected from light; lyophilized material prior to reconstitution should be stored frozen (−20°C) for long-term stability.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
@@ -2289,7 +2289,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Reconstitution and Storage Considerations</h2>
 
         <p>
-          All three compounds are supplied as lyophilized powder and follow the same fundamental handling principles: reconstitute using bacteriostatic water, directing the stream gently down the vial wall and swirling rather than shaking, then refrigerate the reconstituted solution at 2-8°C. Lyophilized vials should be stored frozen at -20°C until ready for use. Given their fatty-acid modifications and long-chain structure, all three are also sensitive to mechanical agitation and repeated freeze-thaw cycling, which can promote aggregation and reduce experimental consistency. See our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution & Storage Guide</Link> for the complete step-by-step protocol, and our <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution Calculator</Link> for concentration and dosing-volume calculations specific to each compound's vial mass.
+          All three compounds are supplied as lyophilized powder and follow the same fundamental handling principles: reconstitute using bacteriostatic water, directing the stream gently down the vial wall and swirling rather than shaking, then refrigerate the reconstituted solution at 2-8°C. Lyophilized vials should be stored frozen at -20°C until ready for use. Given their fatty-acid modifications and long-chain structure, all three are also sensitive to mechanical agitation and repeated freeze-thaw cycling, which can promote aggregation and reduce experimental consistency. See our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution & Storage Guide</Link> for the complete step-by-step protocol and dosing-volume calculations specific to each compound's vial mass.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Adverse Event Signals Reported in Published Trials</h2>
@@ -2447,7 +2447,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Reconstitution and Storage Considerations for NAD+</h2>
 
         <p>
-          NAD+ is particularly sensitive to light exposure, pH extremes, and elevated temperature, all of which accelerate its degradation into biologically inactive byproducts — making cold, dark storage and minimization of freeze-thaw cycling especially important relative to some more chemically stable short-chain peptides. Standard handling follows the same core protocol as other lyophilized research compounds: reconstitute with bacteriostatic water using a gentle technique, avoid vigorous shaking, and refrigerate the reconstituted solution at 2-8°C, protected from light. Lyophilized NAD+ should be stored frozen at -20°C until ready for use. See our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution & Storage Guide</Link> for the complete step-by-step protocol, and our <Link href="/peptide-calculator" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution Calculator</Link> for concentration calculations.
+          NAD+ is particularly sensitive to light exposure, pH extremes, and elevated temperature, all of which accelerate its degradation into biologically inactive byproducts — making cold, dark storage and minimization of freeze-thaw cycling especially important relative to some more chemically stable short-chain peptides. Standard handling follows the same core protocol as other lyophilized research compounds: reconstitute with bacteriostatic water using a gentle technique, avoid vigorous shaking, and refrigerate the reconstituted solution at 2-8°C, protected from light. Lyophilized NAD+ should be stored frozen at -20°C until ready for use. See our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution & Storage Guide</Link> for the complete step-by-step protocol and concentration calculations.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">NAD+ and Exercise-Mimetic Mitochondrial Research: An Open Comparison</h2>

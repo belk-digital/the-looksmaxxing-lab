@@ -134,6 +134,17 @@ const nextConfig: NextConfig = {
         source: '/shop/bac-water',
         destination: '/shop/reconstitution-solution',
         permanent: true,
+      },
+      // 10. Peptide Calculator redirect to homepage
+      {
+        source: '/peptide-calculator',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/peptide-calculator/:path*',
+        destination: '/',
+        permanent: true,
       }
     ]
   },

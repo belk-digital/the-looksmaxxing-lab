@@ -19,6 +19,10 @@ export const metadata: Metadata = {
   openGraph: {
     images: [{ url: '/og/og-home.webp', width: 1200, height: 630, alt: 'Longevia Research — Research-Grade Peptides' }],
   },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/og/og-home.webp'],
+  },
   title: {
     absolute: 'Longevia Research | Premium Research Peptides (US-Made)',
   },

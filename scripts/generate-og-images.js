@@ -13,11 +13,13 @@ const mappings = [
     out: 'og-affiliates.webp',
     title: 'Affiliate Program'
   },
+  /*
   {
     bg: 'three-flying-vials.webp',
     out: 'og-calculator.webp',
     title: 'Peptide Reconstitution Calculator'
   },
+  */
   {
     bg: 'motsc-and-retatrutide-on-ice.png',
     out: 'og-certificates.webp',
@@ -34,7 +36,7 @@ const mappings = [
     title: 'Frequently Asked Questions'
   },
   {
-    bg: 'vials-on-magazine.webp',
+    bg: 'longevia-hero-landscape.png',
     out: 'og-home.webp',
     title: 'Premium Research Peptides'
   },
