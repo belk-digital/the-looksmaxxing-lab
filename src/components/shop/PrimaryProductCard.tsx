@@ -65,7 +65,7 @@ function SlideToAddButton({ product }: { product: Product }) {
   }
 
   const handleDragEnd = (event: any, info: any) => {
-    if (info.offset.x > 40) {
+    if (info.offset.x > 30) {
       handleAdd()
     }
   }
@@ -88,10 +88,15 @@ function SlideToAddButton({ product }: { product: Product }) {
   return (
     <div 
       ref={containerRef} 
-      className="relative w-full h-[40px] sm:h-[52px] bg-[#F1F1F1] rounded-full flex items-center overflow-hidden pointer-events-auto z-20 mt-auto border border-black/5"
+      onClick={(e) => {
+        // Allow tap on mobile button track to directly trigger
+        e.stopPropagation()
+        handleAdd()
+      }}
+      className="relative w-full h-[36px] sm:h-[50px] bg-[#F1F1F1] rounded-full flex items-center overflow-hidden pointer-events-auto z-20 mt-auto border border-black/5 cursor-pointer"
     >
-      <div className="absolute inset-0 flex items-center justify-center pl-8 sm:pl-10 text-[9px] sm:text-[12px] lg:text-[13px] font-semibold text-ink/40 pointer-events-none select-none tracking-tight">
-        {isMultiVariant ? 'Select options' : 'Slide to add'} <ChevronRight size={14} className="inline ml-0.5" />
+      <div className="absolute inset-0 flex items-center justify-center pl-7 sm:pl-10 pr-2 text-[9px] sm:text-[12px] lg:text-[13px] font-semibold text-ink/50 pointer-events-none select-none tracking-tight whitespace-nowrap overflow-hidden">
+        {isMultiVariant ? 'Options' : 'Slide to add'} <ChevronRight size={13} className="inline ml-0.5 shrink-0 opacity-60" />
       </div>
       
       <motion.button
@@ -101,13 +106,13 @@ function SlideToAddButton({ product }: { product: Product }) {
         dragElastic={0.05}
         dragSnapToOrigin={true}
         onDragEnd={handleDragEnd}
-        whileTap={{ scale: 0.98 }}
+        whileTap={{ scale: 0.96 }}
         aria-label={isMultiVariant ? `Select options for ${product.name}` : `Add ${product.name} to cart`}
-        className={`absolute left-1 w-[32px] h-[32px] sm:w-[44px] sm:h-[44px] rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-10 shadow-sm transition-colors duration-300 ${
+        className={`absolute left-0.5 sm:left-1 w-[30px] h-[30px] sm:w-[42px] sm:h-[42px] rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-10 shadow-sm transition-colors duration-300 ${
           isAdded ? 'bg-green-600 text-white' : 'bg-[#1A1A1A] text-white'
         }`}
       >
-        {isAdded ? <Check size={14} className="sm:w-4 sm:h-4" /> : <ShoppingCart size={14} className="sm:w-4 sm:h-4" />}
+        {isAdded ? <Check size={13} className="sm:w-4 sm:h-4" /> : <ShoppingCart size={13} className="sm:w-4 sm:h-4" />}
       </motion.button>
     </div>
   )
@@ -188,15 +193,15 @@ export function PrimaryProductCard({ product, size = 'small', id }: PrimaryProdu
   return (
     <div 
       id={id}
-      className="group relative flex flex-col w-full h-full bg-white p-3 sm:p-4 rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)] transition-shadow duration-300 cursor-pointer"
+      className="group relative flex flex-col w-full h-full bg-white p-2.5 sm:p-4 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)] transition-shadow duration-300 cursor-pointer"
     >
       {/* Image Area */}
-      <div className={`relative w-full ${imageAspectClass} overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] bg-[#F5F5F7] mb-4 sm:mb-6`}>
+      <div className={`relative w-full ${imageAspectClass} overflow-hidden rounded-[1.25rem] sm:rounded-[2rem] bg-[#F5F5F7] mb-3 sm:mb-6`}>
         
         {/* SALE Badge */}
         {(product.originalPrice || product.discountPercentage) && (
-          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20">
-            <span className="bg-red-600 text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-sm shadow-sm">
+          <div className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 z-20">
+            <span className="bg-red-600 text-white text-[8.5px] sm:text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-sm shadow-sm">
               Sale
             </span>
           </div>
@@ -226,7 +231,7 @@ export function PrimaryProductCard({ product, size = 'small', id }: PrimaryProdu
           onClick={handleWishlistClick}
           aria-label={inWishlist ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
           aria-pressed={inWishlist}
-          className={`absolute top-3 right-3 sm:top-4 sm:right-4 p-1.5 sm:p-2.5 rounded-full backdrop-blur-xl transition-colors z-20 shadow-[0_4px_16px_rgba(0,0,0,0.05)] border flex items-center justify-center disabled:opacity-70 ${
+          className={`absolute top-2.5 right-2.5 sm:top-4 sm:right-4 p-1.5 sm:p-2.5 rounded-full backdrop-blur-xl transition-colors z-20 shadow-[0_4px_16px_rgba(0,0,0,0.05)] border flex items-center justify-center disabled:opacity-70 ${
             inWishlist 
               ? 'bg-red-500/15 text-red-500 border-red-500/20 hover:bg-red-500/25' 
               : 'bg-white/30 text-[#8A95A5] border-white/40 hover:text-red-500 hover:bg-white/50'
@@ -263,35 +268,35 @@ export function PrimaryProductCard({ product, size = 'small', id }: PrimaryProdu
             transition={{ duration: 0.4, ease: "easeInOut" }}
           >
             {isPending ? (
-              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 animate-spin" />
             ) : (
-              <Heart strokeWidth={inWishlist ? 2 : 1.5} className={`w-4 h-4 sm:w-5 sm:h-5 ${inWishlist ? 'fill-current' : ''}`} />
+              <Heart strokeWidth={inWishlist ? 2 : 1.5} className={`w-3.5 h-3.5 sm:w-5 sm:h-5 ${inWishlist ? 'fill-current' : ''}`} />
             )}
           </motion.div>
         </motion.button>
       </div>
 
       {/* Info Area */}
-      <div className="flex flex-col px-1 sm:px-2 flex-1 relative z-20 pointer-events-none">
+      <div className="flex flex-col px-0.5 sm:px-2 flex-1 relative z-20 pointer-events-none">
         {/* Title */}
-        <h3 className="text-base sm:text-xl font-bold text-ink leading-tight tracking-tight mb-1 line-clamp-2 min-h-[2.5rem] sm:min-h-[3.25rem]">
+        <h3 className="text-[13px] sm:text-xl font-bold text-ink leading-tight tracking-tight mb-1 line-clamp-2 min-h-[2.1rem] sm:min-h-[3.25rem]">
           {product.name}
         </h3>
         
         {/* Description - ALWAYS VISIBLE */}
-        <p className="text-[11px] sm:text-sm text-ink/60 line-clamp-2 mb-3 sm:mb-4 font-light leading-relaxed">
+        <p className="text-[10px] sm:text-sm text-ink/60 line-clamp-2 mb-2 sm:mb-4 font-light leading-relaxed">
           {product.shortDescription || `Experience the pure benefits of ${product.name}.`}
         </p>
         
         {/* Price Area - Pushed to bottom above slider */}
-        <div className="flex items-center justify-between mt-auto mb-3 sm:mb-4 overflow-hidden">
-          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+        <div className="flex items-center justify-between mt-auto mb-2.5 sm:mb-4 overflow-hidden">
+          <div className="flex items-center gap-1 sm:gap-2 min-w-0">
             {product.originalPrice && (
-              <span className="text-xs sm:text-sm font-medium text-ink/40 line-through">
+              <span className="text-[11px] sm:text-sm font-medium text-ink/40 line-through">
                 {product.originalPrice}
               </span>
             )}
-            <span className="text-sm sm:text-lg font-bold text-ink whitespace-nowrap">
+            <span className="text-[13px] sm:text-lg font-bold text-ink whitespace-nowrap">
               {product.priceRange}
             </span>
             {product.discountPercentage && (

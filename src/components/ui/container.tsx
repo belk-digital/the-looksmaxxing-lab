@@ -4,10 +4,10 @@ import { cva, type VariantProps } from 'class-variance-authority'
 const containerVariants = cva('mx-auto w-full', {
   variants: {
     size: {
-      content: 'max-w-content px-6 md:px-12 lg:px-20',
-      prose: 'max-w-prose px-6 md:px-12 lg:px-20',
-      page: 'max-w-page px-6 md:px-12 lg:px-20',
-      wide: 'max-w-wide px-6 md:px-12 lg:px-20',
+      content: 'max-w-content px-4 sm:px-6 md:px-12 lg:px-20',
+      prose: 'max-w-prose px-4 sm:px-6 md:px-12 lg:px-20',
+      page: 'max-w-page px-4 sm:px-6 md:px-12 lg:px-20',
+      wide: 'max-w-wide px-4 sm:px-6 md:px-12 lg:px-20',
       bleed: 'max-w-full px-0',
     },
   },

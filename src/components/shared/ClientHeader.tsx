@@ -493,6 +493,8 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
         onClose={() => setMobileMenuOpen(false)} 
         isLoggedIn={isLoggedIn}
         onSearchClick={() => setIsSearchOpen(true)}
+        categories={categoriesData}
+        isLoadingCategories={isLoadingMenu}
       />
       <CartDrawer />
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />

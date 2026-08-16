@@ -13,7 +13,6 @@ export function AgeVerificationGate({ initialVerified }: AgeVerificationGateProp
   const [isDenied, setIsDenied] = useState(false)
   const [mounted, setMounted] = useState(false)
 
-  const [ageChecked, setAgeChecked] = useState(false)
   const [researcherChecked, setResearcherChecked] = useState(false)
 
   const lenis = useLenis()
@@ -45,7 +44,7 @@ export function AgeVerificationGate({ initialVerified }: AgeVerificationGateProp
   }, [isVerified, lenis])
 
   const handleVerify = () => {
-    if (!ageChecked || !researcherChecked) return;
+    if (!researcherChecked) return;
     
     document.cookie = "longevia_age_verified=true; path=/; max-age=31536000; SameSite=Lax"
     localStorage.setItem('longevia_age_verified', 'true')
@@ -88,7 +87,7 @@ export function AgeVerificationGate({ initialVerified }: AgeVerificationGateProp
                   US-manufactured, research-grade peptides.
                 </h2>
                 <p className="text-xs text-cream/60 leading-relaxed">
-                  You must be 21 years of age or older to enter. Please confirm the statements to continue.
+                  Access to the Longevia Research website and product catalog requires users to certify that they meet the research-use requirements outlined <span className="md:hidden">below</span><span className="hidden md:inline">to the right</span>.
                 </p>
               </div>
 
@@ -127,22 +126,6 @@ export function AgeVerificationGate({ initialVerified }: AgeVerificationGateProp
                         <input
                           type="checkbox"
                           className="peer sr-only"
-                          checked={ageChecked}
-                          onChange={(e) => setAgeChecked(e.target.checked)}
-                        />
-                        <div className="w-5 h-5 border-2 border-border rounded-sm peer-checked:bg-ink peer-checked:border-ink transition-colors"></div>
-                        <svg className="absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M1 5L4.5 8.5L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </div>
-                      <span className="text-sm text-ink group-hover:text-ink/80 transition-colors">I am at least 21 years of age</span>
-                    </label>
-
-                    <label className="flex items-start gap-3 cursor-pointer group">
-                      <div className="relative flex items-center justify-center mt-0.5 shrink-0">
-                        <input
-                          type="checkbox"
-                          className="peer sr-only"
                           checked={researcherChecked}
                           onChange={(e) => setResearcherChecked(e.target.checked)}
                         />
@@ -157,7 +140,7 @@ export function AgeVerificationGate({ initialVerified }: AgeVerificationGateProp
 
                   <button
                     onClick={handleVerify}
-                    disabled={!ageChecked || !researcherChecked}
+                    disabled={!researcherChecked}
                     className="bg-ink text-cream px-8 py-3.5 rounded-md font-sans text-sm tracking-widest uppercase hover:bg-ink-soft disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-md hover:shadow-lg w-full mb-5"
                   >
                     Enter Longevia Research
@@ -184,7 +167,7 @@ export function AgeVerificationGate({ initialVerified }: AgeVerificationGateProp
                     Access Denied
                   </h2>
                   <p className="text-body-sm text-ink-muted">
-                    You must be a qualified researcher of legal age to access this site. Please close this window.
+                    You must be a qualified researcher to access this site. Please close this window.
                   </p>
                 </motion.div>
               )}

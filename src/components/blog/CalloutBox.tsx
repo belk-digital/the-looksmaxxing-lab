@@ -7,6 +7,17 @@ const STYLES = {
   warning: { icon: TriangleAlert, accent: 'bg-warning', tint: 'bg-warning/12', iconColor: 'text-warning', label: 'Note' },
 } as const
 
+// The calloutBox block's `text` field is a plain string in Payload (not richText),
+// so **bold** markers from the content-markdown source never get parsed into real
+// bold elsewhere in the pipeline — render them here instead of showing literal asterisks.
+function renderWithBold(text: string) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g).filter(Boolean)
+  return parts.map((part, i) => {
+    const m = part.match(/^\*\*([^*]+)\*\*$/)
+    return m ? <strong key={i} className="font-semibold text-ink">{m[1]}</strong> : <React.Fragment key={i}>{part}</React.Fragment>
+  })
+}
+
 export function CalloutBox({ style = 'info', text }: { style?: 'info' | 'tip' | 'warning'; text: string }) {
   const { icon: Icon, accent, tint, iconColor, label } = STYLES[style] || STYLES.info
   return (
@@ -18,7 +29,7 @@ export function CalloutBox({ style = 'info', text }: { style?: 'info' | 'tip' | 
         </div>
         <div className="min-w-0">
           <span className={`block text-label-sm uppercase tracking-wider font-semibold mb-1.5 ${iconColor}`}>{label}</span>
-          <p className="text-body-md text-ink/80 leading-relaxed">{text}</p>
+          <p className="text-body-md text-ink/80 leading-relaxed">{renderWithBold(text)}</p>
         </div>
       </div>
     </div>

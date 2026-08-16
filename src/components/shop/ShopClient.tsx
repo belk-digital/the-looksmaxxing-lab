@@ -233,21 +233,21 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
 
       <Container size="page" className="pb-12" id="products-grid">
         {/* Top Toolbar */}
-        <div className={`flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 bg-white/95 backdrop-blur-xl border border-ink/10 p-3 sm:p-4 rounded-2xl shadow-sm sticky z-30 transition-all duration-300 ${isScrollingDown ? 'top-4 sm:top-6' : 'top-[110px] sm:top-[120px]'}`}>
+        <div className={`flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 bg-white/95 backdrop-blur-xl border border-ink/10 p-2.5 sm:p-4 rounded-2xl shadow-sm sticky z-30 transition-all duration-300 ${isScrollingDown ? 'top-3 sm:top-6' : 'top-[78px] sm:top-[120px]'}`}>
           {/* Top Row: Buttons */}
-          <div className="flex items-center justify-start md:justify-between gap-3 sm:gap-4 w-full">
-            <div className="flex items-center gap-3 sm:gap-4 w-auto">
+          <div className="flex items-center justify-between gap-2.5 sm:gap-4 w-full">
+            <div className="flex items-center gap-2 sm:gap-4 flex-1 sm:flex-initial">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="w-auto rounded-full px-4 sm:px-6 gap-2 border-border-subtle hover:bg-ink/5 text-sm sm:text-base">
-                    <Filter size={16} />
+                  <Button variant="outline" className="w-full sm:w-auto rounded-full px-3.5 sm:px-6 h-9 sm:h-10 gap-1.5 sm:gap-2 border-ink/10 hover:bg-ink/5 text-xs sm:text-sm font-semibold tracking-wider uppercase justify-center">
+                    <Filter size={14} className="sm:w-4 sm:h-4" />
                     Filters {activeChips.length > 0 && `(${activeChips.length})`}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent 
                   align="start" 
                   sideOffset={8} 
-                  className="w-[95vw] sm:w-[90vw] md:max-w-[900px] p-0 rounded-2xl border border-ink/10 ring-0 shadow-2xl bg-white/75 overflow-hidden"
+                  className="w-[calc(100vw-2rem)] sm:w-[90vw] md:max-w-[900px] p-0 rounded-2xl border border-ink/10 ring-0 shadow-2xl bg-white/95 overflow-hidden z-[60]"
                   style={{ backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)' }}
                 >
                   {/* Noise Texture Overlay */}
@@ -255,7 +255,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
                     className="absolute inset-0 z-0 opacity-[0.06] pointer-events-none" 
                     style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
                   />
-                  <div className="relative z-10 max-h-[75vh] p-6 md:p-10 lg:p-12 overflow-y-auto custom-scrollbar">
+                  <div className="relative z-10 max-h-[75vh] p-4 sm:p-6 md:p-10 lg:p-12 overflow-y-auto custom-scrollbar">
                      <FilterSidebar categories={categories} />
                   </div>
                 </DropdownMenuContent>
@@ -274,26 +274,26 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
                 router.push(`${pathname}?${params.toString()}`, { scroll: false })
               }}
             >
-              <SelectTrigger className="w-auto min-w-[140px] bg-white/75 backdrop-blur-xl border border-ink/10 focus:ring-0 shadow-sm hover:bg-white/90 rounded-full px-3 sm:px-4 h-10 text-sm sm:text-base justify-between gap-2 transition-all">
+              <SelectTrigger className="w-auto min-w-[110px] sm:min-w-[140px] bg-white/75 backdrop-blur-xl border border-ink/10 focus:ring-0 shadow-sm hover:bg-white/90 rounded-full px-3 sm:px-4 h-9 sm:h-10 text-xs sm:text-sm justify-between gap-1.5 sm:gap-2 transition-all">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
-              <SelectContent className="bg-white/75 backdrop-blur-xl border-ink/10 rounded-2xl shadow-2xl p-2">
-                <SelectItem value="newest" className="rounded-xl cursor-pointer">Newest</SelectItem>
-                <SelectItem value="price-asc" className="rounded-xl cursor-pointer">Price: Low to High</SelectItem>
-                <SelectItem value="price-desc" className="rounded-xl cursor-pointer">Price: High to Low</SelectItem>
-                <SelectItem value="name-asc" className="rounded-xl cursor-pointer">Alphabetical A-Z</SelectItem>
+              <SelectContent className="bg-white/95 backdrop-blur-xl border-ink/10 rounded-2xl shadow-2xl p-2 z-[60]">
+                <SelectItem value="newest" className="rounded-xl cursor-pointer text-xs sm:text-sm">Newest</SelectItem>
+                <SelectItem value="price-asc" className="rounded-xl cursor-pointer text-xs sm:text-sm">Price: Low to High</SelectItem>
+                <SelectItem value="price-desc" className="rounded-xl cursor-pointer text-xs sm:text-sm">Price: High to Low</SelectItem>
+                <SelectItem value="name-asc" className="rounded-xl cursor-pointer text-xs sm:text-sm">Alphabetical A-Z</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Active Chips Row */}
           {activeChips.length > 0 && (
-            <div className="flex flex-wrap gap-2 pt-3 border-t border-ink/5 w-full">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-2.5 sm:pt-3 border-t border-ink/5 w-full">
               {activeChips.map(chip => (
                 <button
                   key={chip.key}
                   onClick={() => removeFilter(chip.key.startsWith('category') ? 'category' : chip.key, chip.value)}
-                  className="flex items-center space-x-2 px-3 py-1.5 bg-ink/5 hover:bg-ink/10 rounded-full transition-colors group text-xs sm:text-sm"
+                  className="flex items-center space-x-1.5 sm:space-x-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-ink/5 hover:bg-ink/10 rounded-full transition-colors group text-[11px] sm:text-sm"
                 >
                   <span className="text-ink uppercase tracking-wider">{chip.label}</span>
                   <X size={12} className="text-ink/60 group-hover:text-ink" />
@@ -307,7 +307,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
         {products.length > 0 ? (
           <>
             {/* Product Grid - Full Width */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-6">
               {products.map((product, index) => (
                 <motion.div 
                   key={product.slug} 

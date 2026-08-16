@@ -13,18 +13,32 @@ export interface MobileMenuProps {
   onClose: () => void
   isLoggedIn?: boolean
   onSearchClick?: () => void
+  categories?: any[]
+  isLoadingCategories?: boolean
 }
 
-const CATEGORIES = [
-  { name: 'Bioregulators', icon: Activity },
-  { name: 'Cellular Health', icon: Dna },
-  { name: 'Cognitive', icon: Brain },
-  { name: 'Essentials', icon: ShieldPlus },
-  { name: 'Growth Factor', icon: Sparkles },
-  { name: 'Metabolic', icon: Zap },
-  { name: 'Receptor Agonist', icon: Network },
-  { name: 'Recovery', icon: BatteryCharging }
+const FALLBACK_CATEGORIES = [
+  { name: 'Longevity Research', icon: Dna },
+  { name: 'Hormonal Health', icon: Activity },
+  { name: 'Cognitive & Nootropic', icon: Brain },
+  { name: 'Mitochondrial & Cellular Energy', icon: Zap },
+  { name: 'Growth Hormone Secretagogues', icon: Sparkles },
+  { name: 'Metabolic Research', icon: Zap },
+  { name: 'Immune Regulation', icon: ShieldPlus },
+  { name: 'Recovery & Tissue Repair', icon: BatteryCharging }
 ]
+
+function getCategoryIcon(name: string) {
+  const lower = (name || '').toLowerCase()
+  if (lower.includes('cognit') || lower.includes('nootropic') || lower.includes('brain')) return Brain
+  if (lower.includes('growth') || lower.includes('secretagogue') || lower.includes('factor')) return Sparkles
+  if (lower.includes('metabol') || lower.includes('energy') || lower.includes('mitochond')) return Zap
+  if (lower.includes('cellular') || lower.includes('dna') || lower.includes('longev')) return Dna
+  if (lower.includes('immune') || lower.includes('essential') || lower.includes('protect')) return ShieldPlus
+  if (lower.includes('recover') || lower.includes('repair') || lower.includes('tissue')) return BatteryCharging
+  if (lower.includes('hormon') || lower.includes('receptor') || lower.includes('agonist') || lower.includes('regulat')) return Network
+  return Activity
+}
 
 const DISCOVER_LINKS = [
   { label: 'Shop All Formulations', href: '/shop', icon: ShoppingBag },
@@ -39,7 +53,14 @@ const SUPPORT_LINKS = [
   { label: 'Affiliate Program', href: '/affiliates', icon: Users },
 ]
 
-export function MobileMenu({ isOpen, onClose, isLoggedIn = false, onSearchClick }: MobileMenuProps) {
+export function MobileMenu({ 
+  isOpen, 
+  onClose, 
+  isLoggedIn = false, 
+  onSearchClick,
+  categories = [],
+  isLoadingCategories = false,
+}: MobileMenuProps) {
 
   useEffect(() => {
     if (isOpen) {
@@ -104,23 +125,45 @@ export function MobileMenu({ isOpen, onClose, isLoggedIn = false, onSearchClick 
             
             {/* Categories Section */}
             <motion.div variants={itemVariants} className="flex flex-col border-b border-black/5 bg-white">
-              <div className="px-6 py-4 border-b border-black/5 bg-[#F5F5F5]">
+              <div className="px-6 py-4 border-b border-black/5 bg-[#F5F5F5] flex items-center justify-between">
                 <h3 className="text-[9px] font-bold uppercase tracking-widest text-ink/50">Shop by Category</h3>
+                <Link 
+                  href="/shop" 
+                  onClick={onClose}
+                  className="text-[9px] font-bold uppercase tracking-widest text-ink/70 hover:text-ink transition-colors"
+                >
+                  View All &rarr;
+                </Link>
               </div>
               <div className="grid grid-cols-2">
-                {CATEGORIES.map((cat, i) => (
-                  <Link 
-                    key={cat.name}
-                    href={`/shop/${cat.name.toLowerCase().replace(' ', '-')}`} 
-                    onClick={onClose}
-                    className={`flex flex-col gap-3 items-start px-6 py-5 hover:bg-black/5 transition-colors border-b border-black/5 ${i % 2 === 0 ? 'border-r' : ''}`}
-                  >
-                    <div className="p-2 rounded-full bg-black/5 text-ink">
-                      <cat.icon size={16} strokeWidth={1.5} />
+                {isLoadingCategories && categories.length === 0 ? (
+                  Array.from({ length: 8 }).map((_, i) => (
+                    <div 
+                      key={i}
+                      className={`flex flex-col gap-3 items-start px-6 py-5 border-b border-black/5 ${i % 2 === 0 ? 'border-r' : ''}`}
+                    >
+                      <div className="w-8 h-8 rounded-full bg-black/5 animate-pulse" />
+                      <div className="w-24 h-3 bg-black/5 rounded animate-pulse" />
                     </div>
-                    <span className="text-[12px] font-semibold text-ink">{cat.name}</span>
-                  </Link>
-                ))}
+                  ))
+                ) : (
+                  (categories && categories.length > 0 ? categories : FALLBACK_CATEGORIES).map((cat: any, i: number) => {
+                    const IconComp = cat.icon || getCategoryIcon(cat.name)
+                    return (
+                      <Link 
+                        key={cat.id || cat.name || i}
+                        href={`/shop?category=${encodeURIComponent(cat.name)}#products-grid`} 
+                        onClick={onClose}
+                        className={`flex flex-col gap-3 items-start px-6 py-5 hover:bg-black/5 transition-colors border-b border-black/5 ${i % 2 === 0 ? 'border-r' : ''}`}
+                      >
+                        <div className="p-2 rounded-full bg-black/5 text-ink">
+                          <IconComp size={16} strokeWidth={1.5} />
+                        </div>
+                        <span className="text-[12px] font-semibold text-ink leading-snug">{cat.name}</span>
+                      </Link>
+                    )
+                  })
+                )}
               </div>
             </motion.div>
 

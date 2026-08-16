@@ -49,6 +49,8 @@ function findImageFile(jsonPath: string, explicitImagePath?: string): string | n
 // doesn't false-flag them. Keep in sync with the site's static route list.
 const STATIC_ROUTES = new Set([
   '', 'shop', 'journal', 'cart', 'checkout', 'account', 'wishlist', 'affiliates', 'coa',
+  'about', 'contact', 'faq', 'certificates', 'disclaimer', 'terms', 'privacy', 'refund',
+  'peptide-calculator', 'login', 'register',
 ])
 
 async function verifyInternalLinks(payload: any, content: string, warnings: string[]): Promise<void> {
