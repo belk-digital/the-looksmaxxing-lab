@@ -29,6 +29,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
+    // Send Welcome Email
+    const { getWelcomeEmailHtml } = await import('@/emails/welcome')
+    await resend.emails.send({
+      from: `Longevia Research <${process.env.RESEND_FROM_EMAIL || 'research@longeviaresearch.com'}>`,
+      to: email,
+      subject: 'Welcome to the Longevia Research Community (15% Off)',
+      html: getWelcomeEmailHtml('Welcome15')
+    })
+
     return NextResponse.json(
       { message: 'Successfully subscribed to the newsletter', data },
       { status: 201 }

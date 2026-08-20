@@ -29,6 +29,15 @@ export async function subscribeToNewsletter(email: string) {
       return { success: false, error: error.message || 'Failed to subscribe to newsletter.' }
     }
 
+    // Send Welcome Email
+    const { getWelcomeEmailHtml } = await import('@/emails/welcome')
+    await resend.emails.send({
+      from: `Longevia Research <${process.env.RESEND_FROM_EMAIL || 'research@longeviaresearch.com'}>`,
+      to: email.toLowerCase(),
+      subject: 'Welcome to the Longevia Research Community (15% Off)',
+      html: getWelcomeEmailHtml('Welcome15')
+    })
+
     return { success: true }
   } catch (err: any) {
     console.error('Newsletter subscription error:', err)
