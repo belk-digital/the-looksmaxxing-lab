@@ -45,31 +45,31 @@ const SEO_COMPOUNDS = [
   {
     title: "BPC-157 (Body Protection Compound-157)",
     desc: "A 15-amino-acid synthetic pentadecapeptide studied extensively for its modulation of growth hormone receptor expression and angiogenic signaling in tissue repair research. One of the most-researched recovery compounds in preclinical literature.",
-    image: "/New Images/longevia-vial.webp",
+    image: "/new-images/longevia-vial.webp",
     link: "/shop/bpc-157-blend"
   },
   {
     title: "TB-500 (Thymosin Beta-4 Fragment)",
     desc: "A synthetic analogue of the naturally occurring Thymosin Beta-4 protein, studied for its role in actin upregulation, cellular migration, and connective tissue research assays. A core compound in recovery and tissue biology studies.",
-    image: "/New Images/longevia-vial.webp",
+    image: "/new-images/longevia-vial.webp",
     link: "/shop/tb-500"
   },
   {
     title: "GHK-Cu (Glycine-Histidine-Lysine Copper Complex)",
     desc: "A naturally occurring copper-binding tripeptide found in human plasma, extensively studied for its roles in tissue remodeling, collagen synthesis signaling, and antioxidant pathway research. A foundational compound in skin biology and cellular health research.",
-    image: "/New Images/longevia-vial.webp",
+    image: "/new-images/longevia-vial.webp",
     link: "/shop/ghk-cu"
   },
   {
     title: "Tirzepatide - Dual GIP/GLP-1 Receptor Agonist",
     desc: "A synthetic dual incretin mimetic studied for its simultaneous agonism of both GIP (glucose-dependent insulinotropic polypeptide) and GLP-1 receptors, with robust applications in glycemic control and metabolic research models.",
-    image: "/New Images/longevia-vial.webp",
+    image: "/new-images/longevia-vial.webp",
     link: "/shop/tirzepatide"
   },
   {
     title: "Semaglutide - GLP-1 Analogue Research Compound",
     desc: "A GLP-1 receptor agonist analogue studied extensively for its potent effects on appetite-regulating hormone pathways and energy homeostasis in metabolic research. One of the most widely referenced compounds in GLP-1 class receptor research.",
-    image: "/New Images/longevia-vial.webp",
+    image: "/new-images/longevia-vial.webp",
     link: "/shop/semaglutide"
   }
 ];
@@ -116,7 +116,7 @@ export default function AboutClient() {
       id: "01",
       title: "Retail Research Peptides - Single & Multi-Vial Orders",
       desc: "Our complete catalog of 24+ research-grade peptides available for immediate dispatch in single or multi-vial quantities. All retail orders include a lot-specific COA, ship from US-based facilities, and are available for standard or 2-day expedited delivery.",
-      image: "/New Images/three-flying-vials.webp"
+      image: "/new-images/three-flying-vials.webp"
     },
     {
       id: "02",
@@ -183,7 +183,7 @@ export default function AboutClient() {
                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
              >
                <Image 
-                 src="/Featured Images/about-page-hero.webp"
+                 src="/featured-images/about-page-hero.webp"
                  alt="Longevia Research — Silhouette of a researcher examining a high-purity laboratory sample"
                  fill 
                  className="object-cover object-[75%_center] md:object-center"
@@ -592,7 +592,7 @@ export default function AboutClient() {
                 className="absolute -left-[5%] md:left-[5%] top-[10%] w-[300px] md:w-[400px] h-[400px] md:h-[500px] opacity-[0.15] pointer-events-none"
                 style={{ willChange: 'transform' }}
               >
-                <Image src="/New Images/longevia-vial.webp" alt="Longevia Research — Peptide vial watermark representing high-purity ISO-certified laboratory synthesis" fill className="object-contain" />
+                <Image src="/new-images/longevia-vial.webp" alt="Longevia Research — Peptide vial watermark representing high-purity ISO-certified laboratory synthesis" fill className="object-contain" />
               </motion.div>
 
               {/* Floating Transparent Vial 2 */}
@@ -602,7 +602,7 @@ export default function AboutClient() {
                 className="absolute -right-[10%] md:-right-[5%] bottom-[5%] w-[400px] md:w-[500px] h-[500px] md:h-[600px] opacity-[0.1] pointer-events-none"
                 style={{ willChange: 'transform' }}
               >
-                <Image src="/New Images/longevia-vial.webp" alt="Longevia Research — Peptide vial watermark representing high-purity ISO-certified laboratory synthesis" fill className="object-contain" />
+                <Image src="/new-images/longevia-vial.webp" alt="Longevia Research — Peptide vial watermark representing high-purity ISO-certified laboratory synthesis" fill className="object-contain" />
               </motion.div>
 
               {/* Scientific Rings */}

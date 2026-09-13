@@ -14,6 +14,8 @@ import * as migration_20260524_203510_seed_updates from './20260524_203510_seed_
 import * as migration_20260603_202126_add_product_fields from './20260603_202126_add_product_fields';
 import * as migration_20260628_000000_add_is_finalized_to_orders from './20260628_000000_add_is_finalized_to_orders';
 import * as migration_20260628_010000_add_order_counters_table from './20260628_010000_add_order_counters_table';
+import * as migration_20260913_000000_add_authnet_bridge_payment_method from './20260913_000000_add_authnet_bridge_payment_method';
+import * as migration_20260913_010000_add_payment_methods_settings from './20260913_010000_add_payment_methods_settings';
 
 export const migrations = [
   {
@@ -95,5 +97,15 @@ export const migrations = [
     up: migration_20260628_010000_add_order_counters_table.up,
     down: migration_20260628_010000_add_order_counters_table.down,
     name: '20260628_010000_add_order_counters_table'
+  },
+  {
+    up: migration_20260913_000000_add_authnet_bridge_payment_method.up,
+    down: migration_20260913_000000_add_authnet_bridge_payment_method.down,
+    name: '20260913_000000_add_authnet_bridge_payment_method'
+  },
+  {
+    up: migration_20260913_010000_add_payment_methods_settings.up,
+    down: migration_20260913_010000_add_payment_methods_settings.down,
+    name: '20260913_010000_add_payment_methods_settings'
   },
 ];

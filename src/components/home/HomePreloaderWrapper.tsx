@@ -134,7 +134,7 @@ export function HomePreloaderWrapper({ children, isBot = false }: { children: Re
              style={{ opacity: 0, willChange: 'transform' }}
            >
              <Image 
-               src="/New Images/longevia-vial.webp"
+               src="/new-images/longevia-vial.webp"
                alt="Research-grade peptide vial loading animation - Longevia Research"
                fill
                className="object-contain"

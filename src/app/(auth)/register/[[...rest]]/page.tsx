@@ -64,7 +64,7 @@ export default function RegisterPage() {
         
         {/* Background Image */}
         <Image 
-          src="/New Images/vials-on-magazine.webp"
+          src="/new-images/vials-on-magazine.webp"
           alt="Longevia Research NAD+, Glow, and MOTS-C research peptide vials displayed on an open longevity-science magazine spread"
           fill
           className="object-cover object-center z-0"

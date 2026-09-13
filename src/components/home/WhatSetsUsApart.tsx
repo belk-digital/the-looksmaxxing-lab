@@ -18,13 +18,13 @@ const PILLARS = [
     title: "99%+ Purity Floor — Any Batch Below This Gets Discarded",
     description: "We enforce a non-negotiable 99% purity minimum across our entire catalog. Every single batch is independently tested by third-party laboratories using both HPLC chromatography and LC-MS mass spectrometry. If a batch fails to meet this threshold — for any reason — it is discarded immediately and never fulfilled.",
     icon: ShieldCheck,
-    image: "/New Images/three-flying-vials.webp"
+    image: "/new-images/three-flying-vials.webp"
   },
   {
     title: "Cold-Chain Logistics — Molecular Integrity, Guaranteed",
     description: "Peptides are structurally fragile molecules. Thermal degradation begins at room temperature and accelerates over time. We store all inventory in climate-controlled, medical-grade refrigeration and ship using validated cold-chain packaging specifically designed to maintain peptide integrity from our facility to your bench — regardless of transit conditions.",
     icon: Snowflake,
-    image: "/New Images/motsc-and-retatrutide-on-ice.webp"
+    image: "/new-images/motsc-and-retatrutide-on-ice.webp"
   }
 ]
 

@@ -18,17 +18,16 @@ Our non-negotiable commitment to quality rests on three pillars:
 
 ## Product Categories & Catalog
 
-We carry 30+ research compounds, including:
-- **Metabolic Research Peptides**: Tirzepatide, Retatrutide, Semaglutide
-- **Growth Hormone Secretagogues**: CJC-1295/Ipamorelin, Ipamorelin, Tesamorelin, Sermorelin, CJC-1295 No DAC, Tesamorelin/Ipamorelin
-- **Tissue Repair Peptides**: BPC-157, TB-500, BPC-157 + TB-500, GHK-Cu
-- **Longevity & Cellular Research**: Epithalon, NAD+, MOTS-C, Glutathione
-- **Neuropeptides**: Selank, Semax, Semax/Selank, Oxytocin
-- **Melanocortin Peptides**: Melanotan I, Melanotan II (MT-2)
-- **Anti-Inflammatory**: KPV, LL-37
-- **Reproductive Research**: Kisspeptin
+We carry the following research compounds:
+- **Metabolic Research Peptides**: GLP-3 (Rt)
+- **Growth Hormone Secretagogues**: Tesamorelin / Ipamorelin
+- **Longevity & Cellular Research**: Epithalon, NAD+, MOTS-C, Glutathione, Pinealon
+- **Neuropeptides**: Semax Spray
+- **Melanocortin Peptides**: MT-2 Spray
 - **Multi-Peptide Blends**: Glow Blend, KLOW Blend
-- **Lab Essentials**: Bacteriostatic Water (BAC Water)
+- **Lab Essentials**: Reconstitution Solution
+
+This catalog changes as compounds are added or retired — [https://www.longeviaresearch.com/shop](https://www.longeviaresearch.com/shop) is the authoritative, always-current list.
 
 ## Shipping & Fulfillment
 
@@ -56,8 +55,46 @@ Longevia Research operates an all-sales-final policy. Once an order ships, we do
 - **Certificates of Analysis (COA Library)**: [https://www.longeviaresearch.com/certificates](https://www.longeviaresearch.com/certificates)
 - **Affiliate Program**: [https://www.longeviaresearch.com/affiliates](https://www.longeviaresearch.com/affiliates)
 - **Research Journal**: [https://www.longeviaresearch.com/journal](https://www.longeviaresearch.com/journal)
-  - **Guide: How to Read a Peptide COA (HPLC & Mass Spec)**: [https://www.longeviaresearch.com/journal/peptide-coa-hplc-purity-testing-guide](https://www.longeviaresearch.com/journal/peptide-coa-hplc-purity-testing-guide)
-  - **Guide: Peptide Reconstitution & Storage**: [https://www.longeviaresearch.com/journal/peptide-reconstitution-storage-guide](https://www.longeviaresearch.com/journal/peptide-reconstitution-storage-guide)
+
+  **Dosage & Reconstitution Guides:**
+  - Tirzepatide Dosage and Reconstitution Research Guide: [https://www.longeviaresearch.com/journal/tirzepatide-dosage-reconstitution-research-guide](https://www.longeviaresearch.com/journal/tirzepatide-dosage-reconstitution-research-guide)
+  - Tesamorelin Dosage and Reconstitution Guide: [https://www.longeviaresearch.com/journal/tesamorelin-dosage-reconstitution-guide](https://www.longeviaresearch.com/journal/tesamorelin-dosage-reconstitution-guide)
+  - Semaglutide Reconstitution Guide: BAC Water Ratios Explained: [https://www.longeviaresearch.com/journal/semaglutide-reconstitution-bac-water-ratios](https://www.longeviaresearch.com/journal/semaglutide-reconstitution-bac-water-ratios)
+  - CJC-1295 and Ipamorelin Reconstitution Guide: [https://www.longeviaresearch.com/journal/cjc-1295-ipamorelin-reconstitution-guide](https://www.longeviaresearch.com/journal/cjc-1295-ipamorelin-reconstitution-guide)
+  - BPC-157 Dosage and Reconstitution Research Guide: [https://www.longeviaresearch.com/journal/bpc-157-dosage-reconstitution-research-guide](https://www.longeviaresearch.com/journal/bpc-157-dosage-reconstitution-research-guide)
+  - Pinealon Peptide Guide: Benefits, Dosage & Reconstitution: [https://www.longeviaresearch.com/journal/pinealon-peptide-guide-benefits-dosage-reconstitution](https://www.longeviaresearch.com/journal/pinealon-peptide-guide-benefits-dosage-reconstitution)
+  - Glutathione for Skin: Benefits, Reconstitution & Limitations: [https://www.longeviaresearch.com/journal/glutathione-for-skin-benefits-reconstitution-limitations](https://www.longeviaresearch.com/journal/glutathione-for-skin-benefits-reconstitution-limitations)
+  - Peptide Dosage Calculations: mg, mcg & mL Explained: [https://www.longeviaresearch.com/journal/peptide-dosage-calculations-mg-mcg-ml-explained](https://www.longeviaresearch.com/journal/peptide-dosage-calculations-mg-mcg-ml-explained)
+  - How Long Do Peptides Last After Reconstitution?: [https://www.longeviaresearch.com/journal/how-long-do-peptides-last-after-reconstitution](https://www.longeviaresearch.com/journal/how-long-do-peptides-last-after-reconstitution)
+  - Peptide Reconstitution & Storage Guide: Bacteriostatic Water, Shelf Life, and Cold-Chain Best Practices: [https://www.longeviaresearch.com/journal/peptide-reconstitution-storage-guide](https://www.longeviaresearch.com/journal/peptide-reconstitution-storage-guide)
+
+  **Peptide Research Guides & Comparisons:**
+  - Semax vs. Selank: Nootropic Research Peptide Comparison: [https://www.longeviaresearch.com/journal/semax-vs-selank-nootropic-peptide-comparison](https://www.longeviaresearch.com/journal/semax-vs-selank-nootropic-peptide-comparison)
+  - Melanotan II: Research Status, Legal Questions, and Safety Profile: [https://www.longeviaresearch.com/journal/melanotan-2-research-status-legal-safety-profile](https://www.longeviaresearch.com/journal/melanotan-2-research-status-legal-safety-profile)
+  - Peptide Side Effects: What Research Actually Shows: [https://www.longeviaresearch.com/journal/peptide-side-effects-what-research-shows](https://www.longeviaresearch.com/journal/peptide-side-effects-what-research-shows)
+  - Sermorelin Research Guide: Mechanism and GH Secretagogue Comparison: [https://www.longeviaresearch.com/journal/sermorelin-research-guide-mechanism-gh-secretagogue-comparison](https://www.longeviaresearch.com/journal/sermorelin-research-guide-mechanism-gh-secretagogue-comparison)
+  - Epithalon Research Guide: Telomeres, Longevity, and Regulatory Status: [https://www.longeviaresearch.com/journal/epithalon-telomeres-longevity-regulatory-status](https://www.longeviaresearch.com/journal/epithalon-telomeres-longevity-regulatory-status)
+  - Oxytocin Research: Mechanism and Social Bonding Pathways: [https://www.longeviaresearch.com/journal/oxytocin-research-mechanism-social-bonding-pathways](https://www.longeviaresearch.com/journal/oxytocin-research-mechanism-social-bonding-pathways)
+  - NAD+ Peptide Research: Mitochondrial Function, Cellular Repair, and the Sirtuin Pathway: [https://www.longeviaresearch.com/journal/nad-plus-peptide-mitochondrial-sirtuin-research-guide](https://www.longeviaresearch.com/journal/nad-plus-peptide-mitochondrial-sirtuin-research-guide)
+  - MOTS-C Peptide: Mitochondrial Signaling, Exercise Mimetic Research, and the AMPK Activation Pathway: [https://www.longeviaresearch.com/journal/mots-c-peptide-mitochondrial-exercise-mimetic-research](https://www.longeviaresearch.com/journal/mots-c-peptide-mitochondrial-exercise-mimetic-research)
+  - GLP-3 (Rt) Peptide: Complete Research Guide to the GLP-1/GIP/Glucagon Triple Agonist: [https://www.longeviaresearch.com/journal/glp-3-rt-peptide-triple-agonist-research-guide](https://www.longeviaresearch.com/journal/glp-3-rt-peptide-triple-agonist-research-guide)
+  - GLP-3 Peptide: Triple Receptor Agonism, Mechanism of Action, and What Researchers Need to Know in 2026: [https://www.longeviaresearch.com/journal/glp-3-peptide-triple-agonist-research-guide](https://www.longeviaresearch.com/journal/glp-3-peptide-triple-agonist-research-guide)
+  - Semaglutide vs. Tirzepatide vs. GLP-3 (Rt): A Head-to-Head Research Comparison: [https://www.longeviaresearch.com/journal/semaglutide-vs-tirzepatide-vs-glp-3-comparison](https://www.longeviaresearch.com/journal/semaglutide-vs-tirzepatide-vs-glp-3-comparison)
+  - Tesamorelin vs. GLP-3 (Rt): Comparing Visceral Fat Research Compounds: [https://www.longeviaresearch.com/journal/tesamorelin-vs-retatrutide-visceral-fat-research](https://www.longeviaresearch.com/journal/tesamorelin-vs-retatrutide-visceral-fat-research)
+  - CJC-1295 + Ipamorelin: Growth Hormone Axis Research for Muscle Recovery and Body Composition: [https://www.longeviaresearch.com/journal/cjc-1295-ipamorelin-muscle-recovery-research](https://www.longeviaresearch.com/journal/cjc-1295-ipamorelin-muscle-recovery-research)
+  - Kisspeptin-10 & MOTS-C: Research Peptides and the Female Hormonal-Metabolic Axis: [https://www.longeviaresearch.com/journal/kisspeptin-mots-c-hormonal-metabolic-research](https://www.longeviaresearch.com/journal/kisspeptin-mots-c-hormonal-metabolic-research)
+  - BPC-157 vs. TB-500: Analyzing Angiogenesis and Cellular Healing Mechanisms: [https://www.longeviaresearch.com/journal/bpc-157-tb-500-synergy](https://www.longeviaresearch.com/journal/bpc-157-tb-500-synergy)
+  - The Pharmacokinetics of GHK-Cu: Fibroblast Activation, Collagen Synthesis, and Clinical Implications: [https://www.longeviaresearch.com/journal/ghk-cu-pharmacokinetics](https://www.longeviaresearch.com/journal/ghk-cu-pharmacokinetics)
+  - Metabolic Peptides and Tissue Laxity: The Science Behind "GLP-1 Face": [https://www.longeviaresearch.com/journal/glp-1-tissue-laxity](https://www.longeviaresearch.com/journal/glp-1-tissue-laxity)
+
+  **Getting Started & Industry Guides:**
+  - What Is Peptide Research? A Beginner's Guide to the Science: [https://www.longeviaresearch.com/journal/what-is-peptide-research-beginners-guide](https://www.longeviaresearch.com/journal/what-is-peptide-research-beginners-guide)
+  - Why Peptide Purity Matters in Scientific Research: [https://www.longeviaresearch.com/journal/why-peptide-purity-matters-in-scientific-research](https://www.longeviaresearch.com/journal/why-peptide-purity-matters-in-scientific-research)
+  - Why Peptide Research Is Growing: From Molecular Biology to Modern Biotechnology: [https://www.longeviaresearch.com/journal/why-peptide-research-is-growing-in-biotechnology](https://www.longeviaresearch.com/journal/why-peptide-research-is-growing-in-biotechnology)
+  - Best Research Peptides to Know About in 2026: [https://www.longeviaresearch.com/journal/best-research-peptides-to-know-about-2026](https://www.longeviaresearch.com/journal/best-research-peptides-to-know-about-2026)
+  - The Future of Peptide Research: Emerging Trends Researchers Should Watch in 2026: [https://www.longeviaresearch.com/journal/peptide-research-trends-2026](https://www.longeviaresearch.com/journal/peptide-research-trends-2026)
+  - Guide: How to Read a Peptide Certificate of Analysis (COA, HPLC & Mass Spec): [https://www.longeviaresearch.com/journal/peptide-coa-hplc-purity-testing-guide](https://www.longeviaresearch.com/journal/peptide-coa-hplc-purity-testing-guide)
+
 - **FAQ**: [https://www.longeviaresearch.com/faq](https://www.longeviaresearch.com/faq)
 - **Contact Support**: [https://www.longeviaresearch.com/contact](https://www.longeviaresearch.com/contact)
 - **Terms & Conditions**: [https://www.longeviaresearch.com/terms](https://www.longeviaresearch.com/terms)

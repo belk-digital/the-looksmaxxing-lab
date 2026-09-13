@@ -122,7 +122,7 @@ export function AffiliatesLandingClient({ userStatus }: Props) {
                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
              >
                <Image 
-                 src="/New Images/hero-image-longevia.webp"
+                 src="/new-images/hero-image-longevia.webp"
                  alt="Research-grade peptide vial surrounded by a digital DNA helix and molecular network overlay, representing Longevia Research affiliate research program"
                  fill 
                  className="object-cover object-center"

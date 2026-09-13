@@ -44,7 +44,7 @@ export function NewsletterSection() {
                 className="relative w-full h-full"
               >
                 <Image 
-                  src="/New Images/longevia-vial.webp" 
+                  src="/new-images/longevia-vial.webp" 
                   alt="Longevia Research — High-purity laboratory peptide vial" 
                   fill 
                   className="object-contain drop-shadow-2xl" 
@@ -60,7 +60,7 @@ export function NewsletterSection() {
                 className="relative w-full h-full"
               >
                 <Image 
-                  src="/New Images/longevia-vial.webp" 
+                  src="/new-images/longevia-vial.webp" 
                   alt="Longevia Research Research Peptide Vial" 
                   fill 
                   className="object-contain drop-shadow-2xl" 

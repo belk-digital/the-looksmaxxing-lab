@@ -77,7 +77,7 @@ function resolveProductImage(product: any): string {
   if (topLevel) return topLevel
   const variantWithImage = product.variants?.find((v: any) => v.image?.url)
   if (variantWithImage) return variantWithImage.image.url
-  return '/New Images/glow-and-nad-bg-image.webp'
+  return '/new-images/glow-and-nad-bg-image.webp'
 }
 
 function toShopProduct(product: any): ShopProduct {

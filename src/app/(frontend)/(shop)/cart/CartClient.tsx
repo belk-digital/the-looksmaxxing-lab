@@ -429,12 +429,21 @@ export function CartClient() {
                   {isLoadingData ? <Loader2 size={16} className="animate-spin" /> : (finalShipping === 0 ? 'Free' : `$${finalShipping.toFixed(2)}`)}
                 </span>
               </div>
-              <div className="flex justify-between items-center text-ink/80">
-                <span className="font-light">Processing Fee</span>
-                <span className="font-medium">
-                  {isLoadingData ? <Loader2 size={16} className="animate-spin" /> : `$${taxAmount.toFixed(2)}`}
-                </span>
-              </div>
+              <AnimatePresence>
+                {(isLoadingData || taxAmount > 0) && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="flex justify-between items-center text-ink/80 overflow-hidden"
+                  >
+                    <span className="font-light">Processing Fee</span>
+                    <span className="font-medium">
+                      {isLoadingData ? <Loader2 size={16} className="animate-spin" /> : `$${taxAmount.toFixed(2)}`}
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             <div className="flex justify-between items-end mb-10">

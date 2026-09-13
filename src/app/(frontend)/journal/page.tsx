@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: 'Science Journal',
     description: 'Documented purity, detailed guidelines, and emerging studies in advanced peptide science.',
     url: `${siteUrl}/journal`,
-    images: [{ url: '/New Images/glow-and-nad-bg-image.webp', width: 1200, height: 630, alt: 'Science Journal' }],
+    images: [{ url: '/new-images/glow-and-nad-bg-image.webp', width: 1200, height: 630, alt: 'Science Journal' }],
   }
 }
 

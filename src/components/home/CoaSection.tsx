@@ -193,7 +193,7 @@ export function CoaSection() {
               className="relative w-[140px] sm:w-[180px] lg:w-[360px] xl:w-[400px] aspect-[1/2.2] z-20 pointer-events-none perspective-[1000px]"
             >
                <Image 
-                 src="/New Images/longevia-vial.webp"
+                 src="/new-images/longevia-vial.webp"
                  alt="Single precision research peptide vial with Certificate of Analysis document — Longevia Research"
                  fill
                  className="object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.4)]"

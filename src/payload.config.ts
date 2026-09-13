@@ -33,6 +33,7 @@ import { PayoutRequests } from './collections/PayoutRequests'
 import { ProcessingFees } from './collections/ProcessingFees'
 import { Trash } from './collections/Trash'
 import { AffiliateSettings } from './globals/AffiliateSettings'
+import { PaymentMethodsSettings } from './globals/PaymentMethodsSettings'
 import { OrderCounters } from './collections/OrderCounters'
 
 const filename = fileURLToPath(import.meta.url)
@@ -50,6 +51,7 @@ export default buildConfig({
   },
   globals: [
     AffiliateSettings,
+    PaymentMethodsSettings,
   ],
   collections: [
     Trash,

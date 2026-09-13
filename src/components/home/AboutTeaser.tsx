@@ -49,7 +49,7 @@ export function AboutTeaser() {
           className="absolute top-[-10%] left-[-30%] sm:left-[-15%] md:left-[-5%] w-[80vw] max-w-[600px] aspect-[1/2.2] z-0 pointer-events-none opacity-40 rotate-12 transform-gpu"
         >
           <Image 
-            src="/New Images/longevia-vial.webp"
+            src="/new-images/longevia-vial.webp"
             alt="Close-up of lyophilized research peptide vial with focus blur - Longevia Research"
             fill
             className="object-contain blur-xl opacity-20 transform-gpu"
@@ -117,7 +117,7 @@ export function AboutTeaser() {
           className="absolute bottom-[-20%] right-[-25%] md:right-[-15%] xl:right-[-10%] 2xl:right-[-5%] w-[30vw] max-w-[200px] md:max-w-[250px] 2xl:max-w-[350px] aspect-[1/2.2] z-20 pointer-events-none drop-shadow-2xl -rotate-6 transform-gpu"
         >
           <Image 
-            src="/New Images/longevia-vial.webp"
+            src="/new-images/longevia-vial.webp"
             alt="High purity research peptide vial ready for reconstitution - Longevia Research"
             fill
             className="object-contain drop-shadow-xl transform-gpu"

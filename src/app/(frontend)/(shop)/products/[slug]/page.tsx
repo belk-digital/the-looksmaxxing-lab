@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description,
       images: imageUrl
         ? [{ url: imageUrl, width: 1200, height: 630, alt: `${product.name} — Longevia Research` }]
-        : [{ url: '/New Images/glow-and-nad-bg-image.webp', width: 1200, height: 630, alt: 'Longevia Research' }],
+        : [{ url: '/new-images/glow-and-nad-bg-image.webp', width: 1200, height: 630, alt: 'Longevia Research' }],
       type: 'website',
       url: productUrl,
       siteName: 'Longevia Research',
@@ -70,7 +70,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       card: 'summary_large_image',
       title,
       description,
-      images: imageUrl ? [imageUrl] : ['/New Images/glow-and-nad-bg-image.webp'],
+      images: imageUrl ? [imageUrl] : ['/new-images/glow-and-nad-bg-image.webp'],
     },
     other: {
       'og:type': 'product',

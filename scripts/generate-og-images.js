@@ -52,7 +52,7 @@ const mappings = [
   }
 ];
 
-const IMAGES_DIR = path.join(process.cwd(), 'public', 'New Images');
+const IMAGES_DIR = path.join(process.cwd(), 'public', 'new-images');
 const OUT_DIR = path.join(process.cwd(), 'public', 'og');
 
 async function generate() {

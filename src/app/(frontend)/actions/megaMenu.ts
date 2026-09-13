@@ -36,7 +36,7 @@ export async function getMegaMenuData() {
         slug: prod.slug,
         image: typeof prod.images?.[0]?.image === 'object' && prod.images[0].image?.url 
           ? prod.images[0].image.url 
-          : '/New Images/longevia-vial.webp',
+          : '/new-images/longevia-vial.webp',
         price: prod.price
       }))
     })

@@ -193,6 +193,7 @@ export const Orders: CollectionConfig = {
         { label: 'Credit / Debit Card (Manual Link)', value: 'stripe_link' },
         { label: 'Apple Pay (Manual)', value: 'apple_pay' },
         { label: 'Zelle (Manual)', value: 'zelle' },
+        { label: 'Credit Card (via Longevia Beauty)', value: 'authnet_bridge' },
       ],
       required: true,
       defaultValue: 'stripe',

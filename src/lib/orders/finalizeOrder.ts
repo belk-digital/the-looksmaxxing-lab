@@ -47,6 +47,10 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
           paymentStatus: 'captured',
         }
       })
+      // Keep the in-memory copy in sync so everything below (the invoice email in
+      // particular) reflects the update instead of the stale pre-finalization values.
+      order.status = 'paid'
+      order.paymentStatus = 'captured'
     }
 
     // 2. Decrement Inventory

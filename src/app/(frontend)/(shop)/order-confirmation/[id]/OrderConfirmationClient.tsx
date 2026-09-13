@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -8,6 +8,7 @@ import { Check, Printer } from 'lucide-react'
 import { Container } from '@/components/ui/container'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { buttonVariants } from '@/components/ui/button'
+import { useCartStore } from '@/lib/cart/store'
 
 type OrderItem = {
   id: string
@@ -43,6 +44,15 @@ type OrderData = {
 }
 
 export function OrderConfirmationClient({ order }: { order: OrderData }) {
+  // The cross-site payment bridge deliberately doesn't clear the cart before redirecting
+  // to longeviabeauty.com (so an abandoned/back-buttoned payment leaves the cart intact) -
+  // it's cleared here instead, once the order is confirmed to have actually been paid.
+  useEffect(() => {
+    if (order.paymentMethod === 'authnet_bridge' && order.paymentStatus === 'captured') {
+      useCartStore.getState().clear()
+    }
+  }, [order.paymentMethod, order.paymentStatus])
+
   return (
     <>
       <style dangerouslySetInnerHTML={{__html: `
@@ -80,6 +90,17 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
             </p>
           </FadeUp>
         </div>
+
+        {order.paymentMethod === 'authnet_bridge' && order.paymentStatus !== 'captured' && (
+          <FadeUp delay={0.15} className="w-full max-w-2xl mb-10 print:hidden">
+            <div className="bg-blue-50 border border-blue-200 p-6 rounded-2xl flex flex-col gap-2 text-center shadow-sm">
+              <h2 className="text-lg font-bold text-blue-900">Confirming Your Payment</h2>
+              <p className="text-sm text-blue-800">
+                We're still confirming your card payment with our payment partner. This page will update automatically once it's done — no need to pay again. If this doesn't resolve in a few minutes, please <a href="mailto:support@longeviaresearch.com" className="underline font-medium">contact support</a> with your order number (#{order.id}).
+              </p>
+            </div>
+          </FadeUp>
+        )}
 
         {(order.paymentMethod === 'apple_pay' || order.paymentMethod === 'zelle' || order.paymentMethod === 'stripe_link') && order.paymentStatus === 'unpaid' && (
           <FadeUp delay={0.15} className="w-full max-w-2xl mb-10 print:hidden">
@@ -167,7 +188,7 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
                     </div>
                     <div>
                       <p className="text-ink/40 text-[10px] sm:text-xs font-medium uppercase tracking-wider mb-1">Payment Method</p>
-                      <p className="font-bold text-ink">{order.paymentMethod === 'stripe' ? 'Credit / Debit Card' : order.paymentMethod === 'stripe_link' ? 'Credit / Debit Card' : order.paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'}</p>
+                      <p className="font-bold text-ink">{order.paymentMethod === 'stripe' || order.paymentMethod === 'stripe_link' ? 'Credit / Debit Card' : order.paymentMethod === 'authnet_bridge' ? 'Credit / Debit Card' : order.paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Zelle'}</p>
                     </div>
                     <div>
                       <p className="text-ink/40 text-[10px] sm:text-xs font-medium uppercase tracking-wider mb-1">Payment Status</p>

@@ -37,6 +37,27 @@ export async function getShippingMethods() {
   ]
 }
 
+export async function getPaymentMethodsSettings() {
+  const payload = await getPayload({ config: configPromise })
+  const settings = await payload.findGlobal({ slug: 'payment-methods-settings' })
+
+  if (settings?.methods && settings.methods.length > 0) {
+    return settings.methods.filter((m: any) => m.isActive)
+  }
+
+  // Fallback if the global hasn't been saved yet
+  return [
+    { methodId: 'stripe', label: 'Credit / Debit Card', description: '', isActive: true },
+    { methodId: 'zelle', label: 'Zelle', description: '', isActive: true },
+    {
+      methodId: 'authnet_bridge',
+      label: 'Credit Card (via Longevia Beauty)',
+      description: "You'll be securely redirected to our partner checkout at Longevia Beauty to complete your card payment, then brought back here automatically once it's done.",
+      isActive: true,
+    },
+  ]
+}
+
 export async function getActiveProcessingFees() {
   const payload = await getPayload({ config: configPromise })
   const fees = await payload.find({
@@ -407,7 +428,7 @@ export async function createPayloadOrder(
     })
 
     // Update Stripe PaymentIntent with the Order ID (unless it's a free order)
-    if (paymentIntentId && paymentIntentId !== 'free_order' && paymentIntentId !== 'manual') {
+    if (paymentIntentId && paymentIntentId !== 'free_order' && paymentIntentId !== 'manual' && paymentIntentId !== 'authnet_bridge') {
        await stripe.paymentIntents.update(paymentIntentId, {
           metadata: {
              orderId: String(order.id)
@@ -430,6 +451,9 @@ export async function createPayloadOrder(
           clickId: (await cookies()).get('affiliate_click_id')?.value,
        }, true)
     }
+    // paymentIntentId === 'authnet_bridge': leave the order pending/unpaid here.
+    // It gets finalized later by the cross-site-payment webhook once longeviabeauty.com
+    // confirms the Authorize.net charge (see createCrossSitePaymentRedirect below).
 
     // Set a cookie to authorize the order confirmation page
     const cookieStore = await cookies()
@@ -465,6 +489,84 @@ export async function syncPaymentStatus(paymentIntentId: string, orderId: string
     return { success: false, status: paymentIntent.status }
   } catch (error: any) {
     console.error('Failed to sync payment status:', error)
+    return { error: error.message }
+  }
+}
+
+function signCrossSitePayload(encodedPayload: string): string {
+  const secret = process.env.CROSS_SITE_PAYMENT_SECRET
+  if (!secret) {
+    throw new Error('CROSS_SITE_PAYMENT_SECRET is not configured')
+  }
+  return crypto.createHmac('sha256', secret).update(encodedPayload).digest('hex')
+}
+
+// Hands off a pending 'authnet_bridge' order to longeviabeauty.com to be paid via the
+// Authorize.net gateway already configured there (WooCommerce). The order is only
+// finalized later, when the cross-site-payment webhook confirms the charge succeeded.
+export async function createCrossSitePaymentRedirect(orderId: string) {
+  try {
+    const bridgeUrl = process.env.LONGEVIA_BEAUTY_BRIDGE_URL
+    if (!bridgeUrl) {
+      return { error: 'Cross-site payment is not configured' }
+    }
+
+    const payload = await getPayload({ config: configPromise })
+    const order = await payload.findByID({
+      collection: 'orders',
+      id: isNaN(Number(orderId)) ? orderId : Number(orderId),
+      depth: 0,
+    })
+
+    if (!order) {
+      return { error: 'Order not found' }
+    }
+    if (order.paymentMethod !== 'authnet_bridge') {
+      return { error: 'Order is not set up for this payment method' }
+    }
+    if (order.paymentStatus === 'captured') {
+      return { error: 'Order is already paid' }
+    }
+
+    const amountCents = Math.round((order.total || 0) * 100)
+    if (amountCents < 50) {
+      return { error: 'Order total too low to process' }
+    }
+
+    const ownerEmail = typeof order.owner === 'object' && order.owner !== null ? order.owner.email : undefined
+    const appUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com'
+    const cookieStore = await cookies()
+
+    const body = {
+      orderId: String(order.id),
+      orderNumber: order.orderNumber,
+      amountCents,
+      currency: 'usd',
+      email: order.guestEmail || ownerEmail || '',
+      firstName: order.customerFirstName || '',
+      lastName: order.customerLastName || '',
+      returnUrl: `${appUrl}/order-confirmation/${order.id}`,
+      cancelUrl: `${appUrl}/checkout`,
+      // Passed through opaquely; the WordPress bridge must echo these back unchanged
+      // in the confirmation webhook so affiliate attribution can still be applied.
+      affiliateId: cookieStore.get('affiliate_ref')?.value || null,
+      clickId: cookieStore.get('affiliate_click_id')?.value || null,
+      nonce: crypto.randomBytes(16).toString('hex'),
+      ts: Date.now(),
+    }
+
+    // Sign one opaque, base64url-encoded blob rather than the object itself.
+    // WordPress receives it as separate POST fields and re-serializing form-decoded
+    // strings back into JSON there wouldn't reliably reproduce the exact bytes we
+    // hashed here (number vs. string types, key order) — so the signed material has
+    // to travel as a single untouched string instead of being reconstructed on the
+    // other end.
+    const encodedPayload = Buffer.from(JSON.stringify(body)).toString('base64url')
+    const sig = signCrossSitePayload(encodedPayload)
+
+    return { redirectUrl: bridgeUrl, fields: { payload: encodedPayload, sig } }
+  } catch (error: any) {
+    console.error('Failed to create cross-site payment redirect:', error)
     return { error: error.message }
   }
 }

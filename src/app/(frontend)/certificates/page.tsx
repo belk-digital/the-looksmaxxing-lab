@@ -220,7 +220,7 @@ export default function CertificatesPage() {
             <FadeUp>
               <div className="relative w-full aspect-square md:aspect-[4/3] rounded-sm overflow-hidden">
                 <Image 
-                  src="/New Images/glow-and-nad-bg-image.webp"
+                  src="/new-images/glow-and-nad-bg-image.webp"
                   alt="TB-500 (Thymosin Beta-4) research peptide vial splashing through water, ≥98% purity research-grade compound from Longevia Research"
                   fill 
                   className="object-cover"

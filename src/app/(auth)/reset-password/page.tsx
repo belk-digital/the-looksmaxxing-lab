@@ -127,7 +127,7 @@ export default function ResetPasswordPage() {
       <div className="w-full lg:w-[45%] relative min-h-[30vh] lg:min-h-screen order-first lg:order-none flex flex-col justify-between p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-gray-100 overflow-hidden">
         {/* Background Image */}
         <Image 
-          src="/New Images/vials-on-magazine.webp"
+          src="/new-images/vials-on-magazine.webp"
           alt="Longevia Research"
           fill
           className="object-cover object-center z-0"

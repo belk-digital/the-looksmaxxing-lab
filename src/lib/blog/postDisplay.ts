@@ -1,6 +1,6 @@
 import { encodeImageUrl } from '@/lib/utils'
 
-export const FALLBACK_BLOG_IMAGE = '/New Images/glow-and-nad-bg-image.webp'
+export const FALLBACK_BLOG_IMAGE = '/new-images/glow-and-nad-bg-image.webp'
 
 export function getFeaturedImageUrl(post: any): string {
   if (post.featuredImage && typeof post.featuredImage === 'object' && post.featuredImage.url) {

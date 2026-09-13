@@ -37,12 +37,12 @@ const MagneticButton = ({ children, className, variant = "default", size = "defa
 
 const slides = [
   {
-    image: '/New Images/longevia-hero.webp',
+    image: '/new-images/longevia-hero.webp',
     alt: 'Longevia Research — Premium US-Synthesized Research Peptides',
     desktopBgClass: 'bg-[#F3F4F6]', // Light gray to match the image background
   },
   {
-    image: '/New Images/motsc-and-retatrutide-on-ice.webp',
+    image: '/new-images/motsc-and-retatrutide-on-ice.webp',
     alt: 'Longevia Research — MOTS-c and Retatrutide Research Peptides on Ice',
     desktopBgClass: 'bg-[#F9FAFB]', // Slightly different light gray
   }

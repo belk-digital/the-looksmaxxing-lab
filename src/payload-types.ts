@@ -137,9 +137,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     'affiliate-settings': AffiliateSetting;
+    'payment-methods-settings': PaymentMethodsSetting;
   };
   globalsSelect: {
     'affiliate-settings': AffiliateSettingsSelect<false> | AffiliateSettingsSelect<true>;
+    'payment-methods-settings': PaymentMethodsSettingsSelect<false> | PaymentMethodsSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -671,7 +673,7 @@ export interface Order {
     country?: string | null;
   };
   status: 'pending' | 'paid' | 'fulfilled' | 'shipped' | 'completed' | 'refunded' | 'cancelled';
-  paymentMethod: 'stripe' | 'stripe_link' | 'apple_pay' | 'zelle';
+  paymentMethod: 'stripe' | 'stripe_link' | 'apple_pay' | 'zelle' | 'authnet_bridge';
   paymentStatus: 'unpaid' | 'authorized' | 'captured' | 'refunded';
   fulfillmentStatus: 'unfulfilled' | 'partial' | 'fulfilled';
   /**
@@ -2277,6 +2279,41 @@ export interface AffiliateSetting {
   createdAt?: string | null;
 }
 /**
+ * Enable/disable payment methods, drag to reorder, and edit their title/description shown at checkout.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payment-methods-settings".
+ */
+export interface PaymentMethodsSetting {
+  id: number;
+  /**
+   * Drag rows to reorder how they appear at checkout.
+   */
+  methods?:
+    | {
+        /**
+         * Which payment method this entry controls. This is tied to real checkout logic, so only these three are selectable.
+         */
+        methodId: 'stripe' | 'zelle' | 'authnet_bridge';
+        /**
+         * Shown as the option's name at checkout.
+         */
+        label: string;
+        /**
+         * Shown when this method is selected. For Zelle this is an optional intro line shown above the existing step-by-step instructions. Not shown for Stripe (its own card form covers that space).
+         */
+        description?: string | null;
+        /**
+         * If disabled, this method is hidden from checkout entirely.
+         */
+        isActive?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "affiliate-settings_select".
  */
@@ -2287,6 +2324,24 @@ export interface AffiliateSettingsSelect<T extends boolean = true> {
   defaultCookieDurationDays?: T;
   defaultPendingPeriodDays?: T;
   defaultMinimumPayoutThreshold?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payment-methods-settings_select".
+ */
+export interface PaymentMethodsSettingsSelect<T extends boolean = true> {
+  methods?:
+    | T
+    | {
+        methodId?: T;
+        label?: T;
+        description?: T;
+        isActive?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

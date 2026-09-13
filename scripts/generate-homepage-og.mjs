@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import sharp from 'sharp';
 
-const bgPath = path.join(process.cwd(), 'public', 'New Images', 'longevia-hero-landscape.png');
+const bgPath = path.join(process.cwd(), 'public', 'new-images', 'longevia-hero-landscape.png');
 
 const svg = `
 <svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">

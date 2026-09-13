@@ -5,55 +5,55 @@ import sharp from 'sharp';
 const configs = [
   {
     name: 'og-home.png',
-    bg: 'public/Featured Images/vials-on-magazine.webp',
+    bg: 'public/featured-images/vials-on-magazine.webp',
     headline: 'The Looksmaxxing Lab',
     subtext: 'Research-Grade Peptides · COA-Verified · ≥99% HPLC Purity'
   },
   {
     name: 'og-shop.png',
-    bg: 'public/Featured Images/three-floating-vials.webp',
+    bg: 'public/featured-images/three-floating-vials.webp',
     headline: 'Shop Research Peptides',
     subtext: '30+ COA-Verified Compounds · ≥99% Purity · US Based'
   },
   {
     name: 'og-about.png',
-    bg: 'public/Featured Images/us-based-synthesis.webp',
+    bg: 'public/featured-images/us-based-synthesis.webp',
     headline: 'About The Looksmaxxing Lab',
     subtext: 'US Research Peptide Supplier · Founded 2024'
   },
   {
     name: 'og-faq.png',
-    bg: 'public/Featured Images/scientist-at-microscope.webp',
+    bg: 'public/featured-images/scientist-at-microscope.webp',
     headline: 'Research Peptide FAQ',
     subtext: 'Purity Standards · Ordering · Storage · COA Verification'
   },
   {
     name: 'og-contact.png',
-    bg: 'public/Featured Images/clear-dropper-side-profile.webp',
+    bg: 'public/featured-images/clear-dropper-side-profile.webp',
     headline: 'Contact Us',
     subtext: 'Research Peptide Support · Fast Response Times'
   },
   {
     name: 'og-certificates.png',
-    bg: 'public/Featured Images/nad-retatrutide-vials-on-ice.webp',
+    bg: 'public/featured-images/nad-retatrutide-vials-on-ice.webp',
     headline: 'Certificates of Analysis',
     subtext: 'Third-Party Lab Verified · ≥99% HPLC Purity · Batch Traceable'
   },
   {
     name: 'og-journal.png',
-    bg: 'public/Featured Images/white-blue-dna-helix.webp',
+    bg: 'public/featured-images/white-blue-dna-helix.webp',
     headline: 'Research Journal',
     subtext: 'Peptide Science · Lab Insights · Compound Guides'
   },
   {
     name: 'og-calculator.png',
-    bg: 'public/Featured Images/glass-dna-strand.webp',
+    bg: 'public/featured-images/glass-dna-strand.webp',
     headline: 'Peptide Reconstitution Calculator',
     subtext: 'Free Tool · Calculate Your Research Doses'
   },
   {
     name: 'og-affiliates.png',
-    bg: 'public/Featured Images/affiliates-hero.webp',
+    bg: 'public/featured-images/affiliates-hero.webp',
     headline: 'Affiliate Program',
     subtext: 'Earn 15% Commission · Real-Time Tracking · Fast Payouts'
   }

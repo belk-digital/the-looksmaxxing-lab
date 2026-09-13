@@ -17,7 +17,7 @@ import { useSession } from 'next-auth/react'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 import { StripeCheckoutForm } from './StripeCheckoutForm'
-import { createPaymentIntent, getShippingMethods } from './actions'
+import { createPaymentIntent, getShippingMethods, getPaymentMethodsSettings } from './actions'
 import { Space_Grotesk } from 'next/font/google'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
@@ -130,7 +130,10 @@ export function CheckoutClient() {
   const [availableShippingMethods, setAvailableShippingMethods] = useState<any[]>([])
   const [shippingMethod, setShippingMethod] = useState<string>('')
   const [activeFees, setActiveFees] = useState<any[]>([])
-  
+
+  // Payment Method State (enabled/ordered/labeled from Payload CMS)
+  const [availablePaymentMethods, setAvailablePaymentMethods] = useState<any[]>([])
+
   // Fetch data
   useEffect(() => {
     getShippingMethods().then(methods => {
@@ -139,7 +142,11 @@ export function CheckoutClient() {
         setShippingMethod(methods[0].method)
       }
     })
-    
+
+    getPaymentMethodsSettings().then(methods => {
+      setAvailablePaymentMethods(methods)
+    })
+
     // Fetch processing fees from generic /api to avoid complex server actions import issues
     fetch('/api/processing-fees')
       .then(res => res.json())
@@ -155,7 +162,7 @@ export function CheckoutClient() {
   const [couponCode, setCouponCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; freeShipping: boolean; description: string } | null>(null)
   const [isVerifyingCoupon, setIsVerifyingCoupon] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'stripe_link' | 'apple_pay' | 'zelle'>('zelle')
+  const [paymentMethod, setPaymentMethod] = useState<string>('')
 
   // Order Calculations
   const subtotal = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
@@ -187,6 +194,19 @@ export function CheckoutClient() {
       prevSubtotal.current = subtotal
     }
   }, [subtotal, visibleShippingMethods, shippingMethod])
+
+  // Default to the first active CMS-configured payment method, and correct away from
+  // one that's since been disabled/removed (e.g. an admin toggled it off mid-session).
+  useEffect(() => {
+    if (availablePaymentMethods.length > 0) {
+      const isCurrentValid = availablePaymentMethods.some((m: any) => m.methodId === paymentMethod)
+      if (!isCurrentValid) {
+        setPaymentMethod(availablePaymentMethods[0].methodId)
+      }
+    }
+  }, [availablePaymentMethods, paymentMethod])
+
+  const currentPaymentMethodConfig = availablePaymentMethods.find((m: any) => m.methodId === paymentMethod)
 
   const selectedMethodObj = visibleShippingMethods.find(m => m.method === shippingMethod) || visibleShippingMethods[0]
   const shippingCost = (selectedMethodObj?.price || 0) / 100
@@ -341,6 +361,66 @@ export function CheckoutClient() {
       toast.success("Order Placed! Redirecting...")
       useCartStore.getState().clear()
       window.location.href = `/order-confirmation/${orderRes.orderId}`
+    } catch (e: any) {
+      toast.error('An unexpected error occurred.')
+      setIsProcessing(false)
+    }
+  }
+
+  const handleCrossSiteCheckout = async () => {
+    if (!formData.email || !formData.firstName || !formData.address || !formData.city || !formData.state || !formData.zip) {
+      toast.error('Please fill out all required shipping fields before completing your order.')
+      return
+    }
+
+    setIsProcessing(true)
+
+    try {
+      const { createPayloadOrder, createCrossSitePaymentRedirect } = await import('./actions')
+      const orderRes = await createPayloadOrder(
+        items, shippingMethod, appliedCoupon?.code, isRedeemingPoints,
+        { ...formData, email: user?.email || formData.email },
+        'authnet_bridge',
+        user?.email as string,
+        paymentMethod
+      )
+
+      if (orderRes.error || !orderRes.orderId) {
+        toast.error(orderRes.error || 'Failed to initialize order in database.')
+        if ((orderRes as any).priceChanged && (orderRes as any).updatedItems) {
+          useCartStore.getState().setItems((orderRes as any).updatedItems)
+        }
+        setIsProcessing(false)
+        return
+      }
+
+      const redirectRes: any = await createCrossSitePaymentRedirect(orderRes.orderId)
+      if (redirectRes.error || !redirectRes.redirectUrl || !redirectRes.fields) {
+        toast.error(redirectRes.error || 'Failed to start payment. Please try again.')
+        setIsProcessing(false)
+        return
+      }
+
+      // Deliberately not clearing the cart here (unlike the other payment methods above):
+      // the customer hasn't paid yet at this point, they're only about to be redirected
+      // off-site to pay. If they abandon payment there or hit Back, they should land back
+      // on an intact cart, not an empty one. It's cleared instead on order-confirmation,
+      // once the order is actually confirmed paid.
+
+      // POST the signed payload via an auto-submitting form so the amount/customer
+      // details aren't left sitting in a GET query string (server logs, browser history).
+      const form = document.createElement('form')
+      form.method = 'POST'
+      form.action = redirectRes.redirectUrl
+      Object.entries(redirectRes.fields).forEach(([key, value]) => {
+        const input = document.createElement('input')
+        input.type = 'hidden'
+        input.name = key
+        input.value = String(value ?? '')
+        form.appendChild(input)
+      })
+      document.body.appendChild(form)
+      form.submit()
     } catch (e: any) {
       toast.error('An unexpected error occurred.')
       setIsProcessing(false)
@@ -544,10 +624,19 @@ export function CheckoutClient() {
                       <span>Shipping {selectedMethodObj?.method ? `(${selectedMethodObj.method})` : ''}</span>
                       <span className="text-ink font-bold">{finalShipping === 0 ? 'Free' : `$${finalShipping.toFixed(2)}`}</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm font-medium text-ink/70">
-                      <span>Processing Fee {activeFees.find((f: any) => f.type === 'percentage') ? `(${activeFees.find((f: any) => f.type === 'percentage').amount}%)` : ''}</span>
-                      <span className="text-ink font-bold">${processingFeeAmount.toFixed(2)}</span>
-                    </div>
+                    <AnimatePresence>
+                      {processingFeeAmount > 0 && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="flex justify-between items-center text-sm font-medium text-ink/70 overflow-hidden"
+                        >
+                          <span>Processing Fee {activeFees.find((f: any) => f.type === 'percentage') ? `(${activeFees.find((f: any) => f.type === 'percentage').amount}%)` : ''}</span>
+                          <span className="text-ink font-bold">${processingFeeAmount.toFixed(2)}</span>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
 
                   <div className="w-full h-px bg-ink/5" />
@@ -773,18 +862,15 @@ export function CheckoutClient() {
                 <p className="text-xs font-medium text-ink/50 mb-2 flex items-center gap-1.5"><Lock size={12} /> All transactions are 256-bit encrypted and secure.</p>
                 
                 <div className="flex flex-col gap-3 mb-4">
-                  {[
-                    // { id: 'stripe_link', label: 'Credit / Debit Card' },
-                    { id: 'zelle', label: 'Zelle' },
-                  ].map((method) => (
-                    <label key={method.id} className={`flex items-center gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${paymentMethod === method.id ? 'border-ink bg-ink/5' : 'border-slate-100 bg-white hover:border-ink/30'}`}>
-                      <input 
-                        type="radio" 
-                        name="paymentMethod" 
-                        value={method.id} 
-                        checked={paymentMethod === method.id} 
-                        onChange={() => setPaymentMethod(method.id as 'stripe' | 'stripe_link' | 'apple_pay' | 'zelle')}
-                        className="w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0" 
+                  {availablePaymentMethods.map((method: any) => (
+                    <label key={method.methodId} className={`flex items-center gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${paymentMethod === method.methodId ? 'border-ink bg-ink/5' : 'border-slate-100 bg-white hover:border-ink/30'}`}>
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value={method.methodId}
+                        checked={paymentMethod === method.methodId}
+                        onChange={() => setPaymentMethod(method.methodId)}
+                        className="w-4 h-4 accent-black text-ink border-ink/20 focus:ring-ink focus:ring-offset-0"
                       />
                       <span className="text-sm font-bold text-ink">{method.label}</span>
                     </label>
@@ -821,11 +907,41 @@ export function CheckoutClient() {
                       <span className="text-sm font-bold text-ink/40">Initializing secure checkout...</span>
                     </div>
                   )
+                ) : paymentMethod === 'authnet_bridge' ? (
+                  <div className="w-full relative overflow-hidden bg-white border border-ink/10 rounded-3xl flex flex-col items-center gap-5 sm:gap-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] text-center p-6 sm:p-10">
+                    <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-white -z-10" />
+
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-3xl bg-ink/5 flex items-center justify-center text-ink/80 mb-1 sm:mb-2 ring-1 ring-inset ring-ink/10 shadow-sm">
+                      <Wallet size={28} strokeWidth={1.5} className="sm:w-8 sm:h-8 w-7 h-7" />
+                    </div>
+
+                    <div className="flex flex-col gap-3 sm:gap-4 items-center max-w-md w-full">
+                      <h3 className="text-xl sm:text-2xl font-display font-bold text-ink">
+                        Pay with Credit Card
+                      </h3>
+
+                      <div className="bg-[#fafafa] border border-ink/5 rounded-2xl p-4 sm:p-6 text-left w-full mt-1 sm:mt-2">
+                        <p className="text-sm text-ink/80 leading-relaxed font-medium">
+                          {currentPaymentMethodConfig?.description || "You'll be securely redirected to our partner checkout at Longevia Beauty to complete your card payment, then brought back here automatically once it's done."}
+                        </p>
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={handleCrossSiteCheckout}
+                      disabled={isProcessing}
+                      variant="dark"
+                      size="lg"
+                      className="w-full max-w-md mt-4 h-16 rounded-full text-sm font-bold tracking-widest uppercase shadow-[0_8px_20px_rgb(0,0,0,0.15)] hover:-translate-y-0.5 transition-all text-white disabled:opacity-50 disabled:hover:translate-y-0"
+                    >
+                      {isProcessing ? <Loader2 className="animate-spin" /> : 'Continue to Payment'}
+                    </Button>
+                  </div>
                 ) : (
                   <div className="w-full relative overflow-hidden bg-white border border-ink/10 rounded-3xl flex flex-col items-center gap-5 sm:gap-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] text-center p-6 sm:p-10">
                     {/* Decorative Background */}
                     <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-white -z-10" />
-                    
+
                     <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-3xl bg-ink/5 flex items-center justify-center text-ink/80 mb-1 sm:mb-2 ring-1 ring-inset ring-ink/10 shadow-sm">
                       <Wallet size={28} strokeWidth={1.5} className="sm:w-8 sm:h-8 w-7 h-7" />
                     </div>
@@ -842,6 +958,11 @@ export function CheckoutClient() {
                           </p>
                         ) : (
                           <ul className="flex flex-col gap-4 sm:gap-5">
+                            {currentPaymentMethodConfig?.description && (
+                              <li className="text-[13px] sm:text-sm text-ink/80 leading-relaxed pb-1 border-b border-ink/5">
+                                {currentPaymentMethodConfig.description}
+                              </li>
+                            )}
                             <li className="flex gap-3 sm:gap-4 text-[13px] sm:text-sm text-ink/80">
                               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-ink text-white flex items-center justify-center text-xs font-bold mt-0.5">1</span>
                               <div>
@@ -1019,10 +1140,19 @@ export function CheckoutClient() {
                   <span>Shipping {selectedMethodObj?.method ? `(${selectedMethodObj.method})` : ''}</span>
                   <span className="text-ink font-bold">{finalShipping === 0 ? 'Free' : `$${finalShipping.toFixed(2)}`}</span>
                 </div>
-                <div className="flex justify-between items-center text-sm font-medium text-ink/70">
-                  <span>Processing Fee {activeFees.find((f: any) => f.type === 'percentage') ? `(${activeFees.find((f: any) => f.type === 'percentage').amount}%)` : ''}</span>
-                  <span className="text-ink font-bold">${processingFeeAmount.toFixed(2)}</span>
-                </div>
+                <AnimatePresence>
+                  {processingFeeAmount > 0 && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="flex justify-between items-center text-sm font-medium text-ink/70 overflow-hidden"
+                    >
+                      <span>Processing Fee {activeFees.find((f: any) => f.type === 'percentage') ? `(${activeFees.find((f: any) => f.type === 'percentage').amount}%)` : ''}</span>
+                      <span className="text-ink font-bold">${processingFeeAmount.toFixed(2)}</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               <div className="w-full h-px bg-ink/5" />

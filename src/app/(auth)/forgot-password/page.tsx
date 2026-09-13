@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
         
         {/* Background Image */}
         <Image 
-          src="/New Images/vials-on-magazine.webp"
+          src="/new-images/vials-on-magazine.webp"
           alt="Longevia Research"
           fill
           className="object-cover object-center z-0"
