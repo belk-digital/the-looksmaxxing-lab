@@ -32,7 +32,7 @@ export default async function WishlistPage() {
         const product = item.product as any
         
         // Extract image URL safely
-        let imageUrl = '/placeholder-product.png'
+        let imageUrl = '/new-images/glow-and-nad-bg-image.webp'
         if (product.images && product.images.length > 0 && typeof product.images[0].image === 'object') {
           imageUrl = product.images[0].image.url
         } else if (product.featuredImage && typeof product.featuredImage === 'object') {

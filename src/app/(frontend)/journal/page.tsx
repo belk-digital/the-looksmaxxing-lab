@@ -5,6 +5,10 @@ import { getAllJournalPosts } from '@/lib/blog/getPosts'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
+// Re-render at most once every 3 hours so newly published/edited posts show up
+// without needing a full redeploy, while still serving from cache the rest of the time.
+export const revalidate = 10800
+
 export const metadata: Metadata = {
   title: 'Science Journal | Research & Clinical Guidelines',
   description: 'Documented purity, detailed guidelines, and emerging studies in advanced peptide science.',

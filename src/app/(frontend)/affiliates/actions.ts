@@ -3,6 +3,44 @@
 import { getPayloadUser } from '@/lib/auth/getPayloadUser'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import type { UserAffiliateStatus } from './AffiliatesLandingClient'
+
+export async function getMyAffiliateStatus(): Promise<UserAffiliateStatus> {
+  try {
+    const user = await getPayloadUser()
+    if (!user) return 'guest'
+
+    const payload = await getPayload({ config })
+
+    const { docs: affiliates } = await payload.find({
+      collection: 'affiliates',
+      where: { user: { equals: user.id } },
+      limit: 1,
+      overrideAccess: true,
+    })
+
+    if (affiliates.length > 0) {
+      return `affiliate_${affiliates[0].status}` as UserAffiliateStatus
+    }
+
+    const { docs: applications } = await payload.find({
+      collection: 'affiliate-applications',
+      where: { user: { equals: user.id } },
+      limit: 1,
+      overrideAccess: true,
+    })
+
+    if (applications.length > 0) {
+      if (applications[0].status === 'pending') return 'pending_application'
+      if (applications[0].status === 'rejected') return 'affiliate_rejected'
+    }
+
+    return 'user'
+  } catch (error) {
+    console.error('Error fetching affiliate status:', error)
+    return 'guest'
+  }
+}
 
 export async function submitAffiliateApplication(formData: FormData) {
   try {

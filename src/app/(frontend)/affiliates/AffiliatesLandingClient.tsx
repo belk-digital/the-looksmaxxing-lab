@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
@@ -20,7 +21,7 @@ import {
 } from '@/components/ui/select'
 import { CheckCircle2, DollarSign, Clock, ShieldCheck, Activity, BarChart3, Link as LinkIcon, XCircle, AlertTriangle, FileText } from 'lucide-react'
 import { FaqCarousel, FaqItem } from '@/components/shared/FaqCarousel'
-import { submitAffiliateApplication } from './actions'
+import { submitAffiliateApplication, getMyAffiliateStatus } from './actions'
 import { useRouter } from 'next/navigation'
 
 const AFFILIATE_FAQS: FaqItem[] = [
@@ -42,14 +43,25 @@ const AFFILIATE_FAQS: FaqItem[] = [
 export type UserAffiliateStatus = 'guest' | 'user' | 'pending_application' | 'affiliate_approved' | 'affiliate_pending' | 'affiliate_rejected'
 
 interface Props {
-  userStatus: UserAffiliateStatus;
+  userStatus?: UserAffiliateStatus;
 }
 
-export function AffiliatesLandingClient({ userStatus }: Props) {
+export function AffiliatesLandingClient({ userStatus: initialStatus = 'guest' }: Props) {
   const router = useRouter()
+  const { status: sessionStatus } = useSession()
+  const [userStatus, setUserStatus] = useState<UserAffiliateStatus>(initialStatus)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Fetch the real affiliate status client-side once we know the user is logged in,
+  // so this page can stay statically rendered instead of blocking on session/DB
+  // lookups during the server render.
+  useEffect(() => {
+    if (sessionStatus === 'authenticated') {
+      getMyAffiliateStatus().then(setUserStatus)
+    }
+  }, [sessionStatus])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

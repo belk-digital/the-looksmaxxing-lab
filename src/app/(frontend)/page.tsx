@@ -15,6 +15,10 @@ import { Metadata } from 'next'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
+// Re-render at most once every 3 hours so CMS changes (new bestsellers, etc.)
+// show up without needing a full redeploy, while still serving from cache.
+export const revalidate = 10800
+
 export const metadata: Metadata = {
   openGraph: {
     images: [{ url: '/og/og-home.webp', width: 1200, height: 630, alt: 'Longevia Research — Research-Grade Peptides' }],
@@ -35,10 +39,6 @@ export const metadata: Metadata = {
 import { getShopProducts } from '@/app/(frontend)/(shop)/actions'
 
 export default async function Homepage() {
-  const headersList = await require('next/headers').headers()
-  const userAgent = headersList.get('user-agent') || ''
-  const isBot = /bot|googlebot|google-inspectiontool|lighthouse|crawler|spider|robot|crawling|facebookexternalhit|bingbot/i.test(userAgent)
-
   let products = []
   try {
     const res = await getShopProducts({ limit: 8, sort: 'newest', isBestSeller: true })
@@ -51,7 +51,7 @@ export default async function Homepage() {
 
   return (
     <>
-      <HomePreloaderWrapper isBot={isBot}>
+      <HomePreloaderWrapper>
         <div className="flex flex-col w-full min-h-screen relative z-10 bg-white">
           <Hero />
           <FeaturedProductsSection products={products} />

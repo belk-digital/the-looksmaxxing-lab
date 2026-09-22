@@ -1303,7 +1303,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
           Researchers should also account for injection-site rotation and reconstitution consistency across a multi-week protocol, since both peptides are structurally sensitive to repeated freeze-thaw cycles and prolonged exposure to ambient temperature. Establishing a standardized reconstitution and storage workflow at the outset of a study meaningfully reduces batch-to-batch variability across a longitudinal research timeline.
         </p>
 
-        <Image src="/journal-images/cjc-1295-ipamorelin-reconstitution-lab-bench.webp" alt="Reconstituting a lyophilized research peptide vial in a laboratory setting" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+        <Image src="/journal-images/cjc-1295-ipamorelin-reconstitution-lab-bench.png" alt="Reconstituting a lyophilized research peptide vial in a laboratory setting" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Combining GH-Axis Research With Structural Repair Peptides</h2>
 
@@ -1335,7 +1335,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
           Every batch of <Link href="/products/cjc-1295-no-dac" className="text-blue-600 underline hover:text-blue-800">CJC-1295</Link>, <Link href="/products/ipamorelin" className="text-blue-600 underline hover:text-blue-800">Ipamorelin</Link>, and the combined <Link href="/products/cjc-ipamorelin" className="text-blue-600 underline hover:text-blue-800">CJC-1295 + Ipamorelin blend</Link> sold by <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> is synthesized via Solid-Phase Peptide Synthesis, purified through preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">HPLC</Link>, and verified via Electrospray Ionization Mass Spectrometry (ESI-MS) at an independent, third-party US laboratory, with a documented ≥99% purity floor on every lot.
         </p>
 
-        <Image src="/journal-images/cjc-1295-ipamorelin-coa-certificate.webp" alt="Certificate of Analysis documentation beside a research peptide vial" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
+        <Image src="/journal-images/cjc-1295-ipamorelin-coa-certificate.png" alt="Certificate of Analysis documentation beside a research peptide vial" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
           Full lot-specific documentation is available in our publicly accessible <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link>. To ensure dosing precision across both compounds, researchers should calculate exact molar concentrations prior to any experimental protocol — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution and storage guide</Link> for the complete step-by-step process.

@@ -12,7 +12,7 @@ const PILLARS = [
     title: "US-Based Synthesis — Zero Overseas Powders",
     description: "Every compound is synthesized in US-based, ISO-certified peptide laboratories using closed-loop solid-phase peptide synthesis (SPPS). We do not purchase raw, untested powders from overseas suppliers or third-party bulk brokers. Our closed-loop supply chain ensures complete molecular traceability from synthesis to shipping.",
     icon: Dna,
-    image: "/Featured%20Images/us-based-synthesis.webp"
+    image: "/featured-images/us-based-synthesis.webp"
   },
   {
     title: "99%+ Purity Floor — Any Batch Below This Gets Discarded",

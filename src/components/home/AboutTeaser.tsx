@@ -30,7 +30,7 @@ export function AboutTeaser() {
           className="absolute inset-[-20%] w-[140%] h-[140%] z-0"
         >
           <Image 
-            src="/Featured%20Images/scientist-at-microscope.webp"
+            src="/featured-images/scientist-at-microscope.webp"
             alt="US-based peptide synthesis facility — ISO-certified laboratory where Longevia Research compounds are produced"
             fill
             className="object-cover opacity-100"

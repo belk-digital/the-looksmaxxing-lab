@@ -11,6 +11,10 @@ import { toAbsoluteUrl } from '@/lib/utils'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
+// Re-render at most once every 3 hours so edits to a published post show up
+// without needing a full redeploy, while still serving from cache the rest of the time.
+export const revalidate = 10800
+
 export async function generateStaticParams() {
   const cmsSlugs = await getCmsJournalPostSlugs()
   const staticSlugs = JOURNAL_POSTS.map((p) => p.slug)

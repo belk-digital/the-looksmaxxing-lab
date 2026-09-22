@@ -5,6 +5,48 @@ import { authOptions } from '@/lib/auth'
 import { getPayload } from 'payload'
 import configPromise from '@/payload.config'
 
+export async function getMyWishlist(): Promise<Array<{ id: string | number; name: string; slug: string; image: string; priceRange?: string }>> {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.email) return []
+
+    const payload = await getPayload({ config: configPromise })
+
+    const payloadUsers = await payload.find({
+      collection: 'users',
+      where: { email: { equals: session.user.email } },
+      limit: 1,
+      overrideAccess: true,
+    })
+
+    const payloadUser = payloadUsers.docs[0]
+    if (!payloadUser) return []
+
+    const wishlists = await payload.find({
+      collection: 'wishlists',
+      where: { user: { equals: payloadUser.id } },
+      limit: 1,
+      depth: 1,
+      overrideAccess: true,
+    })
+
+    const items = wishlists.docs[0]?.items || []
+    return items.map((item: any) => {
+      const prod = item.product || {}
+      return {
+        id: prod.id || item.product,
+        name: prod.name || '',
+        slug: prod.slug || '',
+        image: prod.images?.[0]?.image?.url || '',
+        priceRange: prod.price ? `$${prod.price}` : '',
+      }
+    })
+  } catch (error) {
+    console.error('Error fetching wishlist from payload:', error)
+    return []
+  }
+}
+
 export async function toggleWishlistInPayload(productId: string | number, isAdding: boolean, providedVariantSku?: string, providedPriceSnapshot?: number) {
   try {
     const session = await getServerSession(authOptions)

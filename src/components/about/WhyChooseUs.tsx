@@ -10,13 +10,13 @@ const PILLARS = [
     id: '01',
     title: 'Independent Third-Party Verification — Every Batch',
     desc: 'Every production batch is tested by accredited, independent US-based laboratories via HPLC chromatography and LC-MS mass spectrometry before it enters our inventory. We do not perform in-house testing and do not sell any compound without documented third-party verification.',
-    image: '/Featured%20Images/scientist-at-microscope.webp'
+    image: '/featured-images/scientist-at-microscope.webp'
   },
   {
     id: '02',
     title: '≥99% HPLC Purity — Non-Negotiable Minimum',
     desc: 'Our purity floor is ≥99% HPLC — enforced without exception across every compound in our catalog. Any batch testing below this threshold is immediately discarded. We publish the exact purity percentage from each batch’s COA — not a range, not an estimate.',
-    image: '/Featured%20Images/clear-glass-dropper.webp'
+    image: '/featured-images/clear-glass-dropper.webp'
   },
   {
     id: '03',
@@ -28,7 +28,7 @@ const PILLARS = [
     id: '04',
     title: 'Lyophilized Stability — Molecular Integrity Guaranteed',
     desc: 'All research peptides ship in vacuum-sealed lyophilized (freeze-dried) form, which ensures maximum molecular stability during transit and storage. Lyophilized compounds remain structurally intact under ambient conditions during shipping — no cold-chain required for standard vials.',
-    image: '/Featured%20Images/crushed-white-powder.webp'
+    image: '/featured-images/crushed-white-powder.webp'
   }
 ]
 

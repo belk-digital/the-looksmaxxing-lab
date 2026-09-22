@@ -503,7 +503,7 @@ export function CheckoutClient() {
                       <div key={item.lineId} className="flex gap-4 group">
                         <div className="relative w-16 h-16 shrink-0">
                           <div className="w-full h-full bg-cream rounded-xl overflow-hidden border border-ink/5 relative">
-                            <Image src={item.product?.imageUrl || '/placeholder.png'} alt={item.product?.name || 'Product'} fill className="object-cover" />
+                            <Image src={item.product?.imageUrl || '/new-images/glow-and-nad-bg-image.webp'} alt={item.product?.name || 'Product'} fill className="object-cover" />
                           </div>
                           <div className="absolute -top-2 -right-2 w-5 h-5 bg-ink text-cream rounded-full flex items-center justify-center text-[10px] font-bold z-10">
                             {item.quantity}
@@ -1019,7 +1019,7 @@ export function CheckoutClient() {
                   <div key={item.lineId} className="flex gap-4 group">
                     <div className="relative w-20 h-20 shrink-0 transition-transform group-hover:scale-105">
                       <div className="w-full h-full bg-cream border border-ink/5 rounded-2xl overflow-hidden relative">
-                        <Image src={item.product?.imageUrl || '/placeholder.png'} alt={item.product?.name || 'Product'} fill className="object-cover" />
+                        <Image src={item.product?.imageUrl || '/new-images/glow-and-nad-bg-image.webp'} alt={item.product?.name || 'Product'} fill className="object-cover" />
                       </div>
                       <div className="absolute -top-2 -right-2 w-6 h-6 bg-ink text-cream rounded-full flex items-center justify-center text-[11px] font-bold z-10 shadow-sm border-2 border-white">
                         {item.quantity}

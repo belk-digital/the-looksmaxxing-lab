@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
+import { useSession } from 'next-auth/react'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import { ShoppingBag, Menu, Search, X, User, Calculator, BookOpen, HelpCircle } from 'lucide-react'
 import { MobileMenu } from './MobileMenu'
@@ -20,7 +21,9 @@ const ANNOUNCEMENTS = [
   "SUBSCRIBE FOR 15% OFF YOUR FIRST ORDER"
 ]
 
-export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLoggedIn = false, categories: initialCategories = [], initialWishlistItems = [], initialCartItems = [] }: any) {
+export function ClientHeader({ categories: initialCategories = [] }: any) {
+  const { status } = useSession()
+  const isLoggedIn = status === 'authenticated'
   const cartStore = useCartStore()
   const setCartItems = useCartStore((state) => state.setItems)
   const setWishlistItems = useWishlistStore((state) => state.setItems)
@@ -55,34 +58,38 @@ export function ClientHeader({ cartItemCount = 0, wishlistItemCount = 0, isLogge
   // Sync Cart with Backend
   useEffect(() => {
     if (isLoggedIn && !cartHydrated.current) {
-      const localItems = cartStore.items
-      if (initialCartItems.length > 0) {
-        // Backend has a cart, use it
-        setCartItems(initialCartItems)
-      } else if (localItems.length > 0) {
-        // Backend cart is empty, but local has items (e.g. they added items before logging in)
-        // Push local items to backend
-        import('@/app/(frontend)/actions/cart').then(m => m.syncCartToPayload(localItems))
-      }
       cartHydrated.current = true
+      import('@/app/(frontend)/actions/cart').then(m => m.getMyCart()).then((remoteItems) => {
+        const localItems = useCartStore.getState().items
+        if (remoteItems.length > 0) {
+          // Backend has a cart, use it
+          setCartItems(remoteItems)
+        } else if (localItems.length > 0) {
+          // Backend cart is empty, but local has items (e.g. they added items before logging in)
+          // Push local items to backend
+          import('@/app/(frontend)/actions/cart').then(m2 => m2.syncCartToPayload(localItems))
+        }
+      })
     }
-  }, [isLoggedIn, initialCartItems]) // removed setCartItems and cartStore.items from deps to prevent loop
+  }, [isLoggedIn])
 
   // Sync Wishlist with Backend
   useEffect(() => {
     if (isLoggedIn && !wishlistHydrated.current) {
-      const localItems = useWishlistStore.getState().items
-      if (initialWishlistItems.length > 0) {
-        setWishlistItems(initialWishlistItems)
-      } else if (localItems.length > 0) {
-        // Push local items to backend one by one, since there's no bulk sync for wishlist
-        import('@/app/(frontend)/actions/wishlist').then(m => {
-          localItems.forEach(item => m.toggleWishlistInPayload(item.id, true))
-        })
-      }
       wishlistHydrated.current = true
+      import('@/app/(frontend)/actions/wishlist').then(m => m.getMyWishlist()).then((remoteItems) => {
+        const localItems = useWishlistStore.getState().items
+        if (remoteItems.length > 0) {
+          setWishlistItems(remoteItems)
+        } else if (localItems.length > 0) {
+          // Push local items to backend one by one, since there's no bulk sync for wishlist
+          import('@/app/(frontend)/actions/wishlist').then(m2 => {
+            localItems.forEach(item => m2.toggleWishlistInPayload(item.id, true))
+          })
+        }
+      })
     }
-  }, [isLoggedIn, initialWishlistItems])
+  }, [isLoggedIn])
 
   // Global Search Shortcut (Cmd+K / Ctrl+K)
   useEffect(() => {

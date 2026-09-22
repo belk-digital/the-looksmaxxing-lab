@@ -1,7 +1,4 @@
-import { getPayloadUser } from '@/lib/auth/getPayloadUser'
-import { getPayload } from 'payload'
-import config from '@payload-config'
-import { AffiliatesLandingClient, UserAffiliateStatus } from './AffiliatesLandingClient'
+import { AffiliatesLandingClient } from './AffiliatesLandingClient'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
@@ -28,50 +25,18 @@ const breadcrumbSchema = {
   ],
 }
 
-export default async function AffiliatesLandingPage() {
-  const user = await getPayloadUser()
-  let status: UserAffiliateStatus = 'guest'
-
-  if (user) {
-    status = 'user'
-    const payload = await getPayload({ config })
-
-    // 1. Check if they are an active affiliate
-    const { docs: affiliates } = await payload.find({
-      collection: 'affiliates',
-      where: { user: { equals: user.id } },
-      limit: 1,
-      overrideAccess: true,
-    })
-
-    if (affiliates.length > 0) {
-      status = `affiliate_${affiliates[0].status}` as UserAffiliateStatus
-    } else {
-      // 2. Check if they have a pending application
-      const { docs: applications } = await payload.find({
-        collection: 'affiliate-applications',
-        where: { user: { equals: user.id } },
-        limit: 1,
-        overrideAccess: true,
-      })
-
-      if (applications.length > 0) {
-        if (applications[0].status === 'pending') {
-          status = 'pending_application'
-        } else if (applications[0].status === 'rejected') {
-          status = 'affiliate_rejected'
-        }
-      }
-    }
-  }
-
+// Deliberately static: no session/DB lookups here. A returning affiliate's
+// real status (approved/pending/rejected) is fetched client-side in
+// AffiliatesLandingClient so this page (public marketing content, in the
+// sitemap) can be prerendered and cached instead of forced fully dynamic.
+export default function AffiliatesLandingPage() {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <AffiliatesLandingClient userStatus={status} />
+      <AffiliatesLandingClient />
     </>
   )
 }

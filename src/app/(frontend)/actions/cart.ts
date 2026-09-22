@@ -87,6 +87,55 @@ export async function syncCartToPayload(items: CartLine[]) {
   }
 }
 
+export async function getMyCart(): Promise<CartLine[]> {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.email) return []
+
+    const payload = await getPayload({ config: configPromise })
+
+    const payloadUsers = await payload.find({
+      collection: 'users',
+      where: { email: { equals: session.user.email } },
+      limit: 1,
+      overrideAccess: true,
+    })
+
+    const payloadUser = payloadUsers.docs[0]
+    if (!payloadUser) return []
+
+    const carts = await payload.find({
+      collection: 'carts',
+      where: { user: { equals: payloadUser.id } },
+      limit: 1,
+      depth: 1,
+      overrideAccess: true,
+    })
+
+    const items = carts.docs[0]?.items || []
+    return items.map((item: any) => {
+      const prod = item.product || {}
+      return {
+        lineId: item.id || Math.random().toString(36).substring(2, 15),
+        productId: String(prod.id || item.product),
+        variantSku: item.variantSku || 'default',
+        variantTitle: item.variantTitle || item.variantSku || 'Standard',
+        quantity: item.quantity || 1,
+        priceSnapshot: item.priceSnapshot || 0,
+        product: {
+          id: String(prod.id || item.product),
+          slug: prod.slug || '',
+          name: prod.name || '',
+          imageUrl: prod.images?.[0]?.image?.url || null,
+        },
+      }
+    })
+  } catch (error) {
+    console.error('Error fetching cart from payload:', error)
+    return []
+  }
+}
+
 export async function revalidateCartPrices(items: CartLine[]): Promise<CartLine[]> {
   try {
     const payload = await getPayload({ config: configPromise })

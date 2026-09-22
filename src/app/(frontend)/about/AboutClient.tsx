@@ -122,13 +122,13 @@ export default function AboutClient() {
       id: "02",
       title: "Wholesale & Bulk Sourcing for Research Institutions",
       desc: "Tiered wholesale pricing for qualified research institutions, university laboratories, clinical research organizations, and approved bulk accounts. All wholesale orders receive the same independent COA documentation as retail orders. Contact us to apply for a wholesale account.",
-      image: "/Featured%20Images/crushed-white-powder.webp"
+      image: "/featured-images/crushed-white-powder.webp"
     },
     {
       id: "03",
       title: "Custom Synthesis Inquiries - Bespoke Research Compounds",
       desc: "For researchers requiring compounds outside our standard catalog — specific sequence modifications, non-standard vial formats, or large-scale custom production runs — our team works with our synthesis partners to fulfill bespoke laboratory requirements.",
-      image: "/Featured%20Images/scientist-at-microscope.webp"
+      image: "/featured-images/scientist-at-microscope.webp"
     }
   ];
 

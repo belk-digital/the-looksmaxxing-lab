@@ -21,14 +21,14 @@ const CATEGORIES = [
 
 // Re-using the premium generated images as placeholders
 const CATEGORY_IMAGES = [
-  '/Featured%20Images/thick-gel-pouring.webp', // 1
-  '/Featured%20Images/blue-petri-dishes.webp', // 2
-  '/Featured%20Images/white-blue-dna-helix.webp', // 3
-  '/Featured%20Images/category-4.JPG', // 4
-  '/Featured%20Images/microscopic-liquid-drops.webp', // 5
-  '/Featured%20Images/category-6.png', // 6
-  '/Featured%20Images/clear-dropper-side-profile.webp', // 7
-  '/Featured%20Images/category-8.png' // 8
+  '/featured-images/thick-gel-pouring.webp', // 1
+  '/featured-images/blue-petri-dishes.webp', // 2
+  '/featured-images/white-blue-dna-helix.webp', // 3
+  '/featured-images/category-4.JPG', // 4
+  '/featured-images/microscopic-liquid-drops.webp', // 5
+  '/featured-images/category-6.png', // 6
+  '/featured-images/clear-dropper-side-profile.webp', // 7
+  '/featured-images/category-8.png' // 8
 ]
 
 const CARD_COLORS = [

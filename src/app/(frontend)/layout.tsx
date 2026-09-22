@@ -9,7 +9,6 @@ import { Footer } from '@/components/shared/Footer'
 import { SmoothScroll } from '@/components/shared/SmoothScroll'
 import { Toaster } from '@/components/ui/sonner'
 import { GlobalNavigationSpinner } from '@/components/shared/GlobalNavigationSpinner'
-import { cookies } from 'next/headers'
 import { AgeVerificationGate } from '@/components/shared/AgeVerificationGate'
 import { NextAuthProvider } from '@/components/Providers'
 
@@ -62,15 +61,7 @@ export const metadata = {
   },
 }
 
-export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = await cookies()
-  const headersList = await require('next/headers').headers()
-  const userAgent = headersList.get('user-agent') || ''
-  
-  // SEO Fix: Search engines must bypass the age gate to index the site content
-  const isBot = /bot|googlebot|google-inspectiontool|lighthouse|crawler|spider|robot|crawling|facebookexternalhit|bingbot/i.test(userAgent)
-  const isVerified = cookieStore.get('longevia_age_verified')?.value === 'true' || isBot
-
+export default function FrontendLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-US" className={`min-h-screen ${fontDisplay.variable} ${fontSans.variable}`} suppressHydrationWarning>
       <head>
@@ -163,7 +154,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
             style={{ display: 'none', visibility: 'hidden' }}
           />
         </noscript>
-        <AgeVerificationGate initialVerified={isVerified} />
+        <AgeVerificationGate initialVerified={false} />
         <React.Suspense fallback={null}>
           <GlobalNavigationSpinner />
         </React.Suspense>

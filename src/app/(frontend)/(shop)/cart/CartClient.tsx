@@ -123,7 +123,7 @@ export function CartClient() {
               id: p.id,
               name: p.name,
               slug: p.slug,
-              image: p.images?.[0]?.image?.url || p.imageUrl || '/placeholder.png',
+              image: p.images?.[0]?.image?.url || p.imageUrl || '/new-images/glow-and-nad-bg-image.webp',
               hoverImage: p.images?.[1]?.image?.url || undefined,
               shortDescription: p.shortDescription || p.description || p.descriptor || '',
               priceRange: displaySalePrice 
@@ -329,7 +329,7 @@ export function CartClient() {
                 {/* Product Image Thumbnail */}
                 <Link href={`/products/${item.product?.slug || item.productId}`} className="relative w-24 sm:w-32 md:w-36 aspect-[4/5] bg-[#F5F5F7] shrink-0 rounded-[1.25rem] sm:rounded-[1.5rem] overflow-hidden">
                   <Image 
-                    src={item.product?.imageUrl || '/placeholder.png'} 
+                    src={item.product?.imageUrl || '/new-images/glow-and-nad-bg-image.webp'} 
                     alt={item.product?.name || 'Product'} 
                     fill 
                     className="object-cover object-center transition-transform duration-700 group-hover:scale-105" 
