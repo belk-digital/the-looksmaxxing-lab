@@ -51,3 +51,7 @@ node_modules/
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# pnpm / Next.js build artifacts
+_tmp_*
+pnpm-workspace.yaml

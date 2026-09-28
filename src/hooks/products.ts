@@ -1,4 +1,5 @@
-import type { CollectionBeforeChangeHook } from 'payload'
+import type { CollectionBeforeChangeHook, CollectionAfterChangeHook } from 'payload'
+import { revalidatePath } from 'next/cache'
 import slugify from 'slugify'
 
 export const productsBeforeChange: CollectionBeforeChangeHook = async ({
@@ -34,4 +35,14 @@ export const productsBeforeChange: CollectionBeforeChangeHook = async ({
   }
 
   return data
+}
+
+export const productsAfterChange: CollectionAfterChangeHook = async ({ doc }) => {
+  try {
+    if (doc.slug) {
+      revalidatePath(`/products/${doc.slug}`)
+    }
+  } catch (err) {
+    console.error('[productsAfterChange] revalidation failed:', err)
+  }
 }
