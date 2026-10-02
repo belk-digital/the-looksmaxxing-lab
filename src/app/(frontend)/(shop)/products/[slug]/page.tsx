@@ -17,7 +17,11 @@ export async function generateStaticParams() {
   return docs.filter((p) => p.slug).map((p) => ({ slug: p.slug }))
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
   const { slug } = await params
   const payload = await getPayload({ config: configPromise })
 
@@ -33,22 +37,32 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   const product = docs[0]
-  const title = product.seoTitle || product.name || 'Product'
+  const rawTitle = product.seoTitle || product.name || 'Product'
+  const title = rawTitle.replace(/\s*\|\s*Longevia Research\s*$/i, '').trim()
   const description = product.seoDescription || product.description?.substring(0, 160) || ''
-  const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
+  const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(
+    /\/+$/,
+    '',
+  )
   const productUrl = `${siteUrl}/products/${slug}`
 
   let imageUrl: string | undefined
-  if (product.images && product.images.length > 0 && typeof product.images[0].image === 'object' && product.images[0].image?.url) {
+  if (
+    product.images &&
+    product.images.length > 0 &&
+    typeof product.images[0].image === 'object' &&
+    product.images[0].image?.url
+  ) {
     imageUrl = product.images[0].image.url
     if (imageUrl.startsWith('/')) {
       imageUrl = `${siteUrl}${imageUrl}`
     }
   }
 
-  const lowestPrice = product.hasVariants && product.variants?.length
-    ? Math.min(...product.variants.map((v: any) => Number(v.price || 0)))
-    : product.salePrice || product.price || 0
+  const lowestPrice =
+    product.hasVariants && product.variants?.length
+      ? Math.min(...product.variants.map((v: any) => Number(v.price || 0)))
+      : product.salePrice || product.price || 0
 
   return {
     title,
@@ -61,7 +75,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description,
       images: imageUrl
         ? [{ url: imageUrl, width: 1200, height: 630, alt: `${product.name} — Longevia Research` }]
-        : [{ url: '/new-images/glow-and-nad-bg-image.webp', width: 1200, height: 630, alt: 'Longevia Research' }],
+        : [
+            {
+              url: '/new-images/glow-and-nad-bg-image.webp',
+              width: 1200,
+              height: 630,
+              alt: 'Longevia Research',
+            },
+          ],
       type: 'website',
       url: productUrl,
       siteName: 'Longevia Research',
@@ -73,7 +94,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       images: imageUrl ? [imageUrl] : ['/new-images/glow-and-nad-bg-image.webp'],
     },
     other: {
-      'og:type': 'product',
       'product:price:amount': String(lowestPrice),
       'product:price:currency': 'USD',
       'product:availability': 'in stock',
@@ -87,10 +107,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   console.log('--- STARTING SERVER RENDER FOR PRODUCT PAGE ---')
   const { slug } = await params
   console.log(`Resolved slug: ${slug}, Initializing Payload...`)
-  
+
   const payload = await getPayload({ config: configPromise })
   console.log('Payload initialized, querying product...')
-  
+
   const { docs } = await payload.find({
     collection: 'products',
     where: {
@@ -109,12 +129,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const rawProduct = docs[0]
 
   // Map images
-  const mappedImages = rawProduct.images?.map((img: any) => {
-    if (typeof img.image === 'object' && img.image?.url) {
-      return img.image.url
-    }
-    return ''
-  }).filter(Boolean) || []
+  const mappedImages =
+    rawProduct.images
+      ?.map((img: any) => {
+        if (typeof img.image === 'object' && img.image?.url) {
+          return img.image.url
+        }
+        return ''
+      })
+      .filter(Boolean) || []
 
   // If no images are uploaded, provide a fallback
   if (mappedImages.length === 0) {
@@ -122,9 +145,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   }
 
   // Map categories
-  const mappedCategories = rawProduct.categories?.map((cat: any) => {
-    return typeof cat === 'object' ? cat.name : 'Category'
-  }).filter(Boolean) || []
+  const mappedCategories =
+    rawProduct.categories
+      ?.map((cat: any) => {
+        return typeof cat === 'object' ? cat.name : 'Category'
+      })
+      .filter(Boolean) || []
 
   // Map variants
   let mappedVariants = []
@@ -147,7 +173,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         price: `$${Number(rawProduct.price || 0).toFixed(2)}`,
         salePrice: rawProduct.salePrice ? `$${Number(rawProduct.salePrice).toFixed(2)}` : undefined,
         inStock: (rawProduct.stock || 0) > 0,
-      }
+      },
     ]
   }
 
@@ -157,28 +183,28 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     mappedTabs.push({
       id: 'product-details',
       label: rawProduct.productDetailsTitle || 'Product Details',
-      content: rawProduct.productDetailsDescription
+      content: rawProduct.productDetailsDescription,
     })
   }
   if (rawProduct.researchFocusDescription) {
     mappedTabs.push({
       id: 'research-focus',
       label: rawProduct.researchFocusTitle || 'Research Focus & Mechanism Overview',
-      content: rawProduct.researchFocusDescription
+      content: rawProduct.researchFocusDescription,
     })
   }
   if (rawProduct.qualityPurityDescription) {
     mappedTabs.push({
       id: 'quality-purity',
       label: rawProduct.qualityPurityTitle || 'Quality & Purity Standards',
-      content: rawProduct.qualityPurityDescription
+      content: rawProduct.qualityPurityDescription,
     })
   }
   if (rawProduct.complianceNoticeDescription) {
     mappedTabs.push({
       id: 'compliance-notice',
       label: rawProduct.complianceNoticeTitle || 'Compliance Notice',
-      content: rawProduct.complianceNoticeDescription
+      content: rawProduct.complianceNoticeDescription,
     })
   }
 
@@ -186,16 +212,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     mappedTabs.push({
       id: 'description',
       label: 'Description',
-      content: rawProduct.description
+      content: rawProduct.description,
     })
   }
 
   // Map FAQs
-  const mappedFaqs = rawProduct.faqs?.map((faq: any, i: number) => ({
-    id: `faq-${i}`,
-    question: faq.question,
-    answer: faq.answer
-  })) || []
+  const mappedFaqs =
+    rawProduct.faqs?.map((faq: any, i: number) => ({
+      id: `faq-${i}`,
+      question: faq.question,
+      answer: faq.answer,
+    })) || []
 
   // Extract COA URL
   let coaFileUrl = undefined
@@ -207,10 +234,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const { docs: approvedReviews } = await payload.find({
     collection: 'reviews',
     where: {
-      and: [
-        { product: { equals: rawProduct.id } },
-        { status: { equals: 'approved' } },
-      ],
+      and: [{ product: { equals: rawProduct.id } }, { status: { equals: 'approved' } }],
     },
     sort: '-createdAt',
     limit: 20,
@@ -222,7 +246,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     .map((r: any) => {
       const user = typeof r.user === 'object' ? r.user : null
       const lastInitial = user?.lastName ? `${user.lastName.charAt(0)}.` : ''
-      const author = user?.firstName ? `${user.firstName} ${lastInitial}`.trim() : 'Verified Researcher'
+      const author = user?.firstName
+        ? `${user.firstName} ${lastInitial}`.trim()
+        : 'Verified Researcher'
       return {
         author,
         datePublished: new Date(r.createdAt).toISOString().split('T')[0],
@@ -248,20 +274,22 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     averageRating: rawProduct.averageRating || 5.0,
     reviewCount: rawProduct.reviewCount || 0,
 
-    bulkBundles: rawProduct.bulkBundles?.map((b: any) => ({
-      id: b.id,
-      name: b.name,
-      quantity: b.quantity,
-      discountPercentage: b.discountPercentage,
-      price: b.price,
-      salePrice: b.salePrice,
-      image: typeof b.image === 'object' && b.image?.url ? b.image.url : undefined,
-      variantOverrides: b.variantOverrides?.map((vo: any) => ({
-        variantSku: vo.variantSku,
-        price: vo.price,
-        salePrice: vo.salePrice
-      })) || []
-    })) || [],
+    bulkBundles:
+      rawProduct.bulkBundles?.map((b: any) => ({
+        id: b.id,
+        name: b.name,
+        quantity: b.quantity,
+        discountPercentage: b.discountPercentage,
+        price: b.price,
+        salePrice: b.salePrice,
+        image: typeof b.image === 'object' && b.image?.url ? b.image.url : undefined,
+        variantOverrides:
+          b.variantOverrides?.map((vo: any) => ({
+            variantSku: vo.variantSku,
+            price: vo.price,
+            salePrice: vo.salePrice,
+          })) || [],
+      })) || [],
     images: mappedImages,
     variants: mappedVariants,
     coaFile: coaFileUrl,
@@ -273,8 +301,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   // Fetch related products (same category)
   if (rawProduct.categories && rawProduct.categories.length > 0) {
-    const categoryIds = rawProduct.categories.map((c: any) => typeof c === 'object' ? c.id : c).filter(Boolean)
-    
+    const categoryIds = rawProduct.categories
+      .map((c: any) => (typeof c === 'object' ? c.id : c))
+      .filter(Boolean)
+
     if (categoryIds.length > 0) {
       const { docs: relatedDocs } = await payload.find({
         collection: 'products',
@@ -283,19 +313,19 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             {
               id: {
                 not_equals: rawProduct.id,
-              }
+              },
             },
             {
-              'categories': {
+              categories: {
                 in: categoryIds,
-              }
+              },
             },
             {
               status: {
-                equals: 'active'
-              }
-            }
-          ]
+                equals: 'active',
+              },
+            },
+          ],
         },
         limit: 4,
         depth: 1, // Only need basic info and main image
@@ -304,10 +334,20 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       productData.relatedProducts = relatedDocs.map((p: any) => {
         let imageUrl = '/temp-products/product-image.png'
         let hoverImageUrl = undefined
-        if (p.images && p.images.length > 0 && typeof p.images[0].image === 'object' && p.images[0].image?.url) {
+        if (
+          p.images &&
+          p.images.length > 0 &&
+          typeof p.images[0].image === 'object' &&
+          p.images[0].image?.url
+        ) {
           imageUrl = p.images[0].image.url
         }
-        if (p.images && p.images.length > 1 && typeof p.images[1].image === 'object' && p.images[1].image?.url) {
+        if (
+          p.images &&
+          p.images.length > 1 &&
+          typeof p.images[1].image === 'object' &&
+          p.images[1].image?.url
+        ) {
           hoverImageUrl = p.images[1].image.url
         }
 
@@ -336,8 +376,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           not_equals: rawProduct.id,
         },
         status: {
-          equals: 'active'
-        }
+          equals: 'active',
+        },
       },
       sort: '-createdAt',
       limit: 4,
@@ -347,10 +387,20 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     productData.relatedProducts = recentDocs.map((p: any) => {
       let imageUrl = '/temp-products/product-image.png'
       let hoverImageUrl = undefined
-      if (p.images && p.images.length > 0 && typeof p.images[0].image === 'object' && p.images[0].image?.url) {
+      if (
+        p.images &&
+        p.images.length > 0 &&
+        typeof p.images[0].image === 'object' &&
+        p.images[0].image?.url
+      ) {
         imageUrl = p.images[0].image.url
       }
-      if (p.images && p.images.length > 1 && typeof p.images[1].image === 'object' && p.images[1].image?.url) {
+      if (
+        p.images &&
+        p.images.length > 1 &&
+        typeof p.images[1].image === 'object' &&
+        p.images[1].image?.url
+      ) {
         hoverImageUrl = p.images[1].image.url
       }
 
@@ -372,7 +422,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   console.log('--- FINISHED SERVER RENDER FOR PRODUCT PAGE ---')
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex min-h-screen flex-col">
+      <meta property="og:type" content="product" />
       <ProductJsonLd
         name={rawProduct.name}
         slug={rawProduct.slug || slug}
@@ -389,7 +440,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         reviewCount={rawProduct.reviewCount || 0}
         reviews={mappedReviews}
       />
-      <main className="flex-1 mt-20">
+      <main className="mt-20 flex-1">
         <ProductClient product={productData as any} />
       </main>
     </div>

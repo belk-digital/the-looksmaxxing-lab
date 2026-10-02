@@ -33,20 +33,30 @@ export function ProductJsonLd({
   reviewCount,
   reviews,
 }: ProductJsonLdProps) {
-  const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
+  const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(
+    /\/+$/,
+    '',
+  )
   const productUrl = `${siteUrl}/products/${slug}`
 
-  const imageUrls = images.map((img) =>
-    img.startsWith('http') ? img : `${siteUrl}${img}`,
-  )
+  const imageUrls = images.map((img) => (img.startsWith('http') ? img : `${siteUrl}${img}`))
 
-  const lowestPrice = hasVariants && variants.length > 0
-    ? Math.min(...variants.map((v) => parseFloat(v.price.replace('$', ''))))
-    : salePrice || price
+  const lowestPrice =
+    hasVariants && variants.length > 0
+      ? Math.min(...variants.map((v) => parseFloat(v.price.replace('$', ''))))
+      : salePrice || price
 
-  const highestPrice = hasVariants && variants.length > 0
-    ? Math.max(...variants.map((v) => parseFloat(v.price.replace('$', ''))))
-    : salePrice || price
+  const highestPrice =
+    hasVariants && variants.length > 0
+      ? Math.max(...variants.map((v) => parseFloat(v.price.replace('$', ''))))
+      : salePrice || price
+
+  const isAnyInStock =
+    hasVariants && variants.length > 0
+      ? variants.some((v: any) => v.inStock === true)
+      : variants.length > 0
+        ? variants[0].inStock === true
+        : false
 
   const returnPolicy = {
     '@type': 'MerchantReturnPolicy',
@@ -85,15 +95,13 @@ export function ProductJsonLd({
 
   const offerBase = {
     priceCurrency: 'USD',
-    availability: 'https://schema.org/InStock',
+    availability: isAnyInStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
     url: productUrl,
     itemCondition: 'https://schema.org/NewCondition',
     seller: {
       '@type': 'Organization',
       name: 'Longevia Research',
     },
-    hasMerchantReturnPolicy: returnPolicy,
-    shippingDetails,
   }
 
   const productSchema: Record<string, unknown> = {
@@ -122,7 +130,7 @@ export function ProductJsonLd({
   }
 
   if (reviews && reviews.length > 0) {
-    productSchema.review = reviews.map(review => ({
+    productSchema.review = reviews.map((review) => ({
       '@type': 'Review',
       reviewRating: {
         '@type': 'Rating',
@@ -152,6 +160,8 @@ export function ProductJsonLd({
       '@type': 'Offer',
       ...offerBase,
       price: lowestPrice.toFixed(2),
+      hasMerchantReturnPolicy: returnPolicy,
+      shippingDetails,
     }
   }
 
