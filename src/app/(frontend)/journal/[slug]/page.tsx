@@ -8,6 +8,8 @@ import { getAllJournalPosts, getCmsJournalPost, getCmsJournalPostSlugs } from '@
 import { getFeaturedImageUrl, formatPostDate } from '@/lib/blog/postDisplay'
 import { estimateReadingTime } from '@/lib/blog/readingTime'
 import { toAbsoluteUrl } from '@/lib/utils'
+import { buildTitle } from '@/lib/seo/buildMetadata'
+import { resolveDescription } from '@/lib/seo/descriptionOverrides'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
@@ -32,8 +34,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     if (imageUrl && imageUrl.startsWith('/')) imageUrl = `${siteUrl}${imageUrl}`
 
     return {
-      title: staticPost.title,
-      description: staticPost.excerpt,
+      title: { absolute: buildTitle(staticPost.title) },
+      description: resolveDescription(`/journal/${slug}`, staticPost.excerpt),
       alternates: { canonical: postUrl },
       openGraph: {
         title: staticPost.title,
@@ -56,8 +58,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const imageUrl = toAbsoluteUrl(siteUrl, getFeaturedImageUrl(post))
 
   return {
-    title,
-    description,
+    title: { absolute: buildTitle(title) },
+    description: resolveDescription(`/journal/${slug}`, description),
     keywords: post.keywords ? post.keywords.split(',').map((k: string) => k.trim()).filter(Boolean) : undefined,
     alternates: { canonical: postUrl },
     openGraph: {

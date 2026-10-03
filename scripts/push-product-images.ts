@@ -80,7 +80,7 @@ async function run() {
       try {
         const media = await payload.create({
           collection: 'media',
-          data: { alt: `${product.name} research peptide vial — The Looksmaxxing Lab` },
+          data: { alt: `${product.name} research peptide vial — Longevia Research` },
           file: {
             data: fileData,
             mimetype,

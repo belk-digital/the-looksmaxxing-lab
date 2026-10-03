@@ -215,6 +215,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
                   transition={{ duration: 1, delay: 0.4 }}
                 >
                   THE COMPLETE COLLECTION
+                  <span className="sr-only"> — Research Peptides from Longevia Research</span>
                 </motion.h1>
              </div>
           </motion.div>

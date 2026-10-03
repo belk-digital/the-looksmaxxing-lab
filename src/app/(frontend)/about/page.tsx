@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import AboutClient from './AboutClient'
+import { buildTitle, buildDescription } from '@/lib/seo/buildMetadata'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
-  title: 'About Longevia Research | US Research Peptide Supplier',
-  description: 'Longevia Research is a premier US-based research peptide supplier. We synthesize compounds for cellular regeneration, metabolic study, and structural repair at ≥99% HPLC purity with independent COA verification.',
+  title: { absolute: buildTitle('About Us | US Research Peptide Supplier') },
+  description: buildDescription('Longevia Research is a US-based research peptide supplier. US-synthesized compounds, ≥99% HPLC purity, third-party COA with every order.'),
   alternates: {
     canonical: `${siteUrl}/about`,
   },

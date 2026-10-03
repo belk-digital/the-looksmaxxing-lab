@@ -25,7 +25,7 @@ import { submitAffiliateApplication, getMyAffiliateStatus } from './actions'
 import { useRouter } from 'next/navigation'
 
 const AFFILIATE_FAQS: FaqItem[] = [
-  { question: 'How does the affiliate program work?', answer: 'The Looks Maxxing Lab affiliate program is a referral-based marketing system where you earn commission by directing customers to our website. You receive unique tracking links and discount codes that identify purchases from your referrals. When someone uses your link or code to buy research peptides, you earn 15% commission on their order value. Our automated system tracks everything and calculates your earnings in real-time.' },
+  { question: 'How does the affiliate program work?', answer: 'The Longevia Research affiliate program is a referral-based marketing system where you earn commission by directing customers to our website. You receive unique tracking links and discount codes that identify purchases from your referrals. When someone uses your link or code to buy research peptides, you earn 15% commission on their order value. Our automated system tracks everything and calculates your earnings in real-time.' },
   { question: 'How do I get paid as an affiliate?', answer: 'Payouts are available via PayPal, Stripe, or bank transfer once your approved commissions reach $30. You control how and when you receive payments through your affiliate dashboard settings.' },
   { question: 'When do I receive commissions?', answer: 'Commissions are paid on the first week of each month for the previous month\'s approved sales (e.g., January sales are paid the first week of February), after a 14-day protection period.' },
   { question: 'Can beginners join this affiliate program?', answer: 'Yes! There is zero technical setup required, and we provide dedicated affiliate support. It is perfect for beginners exploring affiliate marketing.' },
@@ -152,6 +152,7 @@ export function AffiliatesLandingClient({ userStatus: initialStatus = 'guest' }:
                   transition={{ duration: 1, delay: 0.4 }}
                 >
                   PARTNERS
+                  <span className="sr-only"> — Longevia Research Affiliate Program</span>
                 </motion.h1>
              </div>
           </motion.div>
@@ -164,7 +165,7 @@ export function AffiliatesLandingClient({ userStatus: initialStatus = 'guest' }:
           >
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-ink mb-6 tracking-tight">Earn Passive Income Promoting Premium Research Peptides</h2>
             <p className="text-lg text-gray-500 font-light mb-8 leading-relaxed">
-              Partner with The Looks Maxxing Lab and unlock a lucrative affiliate marketing opportunity in the growing life sciences industry.
+              Partner with Longevia Research and unlock a lucrative affiliate marketing opportunity in the growing life sciences industry.
             </p>
             <Link href="#apply">
               <Button size="lg" className="h-14 px-10 rounded-full bg-ink text-white hover:bg-[#1a1a1a] hover:shadow-lg transition-all duration-300 font-bold tracking-wider uppercase text-sm border-none">
@@ -696,7 +697,7 @@ export function AffiliatesLandingClient({ userStatus: initialStatus = 'guest' }:
         {/* Disclaimer */}
         <div className="mt-16 pt-8 border-t border-gray-200">
           <p className="text-xs text-gray-400 text-center max-w-4xl mx-auto leading-relaxed">
-            <strong className="text-gray-500">Research Use Only:</strong> All The Looks Maxxing Lab products are manufactured and sold exclusively for laboratory research purposes. Not for human consumption, medical treatment, or athletic performance enhancement. This affiliate program is for marketing research compounds only. Affiliates must comply with all applicable laws and regulations.
+            <strong className="text-gray-500">Research Use Only:</strong> All Longevia Research products are manufactured and sold exclusively for laboratory research purposes. Not for human consumption, medical treatment, or athletic performance enhancement. This affiliate program is for marketing research compounds only. Affiliates must comply with all applicable laws and regulations.
           </p>
         </div>
       </section>

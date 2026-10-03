@@ -4,12 +4,13 @@ import { Metadata } from 'next'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { getShopProducts } from '../(shop)/actions'
+import { buildTitle, buildDescription } from '@/lib/seo/buildMetadata'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
-  title: 'Shop Research Peptides | 30+ COA-Verified Compounds',
-  description: 'Browse 30+ research-grade peptides and compounds - BPC-157, Semaglutide, Tirzepatide, NAD+, and more. Every batch ≥99% HPLC purity with Certificate of Analysis. Research use only.',
+  title: { absolute: buildTitle('Shop Research Peptides | COA-Verified') },
+  description: buildDescription('Browse 30+ research-grade peptides — BPC-157, Tirzepatide, NAD+ and more. Every batch ≥99% HPLC purity with a Certificate of Analysis.'),
   alternates: {
     canonical: `${siteUrl}/shop`,
   },

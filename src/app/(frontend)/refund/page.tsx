@@ -3,12 +3,13 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { EyebrowHeading } from '@/components/editorial/EyebrowHeading'
+import { buildDescription } from '@/lib/seo/buildMetadata'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
   title: 'Refund & Returns Policy',
-  description: 'Longevia Research operates an all-sales-final policy on research peptides. Learn why, and what is covered instead - free replacement for damaged, incorrect, or COA-mismatched orders.',
+  description: buildDescription("All peptide sales are final. Learn what's covered instead — free replacement for damaged, incorrect, or low-purity orders."),
   alternates: {
     canonical: `${siteUrl}/refund`,
   },

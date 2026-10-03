@@ -3,12 +3,13 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { EyebrowHeading } from '@/components/editorial/EyebrowHeading'
+import { buildDescription } from '@/lib/seo/buildMetadata'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
   title: 'Terms & Conditions',
-  description: 'Terms and Conditions governing the purchase and use of research-use-only peptides from Longevia Research, including account, ordering, shipping, and liability terms.',
+  description: buildDescription('Terms for purchasing research-use-only peptides from Longevia Research, covering ordering, shipping, and liability.'),
   alternates: {
     canonical: `${siteUrl}/terms`,
   },

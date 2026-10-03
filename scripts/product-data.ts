@@ -61,7 +61,7 @@ function mkVariant(sku: string, price: number, label: string, stock = 500): Prod
 const tirzepatide: ProductDef = {
   name: 'Tirzepatide',
   slug: 'tirzepatide',
-  seoTitle: 'Tirzepatide | Research-Grade GLP-1/GIP Peptide, COA-Verified | The Looksmaxxing Lab',
+  seoTitle: 'Tirzepatide | Research-Grade GLP-1/GIP Peptide, COA-Verified | Longevia Research',
   seoDescription: 'Buy 99%+ pure Tirzepatide research peptide, a dual GIP/GLP-1 receptor agonist. HPLC/LC-MS verified, COA-backed, lyophilized. Strictly for laboratory research use.',
   price: 60,
   hasVariants: true,
@@ -92,7 +92,7 @@ const tirzepatide: ProductDef = {
 const retatrutide: ProductDef = {
   name: 'GLP-3 (Rt)',
   slug: 'glp-3',
-  seoTitle: 'GLP-3 (Rt) | Research-Grade Triple Agonist Peptide | The Looksmaxxing Lab',
+  seoTitle: 'GLP-3 (Rt) | Research-Grade Triple Agonist Peptide | Longevia Research',
   seoDescription: 'Explore GLP-3 (Rt) — a high-purity, COA-verified research peptide targeting GLP-1, GIP, and glucagon receptors. Lyophilized, batch-tested. Research use only.',
   price: 100,
   hasVariants: true,
@@ -116,14 +116,14 @@ const retatrutide: ProductDef = {
     { question: 'What are GLP-3 (Rt) research applications?', answer: 'Research applications include metabolic pathway modeling, obesity biology investigation, hepatic glucose output studies, adipose tissue remodeling assays, and neuroendocrine signaling research.' },
     { question: 'How is GLP-3 (Rt) purity verified?', answer: 'Each batch undergoes independent third-party HPLC analysis to verify purity prior to release. We guarantee a minimum purity of ≥99% for all GLP-3 (Rt) products. Purity data is documented in the Certificate of Analysis supplied with every order.' },
     { question: 'How should GLP-3 (Rt) be stored?', answer: 'Lyophilized GLP-3 (Rt) should be stored at –20°C to maintain long-term stability. Avoid repeated freeze-thaw cycles. Once reconstituted, store at 4°C for a maximum of 7 days.' },
-    { question: 'Is GLP-3 (Rt) safe for human use?', answer: 'No. GLP-3 (Rt) from The Looksmaxxing Lab is strictly classified as a Research Use Only (RUO) compound. It is not approved by the FDA, EMA, or any regulatory authority for human consumption or therapeutic use.' },
+    { question: 'Is GLP-3 (Rt) safe for human use?', answer: 'No. GLP-3 (Rt) from Longevia Research is strictly classified as a Research Use Only (RUO) compound. It is not approved by the FDA, EMA, or any regulatory authority for human consumption or therapeutic use.' },
   ],
 }
 
 const glowBlend: ProductDef = {
   name: 'Glow Blend',
   slug: 'glow-blend',
-  seoTitle: 'Glow Blend | Research-Grade Skin & Collagen Peptide Blend | The Looksmaxxing Lab',
+  seoTitle: 'Glow Blend | Research-Grade Skin & Collagen Peptide Blend | Longevia Research',
   seoDescription: 'Glow Blend is a COA-verified research peptide blend formulated for skin regeneration, collagen synthesis, and extracellular matrix research. HPLC tested. Research use only.',
   price: 123,
   categoryNames: ['research use only'],
@@ -145,7 +145,7 @@ const glowBlend: ProductDef = {
 const cjcIpamorelin: ProductDef = {
   name: 'CJC-1295 / Ipamorelin',
   slug: 'cjc-ipamorelin',
-  seoTitle: 'CJC-1295 + Ipamorelin | Research-Grade GHS Peptide Blend | The Looksmaxxing Lab',
+  seoTitle: 'CJC-1295 + Ipamorelin | Research-Grade GHS Peptide Blend | Longevia Research',
   seoDescription: 'CJC-1295 + Ipamorelin — COA-verified research peptide blend targeting GHRH and ghrelin receptors for growth hormone secretagogue research. HPLC tested. Research use only.',
   price: 73,
   hasVariants: true,
@@ -172,7 +172,7 @@ const cjcIpamorelin: ProductDef = {
 const epithalon: ProductDef = {
   name: 'Epithalon',
   slug: 'epithalon',
-  seoTitle: 'Epithalon | Research-Grade Longevity & Telomere Peptide | The Looksmaxxing Lab',
+  seoTitle: 'Epithalon | Research-Grade Longevity & Telomere Peptide | Longevia Research',
   seoDescription: 'Epithalon (Epitalon) — a high-purity, COA-verified research tetrapeptide for telomere biology, cellular aging, and longevity research. Third-party HPLC tested. Research use only.',
   price: 58,
   hasVariants: true,
@@ -199,7 +199,7 @@ const epithalon: ProductDef = {
 const glutathione: ProductDef = {
   name: 'Glutathione',
   slug: 'glutathione',
-  seoTitle: 'Glutathione | Premium Laboratory-Grade Antioxidant | COA-Verified | The Looksmaxxing Lab',
+  seoTitle: 'Glutathione | Premium Laboratory-Grade Antioxidant | COA-Verified | Longevia Research',
   seoDescription: 'Buy research-grade reduced Glutathione compound with COA-verified 99%+ purity. HPLC-tested, batch-traceable, research use only.',
   price: 58,
   hasVariants: true,
@@ -226,7 +226,7 @@ const glutathione: ProductDef = {
 const ipamorelin: ProductDef = {
   name: 'Ipamorelin',
   slug: 'ipamorelin',
-  seoTitle: 'Ipamorelin | Research-Grade Growth Hormone Secretagogue | COA-Verified | The Looksmaxxing Lab',
+  seoTitle: 'Ipamorelin | Research-Grade Growth Hormone Secretagogue | COA-Verified | Longevia Research',
   seoDescription: 'Buy Ipamorelin research-grade growth hormone secretagogue peptide with COA-verified 99%+ purity. HPLC-tested, batch-traceable, research use only.',
   price: 49,
   hasVariants: true,
@@ -252,7 +252,7 @@ const ipamorelin: ProductDef = {
 const motsC: ProductDef = {
   name: 'MOTS-C',
   slug: 'mots-c',
-  seoTitle: 'MOTS-C | Research-Grade Mitochondrial Peptide | COA-Verified | The Looksmaxxing Lab',
+  seoTitle: 'MOTS-C | Research-Grade Mitochondrial Peptide | COA-Verified | Longevia Research',
   seoDescription: 'Buy research-grade MOTS-C with COA-verified 99%+ purity. HPLC-tested, US-based, lab-quality mitochondrial peptide for research use only.',
   price: 68,
   hasVariants: true,
@@ -279,7 +279,7 @@ const motsC: ProductDef = {
 const mt2: ProductDef = {
   name: 'Melanotan II',
   slug: 'melanotan-ii',
-  seoTitle: 'MT-2 10mg | Research-Grade Melanocortin Peptide (Melanotan 2) | The Looksmaxxing Lab',
+  seoTitle: 'MT-2 10mg | Research-Grade Melanocortin Peptide (Melanotan 2) | Longevia Research',
   seoDescription: 'MT-2 (Melanotan 2) — a high-purity, COA-verified melanocortin research peptide targeting MC1R and MC4R receptors. HPLC tested, lyophilized. Research use only.',
   price: 53,
   categoryNames: ['research use only'],
@@ -287,7 +287,7 @@ const mt2: ProductDef = {
   productDetailsDescription: `MT-2 (Melanotan 2) is a synthetic cyclic heptapeptide with the amino acid sequence Ac-Nle-c[Asp-His-D-Phe-Arg-Trp-Lys]-NH₂. With a molecular weight of approximately 1024.2 g/mol, it was developed as a metabolically stable analogue of α-MSH. MT-2 exhibits agonist activity at multiple melanocortin receptor subtypes (MCR), binding with high affinity to MC1R — the primary receptor mediating melanogenesis — and demonstrating significant activity at MC3R, MC4R, and MC5R.`,
   researchFocusDescription: `The primary research application is its role as a pharmacological probe for melanocortin receptor-mediated pigmentation pathways. MC1R is the canonical receptor governing eumelanin synthesis in melanocytes. Beyond pigmentation, MT-2's activity at MC4R has made it relevant in preclinical research examining hypothalamic energy homeostasis signaling. Researchers use MT-2 as a tool to probe receptor-dependent versus receptor-independent effects in comparative pharmacology designs.`,
   qualityPurityDescription: `Every batch of MT-2 undergoes independent third-party HPLC analysis prior to release. We guarantee a minimum purity of ≥99% for all MT-2 preparations. Third-party testing eliminates the confirmation bias inherent in manufacturer-performed testing and provides researchers with an independently defensible purity claim.`,
-  complianceNoticeDescription: `MT-2 10mg (Melanotan 2) is manufactured and supplied exclusively for scientific research purposes under Research Use Only (RUO) classification. It is not approved for human consumption, veterinary treatment, cosmetic application, or therapeutic use of any kind. The Looksmaxxing Lab makes no therapeutic or cosmetic claims in connection with MT-2.`,
+  complianceNoticeDescription: `MT-2 10mg (Melanotan 2) is manufactured and supplied exclusively for scientific research purposes under Research Use Only (RUO) classification. It is not approved for human consumption, veterinary treatment, cosmetic application, or therapeutic use of any kind. Longevia Research makes no therapeutic or cosmetic claims in connection with MT-2.`,
   faqs: [
     { question: 'What is MT-2 (Melanotan 2)?', answer: 'MT-2 is a synthetic cyclic heptapeptide analogue of alpha-melanocyte stimulating hormone (α-MSH) used in laboratory research to study melanocortin receptor signaling, pigmentation biology, and neuroendocrine pathways. Classified Research Use Only.' },
     { question: 'How does MT-2 work?', answer: 'MT-2 activates melanocortin receptors (MC1R, MC3R, MC4R, MC5R), triggering intracellular cAMP signaling cascades. MC1R activation in melanocytes initiates melanin production through MITF upregulation.' },
@@ -301,7 +301,7 @@ const mt2: ProductDef = {
 const nadPlus: ProductDef = {
   name: 'NAD+',
   slug: 'nad-plus',
-  seoTitle: 'NAD+ | Research-Grade Cellular Energy Compound | The Looksmaxxing Lab',
+  seoTitle: 'NAD+ | Research-Grade Cellular Energy Compound | Longevia Research',
   seoDescription: 'NAD+ — high-purity, COA-verified Nicotinamide Adenine Dinucleotide for advanced cellular energy, mitochondrial function, and longevity research. Research use only.',
   price: 63,
   hasVariants: true,
@@ -321,14 +321,14 @@ const nadPlus: ProductDef = {
     { question: 'What are NAD+ research applications?', answer: 'Applications include cellular bioenergetics assays, mitochondrial respiration studies, sirtuin enzyme kinetics, PARP activity and DNA repair modeling, NAD+ pool quantification, and metabolic flux analysis.' },
     { question: 'What is the difference between NAD+ and NMN?', answer: 'NAD+ is the biologically active coenzyme directly involved in cellular redox reactions. NMN is a precursor molecule that cells convert to NAD+ via enzymatic synthesis. They are not interchangeable as research substrates.' },
     { question: 'How should NAD+ be stored?', answer: 'Store lyophilized NAD+ at –20°C, dry and protected from light. Once reconstituted in sterile water or PBS, use within 24–48 hours or store at 4°C.' },
-    { question: 'Is NAD+ approved for human use?', answer: 'No. NAD+ from The Looksmaxxing Lab is a Research Use Only compound not approved by the FDA for human consumption or therapeutic use.' },
+    { question: 'Is NAD+ approved for human use?', answer: 'No. NAD+ from Longevia Research is a Research Use Only compound not approved by the FDA for human consumption or therapeutic use.' },
   ],
 }
 
 const selank: ProductDef = {
   name: 'Selank',
   slug: 'selank',
-  seoTitle: 'Selank | Research-Grade Nootropic Neuropeptide, COA-Verified | The Looksmaxxing Lab',
+  seoTitle: 'Selank | Research-Grade Nootropic Neuropeptide, COA-Verified | Longevia Research',
   seoDescription: 'Buy 99%+ pure Selank research peptide, a synthetic tuftsin analog studied for neurotransmitter regulation, GABA-A modulation, and neural signaling research. Research use only.',
   price: 58,
   categoryNames: ['research use only'],
@@ -350,7 +350,7 @@ const selank: ProductDef = {
 const semax: ProductDef = {
   name: 'Semax',
   slug: 'semax',
-  seoTitle: 'Semax | Research-Grade Nootropic Peptide, COA-Verified | The Looksmaxxing Lab',
+  seoTitle: 'Semax | Research-Grade Nootropic Peptide, COA-Verified | Longevia Research',
   seoDescription: 'Buy 99%+ pure Semax research peptide, a synthetic ACTH analog studied for neurobiology and brain signaling research. HPLC/ESI-MS verified. Research use only.',
   price: 58,
   hasVariants: true,
@@ -377,7 +377,7 @@ const semax: ProductDef = {
 const tesamorelin: ProductDef = {
   name: 'Tesamorelin',
   slug: 'tesamorelin',
-  seoTitle: 'Tesamorelin | Research-Grade GHRH Analog Peptide, COA-Verified | The Looksmaxxing Lab',
+  seoTitle: 'Tesamorelin | Research-Grade GHRH Analog Peptide, COA-Verified | Longevia Research',
   seoDescription: 'Buy 99%+ pure Tesamorelin research peptide, a Growth Hormone Releasing Hormone (GHRH) analog. HPLC/LC-MS verified, COA-backed. Research use only.',
   price: 93,
   hasVariants: true,
@@ -408,7 +408,7 @@ const tesamorelin: ProductDef = {
 const bacWater: ProductDef = {
   name: 'BAC Water',
   slug: 'bac-water',
-  seoTitle: 'Bacteriostatic Water | Sterile Reconstitution Solvent | The Looksmaxxing Lab',
+  seoTitle: 'Bacteriostatic Water | Sterile Reconstitution Solvent | Longevia Research',
   seoDescription: 'Buy bacteriostatic water for peptide reconstitution. 0.9% benzyl alcohol preserved, sterile filtered. Essential laboratory supply for research use only.',
   price: 8,
   hasVariants: true,
@@ -432,7 +432,7 @@ const bacWater: ProductDef = {
 const bpc157: ProductDef = {
   name: 'BPC-157',
   slug: 'bpc-157',
-  seoTitle: 'BPC-157 | Research-Grade Body Protection Compound Peptide | The Looksmaxxing Lab',
+  seoTitle: 'BPC-157 | Research-Grade Body Protection Compound Peptide | Longevia Research',
   seoDescription: 'Buy 99%+ pure BPC-157 research peptide, a pentadecapeptide derived from human gastric juice. HPLC verified, COA-backed. Research use only.',
   price: 46,
   hasVariants: true,
@@ -457,7 +457,7 @@ const bpc157: ProductDef = {
 const bpcTb500: ProductDef = {
   name: 'BPC-157 + TB-500',
   slug: 'bpc-tb-500',
-  seoTitle: 'BPC-157 + TB-500 Blend | Research-Grade Peptide Combination | The Looksmaxxing Lab',
+  seoTitle: 'BPC-157 + TB-500 Blend | Research-Grade Peptide Combination | Longevia Research',
   seoDescription: 'BPC-157 + TB-500 blend — COA-verified dual peptide for tissue repair and regeneration research. HPLC tested, lyophilized. Research use only.',
   price: 83,
   hasVariants: true,
@@ -481,7 +481,7 @@ const bpcTb500: ProductDef = {
 const cjc1295NoDac: ProductDef = {
   name: 'CJC-1295 No DAC',
   slug: 'cjc-1295-no-dac',
-  seoTitle: 'CJC-1295 No DAC | Research-Grade GHRH Analog | The Looksmaxxing Lab',
+  seoTitle: 'CJC-1295 No DAC | Research-Grade GHRH Analog | Longevia Research',
   seoDescription: 'CJC-1295 No DAC (Modified GRF 1-29) — COA-verified GHRH analog research peptide. HPLC tested, 99%+ purity. Research use only.',
   price: 73,
   categoryNames: ['research use only'],
@@ -500,7 +500,7 @@ const cjc1295NoDac: ProductDef = {
 const ghkCu: ProductDef = {
   name: 'GHK-CU',
   slug: 'ghk-cu',
-  seoTitle: 'GHK-Cu | Research-Grade Copper Peptide | COA-Verified | The Looksmaxxing Lab',
+  seoTitle: 'GHK-Cu | Research-Grade Copper Peptide | COA-Verified | Longevia Research',
   seoDescription: 'Buy GHK-Cu research-grade copper peptide complex. COA-verified, HPLC tested. Studied for wound healing and tissue remodeling research. Research use only.',
   price: 46,
   hasVariants: true,
@@ -517,14 +517,14 @@ const ghkCu: ProductDef = {
   faqs: [
     { question: 'What is GHK-Cu?', answer: 'GHK-Cu is a naturally occurring tripeptide-copper complex (Gly-His-Lys + Cu²⁺) studied for wound healing, collagen synthesis, and tissue remodeling in preclinical research.' },
     { question: 'What makes GHK-Cu different from GHK?', answer: 'The copper(II) ion is critical for biological activity in research models. Uncomplexed GHK tripeptide does not demonstrate the same experimental profile.' },
-    { question: 'Is GHK-Cu approved for human use?', answer: 'No. GHK-Cu from The Looksmaxxing Lab is a Research Use Only compound not approved for human or cosmetic use.' },
+    { question: 'Is GHK-Cu approved for human use?', answer: 'No. GHK-Cu from Longevia Research is a Research Use Only compound not approved for human or cosmetic use.' },
   ],
 }
 
 const kisspeptin: ProductDef = {
   name: 'Kisspeptin',
   slug: 'kisspeptin',
-  seoTitle: 'Kisspeptin | Research-Grade Neuroendocrine Peptide | The Looksmaxxing Lab',
+  seoTitle: 'Kisspeptin | Research-Grade Neuroendocrine Peptide | Longevia Research',
   seoDescription: 'Buy Kisspeptin 10mg research peptide. COA-verified, HPLC tested. Studied for reproductive endocrinology and GnRH signaling. Research use only.',
   price: 68,
   categoryNames: ['research use only'],
@@ -543,7 +543,7 @@ const kisspeptin: ProductDef = {
 const klowBlend: ProductDef = {
   name: 'KLOW Blend',
   slug: 'klow-blend',
-  seoTitle: 'KLOW Blend | Premium Research-Grade Peptide Blend | COA Verified | The Looksmaxxing Lab',
+  seoTitle: 'KLOW Blend | Premium Research-Grade Peptide Blend | COA Verified | Longevia Research',
   seoDescription: 'Buy KLOW Blend, a laboratory-grade regenerative peptide blend with COA-verified purity. HPLC-tested, batch-traceable, research use only.',
   price: 128,
   categoryNames: ['research use only'],
@@ -566,7 +566,7 @@ const klowBlend: ProductDef = {
 const kpv: ProductDef = {
   name: 'KPV',
   slug: 'kpv',
-  seoTitle: 'KPV | Research-Grade Anti-Inflammatory Peptide | The Looksmaxxing Lab',
+  seoTitle: 'KPV | Research-Grade Anti-Inflammatory Peptide | Longevia Research',
   seoDescription: 'Buy KPV 10mg research peptide — alpha-MSH C-terminal tripeptide studied for anti-inflammatory signaling. COA-verified, HPLC tested. Research use only.',
   price: 63,
   categoryNames: ['research use only'],
@@ -585,7 +585,7 @@ const kpv: ProductDef = {
 const ll37: ProductDef = {
   name: 'LL-37',
   slug: 'll-37',
-  seoTitle: 'LL-37 | Research-Grade Antimicrobial Peptide | The Looksmaxxing Lab',
+  seoTitle: 'LL-37 | Research-Grade Antimicrobial Peptide | Longevia Research',
   seoDescription: 'Buy LL-37 research peptide — human cathelicidin antimicrobial peptide. COA-verified, HPLC tested, 99%+ purity. Research use only.',
   price: 63,
   categoryNames: ['research use only'],
@@ -604,7 +604,7 @@ const ll37: ProductDef = {
 const lipoC: ProductDef = {
   name: 'Lipo-C',
   slug: 'lipo-c',
-  seoTitle: 'Lipo-C | Research-Grade Lipotropic Compound | The Looksmaxxing Lab',
+  seoTitle: 'Lipo-C | Research-Grade Lipotropic Compound | Longevia Research',
   seoDescription: 'Lipo-C research-grade lipotropic compound for laboratory investigation of lipid metabolism pathways. Contact for pricing. Research use only.',
   price: 0,
   status: 'draft',
@@ -623,7 +623,7 @@ const lipoC: ProductDef = {
 const melanotanI: ProductDef = {
   name: 'Melanotan I',
   slug: 'melanotan-i',
-  seoTitle: 'Melanotan I | Research-Grade MC1R-Selective Peptide | The Looksmaxxing Lab',
+  seoTitle: 'Melanotan I | Research-Grade MC1R-Selective Peptide | Longevia Research',
   seoDescription: 'Buy Melanotan I (Afamelanotide) 10mg research peptide. MC1R-selective melanocortin agonist. COA-verified, HPLC tested. Research use only.',
   price: 53,
   categoryNames: ['research use only'],
@@ -642,7 +642,7 @@ const melanotanI: ProductDef = {
 const oxytocin: ProductDef = {
   name: 'Oxytocin',
   slug: 'oxytocin',
-  seoTitle: 'Oxytocin | Research-Grade Neuropeptide | The Looksmaxxing Lab',
+  seoTitle: 'Oxytocin | Research-Grade Neuropeptide | Longevia Research',
   seoDescription: 'Buy Oxytocin 10mg research-grade neuropeptide. COA-verified, HPLC tested, 99%+ purity. Studied for social behavior and neuroendocrine research. Research use only.',
   price: 63,
   categoryNames: ['research use only'],
@@ -654,14 +654,14 @@ const oxytocin: ProductDef = {
   faqs: [
     { question: 'What is Oxytocin?', answer: 'Oxytocin is a cyclic nonapeptide neuropeptide studied for its roles in social bonding, stress response regulation, and reproductive biology in preclinical research.' },
     { question: 'What are Oxytocin research applications?', answer: 'Applications include behavioral neuroscience, HPA axis studies, reproductive biology, uterine pharmacology, and neuropeptide receptor binding assays.' },
-    { question: 'Is Oxytocin approved for human use?', answer: 'No. Oxytocin from The Looksmaxxing Lab is a Research Use Only compound not approved for human consumption.' },
+    { question: 'Is Oxytocin approved for human use?', answer: 'No. Oxytocin from Longevia Research is a Research Use Only compound not approved for human consumption.' },
   ],
 }
 
 const semaglutide: ProductDef = {
   name: 'Semaglutide',
   slug: 'semaglutide',
-  seoTitle: 'Semaglutide | Research-Grade GLP-1 Receptor Agonist | The Looksmaxxing Lab',
+  seoTitle: 'Semaglutide | Research-Grade GLP-1 Receptor Agonist | Longevia Research',
   seoDescription: 'Buy Semaglutide research peptide — high-purity GLP-1 receptor agonist. COA-verified, HPLC tested. Multiple dosages available. Research use only.',
   price: 48,
   hasVariants: true,
@@ -682,14 +682,14 @@ const semaglutide: ProductDef = {
     { question: 'How is Semaglutide different from Tirzepatide?', answer: 'Semaglutide is a single GLP-1 receptor agonist. Tirzepatide is a dual GIP/GLP-1 agonist. Researchers compare them to study single vs. dual receptor activation in metabolic models.' },
     { question: 'What are Semaglutide research applications?', answer: 'Applications include GLP-1 receptor pharmacology, incretin biology, glucose homeostasis, insulin secretion pathway research, and comparative agonist studies.' },
     { question: 'How should Semaglutide be stored?', answer: 'Store lyophilized Semaglutide at -20°C, protected from moisture and light. Once reconstituted, store at 4°C and use within 7 days.' },
-    { question: 'Is Semaglutide approved for human use?', answer: 'No. Semaglutide from The Looksmaxxing Lab is a Research Use Only compound not approved by the FDA for human consumption.' },
+    { question: 'Is Semaglutide approved for human use?', answer: 'No. Semaglutide from Longevia Research is a Research Use Only compound not approved by the FDA for human consumption.' },
   ],
 }
 
 const semaxSelank: ProductDef = {
   name: 'Semax / Selank',
   slug: 'semax-selank',
-  seoTitle: 'Semax + Selank Blend | Research-Grade Nootropic Peptide Combination | The Looksmaxxing Lab',
+  seoTitle: 'Semax + Selank Blend | Research-Grade Nootropic Peptide Combination | Longevia Research',
   seoDescription: 'Semax + Selank 10/10mg blend — dual nootropic neuropeptide research compound. COA-verified, HPLC tested. Research use only.',
   price: 78,
   categoryNames: ['research use only'],
@@ -708,7 +708,7 @@ const semaxSelank: ProductDef = {
 const sermorelin: ProductDef = {
   name: 'Sermorelin',
   slug: 'sermorelin',
-  seoTitle: 'Sermorelin | Research-Grade GHRH Analog Peptide | The Looksmaxxing Lab',
+  seoTitle: 'Sermorelin | Research-Grade GHRH Analog Peptide | Longevia Research',
   seoDescription: 'Buy Sermorelin research peptide — GHRH(1-29) analog for growth hormone research. COA-verified, HPLC tested, 99%+ purity. Research use only.',
   price: 73,
   hasVariants: true,
@@ -725,14 +725,14 @@ const sermorelin: ProductDef = {
   faqs: [
     { question: 'What is Sermorelin?', answer: 'Sermorelin is a synthetic GHRH(1-29) peptide — the biologically active fragment of human growth hormone releasing hormone. It is the reference standard for GHRH research.' },
     { question: 'What is the difference between Sermorelin and CJC-1295?', answer: 'Sermorelin is unmodified GHRH(1-29) with native-like kinetics. CJC-1295 has DPP-IV-resistant modifications for extended half-life. Sermorelin mirrors physiological GHRH signaling.' },
-    { question: 'Is Sermorelin approved for human use?', answer: 'No. Sermorelin from The Looksmaxxing Lab is a Research Use Only compound.' },
+    { question: 'Is Sermorelin approved for human use?', answer: 'No. Sermorelin from Longevia Research is a Research Use Only compound.' },
   ],
 }
 
 const tb500: ProductDef = {
   name: 'TB-500',
   slug: 'tb-500',
-  seoTitle: 'TB-500 | Research-Grade Thymosin Beta-4 Fragment | The Looksmaxxing Lab',
+  seoTitle: 'TB-500 | Research-Grade Thymosin Beta-4 Fragment | Longevia Research',
   seoDescription: 'Buy TB-500 research peptide — Thymosin Beta-4 active fragment. COA-verified, HPLC tested, 99%+ purity. Research use only.',
   price: 68,
   hasVariants: true,
@@ -756,7 +756,7 @@ const tb500: ProductDef = {
 const tesaIpa: ProductDef = {
   name: 'Tesamorelin / Ipamorelin',
   slug: 'tesa-ipa',
-  seoTitle: 'Tesamorelin + Ipamorelin Blend | Research-Grade GHS Combination | The Looksmaxxing Lab',
+  seoTitle: 'Tesamorelin + Ipamorelin Blend | Research-Grade GHS Combination | Longevia Research',
   seoDescription: 'Tesamorelin + Ipamorelin blend — dual GHRH/GHSR research peptide combination. COA-verified, HPLC tested. Research use only.',
   price: 88,
   hasVariants: true,

@@ -86,6 +86,7 @@ export default function JournalIndexPage({ posts }: { posts: UnifiedJournalPost[
                   transition={{ duration: 1, delay: 0.4 }}
                 >
                   THE JOURNAL
+                  <span className="sr-only"> — Longevia Research Peptide Research Journal</span>
                 </motion.h1>
              </div>
           </motion.div>

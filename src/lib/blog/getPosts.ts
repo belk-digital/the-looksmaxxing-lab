@@ -72,6 +72,24 @@ export async function getCmsJournalPostSlugs(): Promise<string[]> {
   }
 }
 
+export async function getCmsJournalPostEntries(): Promise<Array<{ slug: string; updatedAt: string | null }>> {
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const { docs } = await payload.find({
+      collection: 'blog-posts',
+      where: { status: { equals: 'published' } },
+      limit: 500,
+      depth: 0,
+    })
+    return docs
+      .filter((d: any) => d.slug)
+      .map((d: any) => ({ slug: d.slug as string, updatedAt: (d.updatedAt || d.publishedAt || null) as string | null }))
+  } catch (err) {
+    console.error('Failed to fetch CMS blog post entries', err)
+    return []
+  }
+}
+
 function resolveProductImage(product: any): string {
   const topLevel = product.images?.[0]?.image?.url
   if (topLevel) return topLevel

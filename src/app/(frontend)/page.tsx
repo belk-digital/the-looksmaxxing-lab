@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   title: {
     absolute: 'Longevia Research | Premium Research Peptides (US-Made)',
   },
-  description: 'Elevate your laboratory research with premium, US-synthesized peptides. We guarantee strict ≥99% HPLC purity through independent 3rd-party testing. Discover compounds for cellular regeneration, metabolic study, and structural repair with full COAs provided.',
+  description: 'Premium US-synthesized research peptides — ≥99% HPLC purity with third-party COA on every batch. 30+ compounds for laboratory research use only.',
   alternates: {
     canonical: '/',
   },

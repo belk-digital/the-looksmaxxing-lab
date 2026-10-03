@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
+import { buildTitle, buildDescription } from '@/lib/seo/buildMetadata'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
-  title: 'Certificates of Analysis (COA) | Third-Party Lab Verified',
-  description: 'Browse and download Certificates of Analysis for all research peptides. Every batch is independently HPLC tested with ≥99% purity verification. Full batch traceability.',
+  title: { absolute: buildTitle('Certificates of Analysis (COA)') },
+  description: buildDescription('Browse and download Certificates of Analysis for every batch. Independently HPLC-tested at ≥99% purity. Full batch traceability.'),
   alternates: {
     canonical: `${siteUrl}/certificates`,
   },

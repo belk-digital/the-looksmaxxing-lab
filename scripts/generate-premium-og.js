@@ -6,7 +6,7 @@ const configs = [
   {
     name: 'og-home.png',
     bg: 'public/featured-images/vials-on-magazine.webp',
-    headline: 'The Looksmaxxing Lab',
+    headline: 'Longevia Research',
     subtext: 'Research-Grade Peptides · COA-Verified · ≥99% HPLC Purity'
   },
   {
@@ -18,7 +18,7 @@ const configs = [
   {
     name: 'og-about.png',
     bg: 'public/featured-images/us-based-synthesis.webp',
-    headline: 'About The Looksmaxxing Lab',
+    headline: 'About Longevia Research',
     subtext: 'US Research Peptide Supplier · Founded 2024'
   },
   {

@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { Metadata } from 'next'
+import { buildTitle } from '@/lib/seo/buildMetadata'
+import { resolveDescription } from '@/lib/seo/descriptionOverrides'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -37,9 +39,27 @@ export async function generateMetadata({
   }
 
   const product = docs[0]
-  const rawTitle = product.seoTitle || product.name || 'Product'
-  const title = rawTitle.replace(/\s*\|\s*Longevia Research\s*$/i, '').trim()
-  const description = product.seoDescription || product.description?.substring(0, 160) || ''
+  const rawSeoTitle: string = product.seoTitle || product.name || 'Product'
+  const [firstSegment, ...restSegments] = rawSeoTitle.split('|').map((s) => s.trim())
+  // Sibling vial/spray/kit listings can share an identical seoTitle head (e.g. both
+  // Dihexa variants start "Dihexa 10mg | ..."). buildTitle only guarantees the first
+  // segment survives truncation, so if this product's own slug/name marks it as a
+  // non-default format and that word isn't already in the first segment, fold it in —
+  // otherwise two sibling pages can truncate down to the exact same title.
+  const FORMAT_HINTS: Array<[RegExp, string]> = [
+    [/spray/i, 'Spray'],
+    [/\bkits?\b/i, 'Kit'],
+    [/\bbundle\b/i, 'Bundle'],
+  ]
+  const productIdentity = `${product.slug || ''} ${product.name || ''}`
+  let titleFirstSegment = firstSegment
+  for (const [re, label] of FORMAT_HINTS) {
+    if (re.test(productIdentity) && !re.test(titleFirstSegment)) {
+      titleFirstSegment = `${titleFirstSegment} ${label}`
+    }
+  }
+  const title = buildTitle([titleFirstSegment, ...restSegments].join(' | '))
+  const description = resolveDescription(`/products/${slug}`, product.seoDescription || product.description || '')
   const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(
     /\/+$/,
     '',
@@ -65,7 +85,7 @@ export async function generateMetadata({
       : product.salePrice || product.price || 0
 
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: {
       canonical: productUrl,

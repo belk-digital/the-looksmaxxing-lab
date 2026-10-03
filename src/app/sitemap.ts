@@ -2,6 +2,13 @@ import type { MetadataRoute } from 'next'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { JOURNAL_POSTS } from '@/data/journal-posts'
+import { getCmsJournalPostEntries } from '@/lib/blog/getPosts'
+
+// Regenerate at most every 3h so newly published products/posts reach the sitemap without a redeploy.
+export const revalidate = 10800
+
+// Product slugs that 301 to another URL in next.config.ts. Redirected URLs must not be in the sitemap.
+const REDIRECTED_PRODUCT_SLUGS = new Set(['bac-water', 'retatrutide'])
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
@@ -102,7 +109,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
 
     productPages = products
-      .filter((p) => p.slug)
+      .filter((p) => p.slug && !REDIRECTED_PRODUCT_SLUGS.has(p.slug))
       .map((p) => ({
         url: `${siteUrl}/products/${p.slug}`,
         lastModified: new Date(p.updatedAt),
@@ -129,21 +136,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   try {
-    const { docs: cmsPosts } = await payload.find({
-      collection: 'blog-posts',
-      where: { status: { equals: 'published' } },
-      limit: 500,
-      depth: 0,
-    })
-    const seenUrls = new Set(journalPages.map((e) => e.url))
-    for (const post of cmsPosts) {
-      if (!post.slug) continue
-      const url = `${siteUrl}/journal/${post.slug}`
-      if (seenUrls.has(url)) continue
-      seenUrls.add(url)
+    const cmsEntries = await getCmsJournalPostEntries()
+    const seen = new Set(journalPages.map((j) => j.url))
+    for (const entry of cmsEntries) {
+      const url = `${siteUrl}/journal/${entry.slug}`
+      if (seen.has(url)) continue
+      seen.add(url)
       journalPages.push({
         url,
-        lastModified: new Date(post.updatedAt),
+        ...(entry.updatedAt ? { lastModified: new Date(entry.updatedAt) } : {}),
         changeFrequency: 'monthly' as const,
         priority: 0.6,
       })

@@ -11,6 +11,7 @@ import config from '@payload-config'
 
 export const metadata = {
   title: 'My Account | Longevia Research',
+  robots: { index: false, follow: false },
 }
 
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {

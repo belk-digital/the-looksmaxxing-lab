@@ -129,6 +129,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
               '@context': 'https://schema.org',
               '@type': 'WebSite',
               name: 'Longevia Research',
+              alternateName: 'Longevia',
               url: siteUrl,
               potentialAction: {
                 '@type': 'SearchAction',

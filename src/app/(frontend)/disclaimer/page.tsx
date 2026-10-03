@@ -3,12 +3,13 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { EyebrowHeading } from '@/components/editorial/EyebrowHeading'
+import { buildDescription } from '@/lib/seo/buildMetadata'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
   title: 'Medical & Research-Use Disclaimer',
-  description: 'All content and products from Longevia Research are for research use only. Not for human or veterinary use, diagnosis, or treatment. No medical advice is provided.',
+  description: buildDescription('All Longevia Research content and products are for research use only — not for human or veterinary use. No medical advice provided.'),
   alternates: {
     canonical: `${siteUrl}/disclaimer`,
   },

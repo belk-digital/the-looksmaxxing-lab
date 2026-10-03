@@ -2,6 +2,7 @@ import React from 'react'
 import { Metadata } from 'next'
 import JournalClient from './JournalClient'
 import { getAllJournalPosts } from '@/lib/blog/getPosts'
+import { buildTitle, buildDescription } from '@/lib/seo/buildMetadata'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
@@ -10,8 +11,8 @@ const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch
 export const revalidate = 10800
 
 export const metadata: Metadata = {
-  title: 'Science Journal | Research & Clinical Guidelines',
-  description: 'Documented purity, detailed guidelines, and emerging studies in advanced peptide science.',
+  title: { absolute: buildTitle('Research Peptide Journal') },
+  description: buildDescription('Evidence-graded guides on peptide chemistry, analytical testing, COA literacy, and the regulatory landscape. Research use only.'),
   alternates: {
     canonical: `${siteUrl}/journal`,
   },

@@ -29,7 +29,7 @@ async function run() {
   console.log('Uploading new BPC-157 image...')
   const media = await payload.create({
     collection: 'media',
-    data: { alt: 'BPC-157 research peptide vial — The Looksmaxxing Lab' },
+    data: { alt: 'BPC-157 research peptide vial — Longevia Research' },
     file: {
       data: fileData,
       mimetype: 'image/png',

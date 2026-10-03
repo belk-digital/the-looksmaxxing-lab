@@ -278,12 +278,12 @@ export function CheckoutClient() {
         if (!codeToApply) toast.success(result.description || 'Coupon applied successfully')
       } else {
         setAppliedCoupon(null)
-        if (!codeToApply) toast.error(result.error || 'Invalid coupon code')
+        toast.error(result.error || 'Invalid coupon code')
         if (codeToApply) setCoupon(null)
       }
     } catch (err) {
       setAppliedCoupon(null)
-      if (!codeToApply) toast.error('Failed to verify coupon')
+      toast.error('Failed to verify coupon')
       if (codeToApply) setCoupon(null)
     } finally {
       setIsVerifyingCoupon(false)

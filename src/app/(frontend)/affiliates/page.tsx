@@ -1,10 +1,11 @@
 import { AffiliatesLandingClient } from './AffiliatesLandingClient'
+import { buildTitle, buildDescription } from '@/lib/seo/buildMetadata'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata = {
-  title: 'Affiliate Program | Earn 15% Commission on Research Peptides',
-  description: 'Join Longevia Research affiliate program and earn 15% commission on every referred sale. Real-time tracking, fast payouts, and dedicated support for research peptide affiliates.',
+  title: { absolute: buildTitle('Affiliate Program | Earn 15% Commission') },
+  description: buildDescription('Join the Longevia Research affiliate program — earn 15% commission per referred sale. Real-time tracking and fast payouts.'),
   alternates: {
     canonical: `${siteUrl}/affiliates`,
   },
