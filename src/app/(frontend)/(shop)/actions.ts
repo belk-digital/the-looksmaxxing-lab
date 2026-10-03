@@ -169,6 +169,19 @@ export async function addToWishlist(productId: string | number, providedVariantS
   }
 }
 
+async function findProductByRef(payload: any, ref: any) {
+  try {
+    return await payload.findByID({ collection: 'products', id: ref })
+  } catch {
+    // Some cart lines store the slug as the product id
+    if (typeof ref === 'string' && ref) {
+      const res = await payload.find({ collection: 'products', where: { slug: { equals: ref } }, limit: 1 })
+      return res.docs[0] || null
+    }
+    return null
+  }
+}
+
 async function calculateCartTotals(cartItems: any[], payload: any, coupon?: any) {
   let eligibleSubtotal = 0;
   let totalSubtotal = 0;
@@ -176,7 +189,10 @@ async function calculateCartTotals(cartItems: any[], payload: any, coupon?: any)
   for (const item of cartItems) {
     let product = item.product;
     if (typeof product !== 'object' || product === null) {
-      product = await payload.findByID({ collection: 'products', id: product as number });
+      product = await findProductByRef(payload, product);
+      if (!product) {
+        throw new Error('Some items in your cart are no longer available. Please remove them and try again.')
+      }
     }
     const itemPrice = typeof item.priceSnapshot === 'number' 
       ? item.priceSnapshot 
@@ -256,16 +272,15 @@ export async function verifyCoupon(couponCode: string, subtotal: number, clientC
     if (!couponCode || !couponCode.trim()) return { valid: false, error: 'Please enter a coupon code' }
 
     const payload = await getPayload({ config: configPromise })
+    const normalizedCode = couponCode.trim().toLowerCase()
     const coupons = await payload.find({
       collection: 'coupons',
-      where: { code: { equals: couponCode.trim().toUpperCase() } },
-      limit: 1,
+      where: { code: { like: normalizedCode } },
+      limit: 10,
       overrideAccess: true,
     })
 
-
-
-    const coupon = coupons.docs[0]
+    const coupon = coupons.docs.find((c: any) => String(c.code).toLowerCase() === normalizedCode)
     if (!coupon) return { valid: false, error: 'Coupon code not found' }
 
     // Check expiration
