@@ -46,7 +46,7 @@ const SEO_COMPOUNDS = [
     title: "BPC-157 (Body Protection Compound-157)",
     desc: "A 15-amino-acid synthetic pentadecapeptide studied extensively for its modulation of growth hormone receptor expression and angiogenic signaling in tissue repair research. One of the most-researched recovery compounds in preclinical literature.",
     image: "/new-images/longevia-vial.webp",
-    link: "/shop/bpc-157-blend"
+    link: "/products/bpc-157"
   },
   {
     title: "TB-500 (Thymosin Beta-4 Fragment)",
@@ -70,7 +70,7 @@ const SEO_COMPOUNDS = [
     title: "Semaglutide - GLP-1 Analogue Research Compound",
     desc: "A GLP-1 receptor agonist analogue studied extensively for its potent effects on appetite-regulating hormone pathways and energy homeostasis in metabolic research. One of the most widely referenced compounds in GLP-1 class receptor research.",
     image: "/new-images/longevia-vial.webp",
-    link: "/shop/semaglutide"
+    link: "/products/semaglutide"
   }
 ];
 
@@ -314,7 +314,7 @@ export default function AboutClient() {
                 <div className="flex flex-col justify-center py-2 lg:py-4">
                   <h3 className="text-2xl md:text-3xl lg:text-5xl font-serif text-ink mb-4 md:mb-6 lg:mb-8 tracking-tight leading-[1.1]">Our Mission: Removing Guesswork from Research</h3>
                   <p className="text-sm md:text-base lg:text-xl text-ink/70 leading-relaxed max-w-3xl font-light">
-                    To accelerate scientific discovery by supplying researchers worldwide with the most rigorously verified, research-grade peptides available. Every compound we ship — from <Link href="/shop/bpc-157-blend" className="underline hover:text-ink">BPC-157</Link> to <Link href="/shop/semaglutide" className="underline hover:text-ink">Semaglutide</Link> — carries documented proof of its purity. We don’t ask researchers to trust our word. We give them the independent data to verify it themselves.
+                    To accelerate scientific discovery by supplying researchers worldwide with the most rigorously verified, research-grade peptides available. Every compound we ship — from <Link href="/products/bpc-157" className="underline hover:text-ink">BPC-157</Link> to <Link href="/products/semaglutide" className="underline hover:text-ink">Semaglutide</Link> — carries documented proof of its purity. We don’t ask researchers to trust our word. We give them the independent data to verify it themselves.
                   </p>
                 </div>
               </div>

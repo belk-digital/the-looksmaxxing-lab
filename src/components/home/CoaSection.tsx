@@ -2,6 +2,7 @@
 
 import React, { useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Container } from '@/components/ui/container'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
@@ -322,16 +323,16 @@ export function CoaSection() {
          {/* Call to action */}
          <div className="mt-12 lg:mt-16 flex flex-wrap justify-center gap-4 px-4">
            <FadeUp delay={1.2}>
-             <a href="/certificates" className="group bg-transparent border border-[#5984c4]/30 text-ink hover:bg-[#5984c4] hover:border-[#5984c4] hover:text-white rounded-full px-6 lg:px-8 py-4 uppercase tracking-widest text-[10px] md:text-xs font-bold transition-all duration-300 flex items-center gap-3">
+             <Link href="/certificates" className="group bg-transparent border border-[#5984c4]/30 text-ink hover:bg-[#5984c4] hover:border-[#5984c4] hover:text-white rounded-full px-6 lg:px-8 py-4 uppercase tracking-widest text-[10px] md:text-xs font-bold transition-all duration-300 flex items-center gap-3">
                VIEW COA LIBRARY
                <ArrowUpRight className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-             </a>
+             </Link>
            </FadeUp>
            <FadeUp delay={1.3}>
-             <a href="/journal/peptide-coa-hplc-purity-testing-guide" className="group bg-transparent border border-ink/10 text-ink hover:bg-ink hover:border-ink hover:text-white rounded-full px-6 lg:px-8 py-4 uppercase tracking-widest text-[10px] md:text-xs font-bold transition-all duration-300 flex items-center gap-3">
+             <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="group bg-transparent border border-ink/10 text-ink hover:bg-ink hover:border-ink hover:text-white rounded-full px-6 lg:px-8 py-4 uppercase tracking-widest text-[10px] md:text-xs font-bold transition-all duration-300 flex items-center gap-3">
                HOW TO READ A COA
                <ArrowUpRight className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-             </a>
+             </Link>
            </FadeUp>
          </div>
 

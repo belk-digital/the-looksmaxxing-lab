@@ -112,6 +112,9 @@ const FooterContent = () => {
               <li><Link href="/faq" className="text-sm text-cream/50 hover:text-white transition-colors">FAQ</Link></li>
               <li><Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-sm text-cream/50 hover:text-white transition-colors">COA & Purity Guide</Link></li>
               <li><Link href="/journal/peptide-reconstitution-storage-guide" className="text-sm text-cream/50 hover:text-white transition-colors">Reconstitution Guide</Link></li>
+              <li><Link href="/journal/bpc-157-tb-500-synergy" className="text-sm text-cream/50 hover:text-white transition-colors">BPC-157 & TB-500 Research</Link></li>
+              <li><Link href="/journal/mots-c-peptide-mitochondrial-exercise-mimetic-research" className="text-sm text-cream/50 hover:text-white transition-colors">MOTS-C Research</Link></li>
+              <li><Link href="/journal/nad-plus-peptide-mitochondrial-sirtuin-research-guide" className="text-sm text-cream/50 hover:text-white transition-colors">NAD+ Research Guide</Link></li>
             </ul>
           </div>
 

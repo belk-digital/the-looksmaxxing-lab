@@ -11,16 +11,16 @@ const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch
 export const revalidate = 10800
 
 export const metadata: Metadata = {
-  title: { absolute: buildTitle('Research Peptide Journal') },
-  description: buildDescription('Evidence-graded guides on peptide chemistry, analytical testing, COA literacy, and the regulatory landscape. Research use only.'),
+  title: { absolute: buildTitle('Peptide Research Journal | Science & Lab Guides') },
+  description: buildDescription('In-depth peptide science guides, COA verification resources, compound research protocols, and scientific insights from Longevia Research.'),
   alternates: {
     canonical: `${siteUrl}/journal`,
   },
   openGraph: {
-    title: 'Science Journal',
-    description: 'Documented purity, detailed guidelines, and emerging studies in advanced peptide science.',
+    title: 'Peptide Research Journal | Longevia Research',
+    description: 'In-depth peptide science guides, COA verification resources, compound research protocols, and scientific insights from Longevia Research.',
     url: `${siteUrl}/journal`,
-    images: [{ url: '/new-images/glow-and-nad-bg-image.webp', width: 1200, height: 630, alt: 'Science Journal' }],
+    images: [{ url: '/og/og-journal.webp', width: 1200, height: 630, alt: 'Peptide Research Journal — Longevia Research' }],
   }
 }
 

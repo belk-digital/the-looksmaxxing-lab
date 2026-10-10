@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent, useMotionValue, useSpring } from 'framer-motion'
 import useEmblaCarousel from 'embla-carousel-react'
-import { Heart, ChevronRight, ChevronLeft, Download, Star, Check, ShieldCheck, FlaskConical, MapPin, Zap, ShoppingCart, Truck, Sparkles, Loader2 } from 'lucide-react'
+import { Heart, ChevronRight, ChevronLeft, Download, Star, Check, ShieldCheck, FlaskConical, MapPin, Zap, ShoppingCart, Truck, Sparkles, Loader2, BookOpen } from 'lucide-react'
 import { Container } from '@/components/ui/container'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -26,6 +26,7 @@ import { CompactProductCard } from '@/components/shop/CompactProductCard'
 import { PrimaryProductCard } from '@/components/shop/PrimaryProductCard'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { Space_Grotesk } from 'next/font/google'
+import { PRODUCT_JOURNAL_MAP, JournalLinkEntry } from '@/data/product-journal-map'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
@@ -712,6 +713,26 @@ export function ProductClient({ product }: ProductClientProps) {
 
         {/* Research Resources CTA */}
         <div className="mt-12 w-full flex flex-col sm:flex-row flex-wrap gap-4">
+          {/* Product-specific journal links */}
+          {(PRODUCT_JOURNAL_MAP[product.slug] ?? [])
+            .filter((entry: JournalLinkEntry) =>
+              entry.slug !== 'peptide-coa-hplc-purity-testing-guide' &&
+              entry.slug !== 'peptide-reconstitution-storage-guide'
+            )
+            .map((entry: JournalLinkEntry) => (
+              <Link
+                key={entry.slug}
+                href={`/journal/${entry.slug}`}
+                className="group flex-1 min-w-[260px] flex items-center gap-4 bg-[#f8fafc] border border-blue-100/50 rounded-2xl px-6 py-5 hover:border-[#5984c4]/40 transition-colors"
+              >
+                <BookOpen className="w-6 h-6 text-[#5984c4] shrink-0" strokeWidth={1.5} />
+                <div>
+                  <div className="text-sm font-bold text-ink">{entry.title}</div>
+                  <div className="text-xs text-ink/50">{entry.subtitle}</div>
+                </div>
+              </Link>
+            ))}
+          {/* Generic fallback links — always present on every product page */}
           <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="group flex-1 min-w-[260px] flex items-center gap-4 bg-[#f8fafc] border border-blue-100/50 rounded-2xl px-6 py-5 hover:border-[#5984c4]/40 transition-colors">
             <FlaskConical className="w-6 h-6 text-[#5984c4] shrink-0" strokeWidth={1.5} />
             <div>
