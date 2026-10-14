@@ -13,15 +13,15 @@ export type JournalLinkEntry = {
 export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
   'bpc-157': [
     {
-      slug: 'bpc-157-tb-500-synergy',
-      title: 'BPC-157 vs. TB-500: Angiogenesis & Healing',
+      slug: 'stack-research-peptides-safe-combinations-avoid',
+      title: 'Stacking Research Peptides: Safe Combinations',
       subtitle: 'Mechanistic breakdown of BPC-157 angiogenesis and cellular repair pathways',
     },
   ],
   'tb-500': [
     {
-      slug: 'bpc-157-tb-500-synergy',
-      title: 'BPC-157 vs. TB-500: Angiogenesis & Healing',
+      slug: 'stack-research-peptides-safe-combinations-avoid',
+      title: 'Stacking Research Peptides: Safe Combinations',
       subtitle: 'How TB-500 drives cellular motility and tissue repair alongside BPC-157',
     },
   ],
@@ -84,9 +84,9 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
   ],
   'mots-c': [
     {
-      slug: 'mots-c-peptide-mitochondrial-exercise-mimetic-research',
-      title: 'MOTS-C: Mitochondrial Signaling & AMPK Activation',
-      subtitle: 'Exercise mimetic research, nuclear translocation, and metabolic regulation',
+      slug: 'mots-c-dosage-reconstitution-research-guide',
+      title: 'MOTS-c Dosage & Reconstitution Research Guide',
+      subtitle: 'Dosage protocols, reconstitution math, storage, and administration research',
     },
     {
       slug: 'kisspeptin-mots-c-hormonal-metabolic-research',
@@ -103,8 +103,8 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
   ],
   'nad-plus': [
     {
-      slug: 'nad-plus-peptide-mitochondrial-sirtuin-research-guide',
-      title: 'NAD+ Research: Mitochondrial Function & Sirtuins',
+      slug: 'nad-vs-nmn-vs-nr-research-comparison',
+      title: 'NAD+ vs. NMN vs. NR: Research Comparison',
       subtitle: 'ATP production, DNA repair, sirtuin pathway, and age-related NAD+ decline',
     },
   ],

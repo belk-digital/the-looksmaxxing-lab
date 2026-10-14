@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     images: [{ url: '/og/og-faq.webp', width: 1200, height: 630, alt: 'Research Peptide FAQ — Longevia Research' }],
-    title: 'Research Peptide FAQ',
+    title: 'Research Peptide FAQ | Purity & Ordering | Longevia Research',
     description: 'Frequently asked questions about research peptides, purity standards, COA verification, ordering, and storage.',
     url: `${siteUrl}/faq`,
   },
@@ -28,13 +28,13 @@ export default function FAQPage() {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://longeviaresearch.com"
+        "item": `${siteUrl}`
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "FAQ",
-        "item": "https://longeviaresearch.com/faq"
+        "item": `${siteUrl}/faq`
       }
     ]
   };
@@ -58,7 +58,7 @@ export default function FAQPage() {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Research Peptide FAQ — Longevia Research",
-    "url": "https://longeviaresearch.com/faq",
+    "url": `${siteUrl}/faq`,
     "description": "Answers about Longevia Research peptides: purity and COAs, ordering and shipping, order problems, storage, and research-use-only compliance.",
     "mainEntity": schemaFAQPage
   };

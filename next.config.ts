@@ -145,7 +145,33 @@ const nextConfig: NextConfig = {
         source: '/peptide-calculator/:path*',
         destination: '/',
         permanent: true,
-      }
+      },
+      // 11. Ghost static journal articles — replaced by published CMS articles
+      {
+        source: '/journal/peptide-coa-hplc-purity-testing-guide',
+        destination: '/journal/why-peptide-purity-matters-in-scientific-research',
+        permanent: true,
+      },
+      {
+        source: '/journal/peptide-reconstitution-storage-guide',
+        destination: '/journal/how-long-do-peptides-last-after-reconstitution',
+        permanent: true,
+      },
+      {
+        source: '/journal/bpc-157-tb-500-synergy',
+        destination: '/journal/stack-research-peptides-safe-combinations-avoid',
+        permanent: true,
+      },
+      {
+        source: '/journal/mots-c-peptide-mitochondrial-exercise-mimetic-research',
+        destination: '/journal/mots-c-dosage-reconstitution-research-guide',
+        permanent: true,
+      },
+      {
+        source: '/journal/nad-plus-peptide-mitochondrial-sirtuin-research-guide',
+        destination: '/journal/nad-vs-nmn-vs-nr-research-comparison',
+        permanent: true,
+      },
     ]
   },
   turbopack: {

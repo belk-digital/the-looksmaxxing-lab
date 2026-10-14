@@ -715,10 +715,6 @@ export function ProductClient({ product }: ProductClientProps) {
         <div className="mt-12 w-full flex flex-col sm:flex-row flex-wrap gap-4">
           {/* Product-specific journal links */}
           {(PRODUCT_JOURNAL_MAP[product.slug] ?? [])
-            .filter((entry: JournalLinkEntry) =>
-              entry.slug !== 'peptide-coa-hplc-purity-testing-guide' &&
-              entry.slug !== 'peptide-reconstitution-storage-guide'
-            )
             .map((entry: JournalLinkEntry) => (
               <Link
                 key={entry.slug}
@@ -733,14 +729,14 @@ export function ProductClient({ product }: ProductClientProps) {
               </Link>
             ))}
           {/* Generic fallback links — always present on every product page */}
-          <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="group flex-1 min-w-[260px] flex items-center gap-4 bg-[#f8fafc] border border-blue-100/50 rounded-2xl px-6 py-5 hover:border-[#5984c4]/40 transition-colors">
+          <Link href="/journal/why-peptide-purity-matters-in-scientific-research" className="group flex-1 min-w-[260px] flex items-center gap-4 bg-[#f8fafc] border border-blue-100/50 rounded-2xl px-6 py-5 hover:border-[#5984c4]/40 transition-colors">
             <FlaskConical className="w-6 h-6 text-[#5984c4] shrink-0" strokeWidth={1.5} />
             <div>
               <div className="text-sm font-bold text-ink">How to Read a COA</div>
               <div className="text-xs text-ink/50">Understanding HPLC & mass spec purity testing</div>
             </div>
           </Link>
-          <Link href="/journal/peptide-reconstitution-storage-guide" className="group flex-1 min-w-[260px] flex items-center gap-4 bg-[#f8fafc] border border-blue-100/50 rounded-2xl px-6 py-5 hover:border-[#5984c4]/40 transition-colors">
+          <Link href="/journal/how-long-do-peptides-last-after-reconstitution" className="group flex-1 min-w-[260px] flex items-center gap-4 bg-[#f8fafc] border border-blue-100/50 rounded-2xl px-6 py-5 hover:border-[#5984c4]/40 transition-colors">
             <ShieldCheck className="w-6 h-6 text-[#5984c4] shrink-0" strokeWidth={1.5} />
             <div>
               <div className="text-sm font-bold text-ink">Reconstitution & Storage Guide</div>

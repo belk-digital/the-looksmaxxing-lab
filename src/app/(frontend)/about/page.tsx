@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     images: [{ url: '/og/og-about.webp', width: 1200, height: 630, alt: 'About Longevia Research' }],
-    title: 'About Longevia Research | US Research Peptide Supplier',
+    title: 'About Us | US Research Peptide Supplier | Longevia Research',
     description: 'US-based research peptide supplier. Synthesizing compounds for cellular regeneration, metabolic study, and structural repair at ≥99% HPLC purity.',
     url: `${siteUrl}/about`,
   },
@@ -23,7 +23,7 @@ export default function AboutPage() {
     "@context": "https://schema.org",
     "@type": "AboutPage",
     "name": "About Longevia Research",
-    "url": "https://longeviaresearch.com/about",
+    "url": `${siteUrl}/about`,
     "description": "About Longevia Research — US-based research peptide supplier founded in 2024. Mission, philosophy, quality standards, and compound catalog.",
     "mainEntity": {
       "@type": "Organization",
@@ -39,13 +39,13 @@ export default function AboutPage() {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://longeviaresearch.com"
+        "item": `${siteUrl}`
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "About",
-        "item": "https://longeviaresearch.com/about"
+        "item": `${siteUrl}/about`
       }
     ]
   };

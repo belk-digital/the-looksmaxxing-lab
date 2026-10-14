@@ -65,7 +65,7 @@ export default function DisclaimerPage() {
             <section>
               <h2 className="text-editorial-md font-serif text-ink mb-4">02. Product Usage Limitation</h2>
               <p className="text-ink-muted">
-                Every product offered by Longevia Research is intended exclusively for controlled laboratory or research environments. Any use outside this context, including self-administration, is strictly prohibited and may violate local, state, or federal law. Users are responsible for ensuring all handling, storage, and application comply with applicable research protocols — see our <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-gold underline hover:text-ink transition-colors">COA verification guide</Link> and <Link href="/journal/peptide-reconstitution-storage-guide" className="text-gold underline hover:text-ink transition-colors">reconstitution and storage guide</Link> before beginning any protocol.
+                Every product offered by Longevia Research is intended exclusively for controlled laboratory or research environments. Any use outside this context, including self-administration, is strictly prohibited and may violate local, state, or federal law. Users are responsible for ensuring all handling, storage, and application comply with applicable research protocols — see our <Link href="/journal/why-peptide-purity-matters-in-scientific-research" className="text-gold underline hover:text-ink transition-colors">COA verification guide</Link> and <Link href="/journal/how-long-do-peptides-last-after-reconstitution" className="text-gold underline hover:text-ink transition-colors">reconstitution and storage guide</Link> before beginning any protocol.
               </p>
             </section>
 

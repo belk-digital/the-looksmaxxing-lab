@@ -68,7 +68,7 @@ export default function TermsPage() {
               <ul className="list-disc pl-6 space-y-2 text-ink-muted">
                 <li>You understand that all products are laboratory reagents, not drugs, supplements, or food products, and are not for consumption.</li>
                 <li>You will use all products solely within a controlled laboratory or research setting, by a qualified researcher.</li>
-                <li>You accept full responsibility for the safe handling, storage, and disposal of every compound you purchase — see our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-gold underline hover:text-ink transition-colors">reconstitution and storage guide</Link> for correct handling protocol.</li>
+                <li>You accept full responsibility for the safe handling, storage, and disposal of every compound you purchase — see our <Link href="/journal/how-long-do-peptides-last-after-reconstitution" className="text-gold underline hover:text-ink transition-colors">reconstitution and storage guide</Link> for correct handling protocol.</li>
               </ul>
             </section>
 

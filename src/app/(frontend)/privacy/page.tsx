@@ -114,7 +114,7 @@ export default function PrivacyPage() {
               <ul className="list-disc pl-6 space-y-2 text-ink-muted">
                 <li>Not for human or veterinary use.</li>
                 <li>Not intended for diagnosis, treatment, or any therapeutic purpose.</li>
-                <li>The purchaser is responsible for compliant handling under all applicable laws — see our <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-gold underline hover:text-ink transition-colors">COA verification guide</Link> and <Link href="/journal/peptide-reconstitution-storage-guide" className="text-gold underline hover:text-ink transition-colors">storage guide</Link> for correct laboratory protocol.</li>
+                <li>The purchaser is responsible for compliant handling under all applicable laws — see our <Link href="/journal/why-peptide-purity-matters-in-scientific-research" className="text-gold underline hover:text-ink transition-colors">COA verification guide</Link> and <Link href="/journal/how-long-do-peptides-last-after-reconstitution" className="text-gold underline hover:text-ink transition-colors">storage guide</Link> for correct laboratory protocol.</li>
               </ul>
             </section>
 

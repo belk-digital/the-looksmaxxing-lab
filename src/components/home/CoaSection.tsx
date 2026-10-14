@@ -329,7 +329,7 @@ export function CoaSection() {
              </Link>
            </FadeUp>
            <FadeUp delay={1.3}>
-             <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="group bg-transparent border border-ink/10 text-ink hover:bg-ink hover:border-ink hover:text-white rounded-full px-6 lg:px-8 py-4 uppercase tracking-widest text-[10px] md:text-xs font-bold transition-all duration-300 flex items-center gap-3">
+             <Link href="/journal/why-peptide-purity-matters-in-scientific-research" className="group bg-transparent border border-ink/10 text-ink hover:bg-ink hover:border-ink hover:text-white rounded-full px-6 lg:px-8 py-4 uppercase tracking-widest text-[10px] md:text-xs font-bold transition-all duration-300 flex items-center gap-3">
                HOW TO READ A COA
                <ArrowUpRight className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity" />
              </Link>

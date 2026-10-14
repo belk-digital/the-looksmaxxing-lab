@@ -71,7 +71,7 @@ export const FAQ_DATA: FaqCategory[] = [
     items: [
       {
         q: 'How do I know your peptides are really ≥99% pure?',
-        a: `Read the Certificate of Analysis (COA) for your batch. Each COA comes from an independent lab and reports HPLC purity and LC-MS identity for that specific lot number, so you can match it to the label on your vial. You'll find it in our [COA library](/certificates) and with your shipment. If you're new to reading them, our [guide to reading a peptide COA](/journal/peptide-coa-hplc-purity-testing-guide) walks through a real chromatogram.`,
+        a: `Read the Certificate of Analysis (COA) for your batch. Each COA comes from an independent lab and reports HPLC purity and LC-MS identity for that specific lot number, so you can match it to the label on your vial. You'll find it in our [COA library](/certificates) and with your shipment. If you're new to reading them, our [guide to reading a peptide COA](/journal/why-peptide-purity-matters-in-scientific-research) walks through a real chromatogram.`,
       },
       {
         q: 'Where do I find the COA for my batch?',
@@ -79,7 +79,7 @@ export const FAQ_DATA: FaqCategory[] = [
       },
       {
         q: 'What is a Certificate of Analysis (COA)?',
-        a: `A Certificate of Analysis is a laboratory document that reports the test results for one specific production batch, identified by its lot number. For research peptides it typically includes HPLC purity and LC-MS identity results, so you can check that the product in your vial matches its specification. Open examples in our [COA library](/certificates), or see [how to read a peptide COA](/journal/peptide-coa-hplc-purity-testing-guide) step by step.`,
+        a: `A Certificate of Analysis is a laboratory document that reports the test results for one specific production batch, identified by its lot number. For research peptides it typically includes HPLC purity and LC-MS identity results, so you can check that the product in your vial matches its specification. Open examples in our [COA library](/certificates), or see [how to read a peptide COA](/journal/why-peptide-purity-matters-in-scientific-research) step by step.`,
       },
       {
         q: 'What does “≥99% HPLC purity” actually mean?',

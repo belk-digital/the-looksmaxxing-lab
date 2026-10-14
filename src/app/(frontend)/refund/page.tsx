@@ -98,7 +98,7 @@ export default function RefundPage() {
               <ul className="list-disc pl-6 space-y-2 text-ink-muted">
                 <li>Change of mind, ordering the wrong item, or no longer needing a product.</li>
                 <li>Any vial that has been opened, reconstituted, or used.</li>
-                <li>Degradation caused by improper storage or handling after delivery — see our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-gold underline hover:text-ink transition-colors">reconstitution and storage guide</Link> for correct protocol.</li>
+                <li>Degradation caused by improper storage or handling after delivery — see our <Link href="/journal/how-long-do-peptides-last-after-reconstitution" className="text-gold underline hover:text-ink transition-colors">reconstitution and storage guide</Link> for correct protocol.</li>
                 <li>Issues reported more than 48 hours after delivery.</li>
               </ul>
             </section>

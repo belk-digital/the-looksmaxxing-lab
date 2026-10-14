@@ -640,7 +640,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/hplc_chromatogram_lab_1783383609531.webp" alt="HPLC Chromatogram Lab Screen verifying peptide purity at Longevia Research" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          At <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link>, we enforce a strict, industry-leading <strong>≥99% purity floor</strong>. We do not rely on in-house testing or manufacturer claims. Every single production batch of <Link href="/products/ghk-cu" className="text-blue-600 underline hover:text-blue-800">GHK-Cu</Link> is quarantined and sent to an independent, third-party, ISO-certified laboratory within the United States for rigorous <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">High-Performance Liquid Chromatography (HPLC)</Link> and Liquid Chromatography–Mass Spectrometry (LC-MS) analysis.
+          At <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link>, we enforce a strict, industry-leading <strong>≥99% purity floor</strong>. We do not rely on in-house testing or manufacturer claims. Every single production batch of <Link href="/products/ghk-cu" className="text-blue-600 underline hover:text-blue-800">GHK-Cu</Link> is quarantined and sent to an independent, third-party, ISO-certified laboratory within the United States for rigorous <Link href="/journal/why-peptide-purity-matters-in-scientific-research" className="text-blue-600 underline hover:text-blue-800">High-Performance Liquid Chromatography (HPLC)</Link> and Liquid Chromatography–Mass Spectrometry (LC-MS) analysis.
         </p>
 
         <p>
@@ -726,7 +726,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/peptide_vial_cold_chain_1783383637051.webp" alt="Lyophilized metabolic peptide vial in cold-chain storage at Longevia Research" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          During Solid-Phase Peptide Synthesis (SPPS), synthesizing amino acid chains of this tremendous length is highly prone to deletion errors, oxidation, or incomplete coupling reactions, resulting in truncated peptide sequences. If researchers utilize impure, "gray market" compounds, these truncated sequences can competitively inhibit the target GLP-1 receptors without activating them, resulting in unpredictable metabolic responses, or worse, trigger severe immunogenic and allergic reactions in the test subject. This is why purchasing compounds with verified HPLC and mass spectrometry data is absolutely paramount — see our full <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">guide to reading a peptide Certificate of Analysis</Link> for how to verify this before use.
+          During Solid-Phase Peptide Synthesis (SPPS), synthesizing amino acid chains of this tremendous length is highly prone to deletion errors, oxidation, or incomplete coupling reactions, resulting in truncated peptide sequences. If researchers utilize impure, "gray market" compounds, these truncated sequences can competitively inhibit the target GLP-1 receptors without activating them, resulting in unpredictable metabolic responses, or worse, trigger severe immunogenic and allergic reactions in the test subject. This is why purchasing compounds with verified HPLC and mass spectrometry data is absolutely paramount — see our full <Link href="/journal/why-peptide-purity-matters-in-scientific-research" className="text-blue-600 underline hover:text-blue-800">guide to reading a peptide Certificate of Analysis</Link> for how to verify this before use.
         </p>
         
         <p>
@@ -737,90 +737,6 @@ export const JOURNAL_POSTS: JournalPost[] = [
 
         <div className="space-y-6">
           {GLP1_FAQS.map((faq, idx) => (
-            <div key={idx}>
-              <h4 className="font-bold text-ink">{faq.question}</h4>
-              <p className="text-ink-muted">{faq.answer}</p>
-            </div>
-          ))}
-        </div>
-      </>
-    )
-  },
-  {
-    slug: 'bpc-157-tb-500-synergy',
-    title: 'BPC-157 vs. TB-500: Analyzing Angiogenesis and Cellular Healing Mechanisms',
-    category: 'Guidelines',
-    date: 'April 20, 2026',
-    readTime: '26 min read',
-    excerpt: 'Understanding the stark mechanistic and biochemical differences between BPC-157 (an angiogenic mastermind) and TB-500 (an actin up-regulator) for designing optimal experimental protocols in soft tissue repair.',
-    heroImage: '/journal-images/bpc157_tb500_cellular_healing_1783383266702.webp',
-    author: 'Longevia Research Team',
-    faqs: BPC_FAQS,
-    content: (
-      <>
-        <p className="first-letter:text-7xl first-letter:font-serif first-letter:float-left first-letter:mr-4 first-letter:text-ink first-letter:mt-2">
-          In the rapidly expanding, highly technical field of regenerative cellular biology and tissue engineering, few compounds have garnered as much intense academic and independent research interest as the pentadecapeptide <Link href="/products/bpc-157" className="text-blue-600 underline hover:text-blue-800">BPC-157</Link> and the synthetic fraction of Thymosin Beta-4, known as <Link href="/products/tb-500" className="text-blue-600 underline hover:text-blue-800">TB-500</Link>.
-        </p>
-        
-        <p>
-          When researchers design in-vitro or in-vivo models to study accelerated tissue repair—whether exploring muscular hyper-recovery, severe tendon and ligament tears, fibroblast migration, or systemic anti-inflammatory cascades—these two peptides are almost universally utilized. However, despite frequently being researched in tandem in "stacking" protocols, they operate through completely distinct, highly specific molecular pathways that researchers must understand to design effective experiments.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">BPC-157: The Angiogenic Mastermind</h2>
-
-        <p>
-          BPC-157 (Body Protection Compound 157) is a synthetic, 15-amino acid sequence (a pentadecapeptide) that is partially derived from a protective protein naturally found in human gastric juice. While its biological origins are gastrointestinal—explaining its profound efficacy in models studying Inflammatory Bowel Disease (IBD) and gastric ulcer healing—its modern application in research models focuses heavily on systemic soft tissue repair, notably tendons, ligaments, and the central nervous system.
-        </p>
-
-        <Image src="/journal-images/angiogenesis_endothelial_cells_1783383650892.webp" alt="Microscopic visualization of angiogenesis and endothelial cells stimulated by BPC-157" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
-
-        <p>
-          The primary healing vector of <Link href="/products/bpc-157" className="text-blue-600 underline hover:text-blue-800">BPC-157</Link> in laboratory models is <strong>angiogenesis</strong>—the physiological process through which new blood vessels form from pre-existing vessels. Tissue ischemia (a lack of blood flow and oxygen) is the primary reason avascular tissues like tendons and ligaments heal at a fraction of the speed of highly vascularized muscle tissue.
-        </p>
-
-        <p>
-          When BPC-157 is introduced to an ischemic tissue model (such as a severed Achilles tendon model), it rapidly up-regulates the expression of <strong>Vascular Endothelial Growth Factor (VEGF)</strong>. This critical signaling protein stimulates the massive proliferation and migration of endothelial cells, rapidly forming dense new capillary networks. This new vascular infrastructure floods the damaged area with the oxygen and nutrients required for fibroblasts to deposit new collagen. Furthermore, BPC-157 has been shown to directly increase the survival rate of cells under extreme oxidative stress.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">TB-500: The Actin Architect</h2>
-
-        <p>
-          <Link href="/products/tb-500" className="text-blue-600 underline hover:text-blue-800">TB-500</Link> is a synthetic version of the active region (residues 17-23) of Thymosin Beta-4, a naturally occurring, highly conserved water-soluble regenerative peptide found in high concentrations in blood platelets, wound fluid, and various tissues throughout the mammalian body.
-        </p>
-
-        <Image src="/journal-images/actin_cytoskeleton_filaments_1783383666231.webp" alt="Microscopic visualization of a cell's internal actin cytoskeleton modulated by TB-500" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
-
-        <p>
-          Unlike BPC-157, which relies heavily on building new blood supplies extracellularly, TB-500 operates intracellularly by profoundly altering the structural dynamics of the cell itself. The primary molecular function of TB-500 is <strong>actin up-regulation and sequestration</strong>. Actin is a vital cellular protein that forms microfilaments—the essential building blocks of the cell's cytoskeleton.
-        </p>
-
-        <p>
-          In a biological model responding to trauma, repair cells (such as keratinocytes, endothelial cells, and fibroblasts) must physically travel to the wound site to begin repair. By binding to actin and altering the cytoskeleton's fluidity, TB-500 dramatically increases <strong>cellular motility</strong>. It essentially supercharges the ability of repair cells to quickly migrate across long distances within the organism to reach damaged tissue. Furthermore, TB-500 exhibits potent anti-fibrotic properties, suppressing the formation of rigid scar tissue in favor of healthy, flexible tissue regeneration—a property highly studied in cardiac repair models following myocardial infarction.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">The Synergistic "Wolverine" Stack in Experimental Models</h2>
-
-        <p>
-          Because BPC-157 and TB-500 utilize entirely different—yet highly complementary—pathways, they are frequently studied together in multi-peptide protocols often colloquially referred to by researchers as the "Wolverine Stack," named after the comic book character's legendary healing factor.
-        </p>
-
-        <p>
-          When investigating severe soft tissue trauma, researchers observe a profound, multiplying synergistic effect when both compounds are introduced concurrently:
-        </p>
-
-        <ol className="list-decimal pl-6 space-y-4 my-6 text-body-lg text-ink">
-          <li><strong>TB-500</strong> rapidly alters actin dynamics, massively increasing cellular motility and allowing millions of repair cells to migrate quickly to the site of injury.</li>
-          <li><strong>BPC-157</strong> simultaneously triggers angiogenesis, building the new vascular network necessary to supply those migrating cells with oxygen, while simultaneously accelerating local tendon fibroblast outgrowth and survival.</li>
-        </ol>
-
-        <p>
-          As with any research compound, results are only as reliable as the purity of the material studied and the handling protocol used to prepare it. Before beginning a "Wolverine Stack" protocol, review our guides on <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">reading a peptide Certificate of Analysis</Link> and <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution and cold-chain storage</Link> to ensure both <Link href="/products/bpc-157" className="text-blue-600 underline hover:text-blue-800">BPC-157</Link> and <Link href="/products/tb-500" className="text-blue-600 underline hover:text-blue-800">TB-500</Link> are verified and handled correctly.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
-
-        <div className="space-y-6">
-          {BPC_FAQS.map((faq, idx) => (
             <div key={idx}>
               <h4 className="font-bold text-ink">{faq.question}</h4>
               <p className="text-ink-muted">{faq.answer}</p>
@@ -877,7 +793,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">MOTS-C: A Mitochondrial-Derived Peptide at the Center of Metabolic Research</h2>
 
         <p>
-          <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-C</Link> operates on an entirely different biological plane. Rather than being encoded by nuclear DNA like the overwhelming majority of the human proteome, MOTS-C is one of a small class of mitochondrial-derived peptides (MDPs) encoded directly within the mitochondrial genome itself. This unique genetic origin places MOTS-C at the epicenter of one of the fastest-growing subfields in cellular biology: mitochondrial-to-nuclear retrograde signaling, the process by which mitochondria actively communicate their metabolic status to the rest of the cell. For a full standalone treatment of MOTS-C's AMPK activation pathway and exercise-mimetic research profile, see our companion guide, <Link href="/journal/mots-c-peptide-mitochondrial-exercise-mimetic-research" className="text-blue-600 underline hover:text-blue-800">MOTS-C Peptide: Mitochondrial Signaling and the AMPK Activation Pathway</Link>.
+          <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-C</Link> operates on an entirely different biological plane. Rather than being encoded by nuclear DNA like the overwhelming majority of the human proteome, MOTS-C is one of a small class of mitochondrial-derived peptides (MDPs) encoded directly within the mitochondrial genome itself. This unique genetic origin places MOTS-C at the epicenter of one of the fastest-growing subfields in cellular biology: mitochondrial-to-nuclear retrograde signaling, the process by which mitochondria actively communicate their metabolic status to the rest of the cell. For dosage protocols, reconstitution math, and storage guidance specific to MOTS-C, see our companion guide, <Link href="/journal/mots-c-dosage-reconstitution-research-guide" className="text-blue-600 underline hover:text-blue-800">MOTS-c Dosage and Reconstitution Research Guide</Link>.
         </p>
 
         <h3 className="text-xl font-bold text-ink mt-8 mb-4">Mitochondrial-to-Nuclear Signaling and the AMPK Pathway</h3>
@@ -964,7 +880,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/kisspeptin-mots-c-hplc-verification.webp" alt="HPLC chromatogram verifying peptide purity in a research laboratory" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          At <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link>, every batch of <Link href="/products/kisspeptin" className="text-blue-600 underline hover:text-blue-800">Kisspeptin-10</Link> and <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-C</Link> is synthesized via Solid-Phase Peptide Synthesis (SPPS), purified using preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">High-Performance Liquid Chromatography (HPLC)</Link> to eliminate truncated or deletion sequences, and verified for exact molecular weight through Electrospray Ionization Mass Spectrometry (ESI-MS). We maintain a strict ≥99% purity floor across every production lot, and all results are independently confirmed by a third-party, ISO-certified US laboratory — never relying solely on in-house or manufacturer claims.
+          At <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link>, every batch of <Link href="/products/kisspeptin" className="text-blue-600 underline hover:text-blue-800">Kisspeptin-10</Link> and <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-C</Link> is synthesized via Solid-Phase Peptide Synthesis (SPPS), purified using preparative <Link href="/journal/why-peptide-purity-matters-in-scientific-research" className="text-blue-600 underline hover:text-blue-800">High-Performance Liquid Chromatography (HPLC)</Link> to eliminate truncated or deletion sequences, and verified for exact molecular weight through Electrospray Ionization Mass Spectrometry (ESI-MS). We maintain a strict ≥99% purity floor across every production lot, and all results are independently confirmed by a third-party, ISO-certified US laboratory — never relying solely on in-house or manufacturer claims.
         </p>
 
         <p>
@@ -978,7 +894,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </p>
 
         <p>
-          Regardless of protocol design, researchers should precisely determine molar concentrations for both Kisspeptin-10 and MOTS-C prior to any in-vitro or in-vivo assay, ensuring dosing accuracy across every replicate — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution and storage guide</Link> for the complete protocol.
+          Regardless of protocol design, researchers should precisely determine molar concentrations for both Kisspeptin-10 and MOTS-C prior to any in-vitro or in-vivo assay, ensuring dosing accuracy across every replicate — see our full <Link href="/journal/how-long-do-peptides-last-after-reconstitution" className="text-blue-600 underline hover:text-blue-800">reconstitution and storage guide</Link> for the complete protocol.
         </p>
 
         <Image src="/journal-images/kisspeptin-mots-c-cold-chain-storage.webp" alt="Lyophilized research peptide vial in cold-chain storage" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
@@ -1158,7 +1074,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/tesamorelin-glp-3-comparative-lab-analysis.webp" alt="Laboratory desk comparing two research peptide vials with HPLC documentation" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          Every batch of <Link href="/products/tesamorelin" className="text-blue-600 underline hover:text-blue-800">Tesamorelin</Link> and <Link href="/products/retatrutide-10mg-20mg-30mg-60mg-45-sprays" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> sold by <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> is synthesized via Solid-Phase Peptide Synthesis, purified through preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">HPLC</Link>, and verified via Electrospray Ionization Mass Spectrometry (ESI-MS) at an independent, third-party US laboratory. Every lot is documented at a ≥99% purity floor, with results available in our publicly accessible <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link>. Researchers should also consult our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution guide</Link> to ensure precise molar dosing across both compounds.
+          Every batch of <Link href="/products/tesamorelin" className="text-blue-600 underline hover:text-blue-800">Tesamorelin</Link> and <Link href="/products/retatrutide-10mg-20mg-30mg-60mg-45-sprays" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> sold by <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> is synthesized via Solid-Phase Peptide Synthesis, purified through preparative <Link href="/journal/why-peptide-purity-matters-in-scientific-research" className="text-blue-600 underline hover:text-blue-800">HPLC</Link>, and verified via Electrospray Ionization Mass Spectrometry (ESI-MS) at an independent, third-party US laboratory. Every lot is documented at a ≥99% purity floor, with results available in our publicly accessible <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link>. Researchers should also consult our full <Link href="/journal/how-long-do-peptides-last-after-reconstitution" className="text-blue-600 underline hover:text-blue-800">reconstitution guide</Link> to ensure precise molar dosing across both compounds.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Building a Reproducible Research Protocol</h2>
@@ -1308,7 +1224,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Combining GH-Axis Research With Structural Repair Peptides</h2>
 
         <p>
-          Because CJC-1295 + Ipamorelin acts systemically on GH/IGF-1 signaling rather than locally on tissue repair, many researchers extend their protocols with structural, localized-repair compounds. As detailed in our companion article comparing <Link href="/journal/bpc-157-tb-500-synergy" className="text-blue-600 underline hover:text-blue-800">BPC-157 and TB-500</Link>, angiogenic and actin-modulating peptides operate on entirely different mechanisms than systemic GH-axis stimulation — pairing the two categories allows researchers to model comprehensive recovery scenarios spanning both systemic hormonal signaling and localized cellular repair.
+          Because CJC-1295 + Ipamorelin acts systemically on GH/IGF-1 signaling rather than locally on tissue repair, many researchers extend their protocols with structural, localized-repair compounds. As detailed in our companion article comparing <Link href="/journal/stack-research-peptides-safe-combinations-avoid" className="text-blue-600 underline hover:text-blue-800">BPC-157 and TB-500</Link>, angiogenic and actin-modulating peptides operate on entirely different mechanisms than systemic GH-axis stimulation — pairing the two categories allows researchers to model comprehensive recovery scenarios spanning both systemic hormonal signaling and localized cellular repair.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Research Applications Beyond Muscle Recovery</h2>
@@ -1332,13 +1248,13 @@ export const JOURNAL_POSTS: JournalPost[] = [
         </p>
 
         <p>
-          Every batch of <Link href="/products/cjc-1295-no-dac" className="text-blue-600 underline hover:text-blue-800">CJC-1295</Link>, <Link href="/products/ipamorelin" className="text-blue-600 underline hover:text-blue-800">Ipamorelin</Link>, and the combined <Link href="/products/cjc-ipamorelin" className="text-blue-600 underline hover:text-blue-800">CJC-1295 + Ipamorelin blend</Link> sold by <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> is synthesized via Solid-Phase Peptide Synthesis, purified through preparative <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">HPLC</Link>, and verified via Electrospray Ionization Mass Spectrometry (ESI-MS) at an independent, third-party US laboratory, with a documented ≥99% purity floor on every lot.
+          Every batch of <Link href="/products/cjc-1295-no-dac" className="text-blue-600 underline hover:text-blue-800">CJC-1295</Link>, <Link href="/products/ipamorelin" className="text-blue-600 underline hover:text-blue-800">Ipamorelin</Link>, and the combined <Link href="/products/cjc-ipamorelin" className="text-blue-600 underline hover:text-blue-800">CJC-1295 + Ipamorelin blend</Link> sold by <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> is synthesized via Solid-Phase Peptide Synthesis, purified through preparative <Link href="/journal/why-peptide-purity-matters-in-scientific-research" className="text-blue-600 underline hover:text-blue-800">HPLC</Link>, and verified via Electrospray Ionization Mass Spectrometry (ESI-MS) at an independent, third-party US laboratory, with a documented ≥99% purity floor on every lot.
         </p>
 
         <Image src="/journal-images/cjc-1295-ipamorelin-coa-certificate.png" alt="Certificate of Analysis documentation beside a research peptide vial" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          Full lot-specific documentation is available in our publicly accessible <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link>. To ensure dosing precision across both compounds, researchers should calculate exact molar concentrations prior to any experimental protocol — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">reconstitution and storage guide</Link> for the complete step-by-step process.
+          Full lot-specific documentation is available in our publicly accessible <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link>. To ensure dosing precision across both compounds, researchers should calculate exact molar concentrations prior to any experimental protocol — see our full <Link href="/journal/how-long-do-peptides-last-after-reconstitution" className="text-blue-600 underline hover:text-blue-800">reconstitution and storage guide</Link> for the complete step-by-step process.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Building a Reproducible Research Protocol</h2>
@@ -1355,378 +1271,6 @@ export const JOURNAL_POSTS: JournalPost[] = [
 
         <div className="space-y-6">
           {CJC_IPAMORELIN_FAQS.map((faq, idx) => (
-            <div key={idx}>
-              <h4 className="font-bold text-ink">{faq.question}</h4>
-              <p className="text-ink-muted">{faq.answer}</p>
-            </div>
-          ))}
-        </div>
-      </>
-    )
-  },
-  {
-    slug: 'peptide-coa-hplc-purity-testing-guide',
-    title: 'How to Read a Peptide Certificate of Analysis (COA): HPLC & Mass Spec Purity Testing Explained',
-    category: 'Guides',
-    date: 'July 10, 2026',
-    readTime: '17 min read',
-    excerpt: 'A researcher\'s guide to Certificates of Analysis: how HPLC measures purity, how mass spectrometry confirms molecular identity, how to read a real chromatogram, and how to spot an unreliable supplier.',
-    heroImage: '/journal-images/peptide-coa-hplc-purity-guide-hero.webp',
-    author: 'Longevia Research Team',
-    faqs: COA_HPLC_FAQS,
-    content: (
-      <>
-        <p className="first-letter:text-7xl first-letter:font-serif first-letter:float-left first-letter:mr-4 first-letter:text-ink first-letter:mt-2">
-          Every research peptide protocol rests on a single, unglamorous assumption: that the vial on the bench actually contains what the label says it does, at the purity the supplier claims. That assumption is only as good as the documentation behind it. A Certificate of Analysis (COA) is the laboratory paper trail that turns "the supplier says so" into an independently verifiable fact — and learning to actually read one, rather than simply glance at a purity percentage, is one of the most consequential skills a peptide researcher can develop.
-        </p>
-
-        <p>
-          This guide breaks down exactly what a COA contains, how High-Performance Liquid Chromatography (HPLC) and Mass Spectrometry (MS) testing work, how to interpret a real chromatogram, and how to tell the difference between rigorous third-party verification and a marketing document dressed up to look like one.
-        </p>
-
-        <div className="border-l-4 border-gold bg-ink/5 rounded-r-xl p-6 my-10">
-          <p className="text-body-lg text-ink font-medium m-0">
-            <strong>Quick answer:</strong> A trustworthy peptide COA is issued by an independent, third-party laboratory, tied to a specific batch/lot number, and reports two distinct data points — purity (via HPLC) and molecular identity (via mass spectrometry). A purity floor of ≥99% is the accepted standard for quantitative research; documentation lacking a lot number or an independent testing lab should not be trusted.
-          </p>
-        </div>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">What a Certificate of Analysis Actually Contains</h2>
-
-        <p>
-          A properly issued COA is a structured laboratory document, not a marketing PDF. At minimum, a legitimate certificate should include: the exact compound name and its molecular formula, a unique batch or lot number matching the number printed on the vial, the date the analysis was performed, the name of the testing laboratory (and ideally its accreditation), the measured purity percentage from HPLC, and the confirmed molecular weight from mass spectrometry. Missing any one of these fields is a red flag — a purity number with no lot reference cannot be tied to the specific vial in a researcher's hand, and it may as well not exist.
-        </p>
-
-        <p>
-          At <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link>, every production batch — from <Link href="/products/bpc-157" className="text-blue-600 underline hover:text-blue-800">BPC-157</Link> to <Link href="/products/semaglutide" className="text-blue-600 underline hover:text-blue-800">Semaglutide</Link> — is quarantined until an independent, ISO-certified US laboratory returns a full HPLC and LC-MS report. Every lot-specific COA in our catalog is published, unedited, in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis (COA) Library</Link> so researchers can verify a vial before it ever enters a protocol.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Where Impurities Actually Come From: A Brief Look at Peptide Synthesis</h2>
-
-        <p>
-          To understand why purity testing is necessary at all, it helps to understand how a peptide is built in the first place. The overwhelming majority of research peptides are manufactured using Solid-Phase Peptide Synthesis (SPPS), a process in which amino acids are added one at a time to a growing chain that is chemically anchored to an insoluble resin bead. Each cycle involves removing a protective chemical group from the previous amino acid, then coupling the next amino acid in the sequence, then washing away excess reagent before the cycle repeats.
-        </p>
-
-        <p>
-          This sounds mechanical and precise, and in a well-controlled laboratory it largely is — but every single coupling step carries a small statistical chance of failure. A coupling reaction might run to only 98% or 99% completion rather than 100%, meaning a fraction of the growing chains on the resin do not receive that amino acid at all. Over a peptide sequence with 20, 30, or even 39 amino acids (as with longer metabolic peptides), these small per-step inefficiencies compound. The result is a final crude product that contains the correct, full-length peptide alongside a population of shorter, incomplete "truncated" sequences, along with possible side reactions like incomplete deprotection or racemization at individual residues.
-        </p>
-
-        <p>
-          Purification — typically preparative HPLC performed after synthesis, separate from the analytical HPLC used for the COA — is the step that removes as much of this truncated and side-reaction material as possible before the peptide is lyophilized into its final powder form. No purification process is perfect, which is precisely why analytical testing on the finished product remains necessary even after a rigorous purification step. The COA is the record of how effective that entire synthesis-and-purification pipeline actually was for a specific batch.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">HPLC Explained: How Purity Percentage Is Actually Measured</h2>
-
-        <p>
-          High-Performance Liquid Chromatography works by forcing a liquid sample through a column packed with a solid adsorbent material under high pressure. Different molecules in the sample — the target peptide, any truncated sequences, residual synthesis byproducts, or degradation products — travel through the column at different speeds based on their chemical properties. Each component exits the column at a different "retention time" and is recorded by a detector, producing the chromatogram graph seen on a COA.
-        </p>
-
-        <Image src="/journal-images/hplc-chromatogram-peak-analysis-close-up.webp" alt="Close-up of an HPLC chromatogram showing a dominant purity peak and minor impurity peaks used to verify research peptide purity" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
-
-        <p>
-          The reported purity percentage is calculated as the area under the main, dominant peak divided by the total area under all peaks in the chromatogram. If 99.2% of the total peak area belongs to a single sharp peak at the expected retention time for the target peptide, the batch is reported as 99.2% pure. The remaining fraction represents everything else in the vial that isn't the intended compound.
-        </p>
-
-        <h3 className="text-xl font-bold text-ink mt-8 mb-4">Why HPLC Alone Isn't Enough</h3>
-
-        <p>
-          HPLC is extremely good at telling you how homogeneous a sample is — but it cannot, by itself, tell you what that dominant peak actually is. A truncated or structurally similar impurity can co-elute at nearly the same retention time as the correct peptide, inflating the reported purity without the sample actually being what it claims to be. This is precisely why a rigorous COA pairs HPLC purity data with a second, independent test: mass spectrometry.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Mass Spectrometry (ESI-MS): Confirming Identity, Not Just Purity</h2>
-
-        <p>
-          Electrospray Ionization Mass Spectrometry (ESI-MS) ionizes the sample and measures the mass-to-charge ratio of the resulting ions, which allows the lab to calculate the precise molecular weight of the compound. This number is then compared against the theoretical molecular weight of the target peptide. If they match within an acceptable tolerance, the compound's structural identity is confirmed independent of the purity measurement entirely.
-        </p>
-
-        <Image src="/journal-images/mass-spectrometry-esi-ms-lab-analysis.webp" alt="Laboratory mass spectrometry equipment used to confirm the molecular identity of a research peptide compound" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
-
-        <p>
-          This is the critical distinction researchers frequently overlook: <strong>purity measures how clean the sample is; mass spectrometry confirms what the sample actually is.</strong> A COA reporting only a purity percentage, with no corresponding molecular weight confirmation, has not actually proven the vial contains the labeled peptide — it has only shown that whatever is in the vial is fairly uniform. Every compound across our catalog, including growth-hormone-axis peptides like <Link href="/products/cjc-ipamorelin" className="text-blue-600 underline hover:text-blue-800">CJC-1295 / Ipamorelin</Link> and <Link href="/products/tesamorelin" className="text-blue-600 underline hover:text-blue-800">Tesamorelin</Link>, is verified by both methods.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Reading a Real Chromatogram: Main Peak vs. Impurities</h2>
-
-        <p>
-          When reviewing an actual chromatogram, look for one tall, sharp, symmetrical peak at the expected retention time, with minimal "shoulder" distortion. Small peaks elsewhere on the graph represent impurities — commonly truncated sequences from incomplete Solid-Phase Peptide Synthesis (SPPS) coupling steps, deletion sequences, or oxidation byproducts. The height and count of these secondary peaks, not just the headline purity number, tells you how clean the synthesis process actually was.
-        </p>
-
-        <table className="w-full border-collapse my-8 text-body-md">
-          <thead>
-            <tr className="border-b-2 border-ink">
-              <th className="text-left py-3 pr-4 font-serif text-ink">Reported Purity Band</th>
-              <th className="text-left py-3 font-serif text-ink">Research Suitability</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-b border-border-subtle">
-              <td className="py-3 pr-4 font-medium text-ink">≥99%</td>
-              <td className="py-3 text-ink-muted">Accepted standard for quantitative dose-response work and publication-grade research</td>
-            </tr>
-            <tr className="border-b border-border-subtle">
-              <td className="py-3 pr-4 font-medium text-ink">95-98%</td>
-              <td className="py-3 text-ink-muted">Generally limited to preliminary screening assays; not ideal for quantitative work</td>
-            </tr>
-            <tr>
-              <td className="py-3 pr-4 font-medium text-ink">&lt;95%</td>
-              <td className="py-3 text-ink-muted">Impurity load high enough to meaningfully compromise reproducibility</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">E-E-A-T Focus: Why Independent, Third-Party Testing Matters</h2>
-
-        <p>
-          In-house purity testing carries an unavoidable conflict of interest: the party synthesizing the compound is also the party grading its own homework. Independent verification removes that conflict by placing the analysis in the hands of a laboratory with no financial stake in the result. This is why every batch sold by Longevia Research is sent to an independent, ISO-certified US laboratory rather than tested internally — and why the resulting reports, not summarized claims, are published in full for every compound in our <Link href="/shop" className="text-blue-600 underline hover:text-blue-800">shop</Link>.
-        </p>
-
-        <Image src="/journal-images/certificate-of-analysis-document-peptide-vial.webp" alt="Certificate of Analysis document with lot number beside a lyophilized research peptide vial" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Beyond HPLC and Mass Spec: Complementary Testing Methods</h2>
-
-        <p>
-          While HPLC and mass spectrometry form the core of most peptide COAs, several complementary tests are sometimes included, particularly for compounds used in more sensitive research applications. <strong>Amino Acid Analysis (AAA)</strong> hydrolyzes the peptide back into its constituent amino acids and quantifies each one, cross-checking the resulting ratio against the expected sequence composition — a useful secondary confirmation of identity that is independent of both HPLC retention time and mass spectrometry. <strong>Endotoxin testing</strong>, typically performed via a Limulus Amebocyte Lysate (LAL) assay, screens for bacterial endotoxin contamination that can arise during manufacturing and is particularly relevant for any in-vivo research model, since endotoxins can trigger inflammatory responses independent of the peptide's own biological activity. <strong>Residual solvent testing</strong> checks for trace amounts of the organic solvents used during synthesis and purification (such as acetonitrile or trifluoroacetic acid) that may remain in the lyophilized powder if not fully removed.
-        </p>
-
-        <p>
-          Not every supplier includes all of these on a standard COA, and for most in-vitro screening work, HPLC purity and mass spectrometry identity confirmation remain the two non-negotiable data points. But for researchers designing more sensitive in-vivo protocols, it is reasonable to ask a supplier whether endotoxin data is available for a given batch, particularly for compounds intended for injection-based research models.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">How COA Data Should Inform Experimental Design</h2>
-
-        <p>
-          A COA is not just a compliance document to file away — the specific numbers on it should actively shape how a protocol is designed. A batch reported at 99.6% purity with a clean, single-peak chromatogram gives a researcher confidence to proceed with quantitative dose-response work without needing to build in additional controls for impurity-driven variance. A batch closer to the 95-98% range, by contrast, warrants a more conservative interpretation of results, since a larger fraction of the sample by mass is something other than the intended compound.
-        </p>
-
-        <p>
-          Molecular weight confirmation matters just as much for protocol design as the purity figure. If the confirmed molecular weight on a COA differs even slightly from the theoretical value for the target sequence, that discrepancy should be resolved with the supplier before the batch is used — a small but real difference can indicate a missing or substituted residue that would not necessarily be obvious from the HPLC purity number alone. Treating the COA as an input to experimental design, rather than a formality to glance at once, is one of the simplest ways researchers can improve the reliability of their own results.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Red Flags: How to Spot an Unreliable Supplier or Fabricated COA</h2>
-
-        <ul className="list-disc pl-6 space-y-4 my-6 text-body-lg text-ink">
-          <li><strong>No lot or batch number.</strong> A COA that cannot be matched to the specific vial received is functionally unverifiable.</li>
-          <li><strong>The same document for every order.</strong> Reused, generic PDFs presented as current test results indicate the supplier is not actually testing individual batches.</li>
-          <li><strong>Purity data with no identity confirmation.</strong> An HPLC percentage with no mass spectrometry data cannot prove the vial contains the correct compound.</li>
-          <li><strong>No named, independent testing laboratory.</strong> Anonymous or unnamed "in-house" results offer no accountability.</li>
-          <li><strong>Documents that are image screenshots rather than structured lab reports.</strong> Legitimate laboratories issue reports with consistent formatting, methodology notes, and instrument identifiers — not cropped screenshots.</li>
-          <li><strong>A reported molecular weight that doesn't match the theoretical value for the labeled sequence.</strong> Even a small unexplained discrepancy is worth resolving directly with the supplier before use.</li>
-          <li><strong>Pressure to purchase without documentation available upfront.</strong> A supplier confident in its testing process makes COAs available before purchase, not only after a complaint.</li>
-        </ul>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Building a Repeatable Verification Habit</h2>
-
-        <p>
-          Reading a COA should not be a one-time exercise performed at the moment of purchase and then forgotten. Because peptides are ordered in batches and batches change over time — even from the same trusted supplier — the most rigorous research protocols treat COA verification as a recurring checkpoint. Before introducing any new shipment into an active experimental protocol, cross-reference the lot number printed on the vial against the lot number listed on the corresponding COA. If the two do not match, or if a reorder arrives with a lot number identical to a previous shipment, treat this as an immediate documentation discrepancy worth resolving with the supplier before use.
-        </p>
-
-        <p>
-          It is also worth maintaining a simple internal log — batch number, date received, purity percentage, and confirmed molecular weight — for every compound used across a longitudinal study. This habit accomplishes two things: it creates an audit trail that strengthens the reproducibility case for any published findings, and it makes any unexpected shift in experimental results easy to cross-check against a possible change in raw material quality rather than a change in the biological system being studied.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Applying This Across Compound Classes</h2>
-
-        <p>
-          Purity and identity verification matter identically across every category of research compound, though the synthesis complexity — and therefore the risk of truncation — scales with peptide length. Long-chain metabolic peptides such as <Link href="/products/semaglutide" className="text-blue-600 underline hover:text-blue-800">Semaglutide</Link>, <Link href="/products/tirzepatide" className="text-blue-600 underline hover:text-blue-800">Tirzepatide</Link>, and <Link href="/products/retatrutide-10mg-20mg-30mg-60mg-45-sprays" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> are considerably harder to synthesize cleanly than short sequences, making independent verification especially important.
-        </p>
-
-        <p>
-          The same standard applies to structural and regenerative compounds like <Link href="/products/bpc-157" className="text-blue-600 underline hover:text-blue-800">BPC-157</Link>, <Link href="/products/tb-500" className="text-blue-600 underline hover:text-blue-800">TB-500</Link>, and <Link href="/products/ghk-cu" className="text-blue-600 underline hover:text-blue-800">GHK-Cu</Link>; growth-hormone-axis secretagogues including <Link href="/products/cjc-1295-no-dac" className="text-blue-600 underline hover:text-blue-800">CJC-1295 No-DAC</Link>, <Link href="/products/ipamorelin" className="text-blue-600 underline hover:text-blue-800">Ipamorelin</Link>, and <Link href="/products/sermorelin" className="text-blue-600 underline hover:text-blue-800">Sermorelin</Link>; neuro-focused peptides like <Link href="/products/selank" className="text-blue-600 underline hover:text-blue-800">Selank</Link> and <Link href="/products/semax" className="text-blue-600 underline hover:text-blue-800">Semax</Link>; hormonal and longevity-focused compounds such as <Link href="/products/kisspeptin" className="text-blue-600 underline hover:text-blue-800">Kisspeptin</Link>, <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-C</Link>, <Link href="/products/nad-plus" className="text-blue-600 underline hover:text-blue-800">NAD+</Link>, and <Link href="/products/epithalon" className="text-blue-600 underline hover:text-blue-800">Epithalon</Link>; and cosmetic-research blends including <Link href="/products/melanotan-ii" className="text-blue-600 underline hover:text-blue-800">Melanotan II</Link> and the <Link href="/products/glow-blend" className="text-blue-600 underline hover:text-blue-800">Glow Blend</Link>. Every one of these is only as reliable as the COA behind it.
-        </p>
-
-        <p>
-          Once purity and identity are verified, the next variable researchers need to control is handling — our companion guide on <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">peptide reconstitution and storage</Link> covers bacteriostatic water, shelf-life windows, and the cold-chain practices that preserve a verified compound's integrity after the vial is opened. For general purity and sourcing questions beyond this guide, see our <Link href="/faq" className="text-blue-600 underline hover:text-blue-800">FAQ page</Link>.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
-
-        <div className="space-y-6">
-          {COA_HPLC_FAQS.map((faq, idx) => (
-            <div key={idx}>
-              <h4 className="font-bold text-ink">{faq.question}</h4>
-              <p className="text-ink-muted">{faq.answer}</p>
-            </div>
-          ))}
-        </div>
-      </>
-    )
-  },
-  {
-    slug: 'peptide-reconstitution-storage-guide',
-    title: 'Peptide Reconstitution & Storage Guide: Bacteriostatic Water, Shelf Life, and Cold-Chain Best Practices',
-    category: 'Guides',
-    date: 'July 21, 2026',
-    readTime: '18 min read',
-    excerpt: 'A step-by-step protocol for reconstituting lyophilized research peptides, calculating concentration, and storing compounds correctly at every stage to preserve molecular integrity.',
-    heroImage: '/journal-images/peptide-reconstitution-storage-guide-hero.webp',
-    author: 'Longevia Research Team',
-    faqs: RECON_STORAGE_FAQS,
-    content: (
-      <>
-        <p className="first-letter:text-7xl first-letter:font-serif first-letter:float-left first-letter:mr-4 first-letter:text-ink first-letter:mt-2">
-          A ≥99% pure, independently verified peptide can still be rendered useless by a single mishandled step after the vial arrives. Peptides are fragile chains of amino acids held together by bonds that are sensitive to heat, light, mechanical agitation, and repeated freeze-thaw cycling. Reconstitution — the process of dissolving a lyophilized (freeze-dried) peptide into a liquid solution — and the storage protocol that follows it are where most preventable degradation actually happens in a research setting.
-        </p>
-
-        <p>
-          This guide walks through the reconstitution process step by step, explains the difference between bacteriostatic and sterile water, and details exactly how to store a compound at every stage of its lifecycle — from sealed lyophilized vial to reconstituted solution mid-protocol.
-        </p>
-
-        <div className="border-l-4 border-gold bg-ink/5 rounded-r-xl p-6 my-10">
-          <p className="text-body-lg text-ink font-medium m-0">
-            <strong>Quick answer:</strong> Store lyophilized peptides at -20°C until ready to use. Reconstitute using bacteriostatic water (not sterile water) by directing the stream gently down the vial wall and swirling — never shaking. Refrigerate the reconstituted solution at 2-8°C and use it within roughly 14-30 days depending on the specific compound.
-          </p>
-        </div>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Lyophilized vs. Reconstituted: Why the Storage Rules Differ</h2>
-
-        <p>
-          Lyophilization (freeze-drying) removes water from a peptide solution under vacuum, leaving behind a stable powder with dramatically reduced molecular activity. In this dry, sealed state, peptides are relatively resistant to degradation and can remain stable at -20°C for 24 months or longer. The moment water is reintroduced during reconstitution, the peptide becomes biologically and chemically active again — and correspondingly far more vulnerable to heat, light, microbial growth, and hydrolysis. This is why the storage rules change completely the instant a vial is reconstituted.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Bacteriostatic Water vs. Sterile Water</h2>
-
-        <p>
-          Bacteriostatic water is sterile water containing 0.9% benzyl alcohol as a preservative. That preservative is what allows a reconstituted vial to be safely drawn from multiple times across several weeks without meaningful risk of microbial contamination. Plain sterile water contains no such preservative — once opened, it should be treated as effectively single-use, with the reconstituted solution ideally used within about 24 hours.
-        </p>
-
-        <Image src="/journal-images/peptide-reconstitution-syringe-bacteriostatic-water.webp" alt="Syringe drawing bacteriostatic water to reconstitute a lyophilized research peptide vial on a lab bench" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
-
-        <p>
-          Our <Link href="/products/bac-water" className="text-blue-600 underline hover:text-blue-800">BAC Water</Link> is produced to the same laboratory-grade standard as every compound in our catalog and is the recommended diluent for reconstituting any peptide ordered from Longevia Research, unless a specific research protocol calls otherwise.
-        </p>
-
-        <h3 className="text-xl font-bold text-ink mt-8 mb-4">Why the Benzyl Alcohol Concentration Matters</h3>
-
-        <p>
-          The 0.9% benzyl alcohol concentration in bacteriostatic water is not arbitrary — it is calibrated to inhibit bacterial growth without introducing a concentration high enough to meaningfully interfere with most peptide structures during normal storage windows. Using a diluent with a substantially different preservative concentration, or substituting an unrelated solvent, can introduce unpredictable interactions with the peptide's amino acid side chains. This is why researchers should source diluent specifically manufactured and tested for peptide reconstitution rather than repurposing general-laboratory water on hand.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Understanding Peptide Degradation Pathways</h2>
-
-        <p>
-          Storage and handling guidance makes more sense once researchers understand the specific chemical pathways that actually degrade a peptide in solution. The three most common are hydrolysis, oxidation, and aggregation. <strong>Hydrolysis</strong> is the breaking of peptide bonds through reaction with water molecules, a process that accelerates significantly with rising temperature — this is the primary reason reconstituted peptides must be refrigerated rather than left at room temperature. <strong>Oxidation</strong> occurs when certain amino acid side chains (methionine, cysteine, and tryptophan are particularly susceptible) react with oxygen or light-generated reactive species, altering the peptide's structure and often its biological activity; this is why lyophilized vials are kept sealed, dark, and away from light exposure. <strong>Aggregation</strong> happens when individual peptide molecules begin clumping together in solution, often triggered by mechanical agitation, temperature fluctuation, or simply time — this is the underlying reason vigorous shaking is discouraged in favor of gentle swirling.
-        </p>
-
-        <p>
-          Each of these pathways operates on a different timescale and is accelerated by a different environmental factor, which is why a single storage protocol — cold, dark, undisturbed, minimal freeze-thaw — addresses all three simultaneously rather than requiring separate handling rules for each compound.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Choosing the Right Syringe and Needle Gauge</h2>
-
-        <p>
-          Equipment choice affects both reconstitution accuracy and the physical integrity of the peptide solution during handling. For reconstitution and for drawing small research volumes, a 0.5mL or 1mL insulin syringe marked in fine unit increments (typically 100 units per mL) offers far more precision than a standard 3mL syringe, where the same volume occupies a much smaller, harder-to-read segment of the barrel. Needle gauge matters too: a finer needle (commonly 29-31 gauge for insulin syringes) reduces the mechanical stress placed on the solution as it passes through the needle bore compared to a larger-bore needle, and produces a smaller, cleaner puncture through the vial's rubber stopper, reducing the risk of coring — small rubber fragments breaking off into the solution.
-        </p>
-
-        <p>
-          Syringes and needles used for peptide research should be single-use and disposed of properly after each session; reusing a needle increases both contamination risk and the chance of a dulled tip damaging the vial stopper on subsequent insertions.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Shipping, Transit, and Temporary Storage Excursions</h2>
-
-        <p>
-          Peptides frequently spend a portion of their lifecycle outside of controlled cold storage — most obviously during shipping from supplier to researcher. Reputable suppliers ship lyophilized compounds with appropriate insulation and, for temperature-sensitive orders, cold packs or gel packs designed to buffer against ambient temperature during transit. Because lyophilized (unreconstituted) peptides are considerably more temperature-stable than reconstituted solutions, brief transit excursions at ambient temperature are generally well tolerated for the dry powder form, which is one of the practical reasons compounds are shipped lyophilized rather than pre-dissolved.
-        </p>
-
-        <p>
-          The same is not true once a peptide has been reconstituted. If a research protocol requires transporting a reconstituted solution between locations — from a storage freezer to a bench in a different room, for instance — minimizing the time spent outside refrigeration and using an insulated carrier with an ice pack for any transport lasting more than a few minutes is good practice. Treat any reconstituted solution that has spent an extended, undocumented period outside refrigeration as a compromised sample rather than risk introducing unexplained variance into a protocol.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Step-by-Step Reconstitution Protocol</h2>
-
-        <ol className="list-decimal pl-6 space-y-4 my-6 text-body-lg text-ink">
-          <li><strong>Bring both vials to room temperature.</strong> Remove the lyophilized peptide vial from the freezer and let it warm naturally before opening, preventing condensation from forming on the powder.</li>
-          <li><strong>Swab both vial tops with an alcohol wipe.</strong> This maintains a sterile entry point on the peptide vial and the bacteriostatic water vial.</li>
-          <li><strong>Draw the calculated volume of bacteriostatic water into a syringe.</strong> Use the volume determined by your target concentration (see the calculation section below).</li>
-          <li><strong>Insert the needle through the vial's rubber stopper at a slight angle.</strong> Direct the water stream gently down the interior glass wall rather than injecting it directly onto the powder.</li>
-          <li><strong>Allow the vial to sit, then gently swirl.</strong> Do not shake. Roll the vial gently between your palms if needed until the powder is fully dissolved into a clear solution.</li>
-          <li><strong>Label the vial with the reconstitution date.</strong> This lets you track the stability window from the moment of preparation, not the original manufacture date.</li>
-          <li><strong>Refrigerate immediately at 2-8°C.</strong> Return the vial to cold storage promptly after each draw.</li>
-        </ol>
-
-        <p>
-          Calculate the exact volume of bacteriostatic water needed for your target concentration based on the vial mass before starting this process.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Calculating Concentration</h2>
-
-        <p>
-          Reconstitution volume directly determines the final concentration of the solution, typically expressed in micrograms per milliliter (mcg/mL). The relationship is straightforward: total peptide mass in the vial (in mg, converted to mcg) divided by the volume of bacteriostatic water added (in mL) yields the concentration per mL. For example, a 5mg vial reconstituted with 2mL of bacteriostatic water yields a concentration of 2,500 mcg/mL. Because this figure directly determines dosing accuracy for any downstream research protocol, calculating dilution accurately is essential to eliminate experimental inconsistency.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Storage Temperatures at Every Stage</h2>
-
-        <table className="w-full border-collapse my-8 text-body-md">
-          <thead>
-            <tr className="border-b-2 border-ink">
-              <th className="text-left py-3 pr-4 font-serif text-ink">Stage</th>
-              <th className="text-left py-3 pr-4 font-serif text-ink">Temperature</th>
-              <th className="text-left py-3 font-serif text-ink">Typical Stability Window</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-b border-border-subtle">
-              <td className="py-3 pr-4 font-medium text-ink">Lyophilized (sealed, unopened)</td>
-              <td className="py-3 pr-4 text-ink-muted">-20°C, dark, dry</td>
-              <td className="py-3 text-ink-muted">24 months or longer</td>
-            </tr>
-            <tr className="border-b border-border-subtle">
-              <td className="py-3 pr-4 font-medium text-ink">Reconstituted (bacteriostatic water)</td>
-              <td className="py-3 pr-4 text-ink-muted">2-8°C, refrigerated</td>
-              <td className="py-3 text-ink-muted">~14-30 days, compound-dependent</td>
-            </tr>
-            <tr>
-              <td className="py-3 pr-4 font-medium text-ink">Reconstituted (sterile water)</td>
-              <td className="py-3 pr-4 text-ink-muted">2-8°C, refrigerated</td>
-              <td className="py-3 text-ink-muted">~24 hours</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <Image src="/journal-images/lyophilized-peptide-freezer-storage-rack.webp" alt="Rack of lyophilized research peptide vials stored at -20°C in a laboratory freezer" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Powder Appearance and Visual Quality Checks</h2>
-
-        <p>
-          Before reconstitution, lyophilized peptide powder should appear as a uniform, tightly-packed white or off-white cake or fine powder at the bottom of the vial. Discoloration (yellowing or browning), a visibly collapsed or shrunken cake, or powder that appears clumped and unevenly distributed can all indicate that a vial was exposed to conditions outside its intended storage range — most commonly heat, light, or moisture ingress — even if the vial appears sealed. After reconstitution, the resulting solution should be visually clear and free of any floating particulate matter or persistent cloudiness. A solution that remains hazy after adequate time to fully dissolve, or that develops visible particles after a period in storage, should not be used in an active protocol; these are simple, no-cost visual checks that catch a meaningful fraction of handling problems before they compound into unexplained experimental variance downstream.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Compound-Specific Notes</h2>
-
-        <p>
-          These storage principles apply consistently across our catalog, though longer or more structurally complex sequences generally tolerate handling errors less forgivingly than short, stable ones. Longevity and cellular-signaling peptides such as <Link href="/products/epithalon" className="text-blue-600 underline hover:text-blue-800">Epithalon</Link> and <Link href="/products/nad-plus" className="text-blue-600 underline hover:text-blue-800">NAD+</Link> should be handled with the same cold-chain discipline as growth-hormone secretagogues like <Link href="/products/cjc-1295-no-dac" className="text-blue-600 underline hover:text-blue-800">CJC-1295 No-DAC</Link> and the <Link href="/products/tesa-ipa" className="text-blue-600 underline hover:text-blue-800">Tesamorelin / Ipamorelin</Link> stack. Antimicrobial and repair-focused compounds such as <Link href="/products/ll-37" className="text-blue-600 underline hover:text-blue-800">LL-37</Link> and <Link href="/products/kpv" className="text-blue-600 underline hover:text-blue-800">KPV</Link>, hormonal peptides like <Link href="/products/oxytocin" className="text-blue-600 underline hover:text-blue-800">Oxytocin</Link>, antioxidant compounds such as <Link href="/products/glutathione" className="text-blue-600 underline hover:text-blue-800">Glutathione</Link>, and nootropic pairings like <Link href="/products/semax-selank" className="text-blue-600 underline hover:text-blue-800">Semax / Selank</Link> all follow the same reconstitution and cold-chain protocol outlined above.
-        </p>
-
-        <Image src="/journal-images/reconstituted-peptide-refrigerator-cold-chain.webp" alt="Reconstituted research peptide vials stored at 2 to 8 degrees Celsius in a laboratory refrigerator cold-chain rack" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">A Worked Example: From Vial to Vial-Ready Solution</h2>
-
-        <p>
-          Consider a 10mg vial of a lyophilized peptide reconstituted with 2mL of bacteriostatic water. Converting 10mg to micrograms gives 10,000mcg; dividing by the 2mL volume yields a concentration of 5,000mcg/mL, or 5mcg per 0.001mL (1 microliter) drawn. If a research protocol calls for a 250mcg dose, the corresponding draw volume would be 0.05mL — a figure precise enough that most researchers prefer to work with an insulin syringe marked in fine unit increments rather than estimating by eye. This standardized arithmetic ensures consistent protocol-to-protocol conversions from vial mass, diluent volume, and target dose.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Maintaining a Reproducible Storage Log</h2>
-
-        <p>
-          Just as batch-specific COA tracking strengthens reproducibility on the purity side, a simple storage log strengthens it on the handling side. Recording the reconstitution date, diluent used, calculated concentration, and storage location for every vial makes it possible to audit exactly how far into its stability window a given sample sits at the time it is used in an assay. This matters most in longitudinal or multi-cohort research, where a vial reconstituted three weeks ago and a freshly prepared vial from the same batch may behave differently in downstream results — a discrepancy that is trivial to explain with a log and easy to misattribute to biological variance without one.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Common Mistakes That Degrade Peptides</h2>
-
-        <ul className="list-disc pl-6 space-y-4 my-6 text-body-lg text-ink">
-          <li><strong>Shaking instead of swirling.</strong> Mechanical shear force from shaking can denature a peptide's secondary structure and permanently reduce its bioactivity.</li>
-          <li><strong>Repeated freeze-thaw cycling.</strong> Ice crystal formation physically disrupts peptide bonds with each cycle; reconstituted solutions should stay refrigerated, not refrozen.</li>
-          <li><strong>Leaving vials at room temperature for extended periods.</strong> Heat accelerates hydrolysis and oxidation well beyond the compound's expected stability window.</li>
-          <li><strong>Using expired or non-preserved diluent.</strong> Sterile water past its single-use window introduces contamination risk into an otherwise clean protocol.</li>
-          <li><strong>Skipping documentation.</strong> Failing to label a vial with its reconstitution date makes it impossible to track how far into its stability window a given sample actually is.</li>
-        </ul>
-
-        <p>
-          Correct handling only matters if the underlying compound was verified in the first place — see our companion guide on <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">reading a peptide Certificate of Analysis</Link> for how to confirm purity and identity before a vial ever reaches the bench. Lot-specific COA documentation for every compound referenced here is available in our <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis Library</Link>, and additional sourcing questions are covered on our <Link href="/faq" className="text-blue-600 underline hover:text-blue-800">FAQ page</Link>.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
-
-        <div className="space-y-6">
-          {RECON_STORAGE_FAQS.map((faq, idx) => (
             <div key={idx}>
               <h4 className="font-bold text-ink">{faq.question}</h4>
               <p className="text-ink-muted">{faq.answer}</p>
@@ -1864,143 +1408,13 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <Image src="/journal-images/glp-3-hplc-purity-verification.webp" alt="Laboratory HPLC purity verification of a research-grade GLP-3 (Rt) peptide batch" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
 
         <p>
-          <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> manufactures <Link href="/products/retatrutide-10mg-20mg-30mg-60mg-45-sprays" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> research peptide in US-based facilities, with every batch independently verified by third-party HPLC and LC-MS analysis. Lot-specific Certificates of Analysis are available in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution protocols and concentration calculations, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>.
+          <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> manufactures <Link href="/products/retatrutide-10mg-20mg-30mg-60mg-45-sprays" className="text-blue-600 underline hover:text-blue-800">GLP-3 (Rt)</Link> research peptide in US-based facilities, with every batch independently verified by third-party HPLC and LC-MS analysis. Lot-specific Certificates of Analysis are available in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution protocols and concentration calculations, consult our <Link href="/journal/how-long-do-peptides-last-after-reconstitution" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
 
         <div className="space-y-6">
           {GLP_3_RT_FAQS.map((faq, idx) => (
-            <div key={idx}>
-              <h4 className="font-bold text-ink">{faq.question}</h4>
-              <p className="text-ink-muted">{faq.answer}</p>
-            </div>
-          ))}
-        </div>
-      </>
-    )
-  },
-  {
-    slug: 'mots-c-peptide-mitochondrial-exercise-mimetic-research',
-    title: 'MOTS-C Peptide: Mitochondrial Signaling, Exercise Mimetic Research, and the AMPK Activation Pathway',
-    category: 'Studies',
-    date: 'July 23, 2026',
-    readTime: '20 min read',
-    excerpt: 'A research guide to MOTS-c, the mitochondrial-derived exercise mimetic peptide — covering AMPK activation, nuclear translocation, preclinical metabolic data, and sourcing standards for 2026.',
-    heroImage: '/journal-images/mots-c-mitochondrial-exercise-mimetic-hero.webp',
-    author: 'Longevia Research Team',
-    faqs: MOTSC_FAQS,
-    content: (
-      <>
-        <p className="first-letter:text-7xl first-letter:font-serif first-letter:float-left first-letter:mr-4 first-letter:text-ink first-letter:mt-2">
-          MOTS-c has emerged as one of the most compelling research peptides in mitochondrial biology and metabolic science, with search interest surging 150% year-over-year as of mid-2026. Unlike the majority of research peptides — which are encoded by nuclear DNA and synthesized in the cytoplasm — <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-c</Link> is encoded within the mitochondrial genome itself, specifically within the 12S ribosomal RNA gene, making it a mitochondrial-derived peptide (MDP): a class of signaling molecules representing a paradigm shift in how researchers understand intercellular communication between the mitochondria and the nucleus.
-        </p>
-
-        <p>
-          First characterized by Changhan David Lee's laboratory at the University of Southern California in 2015, MOTS-c is a 16-amino-acid peptide that has demonstrated remarkable metabolic effects in preclinical models — including improved glucose homeostasis, enhanced insulin sensitivity, reduced fat accumulation, and increased exercise endurance. These properties have earned MOTS-c the designation of "exercise mimetic" in the published literature: a compound that replicates a subset of the metabolic adaptations to physical exercise at the cellular level. This article provides a comprehensive overview of MOTS-c's mechanism, preclinical evidence base, and research applications for laboratory professionals.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">What Is MOTS-c? Origin and Molecular Identity</h2>
-
-        <p>
-          MOTS-c (Mitochondrial Open Reading Frame of the 12S rRNA Type-C) is a 16-amino-acid peptide with the sequence MRWQEMGYIFYPRKLR. It is encoded by a short open reading frame within the mitochondrial 12S rRNA gene (MT-RNR1), making it one of the first identified peptides that demonstrate a retrograde signaling pathway from the mitochondria to the nucleus — sometimes described as "mitonuclear communication." This represents a fundamental shift in the understanding of mitochondria as passive energy producers: MOTS-c demonstrates that mitochondria function as active signaling organelles capable of regulating nuclear gene expression and systemic metabolism.
-        </p>
-
-        <p>
-          Circulating MOTS-c levels have been measured in human plasma, confirming that the peptide functions as a systemic signaling molecule. Observational studies have found that plasma MOTS-c levels are negatively correlated with markers of metabolic dysfunction — including fasting insulin, HbA1c, and BMI — and that levels decline with age, paralleling the age-related decline in mitochondrial function and metabolic flexibility that characterizes cellular aging.
-        </p>
-
-        <Image src="/journal-images/mots-c-mitochondrial-nuclear-signaling.webp" alt="Illustration of MOTS-c signaling from the mitochondria to the cell nucleus" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">The AMPK Activation Pathway: How MOTS-c Produces Its Metabolic Effects</h2>
-
-        <p>
-          The central downstream effector of MOTS-c activity is AMPK (5' adenosine monophosphate-activated protein kinase), the master energy-sensing kinase that orchestrates cellular metabolic responses to energy stress. MOTS-c activates AMPK through a unique three-step mechanism: first, folate cycle inhibition — MOTS-c inhibits the de novo purine synthesis pathway by reducing methylenetetrahydrofolate availability; second, AICAR accumulation — this inhibition causes accumulation of AICAR, an endogenous metabolite and well-established AMPK activator; and third, AMPK phosphorylation — elevated AICAR activates AMPK, triggering the downstream metabolic cascade without requiring cellular energy depletion, the mechanism that distinguishes MOTS-c from exercise-induced AMPK activation.
-        </p>
-
-        <p>
-          Activated AMPK then drives a metabolic response profile that closely mirrors cellular adaptations to aerobic exercise training: enhanced insulin-independent glucose uptake through GLUT4 translocation, upregulated fatty acid oxidation through CPT-1 pathway activity, and activation of PGC-1α-mediated mitochondrial biogenesis programs. Lee et al. (2015) measured GLUT4 surface expression and AMP:ATP ratio changes in MOTS-c-treated skeletal muscle cells, directly confirming the exercise-mimetic pathway at the molecular level.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Nuclear Translocation: The Stress-Response Pathway</h2>
-
-        <p>
-          One of the most significant findings in MOTS-c research is the demonstration that MOTS-c translocates from the cytoplasm to the cell nucleus under conditions of metabolic stress — observed in response to glucose deprivation, oxidative stress, and serum starvation in cell models. Once in the nucleus, MOTS-c interacts with transcription factors and chromatin-modifying complexes to directly regulate the expression of genes involved in antioxidant defense, stress adaptation, and metabolic homeostasis. This establishes MOTS-c as more than a circulating signaling peptide — it is a direct nuclear effector that can reprogram gene expression in response to metabolic challenges.
-        </p>
-
-        <Image src="/journal-images/mots-c-glut4-glucose-uptake-mechanism.webp" alt="Diagram of MOTS-c driving GLUT4 translocation and glucose uptake in skeletal muscle" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Exercise Mimetic Properties: What Preclinical Models Show</h2>
-
-        <p>
-          In diet-induced obese mouse models, exogenous MOTS-c treatment improved fasting glucose levels and glucose tolerance to a degree comparable to exercise-mediated improvements, mediated by increased skeletal muscle glucose uptake. Treated animals also showed reduced fat mass accumulation on high-fat diets without significant changes in food intake, indicating a metabolic mechanism rather than appetite suppression — distinguishing MOTS-c from GLP-1 receptor agonists, which primarily reduce body weight through centrally mediated appetite suppression.
-        </p>
-
-        <p>
-          In aged mouse models, exogenous MOTS-c administration restored metabolic flexibility and physical performance metrics — including treadmill endurance — that typically deteriorate with age-related mitochondrial decline. Research published in Frontiers in Physiology (2025) further demonstrated that MOTS-c restored mitochondrial respiration in type 2 diabetic cardiac tissue models, expanding research interest into cardiac metabolism.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">MOTS-c vs. Other Metabolic Peptides: Where It Fits in the Research Landscape</h2>
-
-        <div className="overflow-x-auto my-8">
-          <table className="w-full border-collapse text-body-md">
-            <thead>
-              <tr className="border-b-2 border-ink">
-                <th className="text-left py-3 pr-4 font-bold text-ink">Peptide</th>
-                <th className="text-left py-3 pr-4 font-bold text-ink">Primary Mechanism</th>
-                <th className="text-left py-3 pr-4 font-bold text-ink">Receptor/Pathway</th>
-                <th className="text-left py-3 font-bold text-ink">Research Stage</th>
-              </tr>
-            </thead>
-            <tbody className="text-ink-muted">
-              <tr className="border-b border-border-subtle">
-                <td className="py-3 pr-4 font-medium text-ink">MOTS-c</td>
-                <td className="py-3 pr-4">AMPK via purine synthesis inhibition</td>
-                <td className="py-3 pr-4">Mitochondria → nucleus (no membrane GPCR)</td>
-                <td className="py-3">Preclinical + Phase 1</td>
-              </tr>
-              <tr className="border-b border-border-subtle">
-                <td className="py-3 pr-4 font-medium text-ink">Semaglutide</td>
-                <td className="py-3 pr-4">GLP-1R agonism</td>
-                <td className="py-3 pr-4">GLP-1R (GPCR)</td>
-                <td className="py-3">Approved (2017)</td>
-              </tr>
-              <tr>
-                <td className="py-3 pr-4 font-medium text-ink">GLP-3 (Rt)</td>
-                <td className="py-3 pr-4">Triple GLP-1/GIP/GCGR agonism</td>
-                <td className="py-3 pr-4">GLP-1R + GIPR + GCGR</td>
-                <td className="py-3">Phase 3</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <p>
-          The key distinction is that MOTS-c operates through a fundamentally different mechanism than GPCR-based metabolic peptides — it does not bind a membrane receptor and trigger a signaling cascade, it activates AMPK through metabolic pathway inhibition and directly enters the nucleus to regulate gene expression. This makes MOTS-c mechanistically orthogonal to the incretin class, positioning it as a complementary research compound rather than a competitor within the same pathway. Researchers investigating MOTS-c alongside the hormonal-metabolic axis in female physiology models should also see our companion article, <Link href="/journal/kisspeptin-mots-c-hormonal-metabolic-research" className="text-blue-600 underline hover:text-blue-800">Kisspeptin-10 & MOTS-C: Research Peptides and the Female Hormonal-Metabolic Axis</Link>.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Age-Related MOTS-c Decline: Implications for Aging Research</h2>
-
-        <p>
-          Multiple observational studies have documented that circulating MOTS-c levels decline with age in humans, paralleling the broader age-related deterioration in mitochondrial function central to current theories of biological aging. Additional observational data has shown that obese children have significantly lower circulating MOTS-c levels, and that plasma MOTS-c concentrations in adult males are negatively correlated with fasting insulin, HbA1c, and BMI. A meta-analysis of over 27,500 subjects identified an Asian-specific mitochondrial DNA variant (m.1382A&gt;C) that alters the MOTS-c amino acid sequence and is associated with higher type 2 diabetes prevalence in males, providing genetic evidence for a functional link between MOTS-c biology and metabolic disease susceptibility.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Research-Grade Sourcing and Handling</h2>
-
-        <p>
-          Given MOTS-c's 16-amino-acid length, synthesis fidelity and post-synthesis purification are critical for experimental reproducibility — even a single amino acid deletion or substitution represents a proportionally large structural change that could alter biological activity. Researchers should verify ≥99% HPLC purity confirmed by independent third-party testing, LC-MS molecular weight verification matching the target MOTS-c sequence (MRWQEMGYIFYPRKLR), and lot-specific COA documentation with every batch.
-        </p>
-
-        <Image src="/journal-images/mots-c-research-grade-vial-lab-bench.webp" alt="Research-grade MOTS-c lyophilized peptide vial on a laboratory bench" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
-
-        <p>
-          <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> supplies research-grade <Link href="/products/mots-c" className="text-blue-600 underline hover:text-blue-800">MOTS-c</Link>, synthesized in US-based, ISO-certified facilities with full independent verification. Lot-specific Certificates of Analysis are accessible in our public <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">COA library</Link>. For reconstitution and storage protocols, consult our <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link>.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
-
-        <div className="space-y-6">
-          {MOTSC_FAQS.map((faq, idx) => (
             <div key={idx}>
               <h4 className="font-bold text-ink">{faq.question}</h4>
               <p className="text-ink-muted">{faq.answer}</p>
@@ -2137,7 +1551,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Reconstitution and Storage Considerations</h2>
 
         <p>
-          GLP-3 is supplied as a lyophilized (freeze-dried) powder requiring reconstitution prior to laboratory use. Researchers should follow standard peptide reconstitution protocols using bacteriostatic water, calculating concentration based on the desired experimental parameters — see our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link> for the step-by-step protocol and volume calculations. Post-reconstitution, GLP-3 should be stored under refrigeration (2–8°C) and protected from light; lyophilized material prior to reconstitution should be stored frozen (−20°C) for long-term stability.
+          GLP-3 is supplied as a lyophilized (freeze-dried) powder requiring reconstitution prior to laboratory use. Researchers should follow standard peptide reconstitution protocols using bacteriostatic water, calculating concentration based on the desired experimental parameters — see our full <Link href="/journal/how-long-do-peptides-last-after-reconstitution" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution and Storage Guide</Link> for the step-by-step protocol and volume calculations. Post-reconstitution, GLP-3 should be stored under refrigeration (2–8°C) and protected from light; lyophilized material prior to reconstitution should be stored frozen (−20°C) for long-term stability.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
@@ -2281,7 +1695,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Purity, Sourcing, and Verifying Research-Grade Material</h2>
 
         <p>
-          Long-chain peptides in this class — 31 to 39 amino acids — are considerably more prone to synthesis errors than shorter research peptides. During Solid-Phase Peptide Synthesis (SPPS), each additional amino acid coupling step carries a small statistical chance of failure, and these small per-step inefficiencies compound over a sequence this long, producing truncated byproducts alongside the correct full-length peptide. Truncated sequences can competitively bind the target receptors without activating them, introducing noise into a research protocol that can be difficult to distinguish from a genuine biological result. This is why researchers should require ≥99% purity confirmed by independent third-party HPLC testing, LC-MS or ESI-MS molecular weight verification confirming structural identity against the theoretical value, and a lot-specific Certificate of Analysis accompanying every batch. Our full <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">guide to reading a peptide Certificate of Analysis</Link> covers exactly what to look for in this documentation.
+          Long-chain peptides in this class — 31 to 39 amino acids — are considerably more prone to synthesis errors than shorter research peptides. During Solid-Phase Peptide Synthesis (SPPS), each additional amino acid coupling step carries a small statistical chance of failure, and these small per-step inefficiencies compound over a sequence this long, producing truncated byproducts alongside the correct full-length peptide. Truncated sequences can competitively bind the target receptors without activating them, introducing noise into a research protocol that can be difficult to distinguish from a genuine biological result. This is why researchers should require ≥99% purity confirmed by independent third-party HPLC testing, LC-MS or ESI-MS molecular weight verification confirming structural identity against the theoretical value, and a lot-specific Certificate of Analysis accompanying every batch. Our full <Link href="/journal/why-peptide-purity-matters-in-scientific-research" className="text-blue-600 underline hover:text-blue-800">guide to reading a peptide Certificate of Analysis</Link> covers exactly what to look for in this documentation.
         </p>
 
         <Image src="/journal-images/hplc-lab-verification-metabolic-peptide-vials.webp" alt="Laboratory HPLC verification workflow for research-grade semaglutide, tirzepatide, and GLP-3 (Rt) vials" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
@@ -2289,7 +1703,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Reconstitution and Storage Considerations</h2>
 
         <p>
-          All three compounds are supplied as lyophilized powder and follow the same fundamental handling principles: reconstitute using bacteriostatic water, directing the stream gently down the vial wall and swirling rather than shaking, then refrigerate the reconstituted solution at 2-8°C. Lyophilized vials should be stored frozen at -20°C until ready for use. Given their fatty-acid modifications and long-chain structure, all three are also sensitive to mechanical agitation and repeated freeze-thaw cycling, which can promote aggregation and reduce experimental consistency. See our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution & Storage Guide</Link> for the complete step-by-step protocol and dosing-volume calculations specific to each compound's vial mass.
+          All three compounds are supplied as lyophilized powder and follow the same fundamental handling principles: reconstitute using bacteriostatic water, directing the stream gently down the vial wall and swirling rather than shaking, then refrigerate the reconstituted solution at 2-8°C. Lyophilized vials should be stored frozen at -20°C until ready for use. Given their fatty-acid modifications and long-chain structure, all three are also sensitive to mechanical agitation and repeated freeze-thaw cycling, which can promote aggregation and reduce experimental consistency. See our full <Link href="/journal/how-long-do-peptides-last-after-reconstitution" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution & Storage Guide</Link> for the complete step-by-step protocol and dosing-volume calculations specific to each compound's vial mass.
         </p>
 
         <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Adverse Event Signals Reported in Published Trials</h2>
@@ -2329,177 +1743,17 @@ export const JOURNAL_POSTS: JournalPost[] = [
       </>
     )
   },
-  {
-    slug: 'nad-plus-peptide-mitochondrial-sirtuin-research-guide',
-    title: 'NAD+ Peptide Research: Mitochondrial Function, Cellular Repair, and the Sirtuin Pathway',
-    category: 'Studies',
-    date: 'July 28, 2026',
-    readTime: '17 min read',
-    excerpt: 'A research guide to NAD+ coenzyme biology — its role in mitochondrial ATP production, the sirtuin and PARP pathways, age-related decline, and the sourcing standards that apply to research-grade material.',
-    heroImage: '/journal-images/nad-plus-mitochondrial-sirtuin-research-hero.webp',
-    author: 'Longevia Research Team',
-    faqs: NAD_FAQS,
-    content: (
-      <>
-        <p className="first-letter:text-7xl first-letter:font-serif first-letter:float-left first-letter:mr-4 first-letter:text-ink first-letter:mt-2">
-          Few molecules sit as close to the center of cellular biology as NAD+ (nicotinamide adenine dinucleotide). It is not a hormone, a growth factor, or a peptide in the strict sense — it is a coenzyme, present in every cell, required for the basic chemistry that converts nutrients into usable energy. What has made NAD+ a focal point of contemporary research is not its role in energy metabolism alone, but its function as the obligatory substrate for two major regulatory enzyme families — sirtuins and PARPs — that sit at the intersection of DNA repair, mitochondrial biogenesis, and the biology of cellular aging.
-        </p>
-
-        <p>
-          This guide covers NAD+'s molecular role in cellular metabolism, the sirtuin and PARP pathways that depend on it, what published research shows about its age-related decline, how it differs from precursor compounds like NMN and NR, and the sourcing and handling standards that apply to research-grade material.
-        </p>
-
-        <div className="border-l-4 border-gold bg-ink/5 rounded-r-xl p-6 my-10">
-          <p className="text-body-lg text-ink font-medium m-0">
-            <strong>Quick answer:</strong> NAD+ is a coenzyme essential to mitochondrial ATP production and the obligatory substrate for sirtuins (NAD+-dependent deacetylases linked to cellular aging research) and PARPs (DNA damage-response enzymes). Cellular NAD+ levels decline with age in published research models, driven by reduced biosynthesis and increased consumption by PARP and CD38 activity. NAD+ differs from precursor compounds like NMN and NR in that it delivers the complete, active molecule directly rather than relying on cellular conversion pathways. It is a Research Use Only compound requiring the same cold-chain handling as other sensitive research reagents.
-          </p>
-        </div>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">What Is NAD+? Molecular Structure and Biological Role</h2>
-
-        <p>
-          <Link href="/products/nad-plus" className="text-blue-600 underline hover:text-blue-800">NAD+</Link> occupies a different structural category from most compounds in a research peptide catalog. Where peptides like <Link href="/journal/ghk-cu-pharmacokinetics" className="text-blue-600 underline hover:text-blue-800">GHK-Cu</Link> or <Link href="/journal/bpc-157-tb-500-synergy" className="text-blue-600 underline hover:text-blue-800">BPC-157</Link> are chains of amino acids joined by peptide bonds, NAD+ is a nucleotide-based coenzyme with an entirely different biosynthetic origin and a distinct set of handling sensitivities. Understanding that structural distinction up front is useful context for the rest of this guide, since it explains why NAD+'s research applications — cellular energy metabolism, DNA repair, sirtuin biology — sit in a different experimental domain than the tissue-repair and receptor-agonist compounds more commonly discussed in peptide research literature.
-        </p>
-
-        <p>
-          NAD+ is a dinucleotide — a molecule built from two nucleotides joined through their phosphate groups, one carrying an adenine base and the other a nicotinamide group. This structure gives it a molecular weight of approximately 663.43 g/mol and, critically, a nicotinamide ring capable of accepting and donating electrons. That redox chemistry is the entire basis of NAD+'s biological function: it cycles between its oxidized form (NAD+) and reduced form (NADH), shuttling electrons through the core metabolic pathways of glycolysis, the citric acid cycle, and oxidative phosphorylation. Every cell in the human body depends on this cycling to convert nutrients into ATP, which is why NAD+ is frequently described in the literature as sitting at the metabolic core of the cell rather than at its periphery.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">The Sirtuin Pathway: How NAD+ Regulates Cellular Aging Research Models</h2>
-
-        <p>
-          Sirtuins (SIRT1 through SIRT7 in mammals) are a family of enzymes that regulate gene expression, mitochondrial biogenesis, and cellular stress resistance by removing acetyl groups from target proteins — a reaction category known as deacetylation. What makes sirtuins mechanistically distinct from most other deacetylases is that they cannot function without NAD+: it is consumed stoichiometrically as a substrate in the deacetylation reaction, not merely used as a helper cofactor. This obligate dependency, first characterized in foundational work by Imai and Guarente and substantially expanded in the two decades since, is what directly ties cellular NAD+ availability to sirtuin activity. When NAD+ levels fall, sirtuin-mediated regulatory processes are correspondingly constrained, which is the central mechanistic link researchers investigate when studying NAD+ decline as a driver of age-related cellular dysfunction.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">NAD+ and Mitochondrial Function: ATP Production and the Electron Transport Chain</h2>
-
-        <p>
-          Beyond its role as an enzyme substrate, NAD+ is directly mechanically involved in mitochondrial energy production. As NADH, its reduced form donates electrons to Complex I of the electron transport chain embedded in the mitochondrial inner membrane, initiating the proton-pumping cascade that ultimately drives ATP synthase. Efficient NAD+/NADH cycling is therefore not merely correlated with healthy mitochondrial function — it is mechanistically required for it. Research models studying mitochondrial dysfunction, whether in the context of aging, metabolic disease, or exercise physiology, consistently examine NAD+/NADH ratios as a proxy for overall bioenergetic health, since a depleted or imbalanced ratio directly constrains the electron transport chain's capacity to generate ATP.
-        </p>
-
-        <Image src="/journal-images/nad-electron-transport-chain-mitochondria-diagram.webp" alt="Diagram of NAD+ and NADH cycling through the mitochondrial electron transport chain during ATP production" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">NAD+ Decline: What the Research Shows About Age-Related Depletion</h2>
-
-        <p>
-          A substantial body of published research has documented that tissue NAD+ levels decline with age across multiple species and tissue types. Three mechanisms are most frequently cited to explain this decline. First, biosynthesis of NAD+ through the salvage pathway (which recycles nicotinamide back into NAD+) appears to become less efficient with age. Second, PARP enzymes — activated in response to accumulated DNA damage, which itself increases with age — consume NAD+ as a substrate, and higher lifetime DNA damage burden translates into higher cumulative PARP-driven NAD+ consumption. Third, CD38, an NAD+-consuming enzyme, increases in activity with age and with chronic low-grade inflammation, further depleting the available cellular pool. Together, these three mechanisms — reduced synthesis, increased PARP consumption, and increased CD38 consumption — form the current framework researchers use to explain why NAD+ levels are not static across the lifespan, and why this decline has become a central variable in cellular aging research models.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">NAD+ vs. NMN vs. NR: Precursor vs. Direct Administration in Research Models</h2>
-
-        <p>
-          NAD+ is the complete, biologically active molecule. NMN (nicotinamide mononucleotide) and NR (nicotinamide riboside) are both smaller precursor molecules that cells convert into NAD+ through distinct enzymatic salvage pathways rather than acting as NAD+ themselves. This distinction has real experimental consequences: administering a precursor compound introduces cellular uptake efficiency and salvage-pathway conversion capacity as additional variables between the administered substance and the final intracellular NAD+ level, and these variables can differ meaningfully across tissue types and experimental models. Direct NAD+ administration bypasses that conversion step entirely, which is why researchers designing protocols specifically intended to isolate NAD+-dependent processes — rather than to study precursor uptake and conversion efficiency as their own research question — often select direct NAD+ over a precursor compound.
-        </p>
-
-        <table className="w-full border-collapse my-8 text-body-md">
-          <thead>
-            <tr className="border-b-2 border-ink">
-              <th className="text-left py-3 pr-4 font-serif text-ink">Compound</th>
-              <th className="text-left py-3 pr-4 font-serif text-ink">Form</th>
-              <th className="text-left py-3 font-serif text-ink">Research Relevance</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-b border-border-subtle">
-              <td className="py-3 pr-4 font-medium text-ink">NAD+</td>
-              <td className="py-3 pr-4 text-ink-muted">Complete, active coenzyme</td>
-              <td className="py-3 text-ink-muted">Direct study of NAD+-dependent pathways without a conversion variable</td>
-            </tr>
-            <tr className="border-b border-border-subtle">
-              <td className="py-3 pr-4 font-medium text-ink">NMN</td>
-              <td className="py-3 pr-4 text-ink-muted">Precursor, one enzymatic step from NAD+</td>
-              <td className="py-3 text-ink-muted">Study of the NMN-to-NAD+ salvage pathway and its uptake kinetics</td>
-            </tr>
-            <tr>
-              <td className="py-3 pr-4 font-medium text-ink">NR</td>
-              <td className="py-3 pr-4 text-ink-muted">Precursor, two enzymatic steps from NAD+</td>
-              <td className="py-3 text-ink-muted">Study of an alternate salvage pathway entry point and its conversion efficiency</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">PARP Enzymes, DNA Repair, and NAD+ Consumption</h2>
-
-        <p>
-          PARP (poly-ADP-ribose polymerase) enzymes are activated by single- and double-strand DNA breaks and use NAD+ as a substrate to synthesize poly-ADP-ribose chains, a critical early step in recruiting the broader DNA repair machinery to the damage site. Because this consumption draws from the same finite cellular NAD+ pool that sirtuins depend on, elevated DNA damage — and the corresponding rise in PARP activity — can competitively deplete the NAD+ available for sirtuin-mediated regulatory processes. This creates a documented mechanistic tension in the research literature: the same molecule that powers DNA repair also powers the regulatory pathways associated with mitochondrial biogenesis and cellular stress resistance, and a cell under high genotoxic stress may face a genuine resource competition between the two.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Research Applications: Cellular Senescence, Metabolic Studies, and Exercise Physiology</h2>
-
-        <p>
-          NAD+ research currently spans several distinct experimental domains. In cellular senescence research, NAD+ levels and sirtuin activity are studied as biomarkers and potential modulators of the senescent phenotype. In mitochondrial bioenergetics research, NAD+/NADH ratios are used to characterize electron transport chain efficiency and overall cellular energy status. In exercise physiology research, NAD+ metabolism is studied in the context of exercise-induced mitochondrial biogenesis, given that physical activity is one of the most consistently reported physiological stimuli associated with increased NAD+ salvage pathway activity in published models. Each of these research domains draws on the same underlying coenzyme biology but asks a different question of it, which is why experimental design — choice of model, timepoint, and measurement method — varies considerably across NAD+ studies despite the shared molecular target.
-        </p>
-
-        <Image src="/journal-images/nad-research-lab-bench-cell-culture-assay.webp" alt="Laboratory bench setup for NAD+ cellular senescence and mitochondrial function research assay" width={800} height={450} className="w-full rounded-2xl my-8 object-cover shadow-lg" />
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Timepoint Sensitivity: Why NAD+ Measurement Timing Matters</h2>
-
-        <p>
-          NAD+ and NADH levels are not static within a single experimental session — they fluctuate with feeding state, circadian phase, and recent metabolic activity in the research model. Published research has documented circadian oscillation in NAD+ biosynthesis enzyme expression, meaning a measurement taken at one time of day can differ meaningfully from a measurement taken twelve hours later in the same model, independent of any experimental intervention. This is a frequently underestimated source of variance in NAD+ research: two cohorts measured at different times of day, or fed on different schedules prior to sampling, can show a difference in NAD+ levels that has nothing to do with the compound or intervention under study. Standardizing feeding schedule and sampling time-of-day across a full cohort is accordingly one of the higher-value, lower-cost steps a research team can take to protect the reliability of NAD+-related outcome data.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Purity and Sourcing Standards for Research-Grade NAD+</h2>
-
-        <p>
-          As a redox-active small molecule rather than a synthesized amino acid chain, NAD+ carries a different purity risk profile than peptide compounds, but the verification principle is identical: researchers should require independent third-party HPLC testing to confirm purity, with mass spectrometry confirming molecular identity against the theoretical molecular weight of approximately 663.43 g/mol. Degraded or impure NAD+ can introduce inactive byproducts into sensitive redox and enzymatic assays, producing results that reflect contamination rather than genuine biological response. A lot-specific Certificate of Analysis should accompany every batch — see our full <Link href="/journal/peptide-coa-hplc-purity-testing-guide" className="text-blue-600 underline hover:text-blue-800">guide to reading a Certificate of Analysis</Link> for what this documentation should contain.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Reconstitution and Storage Considerations for NAD+</h2>
-
-        <p>
-          NAD+ is particularly sensitive to light exposure, pH extremes, and elevated temperature, all of which accelerate its degradation into biologically inactive byproducts — making cold, dark storage and minimization of freeze-thaw cycling especially important relative to some more chemically stable short-chain peptides. Standard handling follows the same core protocol as other lyophilized research compounds: reconstitute with bacteriostatic water using a gentle technique, avoid vigorous shaking, and refrigerate the reconstituted solution at 2-8°C, protected from light. Lyophilized NAD+ should be stored frozen at -20°C until ready for use. See our full <Link href="/journal/peptide-reconstitution-storage-guide" className="text-blue-600 underline hover:text-blue-800">Peptide Reconstitution & Storage Guide</Link> for the complete step-by-step protocol and concentration calculations.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">NAD+ and Exercise-Mimetic Mitochondrial Research: An Open Comparison</h2>
-
-        <p>
-          Because NAD+ sits directly upstream of mitochondrial energy metabolism, its research applications frequently intersect with — but are mechanistically distinct from — other mitochondrial-signaling research compounds. <Link href="/journal/mots-c-peptide-mitochondrial-exercise-mimetic-research" className="text-blue-600 underline hover:text-blue-800">MOTS-C</Link>, for example, is a mitochondrial-derived peptide studied for its AMPK-activating, exercise-mimetic properties, while NAD+ acts further upstream as the coenzyme substrate that mitochondrial energy metabolism depends on in the first place. Researchers studying mitochondrial biology sometimes design comparative or combinatorial protocols examining both compounds side by side, since one addresses substrate-level energy metabolism (NAD+) and the other addresses a specific downstream signaling pathway (MOTS-C/AMPK) — two related but non-redundant angles on the same broader mitochondrial dysfunction research question.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Open Questions in the Precursor Literature</h2>
-
-        <p>
-          Despite substantial research interest, several questions in the NAD+ precursor literature remain genuinely unresolved and are worth flagging for researchers designing new protocols. Tissue-specific uptake efficiency for NMN and NR is not uniform across organ systems in published animal models, meaning a precursor's effectiveness at raising NAD+ levels in one tissue does not necessarily predict its effectiveness in another. Similarly, the relative contribution of the salvage pathway versus de novo NAD+ biosynthesis (from tryptophan, via the kynurenine pathway) varies by tissue and metabolic state, and is not yet fully mapped across all research-relevant models. These open questions are part of why direct NAD+ administration remains scientifically useful even as precursor research continues to expand — it offers a way to study NAD+-dependent downstream biology without first resolving every open question about precursor conversion efficiency.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Designing an NAD+ Research Protocol</h2>
-
-        <p>
-          Researchers designing an NAD+ protocol should first clarify whether the research question concerns direct NAD+ effects or precursor-dependent biosynthesis — a distinction that determines whether NAD+, NMN, or NR is the appropriate compound. From there, model selection (in-vitro, ex-vivo, or in-vivo), outcome measurement (direct NAD+/NADH quantification, sirtuin activity assays, or downstream mitochondrial function markers), and timepoint selection should all be defined before administration begins, given how sensitive NAD+ measurements can be to handling and timing variability. As with any research compound, documenting batch-level COA data alongside experimental results creates an audit trail that separates genuine biological findings from raw-material variability.
-        </p>
-
-        <p>
-          <Link href="/" className="text-blue-600 underline hover:text-blue-800">Longevia Research</Link> supplies research-grade <Link href="/products/nad-plus" className="text-blue-600 underline hover:text-blue-800">NAD+</Link> synthesized and verified to the same standard as every compound in our catalog, with independent third-party HPLC and mass spectrometry testing and lot-specific COA documentation available in our <Link href="/certificates" className="text-blue-600 underline hover:text-blue-800">Certificates of Analysis Library</Link>. Current availability can be viewed in our <Link href="/shop" className="text-blue-600 underline hover:text-blue-800">shop</Link>. All products are strictly Research Use Only.
-        </p>
-
-        <h2 className="text-editorial-md font-serif text-ink mt-16 mb-6">Comprehensive Frequently Asked Questions (FAQ)</h2>
-
-        <div className="space-y-6">
-          {NAD_FAQS.map((faq, idx) => (
-            <div key={idx}>
-              <h4 className="font-bold text-ink">{faq.question}</h4>
-              <p className="text-ink-muted">{faq.answer}</p>
-            </div>
-          ))}
-        </div>
-      </>
-    )
-  }
 ]
 
-// To avoid circular or undefined references during initialization
+// Slug-keyed FAQ lookup for the remaining static journal posts.
+// Uses named FAQ consts directly so this mapping stays correct regardless of array order.
 export const JOURNAL_POSTS_FAQS: Record<string, {question: string; answer: string}[]> = {
-  'ghk-cu-pharmacokinetics': JOURNAL_POSTS[0].faqs,
-  'glp-1-tissue-laxity': JOURNAL_POSTS[1].faqs,
-  'bpc-157-tb-500-synergy': JOURNAL_POSTS[2].faqs,
-  'kisspeptin-mots-c-hormonal-metabolic-research': JOURNAL_POSTS[3].faqs,
-  'tesamorelin-vs-retatrutide-visceral-fat-research': JOURNAL_POSTS[4].faqs,
-  'cjc-1295-ipamorelin-muscle-recovery-research': JOURNAL_POSTS[5].faqs,
-  'peptide-coa-hplc-purity-testing-guide': JOURNAL_POSTS[6].faqs,
-  'peptide-reconstitution-storage-guide': JOURNAL_POSTS[7].faqs,
-  'glp-3-rt-peptide-triple-agonist-research-guide': JOURNAL_POSTS[8].faqs,
-  'mots-c-peptide-mitochondrial-exercise-mimetic-research': JOURNAL_POSTS[9].faqs,
-  'glp-3-peptide-triple-agonist-research-guide': JOURNAL_POSTS[10].faqs,
-  'semaglutide-vs-tirzepatide-vs-glp-3-comparison': JOURNAL_POSTS[11].faqs,
-  'nad-plus-peptide-mitochondrial-sirtuin-research-guide': JOURNAL_POSTS[12].faqs
+  'ghk-cu-pharmacokinetics': GHK_FAQS,
+  'glp-1-tissue-laxity': GLP1_FAQS,
+  'kisspeptin-mots-c-hormonal-metabolic-research': KISSPEPTIN_MOTSC_FAQS,
+  'tesamorelin-vs-retatrutide-visceral-fat-research': TESAMORELIN_GLP_3_RT_FAQS,
+  'cjc-1295-ipamorelin-muscle-recovery-research': CJC_IPAMORELIN_FAQS,
+  'glp-3-rt-peptide-triple-agonist-research-guide': GLP_3_RT_FAQS,
+  'glp-3-peptide-triple-agonist-research-guide': GLP3_FAQS,
+  'semaglutide-vs-tirzepatide-vs-glp-3-comparison': SEMA_TIRZ_RETA_FAQS,
 }

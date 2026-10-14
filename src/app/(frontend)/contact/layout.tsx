@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
+import { buildTitle, buildDescription } from '@/lib/seo/buildMetadata'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
-  title: 'Contact Us | Research Peptide Support',
-  description: 'Contact Longevia Research for questions about research peptides, order support, bulk pricing, or COA documentation. US-based team. Fast response times.',
+  title: { absolute: buildTitle('Contact Us | Research Peptide Support') },
+  description: buildDescription('Contact Longevia Research for questions about research peptides, order support, bulk pricing, or COA documentation. US-based team. Fast response times.'),
   alternates: {
     canonical: `${siteUrl}/contact`,
   },
@@ -13,6 +14,12 @@ export const metadata: Metadata = {
     title: 'Contact Us | Longevia Research',
     description: 'Get in touch with our research peptide support team. Questions about orders, COA documents, bulk pricing, or product availability.',
     url: `${siteUrl}/contact`,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact Us | Longevia Research',
+    description: 'Get in touch with our research peptide support team. Questions about orders, COA documents, bulk pricing, or product availability.',
+    images: ['/og/og-contact.webp'],
   },
 }
 

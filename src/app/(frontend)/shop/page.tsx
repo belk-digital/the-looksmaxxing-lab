@@ -20,6 +20,12 @@ export const metadata: Metadata = {
     description: 'Browse 30+ COA-verified research peptides. ≥99% HPLC purity, batch-traceable. US-based supplier.',
     url: `${siteUrl}/shop`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Shop Research Peptides | COA-Verified | Longevia Research',
+    description: 'Browse 30+ COA-verified research peptides. ≥99% HPLC purity, batch-traceable. US-based supplier.',
+    images: ['/og/og-shop.webp'],
+  },
 }
 
 export const dynamic = 'force-dynamic'

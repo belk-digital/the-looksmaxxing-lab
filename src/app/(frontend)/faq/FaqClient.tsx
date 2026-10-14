@@ -145,7 +145,7 @@ export default function FaqClient() {
               Our support team is happy to help with orders, batch documents and product questions. For compound-specific reading, our{' '}
               <Link href="/journal" className="font-medium text-[#5984c4] underline underline-offset-2 hover:text-ink transition-colors">research journal</Link>{' '}
               covers{' '}
-              <Link href="/journal/bpc-157-tb-500-synergy" className="font-medium text-[#5984c4] underline underline-offset-2 hover:text-ink transition-colors">BPC-157 and TB-500</Link>,{' '}
+              <Link href="/journal/stack-research-peptides-safe-combinations-avoid" className="font-medium text-[#5984c4] underline underline-offset-2 hover:text-ink transition-colors">BPC-157 and TB-500</Link>,{' '}
               <Link href="/journal/ghk-cu-pharmacokinetics" className="font-medium text-[#5984c4] underline underline-offset-2 hover:text-ink transition-colors">GHK-Cu</Link> and{' '}
               <Link href="/journal/semaglutide-vs-tirzepatide-vs-glp-3-comparison" className="font-medium text-[#5984c4] underline underline-offset-2 hover:text-ink transition-colors">Semaglutide</Link> in detail.
             </p>

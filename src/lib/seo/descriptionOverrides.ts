@@ -25,6 +25,13 @@ export const DESCRIPTION_OVERRIDES: Record<string, string> = {
   '/products/bpc-157-spray': 'BPC-157 spray, a synthetic pentadecapeptide (CAS 137525-51-0) in 5mg and 10mg formats, 45 sprays each. Batch COA available. For laboratory research use only.',
   '/products/aod-9604-spray': 'AOD-9604 spray, a synthetic C-terminal hGH fragment (CAS 221231-10-3) in 5mg and 10mg formats, 45 sprays each. For laboratory research use only.',
   '/products/semax-spray': 'Semax spray, a research-grade nootropic neuropeptide in spray format, studied in BDNF modulation and neuroprotective signaling research. COA-verified.',
+  '/products/tirzepatide-10mg-20mg-30mg-60mg-45-sprays': 'Tirzepatide, a dual GIP/GLP-1 receptor agonist studied in incretin and metabolic signaling research. Spray format, batch COA available. Research use only.',
+  '/products/mots-c-10mg-40mg-45-sprays': 'MOTS-C, a mitochondrial-derived compound studied in AMPK activation and mitochondrial retrograde signaling research. Spray format. Research use only.',
+  '/products/cjc-1295-no-dac-10mg-spray': 'CJC-1295 No DAC (Modified GRF 1-29), a GHRH analogue studied in pulsatile GH release and pituitary signaling research. Spray format. Research use only.',
+  '/products/melanotan-ii-10mg-45-sprays': 'Melanotan II, a cyclic \u03b1-MSH analogue studied in MC1R, MC3R and MC4R receptor pharmacology and melanogenesis research. Spray format. Research use only.',
+  '/products/cjc-ipamorelin-5mg-5mg-spray': 'CJC-1295 + Ipamorelin blend studied in dual-pathway GHRH and ghrelin receptor signaling research. Spray format, batch COA available. Research use only.',
+  '/products/nad-plus-500mg-1000mg-45-sprays': 'NAD\u207a coenzyme studied in sirtuin biology, PARP-mediated DNA repair and mitochondrial energy metabolism research. Spray format. Research use only.',
+  '/products/semax-10mg-30mg-90-sprays': 'Semax, a synthetic ACTH(4\u20137) analogue studied in BDNF pathway modulation and neuroprotective signaling research. Spray format. Research use only.',
 
   // ---- Products: vials ----
   '/products/tirzepatide': 'Tirzepatide, a synthetic dual GIP/GLP-1 receptor agonist studied in incretin pharmacology and metabolic signaling research. 10, 20, 30 and 60mg vials.',
@@ -75,7 +82,7 @@ export const DESCRIPTION_OVERRIDES: Record<string, string> = {
   '/journal/tesamorelin-vs-retatrutide-visceral-fat-research': 'Comparing Tesamorelin (a GHRH analog) and GLP-3 (Rt) (a GLP-1/GIP/glucagon triple agonist) in visceral fat and female-physiology body composition research.',
   '/journal/cjc-1295-ipamorelin-muscle-recovery-research': 'A mechanistic guide to CJC-1295 (GHRH analog) and Ipamorelin (ghrelin receptor agonist) and their dual-pathway GH stimulation in muscle recovery research.',
   '/journal/peptide-coa-hplc-purity-testing-guide': "A researcher's guide to Certificates of Analysis: how HPLC measures purity, how mass spectrometry confirms identity, and how to spot an unreliable supplier.",
-  '/journal/peptide-reconstitution-storage-guide': 'A guide to reconstituting lyophilized research peptides, calculating concentration and storing compounds correctly to preserve molecular integrity.',
+  '/journal/peptide-reconstitution-storage-guide': 'A guide to reconstituting research peptides with bacteriostatic water: calculating concentration and storing the reconstituted solution correctly.',
   '/journal/glp-3-rt-peptide-triple-agonist-research-guide': 'A guide to GLP-3 (Rt), the GLP-1/GIP/glucagon triple agonist: molecular architecture, receptor pharmacology, Phase 2/3 evidence and research-grade sourcing.',
   '/journal/mots-c-peptide-mitochondrial-exercise-mimetic-research': 'A research guide to MOTS-c, the mitochondrial-derived exercise mimetic peptide: AMPK activation, nuclear translocation, preclinical metabolic data and sourcing.',
   '/journal/glp-3-peptide-triple-agonist-research-guide': 'What is GLP-3 peptide? A research guide to the triple GLP-1/GIP/glucagon receptor agonist: mechanism, receptor biology, preclinical data and sourcing standards.',
