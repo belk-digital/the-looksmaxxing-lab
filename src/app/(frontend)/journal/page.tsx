@@ -21,7 +21,13 @@ export const metadata: Metadata = {
     description: 'In-depth peptide science guides, COA verification resources, compound research protocols, and scientific insights from Longevia Research.',
     url: `${siteUrl}/journal`,
     images: [{ url: '/og/og-journal.webp', width: 1200, height: 630, alt: 'Peptide Research Journal — Longevia Research' }],
-  }
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Peptide Research Journal | Science & Lab Guides | Longevia Research',
+    description: 'In-depth peptide science guides, COA verification resources, compound research protocols, and scientific insights from Longevia Research.',
+    images: ['/og/og-journal.webp'],
+  },
 }
 
 const breadcrumbSchema = {

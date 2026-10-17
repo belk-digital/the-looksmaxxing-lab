@@ -32,6 +32,8 @@ export const DESCRIPTION_OVERRIDES: Record<string, string> = {
   '/products/cjc-ipamorelin-5mg-5mg-spray': 'CJC-1295 + Ipamorelin blend studied in dual-pathway GHRH and ghrelin receptor signaling research. Spray format, batch COA available. Research use only.',
   '/products/nad-plus-500mg-1000mg-45-sprays': 'NAD\u207a coenzyme studied in sirtuin biology, PARP-mediated DNA repair and mitochondrial energy metabolism research. Spray format. Research use only.',
   '/products/semax-10mg-30mg-90-sprays': 'Semax, a synthetic ACTH(4\u20137) analogue studied in BDNF pathway modulation and neuroprotective signaling research. Spray format. Research use only.',
+  '/products/glp-3rta-spray': 'GLP-3RTA (LY3437943), a triple GLP-1/GIP/glucagon receptor agonist studied in incretin and metabolic signaling research. Spray format. Research use only.',
+  '/products/semax-selank-10mg-10mg-90-sprays': 'Semax/Selank blend, 10mg of each, studied in neuropeptide signaling, BDNF pathway modulation and GABAergic biology research. Spray format. Research use only.',
 
   // ---- Products: vials ----
   '/products/tirzepatide': 'Tirzepatide, a synthetic dual GIP/GLP-1 receptor agonist studied in incretin pharmacology and metabolic signaling research. 10, 20, 30 and 60mg vials.',
@@ -57,6 +59,7 @@ export const DESCRIPTION_OVERRIDES: Record<string, string> = {
   '/products/ll-37': 'LL-37, a synthetic 37-amino-acid human cathelicidin antimicrobial peptide studied in innate immune signaling and antimicrobial biology research. 1mg vial.',
   '/products/kpv': 'KPV, a synthetic tripeptide from the C-terminal α-MSH sequence, studied in melanocortin receptor signaling and NF-κB pathway research. 10mg vial.',
   '/products/kisspeptin': 'Kisspeptin (KP-10), a synthetic 10-amino-acid neuropeptide studied in KISS1R/GPR54 pharmacology and GnRH pulse research. 10mg vial.',
+  '/products/mots-c': 'MOTS-C, a mitochondrial-derived compound studied in AMPK activation and metabolic signaling. 10mg and 40mg vials. Batch COA available. Research use only.',
   '/products/ghk-cu': 'GHK-Cu, a naturally occurring copper-binding tripeptide studied in copper metallopeptide chemistry and extracellular matrix research. 50mg and 100mg vials.',
   '/products/cjc-1295-no-dac': 'CJC-1295 No DAC (Modified GRF 1-29), a synthetic GHRH analogue studied in GHRH receptor signaling and pituitary biology research. 10mg vial.',
   '/products/bpc-tb-500': 'BPC-157 + TB-500 blend in a single research vial, studied in angiogenesis, actin dynamics and tissue biology models. For laboratory research use only.',
@@ -70,6 +73,7 @@ export const DESCRIPTION_OVERRIDES: Record<string, string> = {
   '/products/epithalon': 'Epithalon, a synthetic tetrapeptide studied in telomerase activation, telomere biology and pineal peptide pharmacology research. 10mg and 50mg vials.',
   '/products/glow-blend': 'GLOW 70mg blend of GHK-Cu (50mg), BPC-157 (10mg) and TB-500 (10mg), studied in copper metallopeptide chemistry and extracellular matrix models.',
   '/products/semaglutide': 'Semaglutide, a synthetic fatty acid-conjugated GLP-1 receptor agonist studied in GLP-1R pharmacology and incretin signaling. 5, 10, 20 and 30mg vials.',
+  '/products/glp-3rta': 'GLP-3RTA (LY3437943), a synthetic GLP-1/GIP/glucagon triple receptor agonist studied in incretin pharmacology and metabolic signaling research. 10–60mg vials.',
 
   // ---- Journal ----
   '/journal/mt-2-nasal-spray-dosage-administration-research-protocol': 'No clinical trial has established intranasal MT-2 dosing. A review of what the subcutaneous literature shows and where the claims break down.',
@@ -88,6 +92,9 @@ export const DESCRIPTION_OVERRIDES: Record<string, string> = {
   '/journal/glp-3-peptide-triple-agonist-research-guide': 'What is GLP-3 peptide? A research guide to the triple GLP-1/GIP/glucagon receptor agonist: mechanism, receptor biology, preclinical data and sourcing standards.',
   '/journal/semaglutide-vs-tirzepatide-vs-glp-3-comparison': 'A structural and mechanistic comparison of single, dual and triple incretin receptor agonists: molecular architecture, trial data and sourcing standards.',
   '/journal/nad-plus-peptide-mitochondrial-sirtuin-research-guide': 'A research guide to NAD+ coenzyme biology: mitochondrial ATP production, sirtuin and PARP pathways, age-related decline and research-grade sourcing standards.',
+  '/journal/glutathione-skin-systematic-review-2026': '194-study review in Molecules (March 2026) examines topical, oral and injectable glutathione in skin aging and pigmentation research. Research use only.',
+  '/journal/why-peptide-purity-matters-in-scientific-research': 'How to read a peptide COA: interpreting HPLC purity figures, mass spectrometry identity data, and spotting an unreliable supplier. Research use only.',
+  '/journal/how-long-do-peptides-last-after-reconstitution': 'How to reconstitute research peptides: bacteriostatic water vs sterile water, concentration calculations, and correct storage temperature. Research use only.',
 }
 
 /** Override for this path if one exists, otherwise a whole-sentence fit of the source text. */

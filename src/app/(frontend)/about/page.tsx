@@ -16,6 +16,12 @@ export const metadata: Metadata = {
     description: 'US-based research peptide supplier. Synthesizing compounds for cellular regeneration, metabolic study, and structural repair at ≥99% HPLC purity.',
     url: `${siteUrl}/about`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About Us | US Research Peptide Supplier | Longevia Research',
+    description: 'US-based research peptide supplier. Synthesizing compounds for cellular regeneration, metabolic study, and structural repair at ≥99% HPLC purity.',
+    images: ['/og/og-about.webp'],
+  },
 }
 
 export default function AboutPage() {

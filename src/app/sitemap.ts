@@ -10,6 +10,15 @@ export const revalidate = 10800
 // Product slugs that 301 to another URL in next.config.ts. Redirected URLs must not be in the sitemap.
 const REDIRECTED_PRODUCT_SLUGS = new Set(['bac-water', 'retatrutide'])
 
+// Journal slugs that 301 to newer URLs in next.config.ts. Redirected URLs must not be in the sitemap.
+const REDIRECTED_JOURNAL_SLUGS = new Set([
+  'peptide-coa-hplc-purity-testing-guide',
+  'peptide-reconstitution-storage-guide',
+  'bpc-157-tb-500-synergy',
+  'mots-c-peptide-mitochondrial-exercise-mimetic-research',
+  'nad-plus-peptide-mitochondrial-sirtuin-research-guide',
+])
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
   const payload = await getPayload({ config: configPromise })
@@ -139,6 +148,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const cmsEntries = await getCmsJournalPostEntries()
     const seen = new Set(journalPages.map((j) => j.url))
     for (const entry of cmsEntries) {
+      if (REDIRECTED_JOURNAL_SLUGS.has(entry.slug)) continue
       const url = `${siteUrl}/journal/${entry.slug}`
       if (seen.has(url)) continue
       seen.add(url)

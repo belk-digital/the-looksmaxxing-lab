@@ -111,12 +111,12 @@ const nextConfig: NextConfig = {
       // 8. Product Renames
       {
         source: '/products/retatrutide',
-        destination: '/products/glp-3',
+        destination: '/products/glp-3rta',
         permanent: true,
       },
       {
         source: '/shop/retatrutide',
-        destination: '/shop/glp-3',
+        destination: '/products/glp-3rta',
         permanent: true,
       },
       // 9. BAC Water to Reconstitution Solution
@@ -132,7 +132,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/shop/bac-water',
-        destination: '/shop/reconstitution-solution',
+        destination: '/products/reconstitution-solution',
         permanent: true,
       },
       // 10. Peptide Calculator redirect to homepage

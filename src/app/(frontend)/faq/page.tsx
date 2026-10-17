@@ -17,6 +17,12 @@ export const metadata: Metadata = {
     description: 'Frequently asked questions about research peptides, purity standards, COA verification, ordering, and storage.',
     url: `${siteUrl}/faq`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Research Peptide FAQ | Purity & Ordering | Longevia Research',
+    description: 'Frequently asked questions about research peptides, purity standards, COA verification, ordering, and storage.',
+    images: ['/og/og-faq.webp'],
+  },
 }
 
 export default function FAQPage() {
