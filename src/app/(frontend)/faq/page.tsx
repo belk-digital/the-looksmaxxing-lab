@@ -1,26 +1,26 @@
 import type { Metadata } from 'next'
 import FaqClient from './FaqClient'
 import { FAQ_DATA, stripLinks } from './faqData'
-import { buildTitle, buildDescription } from '@/lib/seo/buildMetadata'
+// buildTitle and buildDescription replaced by literal strings for SEO precision
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
-  title: { absolute: buildTitle('Research Peptide FAQ | Purity & Ordering') },
-  description: buildDescription('Answers on research peptide purity standards, COA verification, ordering, and storage. US-synthesized compounds for research use only.'),
+  title: { absolute: 'Research Peptide FAQ — Purity, COAs, Ordering & Shipping | Longevia' },
+  description: 'Straight answers on HPLC purity, batch COAs, reconstitution, shipping, and Research Use Only rules from a US-based peptide supplier.',
   alternates: {
     canonical: `${siteUrl}/faq`,
   },
   openGraph: {
     images: [{ url: '/og/og-faq.webp', width: 1200, height: 630, alt: 'Research Peptide FAQ — Longevia Research' }],
-    title: 'Research Peptide FAQ | Purity & Ordering | Longevia Research',
-    description: 'Frequently asked questions about research peptides, purity standards, COA verification, ordering, and storage.',
+    title: 'Research Peptide FAQ — Purity, COAs, Ordering & Shipping | Longevia',
+    description: 'Straight answers on HPLC purity, batch COAs, reconstitution, shipping, and Research Use Only rules from a US-based peptide supplier.',
     url: `${siteUrl}/faq`,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Research Peptide FAQ | Purity & Ordering | Longevia Research',
-    description: 'Frequently asked questions about research peptides, purity standards, COA verification, ordering, and storage.',
+    title: 'Research Peptide FAQ — Purity, COAs, Ordering & Shipping | Longevia',
+    description: 'Straight answers on HPLC purity, batch COAs, reconstitution, shipping, and Research Use Only rules from a US-based peptide supplier.',
     images: ['/og/og-faq.webp'],
   },
 }

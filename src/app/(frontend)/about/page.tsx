@@ -1,25 +1,25 @@
 import type { Metadata } from 'next'
 import AboutClient from './AboutClient'
-import { buildTitle, buildDescription } from '@/lib/seo/buildMetadata'
+// buildTitle and buildDescription replaced by literal strings for SEO precision
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
-  title: { absolute: buildTitle('About Us | US Research Peptide Supplier') },
-  description: buildDescription('Longevia Research is a US-based research peptide supplier. US-synthesized compounds, ≥99% HPLC purity, third-party COA with every order.'),
+  title: { absolute: 'About Longevia Research — US-Made Research Peptides' },
+  description: 'US-synthesized research peptides with independent COAs, ≥99% HPLC purity standard, and transparent batch documentation. Research use only.',
   alternates: {
     canonical: `${siteUrl}/about`,
   },
   openGraph: {
     images: [{ url: '/og/og-about.webp', width: 1200, height: 630, alt: 'About Longevia Research' }],
-    title: 'About Us | US Research Peptide Supplier | Longevia Research',
-    description: 'US-based research peptide supplier. Synthesizing compounds for cellular regeneration, metabolic study, and structural repair at ≥99% HPLC purity.',
+    title: 'About Longevia Research — US-Made Research Peptides',
+    description: 'US-synthesized research peptides with independent COAs, ≥99% HPLC purity standard, and transparent batch documentation. Research use only.',
     url: `${siteUrl}/about`,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'About Us | US Research Peptide Supplier | Longevia Research',
-    description: 'US-based research peptide supplier. Synthesizing compounds for cellular regeneration, metabolic study, and structural repair at ≥99% HPLC purity.',
+    title: 'About Longevia Research — US-Made Research Peptides',
+    description: 'US-synthesized research peptides with independent COAs, ≥99% HPLC purity standard, and transparent batch documentation. Research use only.',
     images: ['/og/og-about.webp'],
   },
 }
