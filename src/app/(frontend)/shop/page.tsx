@@ -4,26 +4,26 @@ import { Metadata } from 'next'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { getShopProducts } from '../(shop)/actions'
-import { buildTitle, buildDescription } from '@/lib/seo/buildMetadata'
+// buildTitle / buildDescription not needed — literal strings used for SEO precision
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
 export const metadata: Metadata = {
-  title: { absolute: buildTitle('Shop Research Peptides | COA-Verified') },
-  description: buildDescription('Browse 30+ research-grade peptides — BPC-157, Tirzepatide, NAD+ and more. Every batch ≥99% HPLC purity with a Certificate of Analysis.'),
+  title: { absolute: 'Research Peptides & Custom Blends — COA-Verified | Longevia Research' },
+  description: 'Shop 30+ research-grade peptides and custom blends — BPC-157, KLOW, GLOW, Tirzepatide, NAD⁺ and more. Every batch ≥99% HPLC purity with a batch-traceable COA.',
   alternates: {
     canonical: `${siteUrl}/shop`,
   },
   openGraph: {
     images: [{ url: '/og/og-shop.webp', width: 1200, height: 630, alt: 'Shop Research Peptides — Longevia Research' }],
-    title: 'Shop Research Peptides',
-    description: 'Browse 30+ COA-verified research peptides. ≥99% HPLC purity, batch-traceable. US-based supplier.',
+    title: 'Research Peptides & Custom Blends — COA-Verified | Longevia Research',
+    description: 'Shop 30+ research-grade peptides and custom blends — BPC-157, KLOW, GLOW, Tirzepatide, NAD⁺ and more. Every batch ≥99% HPLC purity with a batch-traceable COA.',
     url: `${siteUrl}/shop`,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Shop Research Peptides | COA-Verified | Longevia Research',
-    description: 'Browse 30+ COA-verified research peptides. ≥99% HPLC purity, batch-traceable. US-based supplier.',
+    title: 'Research Peptides & Custom Blends — COA-Verified | Longevia Research',
+    description: 'Shop 30+ research-grade peptides and custom blends — BPC-157, KLOW, GLOW, Tirzepatide, NAD⁺ and more. Every batch ≥99% HPLC purity with a batch-traceable COA.',
     images: ['/og/og-shop.webp'],
   },
 }

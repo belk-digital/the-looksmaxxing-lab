@@ -143,6 +143,23 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
       subtitle: 'Longevity peptide stacking in female hormonal-metabolic axis research',
     },
   ],
+  'reconstitution-solution': [
+    {
+      slug: 'peptide-reconstitution-storage-guide',
+      title: 'Peptide Reconstitution & Storage Guide',
+      subtitle: 'How to store reconstitution solution: bacteriostatic water, concentration math, shelf life',
+    },
+    {
+      slug: 'peptide-coa-hplc-purity-testing-guide',
+      title: 'How to Read a Peptide COA',
+      subtitle: 'HPLC purity %, LC-MS identity, and endotoxin results explained for researchers',
+    },
+    {
+      slug: 'why-peptide-purity-matters-in-scientific-research',
+      title: 'Why Peptide Purity Matters in Research',
+      subtitle: 'How to read HPLC purity figures, mass spec identity data, and spot an unreliable supplier',
+    },
+  ],
   'nad-plus': [
     {
       slug: 'nad-plus-peptide-mitochondrial-sirtuin-research-guide',
@@ -348,6 +365,33 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
       slug: 'stack-research-peptides-safe-combinations-avoid',
       title: 'Stacking Research Peptides: Safe Combinations',
       subtitle: 'How BPC-157 and TB-500 are studied together in soft tissue repair models',
+    },
+    {
+      slug: 'peptide-reconstitution-storage-guide',
+      title: 'Peptide Reconstitution & Storage Guide',
+      subtitle: 'Bacteriostatic water, concentration math, and correct storage temperature',
+    },
+    {
+      slug: 'peptide-coa-hplc-purity-testing-guide',
+      title: 'How to Read a Peptide COA',
+      subtitle: 'HPLC purity %, LC-MS identity, and endotoxin results explained for researchers',
+    },
+  ],
+  'glutathione': [
+    {
+      slug: 'glutathione-skin-systematic-review-2026',
+      title: 'Glutathione Skin Research: 2026 Systematic Review',
+      subtitle: 'Findings from 194 studies on topical, oral, and injectable glutathione',
+    },
+    {
+      slug: 'peptide-coa-hplc-purity-testing-guide',
+      title: 'How to Read a Peptide COA',
+      subtitle: 'HPLC purity %, LC-MS identity, and endotoxin results explained for researchers',
+    },
+    {
+      slug: 'endotoxin-lal-testing-peptide-coa',
+      title: 'Endotoxin & LAL Testing on a Peptide COA',
+      subtitle: 'Why the endotoxin row matters and what <1 EU/mg means for research quality',
     },
   ],
   'klow-blend': [
