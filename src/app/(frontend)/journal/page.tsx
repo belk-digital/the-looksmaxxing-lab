@@ -2,7 +2,7 @@ import React from 'react'
 import { Metadata } from 'next'
 import JournalClient from './JournalClient'
 import { getAllJournalPosts } from '@/lib/blog/getPosts'
-import { buildTitle, buildDescription } from '@/lib/seo/buildMetadata'
+// buildTitle / buildDescription not needed — literal strings used for SEO precision
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
@@ -11,21 +11,21 @@ const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch
 export const revalidate = 10800
 
 export const metadata: Metadata = {
-  title: { absolute: buildTitle('Peptide Research Journal | Science & Lab Guides') },
-  description: buildDescription('In-depth peptide science guides, COA verification resources, compound research protocols, and scientific insights from Longevia Research.'),
+  title: { absolute: 'Peptide Research Journal — Science Guides & Lab References | Longevia' },
+  description: 'Research guides on HPLC purity, peptide reconstitution, COA interpretation, compound mechanisms, and sourcing standards. For laboratory researchers.',
   alternates: {
     canonical: `${siteUrl}/journal`,
   },
   openGraph: {
-    title: 'Peptide Research Journal | Longevia Research',
-    description: 'In-depth peptide science guides, COA verification resources, compound research protocols, and scientific insights from Longevia Research.',
+    title: 'Peptide Research Journal — Science Guides & Lab References | Longevia',
+    description: 'Research guides on HPLC purity, peptide reconstitution, COA interpretation, compound mechanisms, and sourcing standards. For laboratory researchers.',
     url: `${siteUrl}/journal`,
     images: [{ url: '/og/og-journal.webp', width: 1200, height: 630, alt: 'Peptide Research Journal — Longevia Research' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Peptide Research Journal | Science & Lab Guides | Longevia Research',
-    description: 'In-depth peptide science guides, COA verification resources, compound research protocols, and scientific insights from Longevia Research.',
+    title: 'Peptide Research Journal — Science Guides & Lab References | Longevia',
+    description: 'Research guides on HPLC purity, peptide reconstitution, COA interpretation, compound mechanisms, and sourcing standards. For laboratory researchers.',
     images: ['/og/og-journal.webp'],
   },
 }

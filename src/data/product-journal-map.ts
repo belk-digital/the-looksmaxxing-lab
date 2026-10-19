@@ -125,6 +125,16 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
       title: 'Kisspeptin-10 & MOTS-C: Hormonal-Metabolic Axis',
       subtitle: 'HPG axis regulation and mitochondrial signaling in female physiology research',
     },
+    {
+      slug: 'peptide-reconstitution-storage-guide',
+      title: 'Peptide Reconstitution & Storage Guide',
+      subtitle: 'Bacteriostatic water, concentration math, and shelf life after reconstitution',
+    },
+    {
+      slug: 'peptide-coa-hplc-purity-testing-guide',
+      title: 'How to Read a Peptide COA',
+      subtitle: 'HPLC purity %, LC-MS identity, and endotoxin results explained for researchers',
+    },
   ],
   'epithalon': [
     {
@@ -338,6 +348,18 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
       slug: 'stack-research-peptides-safe-combinations-avoid',
       title: 'Stacking Research Peptides: Safe Combinations',
       subtitle: 'How BPC-157 and TB-500 are studied together in soft tissue repair models',
+    },
+  ],
+  'klow-blend': [
+    {
+      slug: 'bpc-157-tb-500-synergy',
+      title: 'BPC-157 + TB-500: Synergy Research',
+      subtitle: 'Mechanistic differences between BPC-157 angiogenesis and TB-500 actin pathways',
+    },
+    {
+      slug: 'ghk-cu-pharmacokinetics',
+      title: 'The Pharmacokinetics of GHK-Cu',
+      subtitle: 'Fibroblast activation, collagen synthesis, and clinical implications',
     },
   ],
   'klow-80mg-45-sprays': [

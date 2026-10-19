@@ -1,9 +1,28 @@
 import React from 'react'
+import type { Metadata } from 'next'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { CertificatesClient, type COA } from './CertificatesClient'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
+
+export const metadata: Metadata = {
+  title: { absolute: 'Batch Certificates of Analysis | HPLC & LC-MS Verified | Longevia Research' },
+  description: 'Downloadable batch COAs for every Longevia Research peptide: HPLC purity %, LC-MS identity confirmation, and endotoxin results traceable to the lot number.',
+  alternates: { canonical: `${siteUrl}/certificates` },
+  openGraph: {
+    title: 'Batch Certificates of Analysis | HPLC & LC-MS Verified | Longevia Research',
+    description: 'Downloadable batch COAs for every Longevia Research peptide: HPLC purity %, LC-MS identity confirmation, and endotoxin results traceable to the lot number.',
+    url: `${siteUrl}/certificates`,
+    images: [{ url: '/og/og-certificates.webp', width: 1200, height: 630, alt: 'Certificates of Analysis — Longevia Research' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Batch Certificates of Analysis | HPLC & LC-MS Verified | Longevia Research',
+    description: 'Downloadable batch COAs for every Longevia Research peptide: HPLC purity %, LC-MS identity confirmation, and endotoxin results traceable to the lot number.',
+    images: ['/og/og-certificates.webp'],
+  },
+}
 
 const schemaBreadcrumbList = {
   '@context': 'https://schema.org',
