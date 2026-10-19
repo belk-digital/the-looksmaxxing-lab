@@ -230,12 +230,19 @@ export function CheckoutClient() {
   const pointsToRedeem = isRedeemingPoints ? Math.min(availablePoints, totalBeforePoints) : 0
   const total = totalBeforePoints - pointsToRedeem
 
-  // Fetch client secret when order details change
+  // Fetch client secret when order details change. Only needed for card payments; other
+  // methods (Zelle, the Authorize.net bridge) never touch Stripe.
+  const paymentIntentIdRef = useRef<string | null>(null)
+  const intentRequestRef = useRef(0)
   useEffect(() => {
-    if (items.length > 0 && total > 0) {
-      createPaymentIntent(items, shippingMethod, appliedCoupon?.code, isRedeemingPoints)
+    if (paymentMethod === 'stripe' && items.length > 0 && total > 0) {
+      const requestId = ++intentRequestRef.current
+      createPaymentIntent(items, shippingMethod, appliedCoupon?.code, isRedeemingPoints, paymentIntentIdRef.current || undefined)
         .then(res => {
+          // A newer request has since been made; its result is the one that matters.
+          if (requestId !== intentRequestRef.current) return
           if (res.clientSecret && res.paymentIntentId) {
+            paymentIntentIdRef.current = res.paymentIntentId
             setClientSecret(res.clientSecret)
             setPaymentIntentId(res.paymentIntentId)
           } else if (res.error) {
@@ -247,7 +254,7 @@ export function CheckoutClient() {
           }
         })
     }
-  }, [items, shippingMethod, appliedCoupon, isRedeemingPoints])
+  }, [items, shippingMethod, appliedCoupon, isRedeemingPoints, paymentMethod])
 
   // Handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -889,7 +896,10 @@ export function CheckoutClient() {
                   </div>
                 ) : paymentMethod === 'stripe' ? (
                   clientSecret && stripePromise && paymentIntentId ? (
-                    <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
+                    // key: Stripe Elements ignores clientSecret changes after mount, so a new
+                    // PaymentIntent (coupon/shipping/points changed) must remount it - otherwise
+                    // the customer would pay the old intent while the order is bound to the new one.
+                    <Elements key={clientSecret} stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
                       <StripeCheckoutForm 
                          amount={total}
                          items={items}

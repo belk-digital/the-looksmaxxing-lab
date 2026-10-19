@@ -8,11 +8,9 @@ import { cookies } from 'next/headers'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import crypto from 'crypto'
-
-function signOrderCookie(orderId: string): string {
-  const secret = process.env.PAYLOAD_SECRET || 'fallback-secret'
-  return crypto.createHmac('sha256', secret).update(`order_${orderId}`).digest('hex')
-}
+import { signOrderCookie } from '@/lib/orders/orderCookie'
+import { checkStripePaymentCoversOrder, STRIPE_OPEN_STATUSES } from '@/lib/orders/payments'
+import { alertAdmin } from '@/lib/orders/alerts'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2024-04-10' as any,
@@ -73,7 +71,8 @@ export async function createPaymentIntent(
   items: any[], 
   shippingMethodName: string,
   couponCode: string | undefined,
-  isRedeemingPoints: boolean
+  isRedeemingPoints: boolean,
+  previousPaymentIntentId?: string
 ) {
   const payload = await getPayload({ config: configPromise })
 
@@ -201,17 +200,31 @@ export async function createPaymentIntent(
   }
 
   try {
+    const metadata: Record<string, string> = {}
+    if (affiliateRef) metadata.affiliateId = affiliateRef
+    if (clickCookie) metadata.clickId = clickCookie
+
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
       currency: 'usd',
       automatic_payment_methods: {
         enabled: true,
       },
-      metadata: {
-        affiliateId: affiliateRef || null,
-        clickId: clickCookie || null
-      }
+      metadata,
     })
+
+    // The cart/shipping/coupon/points changed, so the previous intent is obsolete. Cancel it
+    // (only if it was never bound to an order) rather than leaving it dangling in Stripe.
+    if (previousPaymentIntentId && previousPaymentIntentId.startsWith('pi_') && previousPaymentIntentId !== paymentIntent.id) {
+      try {
+        const previous = await stripe.paymentIntents.retrieve(previousPaymentIntentId)
+        if (!previous.metadata?.orderId && STRIPE_OPEN_STATUSES.includes(previous.status)) {
+          await stripe.paymentIntents.cancel(previous.id)
+        }
+      } catch (cancelErr) {
+        console.warn('Could not cancel previous PaymentIntent:', cancelErr)
+      }
+    }
 
     return { clientSecret: paymentIntent.client_secret, paymentIntentId: paymentIntent.id, amount: total }
   } catch (error: any) {
@@ -324,6 +337,54 @@ export async function createPayloadOrder(
 
   const total = totalBeforePoints - pointsToRedeem
 
+  // --- Validate how this order is being paid -------------------------------------------
+  // paymentIntentId is client-supplied; it selects the payment path, so every path is
+  // checked against the server-computed total and the admin-enabled payment methods.
+  const isFreeOrder = total <= 0
+  const isStripeIntent = !!paymentIntentId && !['free_order', 'manual', 'authnet_bridge'].includes(paymentIntentId)
+  const effectivePaymentMethod = paymentMethod || 'stripe'
+  let stripeIntentToBind: Stripe.PaymentIntent | null = null
+
+  if (!isFreeOrder) {
+    if (paymentIntentId === 'free_order') {
+      return { error: 'Your order total changed. Please review your cart and try again.' }
+    }
+
+    const activeMethodIds = (await getPaymentMethodsSettings()).map((m: any) => m.methodId)
+    if (!activeMethodIds.includes(effectivePaymentMethod)) {
+      return { error: 'This payment method is no longer available. Please choose another one.' }
+    }
+
+    if (paymentIntentId === 'authnet_bridge') {
+      if (effectivePaymentMethod !== 'authnet_bridge') {
+        return { error: 'Invalid payment method for this order.' }
+      }
+    } else if (paymentIntentId === 'manual') {
+      if (effectivePaymentMethod !== 'zelle') {
+        return { error: 'Invalid payment method for this order.' }
+      }
+    } else if (isStripeIntent) {
+      if (effectivePaymentMethod !== 'stripe') {
+        return { error: 'Invalid payment method for this order.' }
+      }
+      try {
+        const intent = await stripe.paymentIntents.retrieve(paymentIntentId)
+        if (!STRIPE_OPEN_STATUSES.includes(intent.status)) {
+          return { error: 'This payment session is no longer valid. Please refresh the page and try again.' }
+        }
+        if (intent.currency !== 'usd' || intent.amount !== Math.round(total * 100)) {
+          return { error: 'Your payment session is out of date. Please wait a moment and try again.' }
+        }
+        stripeIntentToBind = intent
+      } catch (err: any) {
+        console.error('Failed to verify PaymentIntent:', err)
+        return { error: 'Could not verify your payment session. Please refresh the page and try again.' }
+      }
+    } else {
+      return { error: 'Missing payment information. Please refresh the page and try again.' }
+    }
+  }
+
   try {
     // Verify authenticated user server-side instead of trusting client
     let payloadUserId = null
@@ -427,9 +488,26 @@ export async function createPayloadOrder(
       } as any
     })
 
-    // Update Stripe PaymentIntent with the Order ID (unless it's a free order)
-    if (paymentIntentId && paymentIntentId !== 'free_order' && paymentIntentId !== 'manual' && paymentIntentId !== 'authnet_bridge') {
-       await stripe.paymentIntents.update(paymentIntentId, {
+    if (stripeIntentToBind) {
+       // A previous attempt with this same intent (e.g. a declined card) left an order behind.
+       // Cancel it if it never got paid so abandoned attempts don't pile up as pending orders.
+       const previousOrderId = stripeIntentToBind.metadata?.orderId
+       if (previousOrderId && String(previousOrderId) !== String(order.id)) {
+          try {
+             const previousOrder: any = await payload.findByID({
+                collection: 'orders',
+                id: isNaN(Number(previousOrderId)) ? previousOrderId : Number(previousOrderId),
+                depth: 0,
+             })
+             if (previousOrder && previousOrder.paymentMethod === 'stripe' && previousOrder.status === 'pending' && previousOrder.paymentStatus === 'unpaid' && !previousOrder.isFinalized) {
+                await payload.update({ collection: 'orders', id: previousOrder.id, data: { status: 'cancelled' } })
+             }
+          } catch (prevErr) {
+             console.warn(`Could not cancel superseded order ${previousOrderId}:`, prevErr)
+          }
+       }
+
+       await stripe.paymentIntents.update(stripeIntentToBind.id, {
           metadata: {
              orderId: String(order.id)
           }
@@ -482,9 +560,32 @@ export async function syncPaymentStatus(paymentIntentId: string, orderId: string
     }
 
     if (paymentIntent.status === 'succeeded') {
+      const payload = await getPayload({ config: configPromise })
+      const order = await payload.findByID({
+        collection: 'orders',
+        id: isNaN(Number(orderId)) ? orderId : Number(orderId),
+        depth: 0,
+      }).catch(() => null)
+
+      if (!order) {
+        console.error(`syncPaymentStatus: order ${orderId} not found`)
+        return { error: 'Payment verification failed' }
+      }
+
+      const check = checkStripePaymentCoversOrder(paymentIntent, order)
+      if (!check.ok) {
+        console.error(`syncPaymentStatus: PaymentIntent ${paymentIntentId} does not cover order ${orderId}: ${check.reason}`)
+        await alertAdmin('⚠️ Payment does not match order', {
+          'Order ID': orderId,
+          'PaymentIntent': paymentIntentId,
+          'Reason': check.reason,
+        })
+        return { error: 'Payment verification failed' }
+      }
+
       const { finalizeOrder } = await import('@/lib/orders/finalizeOrder')
-      await finalizeOrder(orderId, paymentIntent.metadata)
-      return { success: true }
+      const finalized = await finalizeOrder(orderId, paymentIntent.metadata)
+      return finalized ? { success: true } : { error: 'Failed to finalize order' }
     }
     return { success: false, status: paymentIntent.status }
   } catch (error: any) {

@@ -2,6 +2,8 @@ import { headers } from 'next/headers'
 import Stripe from 'stripe'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { checkStripePaymentCoversOrder } from '@/lib/orders/payments'
+import { alertAdmin } from '@/lib/orders/alerts'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2024-04-10' as any,
@@ -27,16 +29,47 @@ export async function POST(req: Request) {
     if (event.type === 'payment_intent.succeeded') {
       const paymentIntent = event.data.object as Stripe.PaymentIntent
       console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`)
-      
+
       const orderId = paymentIntent.metadata?.orderId
       if (orderId) {
-         try {
-            const { finalizeOrder } = await import('@/lib/orders/finalizeOrder')
-            await finalizeOrder(orderId, paymentIntent.metadata)
-            console.log(`Successfully finalized order ${orderId} in Payload via webhook.`)
-         } catch (updateErr) {
-            console.error(`Failed to update order ${orderId} in Payload:`, updateErr)
-         }
+        const payload = await getPayload({ config: configPromise })
+        const order = await payload.findByID({
+          collection: 'orders',
+          id: isNaN(Number(orderId)) ? orderId : Number(orderId),
+          depth: 0,
+        }).catch(() => null)
+
+        if (!order) {
+          // Retrying won't help; acknowledge and flag it for a human.
+          console.error(`Stripe webhook: order ${orderId} not found for PaymentIntent ${paymentIntent.id}`)
+          await alertAdmin('⚠️ Stripe payment received for unknown order', {
+            'Order ID': orderId,
+            'PaymentIntent': paymentIntent.id,
+            'Amount (cents)': paymentIntent.amount,
+          })
+          return new Response('Order not found', { status: 200 })
+        }
+
+        const check = checkStripePaymentCoversOrder(paymentIntent, order)
+        if (!check.ok) {
+          console.error(`Stripe webhook: PaymentIntent ${paymentIntent.id} does not cover order ${orderId}: ${check.reason}`)
+          await alertAdmin('⚠️ Payment does not match order', {
+            'Order ID': orderId,
+            'PaymentIntent': paymentIntent.id,
+            'Reason': check.reason,
+          })
+          // Not finalized on purpose. 200 so Stripe doesn't retry a payment that will never match.
+          return new Response('Payment does not match order', { status: 200 })
+        }
+
+        const { finalizeOrder } = await import('@/lib/orders/finalizeOrder')
+        const finalized = await finalizeOrder(orderId, paymentIntent.metadata)
+        if (!finalized) {
+          console.error(`Failed to finalize order ${orderId} in Payload via webhook.`)
+          // Non-2xx so Stripe retries; finalizeOrder releases its claim when it fails early.
+          return new Response('Failed to finalize order', { status: 500 })
+        }
+        console.log(`Successfully finalized order ${orderId} in Payload via webhook.`)
       }
     }
 
