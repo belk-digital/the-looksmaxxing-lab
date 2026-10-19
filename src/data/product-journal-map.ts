@@ -135,16 +135,26 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
   ],
   'nad-plus': [
     {
+      slug: 'nad-plus-peptide-mitochondrial-sirtuin-research-guide',
+      title: 'NAD+ Mitochondrial & Sirtuin Research Guide',
+      subtitle: 'Mitochondrial ATP production, sirtuin and PARP pathways, and age-related NAD+ decline',
+    },
+    {
       slug: 'nad-vs-nmn-vs-nr-research-comparison',
       title: 'NAD+ vs. NMN vs. NR: Research Comparison',
-      subtitle: 'ATP production, DNA repair, sirtuin pathway, and age-related NAD+ decline',
+      subtitle: 'Comparative review of NAD+ precursors in cellular energy and longevity research',
     },
   ],
   'nad-plus-500mg-1000mg-45-sprays': [
     {
+      slug: 'nad-plus-peptide-mitochondrial-sirtuin-research-guide',
+      title: 'NAD+ Mitochondrial & Sirtuin Research Guide',
+      subtitle: 'Mitochondrial ATP production, sirtuin and PARP pathways, and age-related NAD+ decline',
+    },
+    {
       slug: 'nad-vs-nmn-vs-nr-research-comparison',
       title: 'NAD+ vs. NMN vs. NR: Research Comparison',
-      subtitle: 'ATP production, DNA repair, sirtuin pathway, and age-related NAD+ decline',
+      subtitle: 'Comparative review of NAD+ precursors in cellular energy and longevity research',
     },
   ],
   'cjc-1295-no-dac': [
@@ -318,4 +328,29 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
       subtitle: 'Reconstitution protocol, concentration math, and intranasal administration guide',
     },
   ],
+  'bpc-tb-500': [
+    {
+      slug: 'bpc-157-tb-500-synergy',
+      title: 'BPC-157 + TB-500: Synergy Research',
+      subtitle: 'Mechanistic differences between BPC-157 angiogenesis and TB-500 actin pathways',
+    },
+    {
+      slug: 'stack-research-peptides-safe-combinations-avoid',
+      title: 'Stacking Research Peptides: Safe Combinations',
+      subtitle: 'How BPC-157 and TB-500 are studied together in soft tissue repair models',
+    },
+  ],
+  'klow-80mg-45-sprays': [
+    {
+      slug: 'bpc-157-tb-500-synergy',
+      title: 'BPC-157 + TB-500: Synergy Research',
+      subtitle: 'Mechanistic differences between BPC-157 angiogenesis and TB-500 actin pathways',
+    },
+    {
+      slug: 'ghk-cu-pharmacokinetics',
+      title: 'The Pharmacokinetics of GHK-Cu',
+      subtitle: 'Fibroblast activation, collagen synthesis, and clinical implications',
+    },
+  ],
+
 }
