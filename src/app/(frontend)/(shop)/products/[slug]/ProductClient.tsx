@@ -10,7 +10,10 @@ import { Container } from '@/components/ui/container'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { StockIndicator } from '@/components/ui/stock-indicator'
-import { useCartStore } from '@/lib/cart/store'
+import { useCartStore, cartConflict, CART_CONFLICT_MESSAGE } from '@/lib/cart/store'
+import { PlanSelector, type PlanOption } from '@/components/subscriptions/PlanSelector'
+import { applyPlanDiscount } from '@/lib/subscriptions/discount'
+import { getSubscriptionPlanOptions } from '@/app/(frontend)/actions/subscriptions'
 import { useWishlistStore } from '@/lib/wishlist/store'
 import { useSession } from 'next-auth/react'
 import { toast } from 'sonner'
@@ -39,6 +42,8 @@ interface ProductData {
   categories?: string[]
   averageRating?: number
   reviewCount?: number
+  /** Set per product in the admin: offer "Subscribe & save" on this product. */
+  subscriptionEnabled?: boolean
 
   sku?: string
   weight?: number
@@ -227,6 +232,28 @@ export function ProductClient({ product }: ProductClientProps) {
 
   const [justAdded, setJustAdded] = useState(false)
   const cartStore = useCartStore()
+
+  // Subscribe & save: plan options are read live so the admin on/off switch applies immediately.
+  const [planOptions, setPlanOptions] = useState<PlanOption[]>([])
+  const [planMonths, setPlanMonths] = useState<number | null>(null)
+  useEffect(() => {
+    if (!product.subscriptionEnabled) return
+    let cancelled = false
+    getSubscriptionPlanOptions()
+      .then((res) => {
+        if (!cancelled && res.enabled) setPlanOptions(res.plans)
+      })
+      .catch(() => undefined)
+    return () => {
+      cancelled = true
+    }
+  }, [product.subscriptionEnabled])
+  const baseUnitPrice = parseFloat(String(selectedVariant?.salePrice || selectedVariant?.price || '0').replace(/[^0-9.]/g, '')) || 0
+  const activePlan = planMonths ? planOptions.find((p) => p.months === planMonths) : undefined
+  // If the chosen plan stops being offered, fall back to a one-time purchase.
+  useEffect(() => {
+    if (planMonths && planOptions.length > 0 && !planOptions.some((p) => p.months === planMonths)) setPlanMonths(null)
+  }, [planOptions, planMonths])
   
   const addItemToWishlist = useWishlistStore(state => state.addItem)
   const removeItemFromWishlist = useWishlistStore(state => state.removeItem)
@@ -291,15 +318,28 @@ export function ProductClient({ product }: ProductClientProps) {
     }
   }
 
-  const handleAddToCart = () => {
-    if (!selectedVariant?.inStock) return
+  const handleAddToCart = (): boolean => {
+    if (!selectedVariant?.inStock) return false
 
+    // A subscription is checked out on its own: offer to replace the cart instead of mixing.
+    const plan = activePlan ? activePlan.months : null
+    const conflict = cartConflict(cartStore.items, plan)
+    if (conflict) {
+      const ok = window.confirm(`${CART_CONFLICT_MESSAGE[conflict]}
+
+${plan ? 'Replace your cart with this subscription?' : 'Replace your cart with this item?'}`)
+      if (!ok) return false
+      cartStore.clear()
+    }
+
+    const livePrice = parseFloat((selectedVariant.salePrice || selectedVariant.price).replace(/[^0-9.]/g, ''))
     cartStore.addItem(
       { id: product.id, slug: product.slug, name: product.name, imageUrl: product.images[0] },
       selectedVariant.sku || selectedVariant.title,
       quantity,
-      parseFloat((selectedVariant.salePrice || selectedVariant.price).replace(/[^0-9.]/g, '')),
-      selectedVariant.title
+      activePlan ? applyPlanDiscount(livePrice, activePlan.discountPercent) : livePrice,
+      selectedVariant.title,
+      plan,
     )
 
     setJustAdded(true)
@@ -311,6 +351,7 @@ export function ProductClient({ product }: ProductClientProps) {
     cartStore.openCart()
 
     setTimeout(() => setJustAdded(false), 1500)
+    return true
   }
 
   return (
@@ -382,8 +423,13 @@ export function ProductClient({ product }: ProductClientProps) {
               </div>
             )}
 
-            {/* Bulk Bundles */}
-            {product.bulkBundles && product.bulkBundles.length > 0 && (
+            {/* Subscribe & save */}
+            {planOptions.length > 0 && (
+              <PlanSelector plans={planOptions} unitPrice={baseUnitPrice} selected={planMonths} onSelect={setPlanMonths} />
+            )}
+
+            {/* Bulk Bundles (not available together with a subscription plan) */}
+            {!planMonths && product.bulkBundles && product.bulkBundles.length > 0 && (
               <div className="mb-8">
                 <div className="flex flex-col mb-4">
                   <div className="flex items-center justify-between">
@@ -573,12 +619,11 @@ export function ProductClient({ product }: ProductClientProps) {
                   variant="dark" 
                   className="flex-1 h-16 rounded-full font-bold text-white bg-gradient-to-r from-ink to-gray-800 hover:from-black hover:to-ink transition-all duration-500 text-sm uppercase tracking-widest border-none shadow-[0_8px_20px_rgb(0,0,0,0.15)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)] hover:-translate-y-0.5"
                   onClick={() => {
-                    handleAddToCart()
-                    setTimeout(() => window.location.href = '/checkout', 300)
+                    if (handleAddToCart()) setTimeout(() => window.location.href = '/checkout', 300)
                   }}
                   disabled={!selectedVariant?.inStock}
                 >
-                  Buy Now
+                  {planMonths ? 'Subscribe' : 'Buy Now'}
                 </Button>
               </div>
             </div>
@@ -887,12 +932,11 @@ export function ProductClient({ product }: ProductClientProps) {
               variant="dark" 
               className="flex-1 h-11 rounded-full font-bold text-white bg-gradient-to-r from-ink to-gray-800 hover:from-black hover:to-ink transition-all duration-300 text-[11px] uppercase tracking-widest border-none shadow-[0_4px_14px_rgba(0,0,0,0.1)] hover:-translate-y-0.5"
               onClick={() => {
-                handleAddToCart()
-                setTimeout(() => window.location.href = '/checkout', 300)
+                if (handleAddToCart()) setTimeout(() => window.location.href = '/checkout', 300)
               }}
               disabled={!selectedVariant?.inStock}
             >
-              Buy Now
+              {planMonths ? 'Subscribe' : 'Buy Now'}
             </Button>
           </motion.div>
         )}

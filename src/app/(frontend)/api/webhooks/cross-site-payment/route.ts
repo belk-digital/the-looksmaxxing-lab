@@ -71,9 +71,31 @@ export async function POST(req: Request) {
         return new Response('Webhook Error: order not found', { status: 404 })
       }
 
+      // Already paid and fully processed: acknowledge (so WordPress stops retrying). If this is a DIFFERENT
+      // card transaction than the one we recorded, the customer paid twice - tell the admin.
+      if (order.paymentStatus === 'captured' && order.isFinalized) {
+        if (event.txnId && order.paymentTxnId && String(event.txnId) !== String(order.paymentTxnId)) {
+          await alertAdmin('⚠️ Duplicate card payment for an already-paid order', {
+            'Order ID': event.orderId,
+            'First transaction': order.paymentTxnId,
+            'New transaction': event.txnId,
+            'Paid (cents)': event.amountCents,
+            Note: 'The customer appears to have paid this order twice. One payment may need a refund.',
+          })
+        }
+        return new Response('Webhook handled successfully', { status: 200 })
+      }
+
+      const isSubscriptionOrder = order.orderType === 'subscription_first' || order.orderType === 'subscription_cycle'
       if (order.paymentMethod !== 'authnet_bridge') {
-        console.error(`Cross-site payment webhook: order ${event.orderId} is a "${order.paymentMethod}" order, not authnet_bridge`)
-        return new Response('Webhook Error: order is not a bridge order', { status: 400 })
+        // A subscriber who normally pays by Zelle may still pay a monthly invoice by card from the pay page.
+        if (isSubscriptionOrder && order.paymentMethod === 'zelle' && order.paymentStatus !== 'captured') {
+          await payload.update({ collection: 'orders', id: order.id, data: { paymentMethod: 'authnet_bridge' } as any, overrideAccess: true })
+          order.paymentMethod = 'authnet_bridge'
+        } else {
+          console.error(`Cross-site payment webhook: order ${event.orderId} is a "${order.paymentMethod}" order, not authnet_bridge`)
+          return new Response('Webhook Error: order is not a bridge order', { status: 400 })
+        }
       }
 
       const paidCents = Number(event.amountCents)
@@ -104,13 +126,29 @@ export async function POST(req: Request) {
       }
 
       try {
-        const { finalizeOrder } = await import('@/lib/orders/finalizeOrder')
-        const finalized = await finalizeOrder(event.orderId, {
-          source: 'authnet_bridge',
-          txnId: event.txnId,
-          affiliateId: event.affiliateId,
-          clickId: event.clickId,
-        })
+        let finalized: boolean
+        if (order.orderType === 'subscription_cycle') {
+          // A monthly invoice: mark it paid. The order hook then updates the subscription and emails the receipt.
+          const { markSubscriptionOrderPaid } = await import('@/lib/subscriptions/service')
+          finalized = await markSubscriptionOrderPaid(payload, order.id, { txnId: event.txnId })
+        } else {
+          const { finalizeOrder } = await import('@/lib/orders/finalizeOrder')
+          finalized = await finalizeOrder(event.orderId, {
+            source: 'authnet_bridge',
+            txnId: event.txnId,
+            affiliateId: event.affiliateId,
+            clickId: event.clickId,
+          })
+          // Remember the card transaction so a second payment for the same order can be detected.
+          if (finalized && event.txnId) {
+            try {
+              await payload.update({ collection: 'orders', id: order.id, data: { paymentTxnId: String(event.txnId) } as any, overrideAccess: true })
+            } catch (e) {
+              // Bookkeeping only: never let it turn a successful payment into a retry.
+              console.warn('Could not store payment transaction id', e)
+            }
+          }
+        }
         // finalizeOrder swallows its own errors and resolves to false rather than
         // throwing, so this has to be checked explicitly - otherwise a genuine
         // failure here would still be reported back as 200, telling WordPress not

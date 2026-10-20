@@ -115,7 +115,16 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
     redeemedPoints: order.redeemedPoints || 0,
     couponCode: order.couponCode || '',
     paymentMethod: order.paymentMethod || 'stripe',
-    paymentStatus: order.paymentStatus || 'unpaid'
+    paymentStatus: order.paymentStatus || 'unpaid',
+    // Set for subscription orders so the page can explain what happens next
+    subscription:
+      (order as any).orderType && (order as any).orderType !== 'one_time'
+        ? {
+            month: (order as any).cycleNumber || 1,
+            months: (order as any).cyclesTotal || 1,
+            id: String(typeof order.subscription === 'object' && order.subscription ? (order.subscription as any).id : order.subscription || ''),
+          }
+        : null,
   }
 
   return (

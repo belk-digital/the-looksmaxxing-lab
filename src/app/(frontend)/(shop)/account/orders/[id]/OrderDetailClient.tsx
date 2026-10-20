@@ -7,6 +7,7 @@ import { ArrowLeft, Package, RotateCcw, MapPin, CreditCard, Truck } from 'lucide
 import { Space_Grotesk } from 'next/font/google'
 import { motion } from 'framer-motion'
 import { useCartStore } from '@/lib/cart/store'
+import { resolveLegacySku } from '@/lib/cart/variantMatch'
 import { useRouter } from 'next/navigation'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
@@ -48,10 +49,10 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
         const price = typeof item.price === 'number' ? item.price : (product.basePrice || product.price || 0)
         addItem(
           { id: product.id, slug: product.slug || '', name: title, imageUrl },
-          item.variant || null, // variantSku
+          resolveLegacySku(item.variant) || null, // variantSku
           item.quantity || 1,
           price,
-          item.variant || null
+          resolveLegacySku(item.variant) || null
         )
       }
     }
@@ -91,6 +92,16 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
             Order {order.orderNumber}
           </h1>
           <p className="text-sm text-gray-500">Placed on {formattedDate}</p>
+          {order.orderType && order.orderType !== 'one_time' ? (
+            <Link
+              href={order.subscription ? `/account/subscriptions/${typeof order.subscription === 'object' ? order.subscription.id : order.subscription}` : '/account/subscriptions'}
+              className="w-fit rounded-full bg-black text-white text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1.5"
+            >
+              Subscription &middot; Month {order.cycleNumber || 1} of {order.cyclesTotal || ''} &mdash; manage
+            </Link>
+          ) : (
+            <span className="w-fit rounded-full bg-gray-100 text-gray-500 text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1.5">One-time order</span>
+          )}
         </div>
 
         <div className="flex items-center gap-3">

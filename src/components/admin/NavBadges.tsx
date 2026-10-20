@@ -15,6 +15,7 @@ export default function NavBadges() {
         updateBadge('/collections/orders', data.orders, '#ef4444', 'Pending') // Red for Orders
         updateBadge('/collections/affiliate-applications', data.affiliates, '#eab308', 'Pending', 'dark') // Yellow for Affiliates
         updateBadge('/collections/reviews', data.reviews, '#3b82f6', 'Pending') // Blue for Reviews
+        updateBadge('/collections/subscriptions', data.subscriptions, '#f97316', 'Needs attention') // Orange for Subscriptions
       } catch (err: any) {
         // Suppress network errors that commonly occur during Next.js hot-reloads
         if (err.name === 'TypeError' && err.message === 'Failed to fetch') return

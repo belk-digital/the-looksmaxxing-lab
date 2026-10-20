@@ -58,11 +58,14 @@ export async function appendOrderToSheet(order: Order) {
       tax,
       total,
       status,
+      // Columns L and M (add the headers "Order Type" and "Subscription Month" in the sheet).
+      order.orderType === 'subscription_first' || order.orderType === 'subscription_cycle' ? 'Subscription' : 'One-time',
+      order.orderType && order.orderType !== 'one_time' ? `Month ${order.cycleNumber || 1} of ${order.cyclesTotal || ''}` : '',
     ];
 
     await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: 'Sheet1!A:K',
+      range: 'Sheet1!A:M',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [row],

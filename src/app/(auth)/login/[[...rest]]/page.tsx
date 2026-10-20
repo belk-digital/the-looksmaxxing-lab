@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
 import { Space_Grotesk } from 'next/font/google'
 import { toast } from 'sonner'
+import { nextPathFromSearch, withNext } from '@/lib/auth/safeRedirect'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
@@ -18,6 +19,9 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // where to go after logging in (e.g. back to checkout); only a path on this site is ever accepted
+  const [next, setNext] = useState<string | null>(null)
+  useEffect(() => setNext(nextPathFromSearch(window.location.search)), [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -35,7 +39,7 @@ export default function LoginPage() {
         setError('Invalid credentials. If you haven\'t logged in since the upgrade, please reset your password.')
       } else {
         toast.success('Successfully logged in')
-        router.push('/account')
+        router.push(next ?? '/account')
         router.refresh()
       }
     } catch (error) {
@@ -93,13 +97,13 @@ export default function LoginPage() {
             Sign In
           </h2>
           <p className="text-sm text-gray-500 mb-8">
-            Don't have an account? <Link href="/register" className="text-black font-bold hover:underline transition-all">Sign Up</Link>
+            Don't have an account? <Link href={withNext('/register', next)} className="text-black font-bold hover:underline transition-all">Sign Up</Link>
           </p>
           
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <button
               type="button"
-              onClick={() => signIn('google', { callbackUrl: '/account' })}
+              onClick={() => signIn('google', { callbackUrl: next ?? '/account' })}
               className="bg-white border border-gray-200 hover:bg-gray-50 text-black w-full h-[52px] text-sm font-medium transition-all flex items-center justify-center gap-3"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">

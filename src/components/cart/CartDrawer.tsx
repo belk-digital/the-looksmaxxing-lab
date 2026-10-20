@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import { PlanLineBadge } from '@/components/subscriptions/PlanLineBadge'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -172,6 +173,7 @@ export function CartDrawer() {
                                 <span className="text-[10px] uppercase tracking-wider text-ink/50 mt-1.5 font-bold">
                                   {item.variantTitle || 'Standard'}
                                 </span>
+                                <PlanLineBadge months={item.planMonths} />
                               </div>
                               <button 
                                 onClick={() => removeItem(item.lineId)}

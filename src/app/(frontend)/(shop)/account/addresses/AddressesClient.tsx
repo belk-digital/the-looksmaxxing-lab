@@ -170,7 +170,7 @@ export function AddressesClient({ addresses }: AccountAddressesProps) {
                     <Input name="phone" id="phone" defaultValue={editingAddress?.phone || ''} required type="tel" placeholder="(555) 555-5555" className="h-12 bg-gray-50 border-gray-100 focus:border-black focus:ring-black rounded-xl" />
                   </div>
                   <div className="col-span-2 flex items-center space-x-3 mt-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
-                    <Checkbox name="isDefault" id="default" defaultChecked={editingAddress?.isDefault || false} className="border-gray-300 data-[state=checked]:bg-black data-[state=checked]:border-black" />
+                    <Checkbox name="isDefault" id="default" defaultChecked={editingAddress?.isDefault || false} className="border-gray-300 data-[state=checked]:bg-black data-[state=checked]:border-black data-[state=checked]:text-white" />
                     <label
                       htmlFor="default"
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700"

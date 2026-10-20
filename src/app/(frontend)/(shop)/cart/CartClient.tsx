@@ -1,8 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { PlanLineBadge } from '@/components/subscriptions/PlanLineBadge'
 import Image from 'next/image'
 import Link from 'next/link'
+import { SUBSCRIPTION_COUPON_MESSAGE } from '@/lib/subscriptions/couponRules'
 import { X, CreditCard, ShoppingBag, ArrowRight, Loader2, Check, Trash2, Lock, ShieldCheck, Package } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Container } from '@/components/ui/container'
@@ -180,6 +182,13 @@ export function CartClient() {
           return
         }
         
+        // A subscription can only use coupons that were switched on for subscriptions (the server checks this again at checkout)
+        if (items.some((i) => i.planMonths) && !coupon.allowOnSubscriptions) {
+          setCouponState('error')
+          setCouponMessage(SUBSCRIPTION_COUPON_MESSAGE)
+          return
+        }
+
         // Validate Min Spend (assuming minSpend is in cents)
         if (coupon.minSpend && (subtotal * 100) < coupon.minSpend) {
           setCouponState('error')
@@ -346,6 +355,7 @@ export function CartClient() {
                       <span className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/50 line-clamp-1">
                         {item.variantTitle || 'Standard'}
                       </span>
+                      <PlanLineBadge months={item.planMonths} />
                     </div>
                     <span className="text-sm sm:text-lg md:text-xl font-medium text-ink mt-1 sm:mt-0 whitespace-nowrap">
                       ${item.priceSnapshot.toFixed(2)}

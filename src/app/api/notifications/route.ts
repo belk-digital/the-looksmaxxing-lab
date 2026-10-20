@@ -7,7 +7,7 @@ export async function GET() {
 
   try {
     // Run all counts in parallel for performance
-    const [ordersRes, affiliatesRes, reviewsRes] = await Promise.all([
+    const [ordersRes, affiliatesRes, reviewsRes, subscriptionsRes] = await Promise.all([
       payload.count({
         collection: 'orders',
         where: { status: { equals: 'pending' } },
@@ -23,12 +23,22 @@ export async function GET() {
         where: { status: { equals: 'pending' } },
         overrideAccess: true,
       }),
+      // Subscriptions waiting for a first payment, or put on hold because an invoice went unpaid.
+      // Isolated so a subscriptions problem can never break the other badges.
+      payload
+        .count({
+          collection: 'subscriptions' as any,
+          where: { status: { in: ['pending_payment', 'lapsed'] } },
+          overrideAccess: true,
+        })
+        .catch(() => ({ totalDocs: 0 })),
     ])
 
     return NextResponse.json({
       orders: ordersRes.totalDocs,
       affiliates: affiliatesRes.totalDocs,
       reviews: reviewsRes.totalDocs,
+      subscriptions: subscriptionsRes.totalDocs,
     })
   } catch (error) {
     console.error('Error fetching notifications:', error)

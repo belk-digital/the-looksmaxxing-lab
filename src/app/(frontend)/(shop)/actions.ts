@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { getPayloadUser } from '@/lib/auth/getPayloadUser'
 import { revalidatePath } from 'next/cache'
+import { couponRuleForCart } from '@/lib/subscriptions/couponRules'
 
 export async function addToCart(productId: string | number, quantity: number = 1, providedVariantSku?: string, providedPriceSnapshot?: number) {
   try {
@@ -263,8 +264,15 @@ async function calculateCartTotals(cartItems: any[], payload: any, coupon?: any)
   return { discount, description, eligibleSubtotal, totalSubtotal, freeShipping };
 }
 
-export async function verifyCoupon(couponCode: string, subtotal: number, clientCartItems?: any[]) {
+/**
+ * Checks a coupon code against a cart. On a subscription cart the coupon must be switched on for subscriptions
+ * ("Can be used on subscriptions"); `options.recurringInvoice` re-checks it for a LATER monthly invoice of a
+ * subscription that was started with an "every monthly payment" coupon (expiry/usage limits no longer apply then:
+ * the discount was promised when the customer subscribed).
+ */
+export async function verifyCoupon(couponCode: string, subtotal: number, clientCartItems?: any[], options: { recurringInvoice?: boolean } = {}) {
   try {
+    const recurring = options.recurringInvoice === true
     const user = await getPayloadUser()
 
     if (!couponCode || !couponCode.trim()) return { valid: false, error: 'Please enter a coupon code' }
@@ -282,12 +290,12 @@ export async function verifyCoupon(couponCode: string, subtotal: number, clientC
     if (!coupon) return { valid: false, error: 'Coupon code not found' }
 
     // Check expiration
-    if (coupon.expiresAt && new Date(coupon.expiresAt) < new Date()) {
+    if (!recurring && coupon.expiresAt && new Date(coupon.expiresAt) < new Date()) {
       return { valid: false, error: 'This coupon has expired' }
     }
 
     // Check usage limit
-    if (coupon.usageLimit && (coupon.usageCount || 0) >= coupon.usageLimit) {
+    if (!recurring && coupon.usageLimit && (coupon.usageCount || 0) >= coupon.usageLimit) {
       return { valid: false, error: 'This coupon has reached its usage limit' }
     }
 
@@ -298,7 +306,8 @@ export async function verifyCoupon(couponCode: string, subtotal: number, clientC
         product: item.productId || item.product?.id || item.product,
         quantity: item.quantity || 1,
         priceSnapshot: item.priceSnapshot,
-        variantSku: item.variantSku
+        variantSku: item.variantSku,
+        planMonths: item.planMonths || null,
       }))
     } else if (user) {
       const carts = await payload.find({
@@ -317,15 +326,20 @@ export async function verifyCoupon(couponCode: string, subtotal: number, clientC
       return { valid: false, error: 'Cart is empty' }
     }
 
+    // Subscriptions: only coupons switched on for subscriptions may be used on a cart that holds a plan.
+    const isSubscriptionCart = cartItems.some((i: any) => Number(i.planMonths) > 0)
+    const rule = couponRuleForCart(coupon as any, { isSubscriptionCart, recurringInvoice: recurring })
+    if (!rule.ok) return { valid: false, error: rule.error }
+
     const { discount, description, eligibleSubtotal, totalSubtotal } = await calculateCartTotals(cartItems, payload, coupon)
 
     // Check minimum spend (minSpend is in cents, totalSubtotal is in dollars)
-    if (coupon.minSpend && (totalSubtotal * 100) < coupon.minSpend) {
+    if (!recurring && coupon.minSpend && (totalSubtotal * 100) < coupon.minSpend) {
       return { valid: false, error: `Minimum spend of $${(coupon.minSpend / 100).toFixed(2)} required` }
     }
 
     // Block affiliates from using their own coupon code
-    if (user) {
+    if (user && !recurring) {
       const affiliateRes = await payload.find({
         collection: 'affiliates',
         where: { couponCode: { equals: couponCode.trim().toUpperCase() } },
@@ -344,7 +358,7 @@ export async function verifyCoupon(couponCode: string, subtotal: number, clientC
     }
 
     // Check locked emails
-    if (coupon.lockedEmails && coupon.lockedEmails.length > 0) {
+    if (!recurring && coupon.lockedEmails && coupon.lockedEmails.length > 0) {
       if (!user) return { valid: false, error: 'You must log in to use this specific coupon' }
       const allowed = coupon.lockedEmails.some((e: any) => e.email === user.email)
       if (!allowed) return { valid: false, error: 'This coupon is not available for your account' }
@@ -360,6 +374,8 @@ export async function verifyCoupon(couponCode: string, subtotal: number, clientC
       discount,
       description,
       freeShipping: coupon.freeShipping || coupon.type === 'free_shipping',
+      // 'first_month' | 'every_month' on a subscription cart, null on a normal purchase
+      subscriptionScope: rule.scope,
     }
   } catch (error: any) {
     return { valid: false, error: error.message || 'An unexpected error occurred' }

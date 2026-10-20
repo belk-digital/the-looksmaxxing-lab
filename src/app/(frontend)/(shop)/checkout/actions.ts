@@ -3,14 +3,17 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import Stripe from 'stripe'
-import { verifyCoupon, getUserMaxxPoints } from '../actions'
 import { cookies } from 'next/headers'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
-import crypto from 'crypto'
-import { signOrderCookie } from '@/lib/orders/orderCookie'
+import { signOrderCookie, verifyOrderCookie } from '@/lib/orders/orderCookie'
+import { buildBridgeHandoff } from '@/lib/payments/bridge'
 import { checkStripePaymentCoversOrder, STRIPE_OPEN_STATUSES } from '@/lib/orders/payments'
 import { alertAdmin } from '@/lib/orders/alerts'
+import { computeOrderPricing } from '@/lib/checkout/pricing'
+import { loadShippingMethods, loadActiveProcessingFees } from '@/lib/checkout/data'
+import { getSubscriptionSettings, allowedPaymentMethods } from '@/lib/subscriptions/settings'
+import { createSubscriptionForCheckout, syncSubscription } from '@/lib/subscriptions/service'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2024-04-10' as any,
@@ -18,21 +21,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 export async function getShippingMethods() {
   const payload = await getPayload({ config: configPromise })
-  const zones = await payload.find({
-    collection: 'shippingzones',
-    limit: 1,
-    depth: 0,
-  })
-
-  if (zones.docs.length > 0 && zones.docs[0].methods) {
-    return zones.docs[0].methods
-  }
-  
-  // Fallback if none exist
-  return [
-    { method: 'Standard Shipping', price: 0, estimatedDays: 5 },
-    { method: 'Express Shipping', price: 2500, estimatedDays: 2 }
-  ]
+  return loadShippingMethods(payload)
 }
 
 export async function getPaymentMethodsSettings() {
@@ -58,13 +47,7 @@ export async function getPaymentMethodsSettings() {
 
 export async function getActiveProcessingFees() {
   const payload = await getPayload({ config: configPromise })
-  const fees = await payload.find({
-    collection: 'processing-fees',
-    depth: 0,
-    overrideAccess: true,
-    limit: 100,
-  })
-  return fees.docs.filter((f: any) => f.isActive)
+  return loadActiveProcessingFees(payload)
 }
 
 export async function createPaymentIntent(
@@ -77,91 +60,17 @@ export async function createPaymentIntent(
   const payload = await getPayload({ config: configPromise })
 
 
-  // Validate items, check stock, and calculate subtotal securely on server
-  let subtotal = 0;
-  let pricesChanged = false;
-  const { revalidateCartPrices } = await import('@/app/(frontend)/actions/cart')
-  const liveItems = await revalidateCartPrices(items)
+  const pricing = await computeOrderPricing(payload, { items, shippingMethodName, couponCode, isRedeemingPoints })
+  if (pricing.error !== undefined) {
+    return { error: pricing.error, updatedItems: pricing.updatedItems, priceChanged: pricing.priceChanged }
+  }
+  const { total } = pricing
 
-  for (let i = 0; i < items.length; i++) {
-     const item = items[i]
-     const liveItem = liveItems[i]
-     
-     const itemPrice = Number(item.priceSnapshot)
-     const livePrice = Number(liveItem.priceSnapshot)
-     
-     if (itemPrice !== livePrice && !(Number.isNaN(itemPrice) && Number.isNaN(livePrice))) {
-       pricesChanged = true
-     }
-
-     const productRes = await payload.findByID({ collection: 'products', id: (!isNaN(Number(item.productId)) ? Number(item.productId) : item.productId) as any, depth: 0 })
-     if (!productRes) {
-        return { error: `Product not found: ${item.productId}` }
-     }
-     if ((productRes.stock || 0) < item.quantity) {
-        return { error: `Insufficient stock for ${productRes.name || 'item'}. Only ${productRes.stock} left.` }
-     }
-     subtotal += liveItem.priceSnapshot * item.quantity
+  // Subscription plans are paid by card through the Authorize.net bridge or by Zelle - never with Stripe.
+  if (pricing.planMonths != null) {
+    return { error: 'Subscriptions are paid by card (Authorize.net) or Zelle.' }
   }
 
-  if (pricesChanged) {
-    return { 
-      error: 'Prices for some items have updated since they were added to your cart. We have refreshed your cart with the latest live prices.', 
-      updatedItems: liveItems,
-      priceChanged: true
-    }
-  }
-
-  let discountAmount = 0;
-  let freeShipping = false;
-
-  if (couponCode) {
-    const couponRes = await verifyCoupon(couponCode, subtotal, items)
-    if (couponRes.valid) {
-      discountAmount = couponRes.discount || 0
-      freeShipping = couponRes.freeShipping || false
-    }
-  }
-
-  const methods = await getShippingMethods()
-  const selectedMethod = methods.find((m: any) => m.method === shippingMethodName) || methods[0]
-  
-  // Validate minOrderAmount for the selected shipping method
-  if ((selectedMethod as any)?.minOrderAmount && (selectedMethod as any).minOrderAmount > 0) {
-    if (subtotal < (selectedMethod as any).minOrderAmount) {
-       return { error: `Your cart subtotal must be at least $${(selectedMethod as any).minOrderAmount} to use ${selectedMethod.method}.` }
-    }
-  }
-
-  const shippingCost = (selectedMethod?.price || 0) / 100
-
-  const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)
-  const isExpressShipping = shippingMethodName.toLowerCase().includes('express')
-  const finalShipping = (freeShipping && !isExpressShipping) ? 0 : shippingCost
-  
-  // Calculate dynamic processing fees
-  const activeFees = await getActiveProcessingFees()
-  let feeTotal = 0
-  activeFees.forEach((fee: any) => {
-    if (!fee.isOptional) {
-      if (fee.type === 'percentage') {
-        feeTotal += subtotalAfterDiscount * (fee.amount / 100)
-      } else if (fee.type === 'fixed_amount') {
-        feeTotal += (fee.amount / 100)
-      }
-    }
-  })
-
-  const tax = 0 // Statically 0 now, handled by ProcessingFees
-  const totalBeforePoints = subtotalAfterDiscount + finalShipping + tax + feeTotal
-
-  let pointsToRedeem = 0;
-  if (isRedeemingPoints) {
-    const availablePoints = await getUserMaxxPoints()
-    pointsToRedeem = Math.min(availablePoints, totalBeforePoints)
-  }
-
-  const total = totalBeforePoints - pointsToRedeem
   const amountInCents = Math.round(total * 100)
 
   if (amountInCents < 50) {
@@ -245,97 +154,14 @@ export async function createPayloadOrder(
 ) {
   const payload = await getPayload({ config: configPromise })
 
-  let subtotal = 0;
-  let pricesChanged = false;
-  const { revalidateCartPrices } = await import('@/app/(frontend)/actions/cart')
-  const liveItems = await revalidateCartPrices(items)
-
-  const productsCache = new Map()
-
-  for (let i = 0; i < items.length; i++) {
-     const item = items[i]
-     const liveItem = liveItems[i]
-     
-     if (item.priceSnapshot !== liveItem.priceSnapshot) {
-       pricesChanged = true
-     }
-
-     const productRes = await payload.findByID({ collection: 'products', id: (!isNaN(Number(item.productId)) ? Number(item.productId) : item.productId) as any, depth: 0 })
-     if (!productRes) {
-        return { error: `Product not found: ${item.productId}` }
-     }
-     productsCache.set(item.productId, productRes)
-     if ((productRes.stock || 0) < item.quantity) {
-        return { error: `Insufficient stock for ${productRes.name || 'item'}. Only ${productRes.stock} left.` }
-     }
-     subtotal += liveItem.priceSnapshot * item.quantity
+  const pricing = await computeOrderPricing(payload, { items, shippingMethodName, couponCode, isRedeemingPoints })
+  if (pricing.error !== undefined) {
+    return { error: pricing.error, updatedItems: pricing.updatedItems, priceChanged: pricing.priceChanged }
   }
-
-  if (pricesChanged) {
-    return { 
-      error: 'Prices for some items have updated since they were added to your cart. We have refreshed your cart with the latest live prices.', 
-      updatedItems: liveItems,
-      priceChanged: true
-    }
-  }
-
-  let discountAmount = 0;
-  let freeShipping = false;
-
-  if (couponCode) {
-    const couponRes = await verifyCoupon(couponCode, subtotal, items)
-    if (couponRes.valid) {
-      discountAmount = couponRes.discount || 0
-      freeShipping = couponRes.freeShipping || false
-    }
-  }
-
-  const methods = await getShippingMethods()
-  const selectedMethod = methods.find((m: any) => m.method === shippingMethodName) || methods[0]
-
-  // Validate minOrderAmount for the selected shipping method
-  if ((selectedMethod as any)?.minOrderAmount && (selectedMethod as any).minOrderAmount > 0) {
-    if (subtotal < (selectedMethod as any).minOrderAmount) {
-       return { error: `Your cart subtotal must be at least $${(selectedMethod as any).minOrderAmount} to use ${selectedMethod.method}.` }
-    }
-  }
-
-  const shippingCost = (selectedMethod?.price || 0) / 100
-
-  const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)
-  const isExpressShipping = shippingMethodName.toLowerCase().includes('express')
-  const finalShipping = (freeShipping && !isExpressShipping) ? 0 : shippingCost
-  
-  // Calculate dynamic processing fees
-  const activeFees = await getActiveProcessingFees()
-  let feeTotal = 0
-  const appliedFees: any[] = []
-  
-  activeFees.forEach((fee: any) => {
-    if (!fee.isOptional) {
-      const amount = fee.type === 'percentage' 
-        ? subtotalAfterDiscount * (fee.amount / 100)
-        : (fee.amount / 100)
-      
-      feeTotal += amount
-      appliedFees.push({
-        feeId: fee.id,
-        feeName: fee.name,
-        amount: Math.round(amount * 100) // cents for Payload array
-      })
-    }
-  })
-
-  const tax = 0 // Statically 0 now, handled by ProcessingFees
-  const totalBeforePoints = subtotalAfterDiscount + finalShipping + tax + feeTotal
-
-  let pointsToRedeem = 0;
-  if (isRedeemingPoints) {
-    const availablePoints = await getUserMaxxPoints()
-    pointsToRedeem = Math.min(availablePoints, totalBeforePoints)
-  }
-
-  const total = totalBeforePoints - pointsToRedeem
+  const {
+    subtotal, discountAmount, finalShipping, feeTotal, appliedFees, tax,
+    pointsToRedeem, total, liveItems, productsById,
+  } = pricing
 
   // --- Validate how this order is being paid -------------------------------------------
   // paymentIntentId is client-supplied; it selects the payment path, so every path is
@@ -344,6 +170,26 @@ export async function createPayloadOrder(
   const isStripeIntent = !!paymentIntentId && !['free_order', 'manual', 'authnet_bridge'].includes(paymentIntentId)
   const effectivePaymentMethod = paymentMethod || 'stripe'
   let stripeIntentToBind: Stripe.PaymentIntent | null = null
+
+  // --- Subscription plan rules ----------------------------------------------------------
+  const isPlan = pricing.planMonths != null
+  let subscriptionPaymentMethod: 'authnet_bridge' | 'zelle' = 'authnet_bridge'
+  if (isPlan) {
+    if (!formData?.acceptSubscriptionTerms) {
+      return { error: 'Please accept the subscription terms to continue.' }
+    }
+    if (isStripeIntent) {
+      return { error: 'Subscriptions are paid by card (Authorize.net) or Zelle.' }
+    }
+    const allowed = allowedPaymentMethods(await getSubscriptionSettings(payload))
+    if (allowed.includes(effectivePaymentMethod as any)) {
+      subscriptionPaymentMethod = effectivePaymentMethod as 'authnet_bridge' | 'zelle'
+    } else if (isFreeOrder && allowed.length > 0) {
+      subscriptionPaymentMethod = allowed[0] // a fully-covered first month needs no payment method; pick a default
+    } else {
+      return { error: 'This payment method is not available for subscriptions. Please choose card or Zelle.' }
+    }
+  }
 
   if (!isFreeOrder) {
     if (paymentIntentId === 'free_order') {
@@ -440,14 +286,19 @@ export async function createPayloadOrder(
        }
     }
 
+    // A subscription belongs to an account (so the customer can pause, skip and pay invoices later)
+    if (isPlan && !payloadUserId) {
+      return { error: 'Please log in or create an account to start a subscription.' }
+    }
+
     // Format order items for Payload
-    const orderItems = items.map(item => {
+    const orderItems = items.map((item, idx) => {
       const parsedId = parseInt(String(item.productId), 10)
-      const productData = productsCache.get(item.productId)
+      const productData = productsById.get(item.productId)
       return {
         product: isNaN(parsedId) ? item.productId : parsedId,
         variant: item.variantSku || 'DEFAULT',
-        price: item.priceSnapshot,
+        price: liveItems[idx].priceSnapshot,
         quantity: item.quantity,
         productSnapshot: productData || null
       }
@@ -485,8 +336,61 @@ export async function createPayloadOrder(
         shippingMethod: shippingMethodName,
         couponCode: couponCode || '',
         paymentMethod: paymentMethod || 'stripe',
+        ...(isPlan
+          ? {
+              orderType: 'subscription_first',
+              cycleNumber: 1,
+              cyclesTotal: pricing.planMonths,
+              subscriptionDiscountPercent: pricing.planDiscountPercent,
+            }
+          : {}),
       } as any
     })
+
+    // Create the subscription (waiting for this first payment) and link it to the order.
+    let createdSubscriptionId: string | number | null = null
+    if (isPlan) {
+      try {
+        const cookieJar = await cookies()
+        const sub = await createSubscriptionForCheckout(payload, {
+          ownerId: payloadUserId as any,
+          firstOrderId: order.id,
+          planMonths: pricing.planMonths as number,
+          discountPercent: pricing.planDiscountPercent as number,
+          items: items.map((item) => {
+            const parsedId = parseInt(String(item.productId), 10)
+            return {
+              productId: isNaN(parsedId) ? item.productId : parsedId,
+              variantSku: item.variantSku,
+              variantTitle: item.variantTitle,
+              quantity: item.quantity,
+            }
+          }),
+          paymentMethod: subscriptionPaymentMethod,
+          shippingMethod: pricing.shippingMethodName,
+          shippingAddress: {
+            line1: formData.address,
+            line2: formData.apartment || '',
+            city: formData.city,
+            state: formData.state,
+            postalCode: formData.zip,
+            country: 'US',
+          },
+          customerFirstName: formData.firstName,
+          customerLastName: formData.lastName,
+          customerPhone: formData.phone,
+          affiliateId: await findSubscriptionAffiliate(payload, couponCode, cookieJar.get('affiliate_ref')?.value),
+          affiliateClickId: cookieJar.get('affiliate_click_id')?.value || null,
+          // an "every monthly payment" coupon keeps discounting the later monthly invoices
+          recurringCouponCode: pricing.couponApplied && pricing.couponSubscriptionScope === 'every_month' ? pricing.appliedCouponCode : null,
+        })
+        createdSubscriptionId = sub.id
+      } catch (subErr) {
+        console.error('Failed to create subscription record; cancelling the new order:', subErr)
+        await payload.update({ collection: 'orders', id: order.id, data: { status: 'cancelled' } as any }).catch(() => undefined)
+        return { error: 'We could not set up your subscription, and you have not been charged. Please try again.' }
+      }
+    }
 
     if (stripeIntentToBind) {
        // A previous attempt with this same intent (e.g. a declined card) left an order behind.
@@ -532,6 +436,11 @@ export async function createPayloadOrder(
     // paymentIntentId === 'authnet_bridge': leave the order pending/unpaid here.
     // It gets finalized later by the cross-site-payment webhook once longeviabeauty.com
     // confirms the Authorize.net charge (see createCrossSitePaymentRedirect below).
+
+    // A first month that was already fully covered (coupon/points): the subscription starts right away.
+    if (isPlan && createdSubscriptionId && total <= 0) {
+      await syncSubscription(payload, createdSubscriptionId, order.id)
+    }
 
     // Set a cookie to authorize the order confirmation page
     const cookieStore = await cookies()
@@ -594,14 +503,6 @@ export async function syncPaymentStatus(paymentIntentId: string, orderId: string
   }
 }
 
-function signCrossSitePayload(encodedPayload: string): string {
-  const secret = process.env.CROSS_SITE_PAYMENT_SECRET
-  if (!secret) {
-    throw new Error('CROSS_SITE_PAYMENT_SECRET is not configured')
-  }
-  return crypto.createHmac('sha256', secret).update(encodedPayload).digest('hex')
-}
-
 // Hands off a pending 'authnet_bridge' order to longeviabeauty.com to be paid via the
 // Authorize.net gateway already configured there (WooCommerce). The order is only
 // finalized later, when the cross-site-payment webhook confirms the charge succeeded.
@@ -634,38 +535,37 @@ export async function createCrossSitePaymentRedirect(orderId: string) {
       return { error: 'Order total too low to process' }
     }
 
-    const ownerEmail = typeof order.owner === 'object' && order.owner !== null ? order.owner.email : undefined
-    const appUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com'
+    // Only the browser that placed the order (signed cookie) or its logged-in owner may start its payment.
+    // Otherwise anyone could request hand-offs for other people's order numbers and read the names/emails inside.
     const cookieStore = await cookies()
+    let authorized = verifyOrderCookie(String(order.id), cookieStore.get(`order_auth_${order.id}`)?.value)
+    if (!authorized) {
+      const session = await getServerSession(authOptions)
+      if (session?.user?.email && order.owner) {
+        const ownerId = typeof order.owner === 'object' ? order.owner.id : order.owner
+        const ownerDoc: any = await payload.findByID({ collection: 'users', id: ownerId, depth: 0 }).catch(() => null)
+        authorized = !!ownerDoc && ownerDoc.email === session.user.email
+      }
+    }
+    if (!authorized) {
+      return { error: 'Order not found' }
+    }
 
-    const body = {
-      orderId: String(order.id),
+    const appUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com'
+
+    // The bridge echoes affiliateId/clickId back unchanged in the confirmation webhook so attribution still works.
+    return buildBridgeHandoff({
+      orderId: order.id,
       orderNumber: order.orderNumber,
       amountCents,
-      currency: 'usd',
-      email: order.guestEmail || ownerEmail || '',
+      email: order.guestEmail || '',
       firstName: order.customerFirstName || '',
       lastName: order.customerLastName || '',
       returnUrl: `${appUrl}/order-confirmation/${order.id}`,
       cancelUrl: `${appUrl}/checkout`,
-      // Passed through opaquely; the WordPress bridge must echo these back unchanged
-      // in the confirmation webhook so affiliate attribution can still be applied.
       affiliateId: cookieStore.get('affiliate_ref')?.value || null,
       clickId: cookieStore.get('affiliate_click_id')?.value || null,
-      nonce: crypto.randomBytes(16).toString('hex'),
-      ts: Date.now(),
-    }
-
-    // Sign one opaque, base64url-encoded blob rather than the object itself.
-    // WordPress receives it as separate POST fields and re-serializing form-decoded
-    // strings back into JSON there wouldn't reliably reproduce the exact bytes we
-    // hashed here (number vs. string types, key order) — so the signed material has
-    // to travel as a single untouched string instead of being reconstructed on the
-    // other end.
-    const encodedPayload = Buffer.from(JSON.stringify(body)).toString('base64url')
-    const sig = signCrossSitePayload(encodedPayload)
-
-    return { redirectUrl: bridgeUrl, fields: { payload: encodedPayload, sig } }
+    })
   } catch (error: any) {
     console.error('Failed to create cross-site payment redirect:', error)
     return { error: error.message }
@@ -712,3 +612,22 @@ export async function notifyAdminFailedPayment(orderId: string, errorMessage: st
   }
 }
 
+
+// Which affiliate earns commission on every month of a subscription: the owner of the coupon used
+// (if any), otherwise the affiliate from the referral cookie - the same rule attributeOrder applies to one-time orders.
+async function findSubscriptionAffiliate(
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  couponCode: string | undefined,
+  cookieAffiliateId: string | undefined,
+): Promise<string | number | null> {
+  if (couponCode) {
+    const res = await payload.find({ collection: 'affiliates', where: { couponCode: { equals: couponCode } }, limit: 1, depth: 0 })
+    if (res.docs[0]) return res.docs[0].id
+  }
+  if (cookieAffiliateId) {
+    const id = isNaN(Number(cookieAffiliateId)) ? cookieAffiliateId : Number(cookieAffiliateId)
+    const aff = await payload.findByID({ collection: 'affiliates', id, depth: 0 }).catch(() => null)
+    if (aff) return aff.id
+  }
+  return null
+}

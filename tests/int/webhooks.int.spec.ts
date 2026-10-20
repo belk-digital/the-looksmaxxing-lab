@@ -8,6 +8,8 @@ const h = vi.hoisted(() => {
   process.env.STRIPE_SECRET_KEY = 'sk_test_x'
   return {
   finalize: vi.fn(),
+  markPaid: vi.fn(),
+  update: vi.fn(),
   alert: vi.fn(),
   order: null as any,
   sigHeader: '' as string,
@@ -15,7 +17,8 @@ const h = vi.hoisted(() => {
   }
 })
 
-vi.mock('payload', () => ({ getPayload: async () => ({ findByID: async () => h.order }) }))
+vi.mock('payload', () => ({ getPayload: async () => ({ findByID: async () => h.order, update: h.update }) }))
+vi.mock('@/lib/subscriptions/service', () => ({ markSubscriptionOrderPaid: h.markPaid }))
 vi.mock('@payload-config', () => ({ default: {} }))
 vi.mock('@/lib/orders/finalizeOrder', () => ({ finalizeOrder: h.finalize }))
 vi.mock('@/lib/orders/alerts', () => ({ alertAdmin: h.alert }))
@@ -42,6 +45,8 @@ beforeEach(() => {
   vi.clearAllMocks()
   h.order = { id: 100, total: 45, paymentMethod: 'authnet_bridge', status: 'pending' }
   h.finalize.mockResolvedValue(true)
+  h.markPaid.mockResolvedValue(true)
+  h.update.mockResolvedValue({})
   vi.spyOn(console, 'error').mockImplementation(() => undefined)
   vi.spyOn(console, 'warn').mockImplementation(() => undefined)
   vi.spyOn(console, 'log').mockImplementation(() => undefined)
@@ -159,5 +164,60 @@ describe('Stripe webhook', () => {
     h.stripeSig = 't=1,v1=bad'
     const res = await stripePOST(new Request('http://x', { method: 'POST', body: '{}' }))
     expect(res.status).toBe(400)
+  })
+})
+
+describe('cross-site webhook - subscriptions', () => {
+  it('a monthly invoice is marked paid through the subscription path (no generic finalize, no cart clearing)', async () => {
+    h.order = { id: 100, total: 45, paymentMethod: 'authnet_bridge', status: 'pending', paymentStatus: 'unpaid', orderType: 'subscription_cycle' }
+    const res = await bridgePOST(bridgeReq(ev()))
+    expect(res.status).toBe(200)
+    expect(h.markPaid).toHaveBeenCalledWith(expect.anything(), 100, { txnId: 'T1' })
+    expect(h.finalize).not.toHaveBeenCalled()
+  })
+
+  it('the first month of a plan uses the normal finalize path', async () => {
+    h.order = { id: 100, total: 45, paymentMethod: 'authnet_bridge', status: 'pending', paymentStatus: 'unpaid', orderType: 'subscription_first' }
+    expect((await bridgePOST(bridgeReq(ev()))).status).toBe(200)
+    expect(h.finalize).toHaveBeenCalled()
+    expect(h.markPaid).not.toHaveBeenCalled()
+  })
+
+  it('a Zelle subscriber paying a monthly invoice by card is accepted (method switched to card first)', async () => {
+    h.order = { id: 100, total: 45, paymentMethod: 'zelle', status: 'pending', paymentStatus: 'unpaid', orderType: 'subscription_cycle' }
+    const res = await bridgePOST(bridgeReq(ev()))
+    expect(res.status).toBe(200)
+    expect(h.update).toHaveBeenCalledWith(expect.objectContaining({ id: 100, data: { paymentMethod: 'authnet_bridge' } }))
+    expect(h.markPaid).toHaveBeenCalled()
+  })
+
+  it('a ONE-TIME Zelle order is still refused (only subscriptions may switch method)', async () => {
+    h.order = { id: 100, total: 45, paymentMethod: 'zelle', status: 'pending', paymentStatus: 'unpaid', orderType: 'one_time' }
+    expect((await bridgePOST(bridgeReq(ev()))).status).toBe(400)
+    expect(h.finalize).not.toHaveBeenCalled()
+  })
+
+  it('an already-paid invoice is acknowledged; a DIFFERENT card transaction raises a duplicate-payment alert', async () => {
+    h.order = { id: 100, total: 45, paymentMethod: 'authnet_bridge', status: 'paid', paymentStatus: 'captured', isFinalized: true, paymentTxnId: 'T1', orderType: 'subscription_cycle' }
+    expect((await bridgePOST(bridgeReq(ev({ txnId: 'T1' })))).status).toBe(200)
+    expect(h.alert).not.toHaveBeenCalled() // same transaction delivered again: just a retry
+    expect((await bridgePOST(bridgeReq(ev({ txnId: 'T2' })))).status).toBe(200)
+    expect(h.alert).toHaveBeenCalledTimes(1)
+    expect(h.markPaid).not.toHaveBeenCalled()
+    expect(h.finalize).not.toHaveBeenCalled()
+  })
+
+  it('remembers the card transaction id on normal orders, and a failure storing it never breaks the payment', async () => {
+    h.order = { id: 100, total: 45, paymentMethod: 'authnet_bridge', status: 'pending', paymentStatus: 'unpaid', orderType: 'one_time' }
+    expect((await bridgePOST(bridgeReq(ev()))).status).toBe(200)
+    expect(h.update).toHaveBeenCalledWith(expect.objectContaining({ data: { paymentTxnId: 'T1' } }))
+    h.update.mockRejectedValue(new Error('db blip'))
+    expect((await bridgePOST(bridgeReq(ev()))).status).toBe(200)
+  })
+
+  it('returns 500 (so WordPress retries) when marking a monthly invoice paid fails', async () => {
+    h.order = { id: 100, total: 45, paymentMethod: 'authnet_bridge', status: 'pending', paymentStatus: 'unpaid', orderType: 'subscription_cycle' }
+    h.markPaid.mockResolvedValueOnce(false)
+    expect((await bridgePOST(bridgeReq(ev()))).status).toBe(500)
   })
 })

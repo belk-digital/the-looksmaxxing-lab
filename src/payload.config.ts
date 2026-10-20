@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { resendAdapter } from '@payloadcms/email-resend'
+import { guardEmailAdapter } from './lib/email/guard'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -35,6 +36,14 @@ import { Trash } from './collections/Trash'
 import { AffiliateSettings } from './globals/AffiliateSettings'
 import { PaymentMethodsSettings } from './globals/PaymentMethodsSettings'
 import { OrderCounters } from './collections/OrderCounters'
+import { Subscriptions } from './collections/Subscriptions'
+import { SubscriptionSettings } from './globals/SubscriptionSettings'
+
+// True only for a local (throwaway test) database. Used to keep schema push and non-SSL
+// connections strictly away from any remote database.
+const IS_LOCAL_DB = /@(localhost|127\.0\.0\.1)(:|\/)/.test(
+  process.env.DATABASE_URI || process.env.DATABASE_URL || '',
+)
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -52,6 +61,7 @@ export default buildConfig({
   globals: [
     AffiliateSettings,
     PaymentMethodsSettings,
+    SubscriptionSettings,
   ],
   collections: [
     Trash,
@@ -66,6 +76,7 @@ export default buildConfig({
     Wishlists,
     Coupons,
     Orders,
+    Subscriptions,
     Reviews,
     ShippingZones,
     BlogPosts,
@@ -125,11 +136,12 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI || process.env.DATABASE_URL || '',
       max: process.env.NODE_ENV === 'production' ? 10 : 10,
-      ssl: {
-        rejectUnauthorized: false,
-      },
+      // Remote (Supabase) needs SSL; the throwaway local test database does not.
+      ssl: IS_LOCAL_DB ? false : { rejectUnauthorized: false },
     },
-    push: false,
+    // Schema push is only ever allowed for throwaway LOCAL test databases (see scripts/subscriptions/).
+    // It is hard-disabled for any remote host, so it can never alter a real database.
+    push: process.env.PAYLOAD_DB_PUSH === 'true' && IS_LOCAL_DB,
   }),
   sharp,
   plugins: [
@@ -180,9 +192,12 @@ export default buildConfig({
       })
     ] : []),
   ],
-  email: resendAdapter({
-    defaultFromAddress: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
-    defaultFromName: 'Longevia Research',
-    apiKey: process.env.RESEND_API_KEY || '',
-  }),
+  // Real emails are only sent by a production server (see src/lib/email/guard.ts).
+  email: guardEmailAdapter(
+    resendAdapter({
+      defaultFromAddress: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
+      defaultFromName: 'Longevia Research',
+      apiKey: process.env.RESEND_API_KEY || '',
+    }),
+  ),
 })

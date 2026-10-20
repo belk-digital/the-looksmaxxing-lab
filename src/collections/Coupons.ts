@@ -5,7 +5,7 @@ import { couponsHook } from '../hooks/coupons'
 export const Coupons: CollectionConfig = {
   slug: 'coupons',
   admin: {
-    defaultColumns: ['code', 'type', 'value', 'freeShipping', 'usageCount'],
+    defaultColumns: ['code', 'type', 'value', 'freeShipping', 'allowOnSubscriptions', 'usageCount'],
     useAsTitle: 'code',
   },
   access: couponsAccess,
@@ -30,6 +30,33 @@ export const Coupons: CollectionConfig = {
       type: 'checkbox',
       label: 'Free Shipping',
       defaultValue: false,
+    },
+    {
+      name: 'allowOnSubscriptions',
+      type: 'checkbox',
+      label: 'Can be used on subscriptions',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description:
+          'OFF (default): customers cannot use this coupon when their cart is a subscription (Subscribe & save). ON: it can also be used on subscriptions. A coupon that is ON still works on normal purchases too.',
+      },
+    },
+    {
+      name: 'subscriptionDiscountScope',
+      type: 'select',
+      label: 'On a subscription, the discount applies to',
+      defaultValue: 'first_month',
+      options: [
+        { label: 'First month only', value: 'first_month' },
+        { label: 'Every monthly payment', value: 'every_month' },
+      ],
+      admin: {
+        position: 'sidebar',
+        condition: (_, siblingData) => !!siblingData?.allowOnSubscriptions,
+        description:
+          'First month only: taken off the first payment, later monthly invoices are at the normal plan price. Every monthly payment: also taken off every later monthly invoice for the whole plan, even after the coupon\'s expiry date (to stop it, switch "Can be used on subscriptions" off or delete the coupon). Not available for Store Credit coupons.',
+      },
     },
     {
       name: 'type',

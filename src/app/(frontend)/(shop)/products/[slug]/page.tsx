@@ -293,6 +293,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     shortDescription: rawProduct.seoDescription || rawProduct.description?.substring(0, 100) || '',
     averageRating: rawProduct.averageRating || 5.0,
     reviewCount: rawProduct.reviewCount || 0,
+    subscriptionEnabled: !!(rawProduct as any).subscriptionEnabled,
 
     bulkBundles:
       rawProduct.bulkBundles?.map((b: any) => ({

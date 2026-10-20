@@ -138,6 +138,8 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
     // 3. Update Coupon Usage & Deduct Store Credit
     await runStep('coupon', async () => {
       if (!order.couponCode) return
+      // A later monthly invoice of a subscription is not a new use of the coupon (and never touches a store-credit balance).
+      if (order.orderType === 'subscription_cycle') return
       const coupons = await payload.find({ collection: 'coupons', where: { code: { equals: order.couponCode } }, overrideAccess: true })
       if (coupons.docs.length === 0) return
       const coupon = coupons.docs[0]
@@ -176,9 +178,13 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
           data: { maxxPoints: currentPoints },
         })
 
-        const carts = await payload.find({ collection: 'carts', where: { user: { equals: userId } } })
-        if (carts.docs.length > 0) {
-          await payload.update({ collection: 'carts', id: carts.docs[0].id, data: { items: [] } })
+        // A monthly subscription order is created by the system, not from the customer's cart, so paying it
+        // must never empty whatever they are currently shopping with.
+        if (order.orderType !== 'subscription_cycle') {
+          const carts = await payload.find({ collection: 'carts', where: { user: { equals: userId } } })
+          if (carts.docs.length > 0) {
+            await payload.update({ collection: 'carts', id: carts.docs[0].id, data: { items: [] } })
+          }
         }
       } else if (paymentIntentMetadata?.cartId) {
         await payload.update({ collection: 'carts', id: paymentIntentMetadata.cartId, data: { items: [] } })
@@ -194,8 +200,9 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
       }
     })
 
-    // 6. Send Email
+    // 6. Send Email (monthly subscription orders get their own invoice/receipt emails instead)
     await runStep('email', async () => {
+      if (order.orderType === 'subscription_cycle') return
       let customerEmail = order.guestEmail
       if (!customerEmail && order.owner) {
         const userDoc: any = typeof order.owner === 'object' ? order.owner : await payload.findByID({ collection: 'users', id: order.owner })
@@ -208,7 +215,10 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
         await payload.sendEmail({
           to: customerEmail,
           bcc: 'support@longeviaresearch.com',
-          subject: `Order Confirmation #${order.orderNumber || order.id}`,
+          subject:
+            order.orderType === 'subscription_first'
+              ? `Subscription Order Confirmation #${order.orderNumber || order.id} - Month 1 of ${order.cyclesTotal}`
+              : `Order Confirmation #${order.orderNumber || order.id}`,
           html: invoiceHtml,
         })
       }

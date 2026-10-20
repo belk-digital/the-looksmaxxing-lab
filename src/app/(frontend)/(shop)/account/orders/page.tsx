@@ -36,7 +36,12 @@ export default async function OrdersPage() {
     date: new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
     status: order.status,
     total: order.total,
-    itemCount: order.items?.reduce((acc: number, item: any) => acc + (item.quantity || 1), 0) || 0
+    itemCount: order.items?.reduce((acc: number, item: any) => acc + (item.quantity || 1), 0) || 0,
+    // Clear label so subscription months are never mistaken for one-time orders
+    typeLabel:
+      (order as any).orderType && (order as any).orderType !== 'one_time'
+        ? `Subscription · Month ${(order as any).cycleNumber || 1} of ${(order as any).cyclesTotal || ''}`.trim()
+        : null,
   }))
 
   return <OrdersClient orders={orderItems} />

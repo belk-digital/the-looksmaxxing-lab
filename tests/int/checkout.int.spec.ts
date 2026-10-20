@@ -14,7 +14,16 @@ const h = vi.hoisted(() => ({
 vi.mock('stripe', () => ({ default: class { paymentIntents = h.stripe } }))
 vi.mock('payload', () => ({ getPayload: async () => h.payload }))
 vi.mock('@payload-config', () => ({ default: {} }))
-vi.mock('next/headers', () => ({ cookies: async () => ({ get: () => undefined, set: h.cookieSet }), headers: async () => new Headers() }))
+vi.mock('next/headers', () => ({
+  cookies: async () => ({
+    get: (name: string) => {
+      const set = h.cookieSet.mock.calls.find((c: any[]) => c[0] === name)
+      return set ? { value: set[1] } : undefined
+    },
+    set: h.cookieSet,
+  }),
+  headers: async () => new Headers(),
+}))
 vi.mock('next-auth/next', () => ({ getServerSession: async () => null }))
 vi.mock('@/lib/auth', () => ({ authOptions: {} }))
 vi.mock('@/app/(frontend)/(shop)/actions', () => ({
@@ -286,5 +295,14 @@ describe('Authorize.net bridge', () => {
     const resp = await POST(new Request('http://x/api/webhooks/cross-site-payment', { method: 'POST', body }))
     expect(resp.status).toBe(200)
     expect(h.finalize).toHaveBeenCalledWith(created.orderId, expect.objectContaining({ source: 'authnet_bridge', txnId: 'TXN1' }))
+  })
+})
+
+describe('bridge hand-off access control', () => {
+  it('refuses to hand off an order the caller did not place (no cookie, not the owner)', async () => {
+    h.orders['300'] = { id: 300, orderNumber: '1300', total: 45, paymentMethod: 'authnet_bridge', paymentStatus: 'unpaid', guestEmail: 'victim@example.com', customerFirstName: 'Vic', customerLastName: 'Tim' }
+    const res: any = await createCrossSitePaymentRedirect('300')
+    expect(res.error).toBeTruthy()
+    expect(res.fields).toBeUndefined() // nothing containing the customer's name/email is returned
   })
 })

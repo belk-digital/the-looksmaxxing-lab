@@ -45,6 +45,23 @@ export const afterOrderChange: CollectionAfterChangeHook = async ({ doc, previou
     }
   }
 
+  // Subscription bookkeeping: a paid month advances the subscription; a cancelled invoice is cleared from it.
+  // Uses `req` so it runs inside the same database transaction as the order save.
+  const subscriptionId = doc.subscription && typeof doc.subscription === 'object' ? doc.subscription.id : doc.subscription
+  if (subscriptionId && doc.orderType && doc.orderType !== 'one_time') {
+    const becameCaptured = doc.paymentStatus === 'captured' && previousDoc?.paymentStatus !== 'captured'
+    const becameCancelled = doc.status === 'cancelled' && previousDoc?.status !== 'cancelled'
+    if (becameCaptured || becameCancelled) {
+      try {
+        const service = await import('@/lib/subscriptions/service')
+        if (becameCaptured) await service.onSubscriptionOrderPaid(req.payload, doc, req)
+        else await service.onSubscriptionOrderCancelled(req.payload, doc, req)
+      } catch (err) {
+        req.payload.logger.error({ err }, `Subscription update failed for order ${doc.id}`)
+      }
+    }
+  }
+
   // Handle custom email notes from admin
   if (req.context.queuedCustomerNotes && Array.isArray(req.context.queuedCustomerNotes)) {
     const customerEmail = doc.owner?.email || doc.guestEmail
