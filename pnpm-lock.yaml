@@ -156,6 +156,9 @@ importers:
       '@types/node':
         specifier: 22.19.9
         version: 22.19.9
+      '@types/pg':
+        specifier: 8.20.0
+        version: 8.20.0
       '@types/react':
         specifier: 19.2.14
         version: 19.2.14
@@ -189,6 +192,9 @@ importers:
       lint-staged:
         specifier: ^16.4.0
         version: 16.4.0
+      pg:
+        specifier: 8.20.0
+        version: 8.20.0
       postcss:
         specifier: ^8.5.15
         version: 8.5.16

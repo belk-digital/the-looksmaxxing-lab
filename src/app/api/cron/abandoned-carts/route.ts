@@ -2,18 +2,15 @@ import { NextResponse } from 'next/server'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { Resend } from 'resend'
+import { rejectUnauthorizedCron } from '@/lib/cron/auth'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-// This secret ensures only Vercel (or authorized services) can run the cron
-const CRON_SECRET = process.env.CRON_SECRET
 
 export async function GET(req: Request) {
   try {
-    const authHeader = req.headers.get('authorization')
-    if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const rejected = rejectUnauthorizedCron(req)
+    if (rejected) return rejected
 
     const payload = await getPayload({ config: configPromise })
     

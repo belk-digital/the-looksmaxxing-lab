@@ -79,6 +79,7 @@ export interface Config {
     wishlists: Wishlist;
     coupons: Coupon;
     orders: Order;
+    subscriptions: Subscription;
     reviews: Review;
     shippingzones: Shippingzone;
     'blog-posts': BlogPost;
@@ -112,6 +113,7 @@ export interface Config {
     wishlists: WishlistsSelect<false> | WishlistsSelect<true>;
     coupons: CouponsSelect<false> | CouponsSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
+    subscriptions: SubscriptionsSelect<false> | SubscriptionsSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     shippingzones: ShippingzonesSelect<false> | ShippingzonesSelect<true>;
     'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
@@ -138,10 +140,12 @@ export interface Config {
   globals: {
     'affiliate-settings': AffiliateSetting;
     'payment-methods-settings': PaymentMethodsSetting;
+    'subscription-settings': SubscriptionSetting;
   };
   globalsSelect: {
     'affiliate-settings': AffiliateSettingsSelect<false> | AffiliateSettingsSelect<true>;
     'payment-methods-settings': PaymentMethodsSettingsSelect<false> | PaymentMethodsSettingsSelect<true>;
+    'subscription-settings': SubscriptionSettingsSelect<false> | SubscriptionSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -390,6 +394,10 @@ export interface Product {
   };
   categories?: (number | Category)[] | null;
   hasVariants?: boolean | null;
+  /**
+   * Offer "Subscribe & save" (3 / 6 / 12 month plans) on this product. Plans must also be enabled in Subscription Settings.
+   */
+  subscriptionEnabled?: boolean | null;
   variants?:
     | {
         sku: string;
@@ -501,6 +509,10 @@ export interface Cart {
         quantity: number;
         addedAt: string;
         priceSnapshot: number;
+        /**
+         * Set when this line is a subscription plan (3 / 6 / 12 months).
+         */
+        planMonths?: number | null;
         id?: string | null;
       }[]
     | null;
@@ -541,6 +553,14 @@ export interface Coupon {
   code: string;
   usageCount?: number | null;
   freeShipping?: boolean | null;
+  /**
+   * OFF (default): customers cannot use this coupon when their cart is a subscription (Subscribe & save). ON: it can also be used on subscriptions. A coupon that is ON still works on normal purchases too.
+   */
+  allowOnSubscriptions?: boolean | null;
+  /**
+   * First month only: taken off the first payment, later monthly invoices are at the normal plan price. Every monthly payment: also taken off every later monthly invoice for the whole plan, even after the coupon's expiry date (to stop it, switch "Can be used on subscriptions" off or delete the coupon). Not available for Store Credit coupons.
+   */
+  subscriptionDiscountScope?: ('first_month' | 'every_month') | null;
   type: 'percentage' | 'fixed_amount' | 'free_shipping' | 'buy_one_get_one' | 'store_credit';
   /**
    * Minimum order amount (in cents) required to apply this coupon.
@@ -619,6 +639,10 @@ export interface Order {
    * Auto‑generated order identifier (e.g. 1000, 1001).
    */
   orderNumber?: string | null;
+  /**
+   * One-time order, or one month of a subscription. Set automatically.
+   */
+  orderType: 'one_time' | 'subscription_first' | 'subscription_cycle';
   /**
    * User who placed the order (null for guests).
    */
@@ -728,6 +752,36 @@ export interface Order {
   isFinalized?: boolean | null;
   createdAt: string;
   updatedAt: string;
+  subscription?: (number | null) | Subscription;
+  /**
+   * Which month of the plan this order is (1 = first).
+   */
+  cycleNumber?: number | null;
+  /**
+   * Months in the plan.
+   */
+  cyclesTotal?: number | null;
+  subscriptionDiscountPercent?: number | null;
+  /**
+   * Payment due date of this monthly invoice.
+   */
+  invoiceDueDate?: string | null;
+  /**
+   * 0 none, 1 due-day reminder sent, 2 final notice sent.
+   */
+  invoiceReminderStage?: number | null;
+  /**
+   * Secret that lets the customer open the pay link for this invoice.
+   */
+  invoiceToken?: string | null;
+  /**
+   * When payment was confirmed.
+   */
+  paidAt?: string | null;
+  /**
+   * Card transaction id from the payment gateway.
+   */
+  paymentTxnId?: string | null;
   /**
    * Keep a running history of internal notes or send messages directly to the customer.
    */
@@ -767,6 +821,209 @@ export interface ProcessingFee {
    * If true, customers must actively check a box to apply this fee. If false, it is mandatory for all orders.
    */
   isOptional?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Monthly subscription plans. Each month creates a normal order (type "Subscription"). Set Status to Paused or Cancelled to stop billing - any unpaid invoice is cancelled automatically.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscriptions".
+ */
+export interface Subscription {
+  id: number;
+  /**
+   * Subscription reference (SUB-<id>).
+   */
+  reference?: string | null;
+  owner: number | User;
+  /**
+   * Pending first payment = waiting for the first month to be paid. Active = billing normally. Paused = no invoices (setting this cancels any unpaid invoice). Lapsed = an invoice went unpaid; the customer can reactivate. Completed = all months paid. Cancelled = stopped by staff (unpaid invoice is cancelled; refunds are manual).
+   */
+  status: 'pending_payment' | 'active' | 'paused' | 'lapsed' | 'completed' | 'cancelled';
+  /**
+   * Plan length in months (= number of monthly orders).
+   */
+  planMonths: number;
+  /**
+   * Plan discount locked in when the customer subscribed.
+   */
+  discountPercent: number;
+  /**
+   * Products shipped every month (price follows the live store price, minus the plan discount).
+   */
+  items: {
+    product: number | Product;
+    variantSku?: string | null;
+    variantTitle?: string | null;
+    quantity: number;
+    id?: string | null;
+  }[];
+  /**
+   * How future monthly invoices are paid. The customer can change this.
+   */
+  paymentMethod: 'authnet_bridge' | 'zelle';
+  /**
+   * A coupon that is taken off EVERY monthly invoice of this subscription (set at checkout when the customer used an "Every monthly payment" coupon). Clear it to stop the discount for future invoices.
+   */
+  recurringCouponCode?: string | null;
+  shippingMethod?: string | null;
+  shippingAddress?: {
+    line1?: string | null;
+    line2?: string | null;
+    city?: string | null;
+    state?: string | null;
+    postalCode?: string | null;
+    country?: string | null;
+  };
+  customerFirstName?: string | null;
+  customerLastName?: string | null;
+  customerPhone?: string | null;
+  /**
+   * Months paid so far (recalculated from paid orders).
+   */
+  cyclesCompleted?: number | null;
+  /**
+   * When the first month was paid.
+   */
+  startedAt?: string | null;
+  /**
+   * When the next month is due / ships.
+   */
+  nextDueDate?: string | null;
+  /**
+   * When the next invoice is created and emailed.
+   */
+  nextInvoiceDate?: string | null;
+  /**
+   * The current unpaid monthly order, if any.
+   */
+  openInvoice?: (number | null) | Order;
+  firstOrder?: (number | null) | Order;
+  pausedAt?: string | null;
+  lapsedAt?: string | null;
+  lastEarlyOrderAt?: string | null;
+  /**
+   * Earns commission on every paid month.
+   */
+  affiliate?: (number | null) | Affiliate;
+  affiliateClickId?: string | null;
+  /**
+   * Internal note (not shown to the customer).
+   */
+  adminNote?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "affiliates".
+ */
+export interface Affiliate {
+  id: number;
+  user: number | User;
+  status?: ('pending' | 'approved' | 'rejected' | 'suspended') | null;
+  applicationDate?: string | null;
+  approvedAt?: string | null;
+  approvedBy?: (number | null) | User;
+  suspendedAt?: string | null;
+  suspensionReason?: string | null;
+  displayName?: string | null;
+  websiteUrl?: string | null;
+  socialLinks?:
+    | {
+        platform?: ('instagram' | 'youtube' | 'tiktok' | 'twitter' | 'reddit') | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * For Multi-Tier / MLM. The affiliate who recruited this affiliate.
+   */
+  parentAffiliate?: (number | null) | Affiliate;
+  referralSlug?: string | null;
+  couponCode?: string | null;
+  coupon?: (number | null) | Coupon;
+  cookieDurationDays?: number | null;
+  /**
+   * Leave blank to use Global Default. Percentage of eligible order value or fixed amount in cents.
+   */
+  commissionRate?: number | null;
+  /**
+   * Leave blank to use Global Default.
+   */
+  commissionType?: ('percentage' | 'fixed_amount') | null;
+  /**
+   * % discount the customer gets using their coupon
+   */
+  customerDiscount?: number | null;
+  /**
+   * Leave blank to use Global Default. Days before commission is approved.
+   */
+  pendingPeriodDays?: number | null;
+  /**
+   * Leave blank to use Global Default.
+   */
+  commissionOn?: ('subtotal_after_coupon' | 'subtotal_before_coupon') | null;
+  tier?: ('standard' | 'silver' | 'gold' | 'vip') | null;
+  totalClicks?: number | null;
+  uniqueClicks?: number | null;
+  totalConversions?: number | null;
+  /**
+   * In cents
+   */
+  totalRevenue?: number | null;
+  /**
+   * In cents
+   */
+  totalCommissionEarned?: number | null;
+  /**
+   * In cents
+   */
+  totalCommissionPending?: number | null;
+  /**
+   * In cents
+   */
+  totalCommissionApproved?: number | null;
+  /**
+   * In cents (pending/approved payout requests)
+   */
+  totalCommissionRequested?: number | null;
+  /**
+   * In cents
+   */
+  totalCommissionPaid?: number | null;
+  /**
+   * Leave blank to use Global Default. Minimum payout threshold in cents (e.g. 5000 = $50.00).
+   */
+  minimumPayoutThreshold?: number | null;
+  payoutCurrency?: ('USD' | 'BTC' | 'ETH' | 'USDT_ERC20' | 'USDT_TRC20' | 'STORE_CREDIT') | null;
+  payoutMethods?:
+    | {
+        type?:
+          | (
+              | 'paypal'
+              | 'wise'
+              | 'bank_wire'
+              | 'crypto_btc'
+              | 'crypto_eth'
+              | 'crypto_usdt_erc20'
+              | 'crypto_usdt_trc20'
+              | 'store_credit'
+            )
+          | null;
+        isPrimary?: boolean | null;
+        paypalEmail?: string | null;
+        walletAddress?: string | null;
+        walletNetwork?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  flaggedForReview?: boolean | null;
+  fraudScore?: number | null;
+  fraudNotes?: string | null;
+  adminNotes?: string | null;
+  agreedToTermsAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1036,118 +1293,6 @@ export interface AffiliateApplication {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "affiliates".
- */
-export interface Affiliate {
-  id: number;
-  user: number | User;
-  status?: ('pending' | 'approved' | 'rejected' | 'suspended') | null;
-  applicationDate?: string | null;
-  approvedAt?: string | null;
-  approvedBy?: (number | null) | User;
-  suspendedAt?: string | null;
-  suspensionReason?: string | null;
-  displayName?: string | null;
-  websiteUrl?: string | null;
-  socialLinks?:
-    | {
-        platform?: ('instagram' | 'youtube' | 'tiktok' | 'twitter' | 'reddit') | null;
-        url?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * For Multi-Tier / MLM. The affiliate who recruited this affiliate.
-   */
-  parentAffiliate?: (number | null) | Affiliate;
-  referralSlug?: string | null;
-  couponCode?: string | null;
-  coupon?: (number | null) | Coupon;
-  cookieDurationDays?: number | null;
-  /**
-   * Leave blank to use Global Default. Percentage of eligible order value or fixed amount in cents.
-   */
-  commissionRate?: number | null;
-  /**
-   * Leave blank to use Global Default.
-   */
-  commissionType?: ('percentage' | 'fixed_amount') | null;
-  /**
-   * % discount the customer gets using their coupon
-   */
-  customerDiscount?: number | null;
-  /**
-   * Leave blank to use Global Default. Days before commission is approved.
-   */
-  pendingPeriodDays?: number | null;
-  /**
-   * Leave blank to use Global Default.
-   */
-  commissionOn?: ('subtotal_after_coupon' | 'subtotal_before_coupon') | null;
-  tier?: ('standard' | 'silver' | 'gold' | 'vip') | null;
-  totalClicks?: number | null;
-  uniqueClicks?: number | null;
-  totalConversions?: number | null;
-  /**
-   * In cents
-   */
-  totalRevenue?: number | null;
-  /**
-   * In cents
-   */
-  totalCommissionEarned?: number | null;
-  /**
-   * In cents
-   */
-  totalCommissionPending?: number | null;
-  /**
-   * In cents
-   */
-  totalCommissionApproved?: number | null;
-  /**
-   * In cents (pending/approved payout requests)
-   */
-  totalCommissionRequested?: number | null;
-  /**
-   * In cents
-   */
-  totalCommissionPaid?: number | null;
-  /**
-   * Leave blank to use Global Default. Minimum payout threshold in cents (e.g. 5000 = $50.00).
-   */
-  minimumPayoutThreshold?: number | null;
-  payoutCurrency?: ('USD' | 'BTC' | 'ETH' | 'USDT_ERC20' | 'USDT_TRC20' | 'STORE_CREDIT') | null;
-  payoutMethods?:
-    | {
-        type?:
-          | (
-              | 'paypal'
-              | 'wise'
-              | 'bank_wire'
-              | 'crypto_btc'
-              | 'crypto_eth'
-              | 'crypto_usdt_erc20'
-              | 'crypto_usdt_trc20'
-              | 'store_credit'
-            )
-          | null;
-        isPrimary?: boolean | null;
-        paypalEmail?: string | null;
-        walletAddress?: string | null;
-        walletNetwork?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  flaggedForReview?: boolean | null;
-  fraudScore?: number | null;
-  fraudNotes?: string | null;
-  adminNotes?: string | null;
-  agreedToTermsAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "affiliate-clicks".
  */
 export interface AffiliateClick {
@@ -1354,6 +1499,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'orders';
         value: number | Order;
+      } | null)
+    | ({
+        relationTo: 'subscriptions';
+        value: number | Subscription;
       } | null)
     | ({
         relationTo: 'reviews';
@@ -1633,6 +1782,7 @@ export interface ProductsSelect<T extends boolean = true> {
       };
   categories?: T;
   hasVariants?: T;
+  subscriptionEnabled?: T;
   variants?:
     | T
     | {
@@ -1708,6 +1858,7 @@ export interface CartsSelect<T extends boolean = true> {
         quantity?: T;
         addedAt?: T;
         priceSnapshot?: T;
+        planMonths?: T;
         id?: T;
       };
   abandonedEmailSentAt?: T;
@@ -1742,6 +1893,8 @@ export interface CouponsSelect<T extends boolean = true> {
   code?: T;
   usageCount?: T;
   freeShipping?: T;
+  allowOnSubscriptions?: T;
+  subscriptionDiscountScope?: T;
   type?: T;
   minSpend?: T;
   usageLimit?: T;
@@ -1781,6 +1934,7 @@ export interface CouponsSelect<T extends boolean = true> {
  */
 export interface OrdersSelect<T extends boolean = true> {
   orderNumber?: T;
+  orderType?: T;
   owner?: T;
   customerFirstName?: T;
   customerLastName?: T;
@@ -1850,6 +2004,15 @@ export interface OrdersSelect<T extends boolean = true> {
   isFinalized?: T;
   createdAt?: T;
   updatedAt?: T;
+  subscription?: T;
+  cycleNumber?: T;
+  cyclesTotal?: T;
+  subscriptionDiscountPercent?: T;
+  invoiceDueDate?: T;
+  invoiceReminderStage?: T;
+  invoiceToken?: T;
+  paidAt?: T;
+  paymentTxnId?: T;
   notes?:
     | T
     | {
@@ -1859,6 +2022,56 @@ export interface OrdersSelect<T extends boolean = true> {
         isEmailed?: T;
         id?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscriptions_select".
+ */
+export interface SubscriptionsSelect<T extends boolean = true> {
+  reference?: T;
+  owner?: T;
+  status?: T;
+  planMonths?: T;
+  discountPercent?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        variantSku?: T;
+        variantTitle?: T;
+        quantity?: T;
+        id?: T;
+      };
+  paymentMethod?: T;
+  recurringCouponCode?: T;
+  shippingMethod?: T;
+  shippingAddress?:
+    | T
+    | {
+        line1?: T;
+        line2?: T;
+        city?: T;
+        state?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  customerFirstName?: T;
+  customerLastName?: T;
+  customerPhone?: T;
+  cyclesCompleted?: T;
+  startedAt?: T;
+  nextDueDate?: T;
+  nextInvoiceDate?: T;
+  openInvoice?: T;
+  firstOrder?: T;
+  pausedAt?: T;
+  lapsedAt?: T;
+  lastEarlyOrderAt?: T;
+  affiliate?: T;
+  affiliateClickId?: T;
+  adminNote?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2314,6 +2527,72 @@ export interface PaymentMethodsSetting {
   createdAt?: string | null;
 }
 /**
+ * Monthly subscription plans and billing rules. Existing subscriptions keep their locked-in discount; changes here apply to new subscriptions (timing rules apply to all).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscription-settings".
+ */
+export interface SubscriptionSetting {
+  id: number;
+  /**
+   * Master switch for NEW subscriptions. Turn this on to show "Subscribe & save" on eligible products. Existing subscriptions keep billing when this is off.
+   */
+  enabled?: boolean | null;
+  /**
+   * The lengths customers can choose. Discount applies to every monthly order of the plan.
+   */
+  plans?:
+    | {
+        /**
+         * Number of monthly orders in the plan (e.g. 3, 6, 12).
+         */
+        months: number;
+        /**
+         * Shown to customers, e.g. "6 Months".
+         */
+        label: string;
+        /**
+         * Percent off the live price, every month.
+         */
+        discountPercent: number;
+        /**
+         * Optional highlight, e.g. "Best value".
+         */
+        badge?: string | null;
+        isActive?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  allowCard?: boolean | null;
+  allowZelle?: boolean | null;
+  /**
+   * Create and email each monthly invoice this many days before it is due.
+   */
+  invoiceLeadDays?: number | null;
+  /**
+   * Send one final notice this many days after the due date if still unpaid.
+   */
+  finalNoticeAfterDays?: number | null;
+  /**
+   * Unpaid this many days after the due date: the invoice is cancelled and the subscription is marked Lapsed. The customer can still pay to reactivate.
+   */
+  lapseAfterDays?: number | null;
+  /**
+   * A subscription whose FIRST payment (e.g. Zelle) never arrives is cancelled after this many days.
+   */
+  firstPaymentExpiryDays?: number | null;
+  /**
+   * Minimum days between "Order next month now" requests. 0 = no limit.
+   */
+  minDaysBetweenEarlyOrders?: number | null;
+  /**
+   * The agreement shown with the required checkbox at checkout.
+   */
+  termsText?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "affiliate-settings_select".
  */
@@ -2342,6 +2621,34 @@ export interface PaymentMethodsSettingsSelect<T extends boolean = true> {
         isActive?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscription-settings_select".
+ */
+export interface SubscriptionSettingsSelect<T extends boolean = true> {
+  enabled?: T;
+  plans?:
+    | T
+    | {
+        months?: T;
+        label?: T;
+        discountPercent?: T;
+        badge?: T;
+        isActive?: T;
+        id?: T;
+      };
+  allowCard?: T;
+  allowZelle?: T;
+  invoiceLeadDays?: T;
+  finalNoticeAfterDays?: T;
+  lapseAfterDays?: T;
+  firstPaymentExpiryDays?: T;
+  minDaysBetweenEarlyOrders?: T;
+  termsText?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

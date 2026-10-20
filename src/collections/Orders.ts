@@ -7,7 +7,7 @@ export const Orders: CollectionConfig = {
   slug: 'orders',
   admin: {
     useAsTitle: 'orderNumber',
-    defaultColumns: ['orderNumber', 'status', 'paymentStatus', 'fulfillmentStatus', 'owner', 'orderTime'],
+    defaultColumns: ['orderNumber', 'orderType', 'status', 'paymentStatus', 'fulfillmentStatus', 'owner', 'orderTime'],
     description: 'Customer orders – generated server‑side only.',
   },
   access: {
@@ -57,6 +57,11 @@ export const Orders: CollectionConfig = {
           }
         }
 
+        // Remember when an order was actually paid (used by subscriptions to schedule the next month)
+        if (data.paymentStatus === 'captured' && !data.paidAt && originalDoc?.paymentStatus !== 'captured') {
+          data.paidAt = new Date().toISOString()
+        }
+
         // Handle notes processing
         if (data.notes && Array.isArray(data.notes)) {
           const queuedCustomerNotes: string[] = []
@@ -96,6 +101,23 @@ export const Orders: CollectionConfig = {
       name: 'orderNumber',
       type: 'text',
       admin: { readOnly: true, description: 'Auto‑generated order identifier (e.g. 1000, 1001).' },
+    },
+    {
+      name: 'orderType',
+      type: 'select',
+      required: true,
+      defaultValue: 'one_time',
+      index: true,
+      options: [
+        { label: 'One-time order', value: 'one_time' },
+        { label: 'Subscription - first month', value: 'subscription_first' },
+        { label: 'Subscription - monthly order', value: 'subscription_cycle' },
+      ],
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'One-time order, or one month of a subscription. Set automatically.',
+      },
     },
     {
       name: 'owner',
@@ -293,6 +315,22 @@ export const Orders: CollectionConfig = {
         },
       },
     },
+    {
+      type: 'collapsible',
+      label: 'Subscription details',
+      admin: { initCollapsed: true, description: 'Filled in automatically for subscription orders.' },
+      fields: [
+        { name: 'subscription', type: 'relationship', relationTo: 'subscriptions', admin: { readOnly: true } },
+        { name: 'cycleNumber', type: 'number', admin: { readOnly: true, description: 'Which month of the plan this order is (1 = first).' } },
+        { name: 'cyclesTotal', type: 'number', admin: { readOnly: true, description: 'Months in the plan.' } },
+        { name: 'subscriptionDiscountPercent', type: 'number', admin: { readOnly: true } },
+        { name: 'invoiceDueDate', type: 'date', admin: { readOnly: true, description: 'Payment due date of this monthly invoice.' } },
+        { name: 'invoiceReminderStage', type: 'number', defaultValue: 0, admin: { readOnly: true, description: '0 none, 1 due-day reminder sent, 2 final notice sent.' } },
+        { name: 'invoiceToken', type: 'text', admin: { readOnly: true, description: 'Secret that lets the customer open the pay link for this invoice.' } },
+      ],
+    },
+    { name: 'paidAt', type: 'date', admin: { position: 'sidebar', readOnly: true, description: 'When payment was confirmed.' } },
+    { name: 'paymentTxnId', type: 'text', admin: { position: 'sidebar', readOnly: true, description: 'Card transaction id from the payment gateway.' } },
     {
       name: 'notes',
       type: 'array',

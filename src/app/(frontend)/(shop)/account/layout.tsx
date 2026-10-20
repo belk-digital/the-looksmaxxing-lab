@@ -8,6 +8,7 @@ const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', 
 import { getPayloadUser } from '@/lib/auth/getPayloadUser'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { getSubscriptionSettings } from '@/lib/subscriptions/settings'
 
 export const metadata = {
   title: 'My Account | Longevia Research',
@@ -20,6 +21,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
   const maxxPoints = user?.maxxPoints || 0
 
   let affiliateStatus: 'none' | 'pending' | 'approved' | 'rejected' | 'suspended' = 'none'
+  let showSubscriptions = false
   if (user) {
     const payload = await getPayload({ config })
     const { docs: affiliates } = await payload.find({
@@ -30,6 +32,15 @@ export default async function AccountLayout({ children }: { children: React.Reac
     })
     if (affiliates.length > 0) {
       affiliateStatus = affiliates[0].status || 'pending'
+    }
+
+    // Show the Subscriptions link when plans are on, or the customer already has one.
+    showSubscriptions = (await getSubscriptionSettings(payload)).enabled
+    if (!showSubscriptions) {
+      const owned = await payload
+        .count({ collection: 'subscriptions' as any, where: { owner: { equals: user.id } }, overrideAccess: true })
+        .catch(() => ({ totalDocs: 0 }))
+      showSubscriptions = owned.totalDocs > 0
     }
   }
 
@@ -42,7 +53,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
         
         <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-12 lg:gap-20">
           <div className="h-full relative">
-            <AccountSidebar userName={userName} maxxPoints={maxxPoints} affiliateStatus={affiliateStatus} />
+            <AccountSidebar userName={userName} maxxPoints={maxxPoints} affiliateStatus={affiliateStatus} showSubscriptions={showSubscriptions} />
           </div>
           <div className="w-full">
             {children}

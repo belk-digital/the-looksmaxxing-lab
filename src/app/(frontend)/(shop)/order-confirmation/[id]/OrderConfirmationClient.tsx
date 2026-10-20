@@ -41,6 +41,7 @@ type OrderData = {
   couponCode?: string
   paymentMethod: string
   paymentStatus?: string
+  subscription?: { month: number; months: number; id: string } | null
 }
 
 export function OrderConfirmationClient({ order }: { order: OrderData }) {
@@ -90,6 +91,25 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
             </p>
           </FadeUp>
         </div>
+
+        {order.subscription && (
+          <FadeUp delay={0.12} className="w-full max-w-2xl mb-8 print:hidden">
+            <div className="bg-ink text-white p-6 rounded-2xl flex flex-col gap-2 text-center shadow-sm" data-testid="subscription-confirmation">
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/60">Subscription &middot; Month {order.subscription.month} of {order.subscription.months}</span>
+              <h2 className="text-lg font-bold">Your subscription has started</h2>
+              <p className="text-sm text-white/80">
+                {order.paymentStatus === 'captured'
+                  ? 'This is your first month. Each following month we email an invoice about a week before it is due, and your order ships once it is paid.'
+                  : 'Your subscription begins as soon as this first payment is confirmed. After that, each month we email an invoice about a week before it is due.'}
+              </p>
+              {order.subscription.id && (
+                <Link href={`/account/subscriptions/${order.subscription.id}`} className="mx-auto mt-2 inline-block bg-white text-ink rounded-full px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest">
+                  Manage my subscription
+                </Link>
+              )}
+            </div>
+          </FadeUp>
+        )}
 
         {order.paymentMethod === 'authnet_bridge' && order.paymentStatus !== 'captured' && (
           <FadeUp delay={0.15} className="w-full max-w-2xl mb-10 print:hidden">

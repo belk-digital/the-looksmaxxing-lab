@@ -4,7 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Space_Grotesk } from 'next/font/google'
-import { LayoutDashboard, Package, MapPin, Heart, Settings, LogOut, Wallet, BarChart3, Users } from 'lucide-react'
+import { LayoutDashboard, Package, MapPin, Heart, Settings, LogOut, Wallet, BarChart3, Users, Repeat } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 import { signOut } from 'next-auth/react'
@@ -16,6 +16,7 @@ const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', 
 const NAV_ITEMS = [
   { name: 'Overview', href: '/account', icon: LayoutDashboard },
   { name: 'Orders', href: '/account/orders', icon: Package },
+  { name: 'Subscriptions', href: '/account/subscriptions', icon: Repeat },
   { name: 'Addresses', href: '/account/addresses', icon: MapPin },
   { name: 'Wishlist', href: '/account/wishlist', icon: Heart },
   { name: 'Settings', href: '/account/settings', icon: Settings },
@@ -24,10 +25,13 @@ const NAV_ITEMS = [
 export function AccountSidebar({ 
   userName = 'User', 
   maxxPoints = 0,
-  affiliateStatus = 'none' 
+  affiliateStatus = 'none',
+  showSubscriptions = false,
 }: { 
   userName?: string
   maxxPoints?: number
+  /** Show the Subscriptions link (feature on, or the customer already has a subscription). */
+  showSubscriptions?: boolean
   affiliateStatus?: 'none' | 'pending' | 'approved' | 'rejected' | 'suspended'
 }) {
   const pathname = usePathname() || ''
@@ -67,7 +71,7 @@ export function AccountSidebar({
       
       {/* Navigation */}
       <nav className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-col gap-2 pb-4 lg:pb-0">
-        {NAV_ITEMS.map((item) => {
+        {NAV_ITEMS.filter((item) => showSubscriptions || item.href !== '/account/subscriptions').map((item) => {
           // Strict exact match for root /account
           const isActive = item.href === '/account' 
             ? pathname.endsWith('/account') 

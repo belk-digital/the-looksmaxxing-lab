@@ -1,6 +1,12 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
+import { PlanLineBadge } from '@/components/subscriptions/PlanLineBadge'
+import { getSubscriptionPlanOptions } from '@/app/(frontend)/actions/subscriptions'
+import { DEFAULT_TERMS_TEXT } from '@/lib/subscriptions/settings'
+import { InfoTip } from '@/components/ui/InfoTip'
+import { HELP } from '@/lib/subscriptions/helpText'
+import { couponScopeNote, SUBSCRIPTION_COUPON_MESSAGE, type SubscriptionCouponScope } from '@/lib/subscriptions/couponRules'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -28,6 +34,19 @@ export function CheckoutClient() {
   const { items, couponCode: storedCouponCode, setCoupon } = useCartStore()
   const { data: session } = useSession()
   const user = session?.user
+
+  // Subscription plan checkout: a cart is either all one-time items or all plan items (enforced by the cart store).
+  const planMonths = items.find((i) => i.planMonths)?.planMonths || null
+  const isPlan = !!planMonths
+  const [acceptTerms, setAcceptTerms] = useState(false)
+  const [termsError, setTermsError] = useState(false)
+  const loginCardRef = useRef<HTMLDivElement>(null)
+  const termsCardRef = useRef<HTMLDivElement>(null)
+  const [subInfo, setSubInfo] = useState<{ allowedMethods: string[]; termsText: string } | null>(null)
+  useEffect(() => {
+    if (!isPlan) return
+    getSubscriptionPlanOptions().then((res) => setSubInfo({ allowedMethods: res.allowedMethods, termsText: res.termsText })).catch(() => undefined)
+  }, [isPlan])
   
   // Mobile summary toggle
   const [mobileSummaryOpen, setMobileSummaryOpen] = useState(true)
@@ -133,6 +152,9 @@ export function CheckoutClient() {
 
   // Payment Method State (enabled/ordered/labeled from Payload CMS)
   const [availablePaymentMethods, setAvailablePaymentMethods] = useState<any[]>([])
+  const paymentOptions = isPlan
+    ? availablePaymentMethods.filter((m: any) => (subInfo?.allowedMethods ?? ['authnet_bridge', 'zelle']).includes(m.methodId))
+    : availablePaymentMethods
 
   // Fetch data
   useEffect(() => {
@@ -160,7 +182,7 @@ export function CheckoutClient() {
 
   // Coupon State
   const [couponCode, setCouponCode] = useState('')
-  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; freeShipping: boolean; description: string } | null>(null)
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; freeShipping: boolean; description: string; subscriptionScope?: SubscriptionCouponScope | null } | null>(null)
   const [isVerifyingCoupon, setIsVerifyingCoupon] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState<string>('')
 
@@ -198,15 +220,15 @@ export function CheckoutClient() {
   // Default to the first active CMS-configured payment method, and correct away from
   // one that's since been disabled/removed (e.g. an admin toggled it off mid-session).
   useEffect(() => {
-    if (availablePaymentMethods.length > 0) {
-      const isCurrentValid = availablePaymentMethods.some((m: any) => m.methodId === paymentMethod)
+    if (paymentOptions.length > 0) {
+      const isCurrentValid = paymentOptions.some((m: any) => m.methodId === paymentMethod)
       if (!isCurrentValid) {
-        setPaymentMethod(availablePaymentMethods[0].methodId)
+        setPaymentMethod(paymentOptions[0].methodId)
       }
     }
-  }, [availablePaymentMethods, paymentMethod])
+  }, [paymentOptions.map((m: any) => m.methodId).join(','), paymentMethod])
 
-  const currentPaymentMethodConfig = availablePaymentMethods.find((m: any) => m.methodId === paymentMethod)
+  const currentPaymentMethodConfig = paymentOptions.find((m: any) => m.methodId === paymentMethod)
 
   const selectedMethodObj = visibleShippingMethods.find(m => m.method === shippingMethod) || visibleShippingMethods[0]
   const shippingCost = (selectedMethodObj?.price || 0) / 100
@@ -230,12 +252,19 @@ export function CheckoutClient() {
   const pointsToRedeem = isRedeemingPoints ? Math.min(availablePoints, totalBeforePoints) : 0
   const total = totalBeforePoints - pointsToRedeem
 
-  // Fetch client secret when order details change
+  // Fetch client secret when order details change. Only needed for card payments; other
+  // methods (Zelle, the Authorize.net bridge) never touch Stripe.
+  const paymentIntentIdRef = useRef<string | null>(null)
+  const intentRequestRef = useRef(0)
   useEffect(() => {
-    if (items.length > 0 && total > 0) {
-      createPaymentIntent(items, shippingMethod, appliedCoupon?.code, isRedeemingPoints)
+    if (paymentMethod === 'stripe' && items.length > 0 && total > 0) {
+      const requestId = ++intentRequestRef.current
+      createPaymentIntent(items, shippingMethod, appliedCoupon?.code, isRedeemingPoints, paymentIntentIdRef.current || undefined)
         .then(res => {
+          // A newer request has since been made; its result is the one that matters.
+          if (requestId !== intentRequestRef.current) return
           if (res.clientSecret && res.paymentIntentId) {
+            paymentIntentIdRef.current = res.paymentIntentId
             setClientSecret(res.clientSecret)
             setPaymentIntentId(res.paymentIntentId)
           } else if (res.error) {
@@ -247,7 +276,7 @@ export function CheckoutClient() {
           }
         })
     }
-  }, [items, shippingMethod, appliedCoupon, isRedeemingPoints])
+  }, [items, shippingMethod, appliedCoupon, isRedeemingPoints, paymentMethod])
 
   // Handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -271,14 +300,20 @@ export function CheckoutClient() {
           code: result.code || code.trim(),
           discount: result.discount || 0,
           freeShipping: result.freeShipping || false,
-          description: result.description || 'Coupon applied'
+          description: result.description || 'Coupon applied',
+          subscriptionScope: (result.subscriptionScope as SubscriptionCouponScope | null | undefined) ?? null,
         })
         setCouponCode('')
         setCoupon(result.code || code.trim())
         if (!codeToApply) toast.success(result.description || 'Coupon applied successfully')
       } else {
         setAppliedCoupon(null)
-        toast.error(result.error || 'Invalid coupon code')
+        if (codeToApply && result.error === SUBSCRIPTION_COUPON_MESSAGE) {
+          // a code that was saved earlier (for example from a referral link), not one the customer just typed
+          toast.info(`The coupon ${codeToApply} can't be used on subscriptions, so it was not applied.`)
+        } else {
+          toast.error(result.error || 'Invalid coupon code')
+        }
         if (codeToApply) setCoupon(null)
       }
     } catch (err) {
@@ -296,7 +331,46 @@ export function CheckoutClient() {
     toast.info('Coupon removed')
   }
 
+  // A subscription needs an account and the accepted terms before anything is created.
+  const planBlocked = (): boolean => {
+    if (!isPlan) return false
+    if (!user) {
+      toast.error('Please log in or create an account to start a subscription.')
+      loginCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return true
+    }
+    if (!acceptTerms) {
+      setTermsError(true)
+      toast.error('Please tick the subscription agreement to continue.')
+      termsCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return true
+    }
+    return false
+  }
+  // What is still missing before a subscription can be ordered. The pay button says so (instead of being silently greyed out).
+  const planMissingStep: 'login' | 'terms' | null = !isPlan ? null : !user ? 'login' : !acceptTerms ? 'terms' : null
+  const planButtonLabel = (normal: React.ReactNode): React.ReactNode =>
+    planMissingStep === 'login' ? 'Log in to continue' : planMissingStep === 'terms' ? 'Tick the agreement above to continue' : normal
+
+  const loginCard = (testId: string, ref?: React.Ref<HTMLDivElement>) => (
+    <div ref={ref} data-testid={testId} className="rounded-2xl border-2 border-amber-400 bg-amber-50 p-5 text-amber-950 flex flex-col gap-3">
+      <p className="text-base font-bold">Log in to start your subscription</p>
+      <p className="text-sm leading-relaxed">
+        A subscription needs an account, so you can manage your plan and pay each monthly invoice. Your cart stays saved while you log in or create your account.
+      </p>
+      <div className="flex flex-wrap gap-3">
+        <Link href="/login?next=%2Fcheckout" className="inline-flex h-11 items-center justify-center rounded-full bg-ink px-6 text-xs font-bold uppercase tracking-widest text-white transition-opacity hover:opacity-90">
+          Log in
+        </Link>
+        <Link href="/register?next=%2Fcheckout" className="inline-flex h-11 items-center justify-center rounded-full border border-ink bg-white px-6 text-xs font-bold uppercase tracking-widest text-ink transition-colors hover:bg-ink/5">
+          Create account
+        </Link>
+      </div>
+    </div>
+  )
+
   const handleZeroTotalCheckout = async () => {
+    if (planBlocked()) return
     if (!formData.email || !formData.firstName || !formData.address || !formData.city || !formData.state || !formData.zip) {
       toast.error('Please fill out all required shipping fields before completing your order.')
       return
@@ -308,7 +382,7 @@ export function CheckoutClient() {
       const { createPayloadOrder } = await import('./actions')
       const orderRes = await createPayloadOrder(
         items, shippingMethod, appliedCoupon?.code, isRedeemingPoints, 
-        { ...formData, email: user?.email || formData.email }, 
+        { ...formData, email: user?.email || formData.email, acceptSubscriptionTerms: acceptTerms }, 
         'free_order', 
         user?.email as string
       )
@@ -332,6 +406,7 @@ export function CheckoutClient() {
   }
 
   const handleManualCheckout = async () => {
+    if (planBlocked()) return
     if (!formData.email || !formData.firstName || !formData.address || !formData.city || !formData.state || !formData.zip) {
       toast.error('Please fill out all required shipping fields before completing your order.')
       return
@@ -343,7 +418,7 @@ export function CheckoutClient() {
       const { createPayloadOrder } = await import('./actions')
       const orderRes = await createPayloadOrder(
         items, shippingMethod, appliedCoupon?.code, isRedeemingPoints, 
-        { ...formData, email: user?.email || formData.email }, 
+        { ...formData, email: user?.email || formData.email, acceptSubscriptionTerms: acceptTerms }, 
         'manual', 
         user?.email as string,
         paymentMethod
@@ -368,6 +443,7 @@ export function CheckoutClient() {
   }
 
   const handleCrossSiteCheckout = async () => {
+    if (planBlocked()) return
     if (!formData.email || !formData.firstName || !formData.address || !formData.city || !formData.state || !formData.zip) {
       toast.error('Please fill out all required shipping fields before completing your order.')
       return
@@ -379,7 +455,7 @@ export function CheckoutClient() {
       const { createPayloadOrder, createCrossSitePaymentRedirect } = await import('./actions')
       const orderRes = await createPayloadOrder(
         items, shippingMethod, appliedCoupon?.code, isRedeemingPoints,
-        { ...formData, email: user?.email || formData.email },
+        { ...formData, email: user?.email || formData.email, acceptSubscriptionTerms: acceptTerms },
         'authnet_bridge',
         user?.email as string,
         paymentMethod
@@ -511,6 +587,7 @@ export function CheckoutClient() {
                         </div>
                         <div className="flex flex-col flex-1 justify-center py-1">
                           <span className="text-sm font-bold text-ink leading-tight">{item.product?.name}</span>
+                          <PlanLineBadge months={item.planMonths} />
                           {item.variantSku && !['DEFAULT', 'DEFAULT TITLE'].includes(String(item.variantSku).toUpperCase()) && (
                             <span className="text-[10px] uppercase tracking-widest text-ink/40 mt-1">{item.variantSku}</span>
                           )}
@@ -531,6 +608,9 @@ export function CheckoutClient() {
                           <div className="flex flex-col">
                             <span className="text-sm font-bold text-green-700">{appliedCoupon.code}</span>
                             <span className="text-xs font-medium text-green-600/70">{appliedCoupon.description}</span>
+                            {isPlan && appliedCoupon.subscriptionScope ? (
+                              <span className="text-xs font-semibold text-green-700" data-testid="coupon-scope-note">{couponScopeNote(appliedCoupon.subscriptionScope)}</span>
+                            ) : null}
                           </div>
                         </div>
                         <button onClick={handleRemoveCoupon} className="text-xs font-bold text-green-700 hover:text-green-800 uppercase tracking-widest transition-colors">
@@ -666,6 +746,8 @@ export function CheckoutClient() {
               <input type="hidden" name="redeemPoints" value={isRedeemingPoints ? 'true' : 'false'} />
               <input type="hidden" name="couponCode" value={appliedCoupon?.code || ''} />
               
+              {isPlan && !user && loginCard('subscription-login-banner')}
+
               {/* Contact */}
               <section className="flex flex-col gap-4">
                 <h2 className="text-xl font-display font-bold text-ink mb-2">Contact Information</h2>
@@ -684,7 +766,7 @@ export function CheckoutClient() {
                     name="marketing"
                     checked={formData.marketing}
                     onCheckedChange={(checked) => setFormData(prev => ({ ...prev, marketing: !!checked }))}
-                    className="mt-0.5 rounded-md data-[state=checked]:bg-ink data-[state=checked]:border-ink" 
+                    className="mt-0.5 rounded-md data-[state=checked]:bg-ink data-[state=checked]:border-ink data-[state=checked]:text-white" 
                   />
                   <label htmlFor="marketing" className="text-sm text-ink/60 cursor-pointer select-none">
                     Email me with news and exclusive offers.
@@ -860,9 +942,56 @@ export function CheckoutClient() {
               <section className="flex flex-col gap-4">
                 <h2 className="text-xl font-display font-bold text-ink mb-2">Payment</h2>
                 <p className="text-xs font-medium text-ink/50 mb-2 flex items-center gap-1.5"><Lock size={12} /> All transactions are 256-bit encrypted and secure.</p>
+
+                {isPlan && (
+                  <>
+                  <div className="rounded-2xl border border-green-200 bg-green-50 p-5 text-sm text-green-900 flex flex-col gap-3" data-testid="subscription-notice">
+                    <strong className="flex items-center gap-1.5 text-base">
+                      {planMonths}-month subscription &middot; billed monthly
+                      <InfoTip label="How does subscription billing work?">{HELP.noAutoCharge}</InfoTip>
+                    </strong>
+                    <p>
+                      You pay month 1 today (<strong>${total.toFixed(2)}</strong>). Then, each month, we email an invoice about a week before it is due and your order ships once it is
+                      paid. Pay by card or Zelle - we never charge your card automatically. You can pause, skip a month or order early anytime from your account.
+                    </p>
+                  </div>
+
+                  {!user && loginCard('subscription-login-required', loginCardRef)}
+
+                  <div
+                    ref={termsCardRef}
+                    data-testid="subscription-terms-card"
+                    className={`rounded-2xl border-2 bg-white p-5 flex flex-col gap-3 transition-colors ${acceptTerms ? 'border-green-500' : termsError ? 'border-red-500' : 'border-amber-400'}`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-sm font-bold text-ink">Please read and agree</span>
+                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest ${acceptTerms ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-800'}`}>
+                        {acceptTerms ? 'Agreed' : 'Required'}
+                      </span>
+                    </div>
+                    <label className="flex items-start gap-3 cursor-pointer select-none">
+                      <Checkbox
+                        checked={acceptTerms}
+                        onCheckedChange={(c) => {
+                          setAcceptTerms(!!c)
+                          if (c) setTermsError(false)
+                        }}
+                        className="mt-0.5 size-5 rounded-md border-2 border-ink/40 [&_svg]:size-4 data-[state=checked]:bg-ink data-[state=checked]:border-ink data-[state=checked]:text-white"
+                        data-testid="subscription-terms"
+                      />
+                      <span className="text-[13px] leading-relaxed text-ink/80">{subInfo?.termsText || DEFAULT_TERMS_TEXT}</span>
+                    </label>
+                    {termsError && !acceptTerms && (
+                      <p role="alert" data-testid="subscription-terms-error" className="text-xs font-semibold text-red-600">
+                        Please tick the box above to continue.
+                      </p>
+                    )}
+                  </div>
+                  </>
+                )}
                 
                 <div className="flex flex-col gap-3 mb-4">
-                  {availablePaymentMethods.map((method: any) => (
+                  {paymentOptions.map((method: any) => (
                     <label key={method.methodId} className={`flex items-center gap-4 p-5 rounded-2xl border transition-colors cursor-pointer shadow-sm ${paymentMethod === method.methodId ? 'border-ink bg-ink/5' : 'border-slate-100 bg-white hover:border-ink/30'}`}>
                       <input
                         type="radio"
@@ -884,12 +1013,15 @@ export function CheckoutClient() {
                     </div>
                     <span className="text-sm font-bold text-green-800">Your order is completely covered!</span>
                     <Button onClick={handleZeroTotalCheckout} disabled={isProcessing} variant="dark" size="lg" className="w-full h-14 rounded-full text-white font-bold tracking-widest uppercase shadow-[0_4px_14px_0_rgb(0,0,0,0.1)]">
-                      {isProcessing ? <Loader2 className="animate-spin" /> : "Complete Free Order"}
+                      {isProcessing ? <Loader2 className="animate-spin" /> : planButtonLabel("Complete Free Order")}
                     </Button>
                   </div>
                 ) : paymentMethod === 'stripe' ? (
                   clientSecret && stripePromise && paymentIntentId ? (
-                    <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
+                    // key: Stripe Elements ignores clientSecret changes after mount, so a new
+                    // PaymentIntent (coupon/shipping/points changed) must remount it - otherwise
+                    // the customer would pay the old intent while the order is bound to the new one.
+                    <Elements key={clientSecret} stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
                       <StripeCheckoutForm 
                          amount={total}
                          items={items}
@@ -934,7 +1066,7 @@ export function CheckoutClient() {
                       size="lg"
                       className="w-full max-w-md mt-4 h-16 rounded-full text-sm font-bold tracking-widest uppercase shadow-[0_8px_20px_rgb(0,0,0,0.15)] hover:-translate-y-0.5 transition-all text-white disabled:opacity-50 disabled:hover:translate-y-0"
                     >
-                      {isProcessing ? <Loader2 className="animate-spin" /> : 'Continue to Payment'}
+                      {isProcessing ? <Loader2 className="animate-spin" /> : planButtonLabel('Continue to Payment')}
                     </Button>
                   </div>
                 ) : (
@@ -996,7 +1128,7 @@ export function CheckoutClient() {
                       size="lg" 
                       className="w-full max-w-md mt-4 h-16 rounded-full text-sm font-bold tracking-widest uppercase shadow-[0_8px_20px_rgb(0,0,0,0.15)] hover:-translate-y-0.5 transition-all text-white disabled:opacity-50 disabled:hover:translate-y-0"
                     >
-                      {isProcessing ? <Loader2 className="animate-spin" /> : `Place ${paymentMethod === 'stripe_link' ? 'Order' : 'Zelle Order'}`}
+                      {isProcessing ? <Loader2 className="animate-spin" /> : planButtonLabel(`Place ${paymentMethod === 'stripe_link' ? 'Order' : 'Zelle Order'}`)}
                     </Button>
                   </div>
                 )}
@@ -1027,6 +1159,7 @@ export function CheckoutClient() {
                     </div>
                     <div className="flex flex-col flex-1 justify-center py-1">
                       <span className="text-sm font-bold text-ink leading-tight">{item.product?.name}</span>
+                          <PlanLineBadge months={item.planMonths} />
                       {(item.variantTitle || item.variantSku) && !['DEFAULT', 'DEFAULT TITLE'].includes(String(item.variantTitle || item.variantSku || '').toUpperCase()) && (
                         <span className="text-[10px] font-bold uppercase tracking-widest text-ink/40 mt-1">{item.variantTitle || item.variantSku}</span>
                       )}
@@ -1047,6 +1180,9 @@ export function CheckoutClient() {
                       <div className="flex flex-col">
                         <span className="text-sm font-bold text-green-700">{appliedCoupon.code}</span>
                         <span className="text-xs font-medium text-green-600/70">{appliedCoupon.description}</span>
+                            {isPlan && appliedCoupon.subscriptionScope ? (
+                              <span className="text-xs font-semibold text-green-700" data-testid="coupon-scope-note">{couponScopeNote(appliedCoupon.subscriptionScope)}</span>
+                            ) : null}
                       </div>
                     </div>
                     <button onClick={handleRemoveCoupon} className="text-xs font-bold text-green-700 hover:text-green-800 uppercase tracking-widest transition-colors">
@@ -1158,11 +1294,19 @@ export function CheckoutClient() {
               <div className="w-full h-px bg-ink/5" />
 
               <div className="flex justify-between items-end mt-4">
-                <span className="text-sm font-bold uppercase tracking-widest text-ink/60">Total</span>
+                <span className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-widest text-ink/60">
+                  {isPlan ? 'Due today' : 'Total'}
+                  {isPlan && <InfoTip label="What is due today?" align="right">{HELP.dueToday}</InfoTip>}
+                </span>
                 <span className={`text-4xl font-bold text-ink ${spaceGrotesk.className}`}>
                   ${total.toFixed(2)}
                 </span>
               </div>
+              {isPlan && (
+                <p className="text-xs text-ink/50 -mt-4" data-testid="subscription-due-today">
+                  This is month 1 of {planMonths}. {Math.max(0, (planMonths || 1) - 1)} more monthly invoice{(planMonths || 1) - 1 === 1 ? '' : 's'} follow by email at that month's store price, minus your plan discount.
+                </p>
+              )}
               
             </div>
           </div>

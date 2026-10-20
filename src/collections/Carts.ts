@@ -53,6 +53,11 @@ export const Carts: CollectionConfig = {
           type: 'number',
           required: true,
         },
+        {
+          name: 'planMonths',
+          type: 'number',
+          admin: { description: 'Set when this line is a subscription plan (3 / 6 / 12 months).' },
+        },
       ],
     },
     {

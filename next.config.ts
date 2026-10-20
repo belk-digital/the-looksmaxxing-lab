@@ -7,6 +7,9 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
+  // Test-only (set by scripts/subscriptions/local-env.cjs): build into a separate folder so the automated tests never
+  // touch the files of a running `pnpm dev`. Not set in normal use, so nothing changes.
+  ...(process.env.LM_DIST_DIR ? { distDir: process.env.LM_DIST_DIR } : {}),
   images: {
     unoptimized: true,
     localPatterns: [

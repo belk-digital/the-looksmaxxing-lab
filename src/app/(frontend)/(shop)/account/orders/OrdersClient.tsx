@@ -16,6 +16,8 @@ export interface OrderItem {
   status: string;
   total: number;
   itemCount: number;
+  /** e.g. "Subscription · Month 2 of 6"; null for one-time orders. */
+  typeLabel?: string | null;
 }
 
 export interface AccountOrdersProps {
@@ -89,6 +91,11 @@ export function OrdersClient({ orders }: AccountOrdersProps) {
                     <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Order Placed</span>
                     <span className="text-sm font-medium text-black">{order.date}</span>
                     <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mt-1">#{order.id}</span>
+                    {order.typeLabel ? (
+                      <span className="w-fit rounded-full bg-black text-white text-[9px] font-bold uppercase tracking-[0.15em] px-2.5 py-1">{order.typeLabel}</span>
+                    ) : (
+                      <span className="w-fit rounded-full bg-gray-100 text-gray-500 text-[9px] font-bold uppercase tracking-[0.15em] px-2.5 py-1">One-time order</span>
+                    )}
                   </div>
 
                   {/* Status Badge */}

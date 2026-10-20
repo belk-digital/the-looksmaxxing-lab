@@ -18,6 +18,11 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
   const shipAddr = order.shippingAddress || {};
   const billAddr = (order.billingAddress && order.billingAddress.line1) ? order.billingAddress : shipAddr;
 
+  // Clear label so subscription orders are never confused with one-time orders.
+  const subscriptionBadge = order.orderType && order.orderType !== 'one_time'
+    ? `<p style="margin: 14px 0 0 0;"><span style="display: inline-block; background: #111827; color: #ffffff; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; padding: 5px 12px; border-radius: 999px; text-transform: uppercase;">Subscription &middot; Month ${order.cycleNumber || 1} of ${order.cyclesTotal || ''}</span></p>`
+    : '';
+
   let itemsHtml = '';
   if (order.items && Array.isArray(order.items)) {
     const itemPromises = order.items.map(async (item: any) => {
@@ -165,6 +170,7 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
             <td style="padding: 40px 40px 30px 40px; text-align: center; border-bottom: 1px solid #f3f4f6;">
               <h1 style="margin: 0; font-size: 24px; font-weight: 800; color: #000000; letter-spacing: -1px;">Longevia Research</h1>
               <p style="margin: 12px 0 0 0; font-size: 16px; color: #6b7280;">Thank you for your order, ${customerName}!</p>
+              ${subscriptionBadge}
             </td>
           </tr>
 

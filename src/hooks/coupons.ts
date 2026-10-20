@@ -31,6 +31,16 @@ export const couponsHook: CollectionBeforeChangeHook = async ({ data, originalDo
     }
   }
 
+  // Subscription coupons: a store-credit balance cannot be re-used every month, and the "every month" choice only
+  // means something when the coupon is switched on for subscriptions.
+  if (doc?.allowOnSubscriptions) {
+    if (doc?.subscriptionDiscountScope === 'every_month' && doc?.type === 'store_credit') {
+      throw new Error('Store credit coupons can only discount the first month of a subscription. Choose "First month only".')
+    }
+  } else if (data && doc?.subscriptionDiscountScope === 'every_month') {
+    data.subscriptionDiscountScope = 'first_month'
+  }
+
   // Advanced validations - carefully handling empty strings and nulls
   if (data?.minSpend !== undefined) {
     if (data.minSpend === '' || data.minSpend === null) {

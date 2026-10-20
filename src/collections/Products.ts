@@ -114,6 +114,15 @@ export const Products: CollectionConfig = {
       defaultValue: false,
     },
     {
+      name: 'subscriptionEnabled',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Offer "Subscribe & save" (3 / 6 / 12 month plans) on this product. Plans must also be enabled in Subscription Settings.',
+      },
+    },
+    {
       name: 'variants',
       type: 'array',
       fields: [

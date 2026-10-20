@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth'
 import { getPayload } from 'payload'
 import configPromise from '@/payload.config'
 import { CartLine } from '@/lib/cart/store'
+import { findCartVariant, resolveLegacySku } from '@/lib/cart/variantMatch'
 
 export async function syncCartToPayload(items: CartLine[]) {
   try {
@@ -38,6 +39,7 @@ export async function syncCartToPayload(items: CartLine[]) {
       variantTitle: item.variantTitle || item.variantSku || 'Standard',
       quantity: item.quantity,
       priceSnapshot: item.priceSnapshot,
+      planMonths: item.planMonths || undefined,
       addedAt: new Date().toISOString(),
     }))
 
@@ -122,6 +124,7 @@ export async function getMyCart(): Promise<CartLine[]> {
         variantTitle: item.variantTitle || item.variantSku || 'Standard',
         quantity: item.quantity || 1,
         priceSnapshot: item.priceSnapshot || 0,
+        planMonths: item.planMonths || null,
         product: {
           id: String(prod.id || item.product),
           slug: prod.slug || '',
@@ -201,15 +204,16 @@ export async function revalidateCartPrices(items: CartLine[]): Promise<CartLine[
 
         // 2. Check Variants
         if (product.variants && product.variants.length > 0) {
-          const variant = product.variants.find((v: any) => {
-            const computedTitle = v.options?.map((o: any) => o.value).join(' ') || `Variant ${v.sku}`
-            return computedTitle === item.variantSku || v.sku === item.variantSku
-          })
+          const variant = findCartVariant(product.variants, item.variantSku)
           if (variant) {
             const vPrice = typeof variant.price === 'number' ? variant.price : parseFloat(String(variant.price).replace(/[^0-9.]/g, ''))
             const vSale = variant.salePrice ? (typeof variant.salePrice === 'number' ? variant.salePrice : parseFloat(String(variant.salePrice).replace(/[^0-9.]/g, ''))) : null
             livePrice = vSale || vPrice
-            return { ...item, priceSnapshot: livePrice }
+            // A line holding a renamed (legacy) SKU is carried forward with the variant's current SKU.
+            const variantSku = variant.sku && variant.sku !== item.variantSku && resolveLegacySku(variant.sku) === resolveLegacySku(item.variantSku)
+              ? variant.sku
+              : item.variantSku
+            return { ...item, variantSku, priceSnapshot: livePrice }
           }
         }
 

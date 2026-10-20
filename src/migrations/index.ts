@@ -16,6 +16,8 @@ import * as migration_20260628_000000_add_is_finalized_to_orders from './2026062
 import * as migration_20260628_010000_add_order_counters_table from './20260628_010000_add_order_counters_table';
 import * as migration_20260913_000000_add_authnet_bridge_payment_method from './20260913_000000_add_authnet_bridge_payment_method';
 import * as migration_20260913_010000_add_payment_methods_settings from './20260913_010000_add_payment_methods_settings';
+import * as migration_20261020_000000_add_subscriptions from './20261020_000000_add_subscriptions';
+import * as migration_20261021_000000_add_subscription_coupons from './20261021_000000_add_subscription_coupons';
 
 export const migrations = [
   {
@@ -107,5 +109,15 @@ export const migrations = [
     up: migration_20260913_010000_add_payment_methods_settings.up,
     down: migration_20260913_010000_add_payment_methods_settings.down,
     name: '20260913_010000_add_payment_methods_settings'
+  },
+  {
+    up: migration_20261020_000000_add_subscriptions.up,
+    down: migration_20261020_000000_add_subscriptions.down,
+    name: '20261020_000000_add_subscriptions',
+  },
+  {
+    up: migration_20261021_000000_add_subscription_coupons.up,
+    down: migration_20261021_000000_add_subscription_coupons.down,
+    name: '20261021_000000_add_subscription_coupons',
   },
 ];

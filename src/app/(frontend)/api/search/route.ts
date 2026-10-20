@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import Fuse from 'fuse.js'
+import { searchProducts } from '@/lib/search/products'
 
 // Cache the route heavily so we aren't querying Payload on every keystroke
 export const revalidate = 60 // Cache for 60 seconds
@@ -46,22 +46,8 @@ export async function GET(request: Request) {
       return NextResponse.json([])
     }
 
-    // Configure Fuse.js for fuzzy searching
-    const fuse = new Fuse(products, {
-      keys: [
-        { name: 'name', weight: 3 }, // Name is most important
-        { name: 'categories', weight: 1.5 },
-        { name: 'description', weight: 1 },
-      ],
-      threshold: 0.4, // 0.0 is perfect match, 1.0 is matches everything. 0.4 is a good fuzzy sweet spot.
-      includeScore: true,
-      ignoreLocation: true, // Don't penalize if the word is at the end of a string
-    })
-
-    const results = fuse.search(query)
-    
-    // Extract the raw items and limit to top 8 results
-    const matchedProducts = results.slice(0, 8).map(result => result.item)
+    // Fuzzy search (name, hidden aliases, categories, description); top 8 results
+    const matchedProducts = searchProducts(products, query)
 
     return NextResponse.json(matchedProducts)
   } catch (error: any) {
