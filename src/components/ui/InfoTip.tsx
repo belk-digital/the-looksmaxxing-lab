@@ -28,7 +28,7 @@ export function InfoTip({
   className = '',
 }: {
   children: React.ReactNode
-  /** Accessible name of the icon button, e.g. "What does Skip next month do?" */
+  /** Accessible name of the icon button, e.g. "What does Skip next delivery do?" */
   label?: string
   align?: 'left' | 'center' | 'right'
   className?: string

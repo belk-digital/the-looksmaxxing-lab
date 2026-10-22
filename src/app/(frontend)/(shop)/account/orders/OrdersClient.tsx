@@ -16,7 +16,7 @@ export interface OrderItem {
   status: string;
   total: number;
   itemCount: number;
-  /** e.g. "Subscription · Month 2 of 6"; null for one-time orders. */
+  /** e.g. "Subscription · Order 2"; null for one-time orders. */
   typeLabel?: string | null;
 }
 

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
 import { createTestDatabase, bootPayload, seedStore, makeCustomer, lineFor, shutdown, FORM } from './helpers'
 
 // Coupons on subscriptions: a coupon is rejected on a subscription unless it was switched on for subscriptions
-// (default off); a switched-on coupon can discount the first month only, or every monthly payment.
+// (default off); a switched-on coupon can discount the first order only, or every order.
 
 const h = vi.hoisted(() => ({ session: '' as string, user: null as any, jar: new Map<string, string>() }))
 vi.mock('next/headers', () => ({
@@ -23,7 +23,7 @@ const NOT_ALLOWED = "This coupon can't be used on subscriptions."
 beforeAll(async () => {
   db = await createTestDatabase()
   ;({ payload } = await bootPayload(db.uri))
-  store = await seedStore(payload) // BPC-157 at $20 -> $17 with the 15% plan discount
+  store = await seedStore(payload) // BPC-157 at $20 -> $17 with the 15% discount of the 6-month plan
 })
 afterAll(async () => {
   await shutdown(payload, db)
@@ -43,12 +43,12 @@ async function login() {
   return { user, email }
 }
 
-/** Starts a subscription (2 x BPC-157, 3 months, Zelle) with a coupon, exactly as the checkout does. */
+/** Starts a subscription (2 x BPC-157, an order every 6 months, Zelle) with a coupon, exactly as the checkout does. */
 async function subscribeWith(couponCode: string | undefined, qty = 2) {
   const { user, email } = await login()
   const { createPayloadOrder } = await import('@/app/(frontend)/(shop)/checkout/actions')
   const res: any = await createPayloadOrder(
-    [lineFor(store.product, 3, qty)],
+    [lineFor(store.product, 6, qty)],
     'Standard Shipping',
     couponCode,
     false,
@@ -61,14 +61,14 @@ async function subscribeWith(couponCode: string | undefined, qty = 2) {
 }
 const pay = (orderId: any) => payload.update({ collection: 'orders', id: orderId, data: { status: 'paid', paymentStatus: 'captured' } as any, overrideAccess: true })
 
-/** Pays month 1, then creates and pays months 2 and 3; returns the invoices. */
-async function runMonths(subId: any, firstOrderId: any, upTo = 3) {
+/** Pays order 1, then creates and pays orders 2, 3, ...; returns the invoices. */
+async function runOrders(subId: any, firstOrderId: any, upTo = 3) {
   const { orderNextMonthNow } = await import('@/lib/subscriptions/service')
   await pay(firstOrderId)
   const invoices: any[] = []
-  for (let month = 2; month <= upTo; month++) {
+  for (let order = 2; order <= upTo; order++) {
     const r: any = await orderNextMonthNow(payload, subId)
-    expect(r.ok, `month ${month}`).toBe(true)
+    expect(r.ok, `order ${order}`).toBe(true)
     invoices.push(await getOrder(r.orderId))
     await pay(r.orderId)
   }
@@ -76,21 +76,21 @@ async function runMonths(subId: any, firstOrderId: any, upTo = 3) {
 }
 
 describe('the coupon form', () => {
-  it('"Can be used on subscriptions" is OFF by default; the scope defaults to first month', async () => {
+  it('"Can be used on subscriptions" is OFF by default; the scope defaults to the first order only', async () => {
     const c = await makeCoupon({ code: 'DEFAULTS' })
     expect(c.allowOnSubscriptions).toBe(false)
     expect(c.subscriptionDiscountScope).toBe('first_month')
   })
 
-  it('store-credit coupons cannot discount every month; first month only is fine', async () => {
+  it('store-credit coupons cannot discount every order; first order only is fine', async () => {
     await expect(makeCoupon({ code: 'CREDIT-EVERY', type: 'store_credit', storeCreditAmount: 5000, allowOnSubscriptions: true, subscriptionDiscountScope: 'every_month' })).rejects.toThrow(
-      /Store credit coupons can only discount the first month/,
+      /Store credit coupons can only discount the first order/,
     )
     const ok = await makeCoupon({ code: 'CREDIT-FIRST', type: 'store_credit', storeCreditAmount: 5000, allowOnSubscriptions: true, subscriptionDiscountScope: 'first_month' })
     expect(ok.allowOnSubscriptions).toBe(true)
   })
 
-  it('an "every month" choice on a coupon that is switched OFF is tidied back to first month', async () => {
+  it('an "every order" choice on a coupon that is switched OFF is tidied back to the first order only', async () => {
     const c = await makeCoupon({ code: 'OFF-BUT-EVERY', allowOnSubscriptions: false, subscriptionDiscountScope: 'every_month' })
     expect(c.subscriptionDiscountScope).toBe('first_month')
   })
@@ -106,7 +106,7 @@ describe('verifyCoupon (what the customer sees when applying a code)', () => {
   it('on a subscription cart: a normal coupon is rejected with a clear message; switched-on coupons are accepted and report their scope', async () => {
     const { verifyCoupon } = await import('@/app/(frontend)/(shop)/actions')
     await login()
-    const items = [lineFor(store.product, 3, 2)]
+    const items = [lineFor(store.product, 6, 2)]
     expect(await verifyCoupon('PLAIN10', 34, items)).toMatchObject({ valid: false, error: NOT_ALLOWED })
     expect(await verifyCoupon('plain10', 34, items)).toMatchObject({ valid: false, error: NOT_ALLOWED }) // codes are not case sensitive
     expect(await verifyCoupon('SUBFIRST10', 34, items)).toMatchObject({ valid: true, subscriptionScope: 'first_month' })
@@ -127,7 +127,7 @@ describe('verifyCoupon (what the customer sees when applying a code)', () => {
   it('the cart saved on the server (no items passed in) is judged the same way', async () => {
     const { verifyCoupon } = await import('@/app/(frontend)/(shop)/actions')
     const { user } = await login()
-    await payload.create({ collection: 'carts', overrideAccess: true, data: { user: user.id, items: [{ product: store.product.id, variantSku: 'DEFAULT', quantity: 2, priceSnapshot: 17, planMonths: 3 }] } as any })
+    await payload.create({ collection: 'carts', overrideAccess: true, data: { user: user.id, items: [{ product: store.product.id, variantSku: 'DEFAULT', quantity: 2, priceSnapshot: 17, planMonths: 6 }] } as any })
     expect(await verifyCoupon('PLAIN10', 34)).toMatchObject({ valid: false, error: NOT_ALLOWED })
     expect(await verifyCoupon('SUBALL10', 34)).toMatchObject({ valid: true, subscriptionScope: 'every_month' })
   })
@@ -164,8 +164,8 @@ describe('checkout (the server is the final judge)', () => {
   })
 })
 
-describe('"first month only" coupons', () => {
-  it('discount the first payment; later monthly invoices are at the normal plan price and no coupon is remembered', async () => {
+describe('"first order only" coupons', () => {
+  it('discount the first payment; later invoices are at the normal plan price and no coupon is remembered', async () => {
     await makeCoupon({ code: 'FIRST-ONLY', allowOnSubscriptions: true, subscriptionDiscountScope: 'first_month' })
     const { res } = await subscribeWith('FIRST-ONLY')
     expect(res.error).toBeUndefined()
@@ -176,15 +176,15 @@ describe('"first month only" coupons', () => {
     const sub = await getSub(first.subscription)
     expect(sub.recurringCouponCode ?? null).toBeNull()
 
-    const [month2] = await runMonths(sub.id, first.id, 2)
-    expect(month2.discountTotal).toBe(0)
-    expect(month2.couponCode || '').toBe('')
-    expect(month2.total).toBeCloseTo(34 + 5, 2)
+    const [order2] = await runOrders(sub.id, first.id, 2)
+    expect(order2.discountTotal).toBe(0)
+    expect(order2.couponCode || '').toBe('')
+    expect(order2.total).toBeCloseTo(34 + 5, 2)
   })
 })
 
-describe('"every monthly payment" coupons', () => {
-  it('discount every monthly invoice (on top of the plan discount); the code is remembered on the subscription; it counts as ONE use', async () => {
+describe('"every order" coupons', () => {
+  it('discount every invoice, however many there are (on top of the plan discount); the code is remembered on the subscription; it counts as ONE use', async () => {
     await makeCoupon({ code: 'EVERY-10', allowOnSubscriptions: true, subscriptionDiscountScope: 'every_month' })
     const { res } = await subscribeWith('EVERY-10')
     const first = await getOrder(res.orderId)
@@ -192,33 +192,35 @@ describe('"every monthly payment" coupons', () => {
     const sub = await getSub(first.subscription)
     expect(sub.recurringCouponCode).toBe('EVERY-10')
 
-    const [m2, m3] = await runMonths(sub.id, first.id, 3)
-    for (const inv of [m2, m3]) {
+    // a subscription has no last order: six in a row all keep the discount
+    const later = await runOrders(sub.id, first.id, 6)
+    expect(later).toHaveLength(5)
+    for (const inv of later) {
       expect(inv.couponCode).toBe('EVERY-10')
       expect(inv.discountTotal).toBeCloseTo(3, 2)
       expect(inv.subtotal).toBeCloseTo(34, 2) // plan price, before the coupon
       expect(inv.total).toBeCloseTo(34 - 3 + 5, 2)
       expect(inv.subscriptionDiscountPercent).toBe(15) // the plan discount is still there too
     }
-    expect((await getCoupon('EVERY-10')).usageCount).toBe(1) // three payments, one use
+    expect((await getCoupon('EVERY-10')).usageCount).toBe(1) // six payments, one use
   })
 
-  it('a fixed amount every month ($5 off each invoice)', async () => {
+  it('a fixed amount every order ($5 off each invoice)', async () => {
     await makeCoupon({ code: 'FIVE-EVERY', type: 'fixed_amount', value: 500, allowOnSubscriptions: true, subscriptionDiscountScope: 'every_month' })
     const { res } = await subscribeWith('FIVE-EVERY')
     const first = await getOrder(res.orderId)
     expect(first.discountTotal).toBeCloseTo(5, 2)
-    const [m2] = await runMonths(first.subscription, first.id, 2)
+    const [m2] = await runOrders(first.subscription, first.id, 2)
     expect(m2.discountTotal).toBeCloseTo(5, 2)
     expect(m2.total).toBeCloseTo(34 - 5 + 5, 2)
   })
 
-  it('free shipping every month', async () => {
+  it('free shipping every order', async () => {
     await makeCoupon({ code: 'SHIP-EVERY', type: 'free_shipping', freeShipping: true, allowOnSubscriptions: true, subscriptionDiscountScope: 'every_month' })
     const { res } = await subscribeWith('SHIP-EVERY')
     const first = await getOrder(res.orderId)
     expect(first.shippingTotal).toBe(0)
-    const [m2] = await runMonths(first.subscription, first.id, 2)
+    const [m2] = await runOrders(first.subscription, first.id, 2)
     expect(m2.shippingTotal).toBe(0)
     expect(m2.total).toBeCloseTo(34, 2)
   })
@@ -229,14 +231,14 @@ describe('"every monthly payment" coupons', () => {
     const first = await getOrder(res.orderId)
     expect((await getCoupon('PROMISED')).usageCount).toBe(1) // limit reached by this very order
     await payload.db.pool.query(`update coupons set expires_at = $1 where id = $2`, [new Date(Date.now() - 86400000).toISOString(), c.id]) // expired yesterday
-    const [m2] = await runMonths(first.subscription, first.id, 2)
+    const [m2] = await runOrders(first.subscription, first.id, 2)
     expect(m2.discountTotal).toBeCloseTo(3, 2)
     // ... but nobody NEW can use it any more
     const { verifyCoupon } = await import('@/app/(frontend)/(shop)/actions')
-    expect(await verifyCoupon('PROMISED', 34, [lineFor(store.product, 3, 2)])).toMatchObject({ valid: false })
+    expect(await verifyCoupon('PROMISED', 34, [lineFor(store.product, 6, 2)])).toMatchObject({ valid: false })
   })
 
-  it('stops when staff switch the coupon off for subscriptions, change it to first-month-only, or delete it - invoices still go out, just without the discount', async () => {
+  it('stops when staff switch the coupon off for subscriptions, change it to first-order-only, or delete it - invoices still go out, just without the discount', async () => {
     const { orderNextMonthNow } = await import('@/lib/subscriptions/service')
     const make = async (code: string) => {
       const c = await makeCoupon({ code, allowOnSubscriptions: true, subscriptionDiscountScope: 'every_month' })
@@ -286,7 +288,7 @@ describe('"every monthly payment" coupons', () => {
     await pay(first.id)
     const { pauseSubscription, resumeSubscription } = await import('@/lib/subscriptions/service')
     await pauseSubscription(payload, first.subscription)
-    const resumeAt = new Date(Date.now() + 90 * 86400000) // long pause: the invoice goes out on resume
+    const resumeAt = new Date(Date.now() + 250 * 86400000) // long pause (past the 6-month interval): the invoice goes out on resume
     const r: any = await resumeSubscription(payload, first.subscription, resumeAt)
     expect(r.orderId).toBeTruthy()
     const inv = await getOrder(r.orderId)

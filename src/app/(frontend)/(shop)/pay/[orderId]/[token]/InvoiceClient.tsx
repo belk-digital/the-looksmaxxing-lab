@@ -10,6 +10,7 @@ import { InfoTip } from '@/components/ui/InfoTip'
 import { HELP } from '@/lib/subscriptions/helpText'
 import { submitBridgeHandoff } from '@/lib/payments/submitHandoff'
 import { startInvoiceCardPayment } from '../../actions'
+import { everyLabel, orderLabel } from '@/lib/subscriptions/labels'
 
 export interface InvoiceViewModel {
   orderId: string
@@ -17,8 +18,8 @@ export interface InvoiceViewModel {
   orderNumber: string
   state: 'open' | 'paid' | 'inactive'
   returnedFromPayment: boolean
-  month: number
-  monthsTotal: number
+  order: number
+  intervalMonths: number
   discountPercent: number
   paymentMethod: 'authnet_bridge' | 'zelle'
   cardAvailable: boolean
@@ -76,7 +77,7 @@ export function InvoiceClient({ invoice }: { invoice: InvoiceViewModel }) {
     }
   }
 
-  const monthLabel = `Month ${invoice.month} of ${invoice.monthsTotal}`
+  const monthLabel = orderLabel(invoice.order)
   const manageHref = invoice.subscriptionId ? `/account/subscriptions/${invoice.subscriptionId}` : '/account/subscriptions'
 
   return (
@@ -91,12 +92,12 @@ export function InvoiceClient({ invoice }: { invoice: InvoiceViewModel }) {
               <InfoTip label="What is a subscription?" align="center">{HELP.whatIsSubscription}</InfoTip>
             </span>
             <h1 className="mt-5 text-3xl md:text-4xl font-display font-bold text-ink">
-              {invoice.state === 'paid' ? 'Payment received' : invoice.state === 'open' ? 'Your monthly invoice' : 'Invoice no longer active'}
+              {invoice.state === 'paid' ? 'Payment received' : invoice.state === 'open' ? 'Your invoice' : 'Invoice no longer active'}
             </h1>
             <p className="mt-2 text-sm text-ink/60">Invoice #{invoice.orderNumber}</p>
             {invoice.state === 'open' && (
               <p className="mt-3 mx-auto max-w-md text-sm text-ink/60" data-testid="invoice-explainer">
-                You subscribed to a {invoice.monthsTotal}-month plan. Each month we email an invoice like this one - pay it and that month&apos;s order ships. We never charge your card automatically.
+                {`You subscribed to have an order delivered ${everyLabel(invoice.intervalMonths)}. Whenever an order is due we email an invoice like this one - pay it and that order ships. We never charge your card automatically.`}
               </p>
             )}
           </div>
@@ -119,8 +120,8 @@ export function InvoiceClient({ invoice }: { invoice: InvoiceViewModel }) {
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center mb-8">
               <p className="font-bold text-amber-900">This invoice is no longer active.</p>
               <p className="text-sm text-amber-800 mt-1">
-                It was cancelled (for example because a month was skipped, the subscription was paused, or it went unpaid). Open your
-                subscription to see what to do next - you can reactivate or order a month anytime.
+                It was cancelled (for example because a delivery was skipped, the subscription was paused, or it went unpaid). Open your
+                subscription to see what to do next - you can reactivate or order your next delivery anytime.
               </p>
               <Link href={manageHref} className="inline-block mt-4 bg-ink text-white rounded-full px-6 py-3 text-xs font-bold uppercase tracking-widest">
                 Open my subscription
@@ -236,7 +237,7 @@ export function InvoiceClient({ invoice }: { invoice: InvoiceViewModel }) {
             </div>
             <div className="bg-[#fafafa] border-t border-ink/5 px-6 sm:px-8 py-4 text-sm text-ink/60 flex flex-col sm:flex-row justify-between gap-2">
               <span>
-                Need to skip this month or pause? <Link href={manageHref} className="text-ink underline font-medium">Manage my subscription</Link>
+                Need to skip this delivery or pause? <Link href={manageHref} className="text-ink underline font-medium">Manage my subscription</Link>
               </span>
               <a href="mailto:support@longeviaresearch.com" className="text-ink underline font-medium">Contact support</a>
             </div>

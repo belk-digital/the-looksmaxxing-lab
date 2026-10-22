@@ -114,7 +114,7 @@ describe('unpaid invoice: reminders (never more than 3 emails), then lapse', () 
     expect((await getSub(s.subId)).status).toBe('lapsed')
   })
 
-  it('paying on time stops the reminders: no final notice, no lapse for the paid month', async () => {
+  it('paying on time stops the reminders: no final notice, no lapse for the paid order', async () => {
     const { processSubscriptions } = await import('@/lib/subscriptions/process')
     const s = await withOpenInvoice()
     await processSubscriptions(payload, s.dueDate) // the due-day reminder goes out
@@ -122,7 +122,7 @@ describe('unpaid invoice: reminders (never more than 3 emails), then lapse', () 
     const m = mark()
     const later = await processSubscriptions(payload, new Date(s.dueDate.getTime() + 10 * DAY))
     expect(later).toMatchObject({ dueDayReminders: 0, finalNotices: 0, lapsed: 0, errors: 0 })
-    // (the NEXT month's invoice may legitimately appear this far in the future - but nothing about the paid month)
+    // (the NEXT order's invoice may legitimately appear this far in the future - but nothing about the paid one)
     expect(since(m).filter((x) => x.to === s.email && /^(Reminder|Final notice)|on hold/.test(x.subject))).toHaveLength(0)
     expect((await getSub(s.subId)).status).toBe('active')
   })
@@ -161,7 +161,7 @@ describe('after the plan is on hold: reactivate, or a late payment', () => {
     return s
   }
 
-  it('"pay to reactivate" creates a fresh invoice for the SAME month; paying it restarts the plan', async () => {
+  it('"pay to reactivate" creates a fresh invoice for the SAME order; paying it restarts the plan', async () => {
     const { reactivateSubscription } = await import('@/lib/subscriptions/service')
     const s = await lapse()
     const res: any = await reactivateSubscription(payload, s.subId)
@@ -195,7 +195,7 @@ describe('after the plan is on hold: reactivate, or a late payment', () => {
     expect(await getSub(s.subId)).toMatchObject({ status: 'active', cyclesCompleted: 2 })
   })
 
-  it('paying the same month twice (old + reactivation invoice) counts it once and alerts support', async () => {
+  it('paying the same order twice (old + reactivation invoice) counts it once and alerts support', async () => {
     const { reactivateSubscription } = await import('@/lib/subscriptions/service')
     const s = await lapse()
     const res: any = await reactivateSubscription(payload, s.subId)
@@ -282,7 +282,7 @@ describe('staff change the status in the admin', () => {
     await processSubscriptions(payload, new Date())
     expect((await getSub(a.subId)).openInvoice).toBeNull()
 
-    // the month's date passed while paused: the next daily run invoices it
+    // the order's date passed while paused: the next daily run invoices it
     const b = await startActiveSubscription(env())
     await payload.update({ collection: 'subscriptions', id: b.subId, data: { status: 'paused' } as any, overrideAccess: true })
     await payload.update({ collection: 'orders', id: b.firstOrderId, data: { paidAt: new Date(Date.now() - 90 * day).toISOString() } as any, overrideAccess: true })
@@ -304,7 +304,7 @@ describe('staff change the status in the admin', () => {
 })
 
 describe('two things at the same instant', () => {
-  it('two "order next month now" clicks create exactly ONE open invoice', async () => {
+  it('two "order next delivery now" clicks create exactly ONE open invoice', async () => {
     const { orderNextMonthNow } = await import('@/lib/subscriptions/service')
     const s = await startActiveSubscription(env())
     const [a, b]: any[] = await Promise.all([orderNextMonthNow(payload, s.subId), orderNextMonthNow(payload, s.subId)])
@@ -318,31 +318,33 @@ describe('two things at the same instant', () => {
     const { orderNextMonthNow } = await import('@/lib/subscriptions/service')
     const { processSubscriptions } = await import('@/lib/subscriptions/process')
     const s = await startActiveSubscription(env())
-    const sub = await getSub(s.subId)
+    // make the invoice date arrive NOW (real clock): passing a made-up future date to the job would also make it
+    // judge the customer's brand-new invoice as months overdue and lapse it - something that cannot happen in real life
+    await payload.update({ collection: 'subscriptions', id: s.subId, data: { nextInvoiceDate: new Date(Date.now() - 3600 * 1000).toISOString() } as any, overrideAccess: true })
     const m = mark()
-    await Promise.all([processSubscriptions(payload, new Date(sub.nextInvoiceDate)), orderNextMonthNow(payload, s.subId)])
+    await Promise.all([processSubscriptions(payload), orderNextMonthNow(payload, s.subId)])
     const open = await sqlOnTestDb(`select id from orders where subscription_id = $1 and order_type = 'subscription_cycle' and status = 'pending' and payment_status = 'unpaid'`, [s.subId])
     expect(open).toHaveLength(1)
     const invoiceMails = since(m).filter((x) => x.to === s.email && /^Subscription invoice/.test(x.subject))
     expect(invoiceMails).toHaveLength(1)
   })
 
-  it('the database itself refuses a second open invoice for the same month', async () => {
+  it('the database itself refuses a second open invoice for the same order number', async () => {
     const s = await withOpenInvoice()
     await expect(
       payload.create({
         collection: 'orders',
         overrideAccess: true,
-        data: { owner: s.user.id, status: 'pending', paymentStatus: 'unpaid', paymentMethod: 'zelle', total: 5, orderType: 'subscription_cycle', subscription: s.subId, cycleNumber: 2, cyclesTotal: 3, items: [{ product: store.product.id, quantity: 1, price: 5 }] } as any,
+        data: { owner: s.user.id, status: 'pending', paymentStatus: 'unpaid', paymentMethod: 'zelle', total: 5, orderType: 'subscription_cycle', subscription: s.subId, cycleNumber: 2, items: [{ product: store.product.id, quantity: 1, price: 5 }] } as any,
       }),
     ).rejects.toThrow()
   })
 })
 
 describe('the generic unpaid-order cleanup leaves subscription invoices alone', () => {
-  it('cancels an abandoned card order after 72h, but never a monthly invoice (it follows its own lapse rules)', async () => {
+  it('cancels an abandoned card order after 72h, but never a subscription invoice (it follows its own lapse rules)', async () => {
     const { expirePendingOrders } = await import('@/lib/orders/expirePending')
-    // a card invoice (month 2) and a card FIRST month nobody paid, both backdated 5 days
+    // a card invoice (order 2) and a card FIRST order nobody paid, both backdated 5 days
     const withInvoice = await withOpenInvoice({ method: 'authnet_bridge' })
     const abandoned = await startActiveSubscription(env(), { method: 'authnet_bridge', markPaid: false })
     await sqlOnTestDb(`update orders set created_at = now() - interval '5 days' where id = any($1)`, [[withInvoice.invoiceId, abandoned.firstOrderId]])

@@ -97,7 +97,7 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
               href={order.subscription ? `/account/subscriptions/${typeof order.subscription === 'object' ? order.subscription.id : order.subscription}` : '/account/subscriptions'}
               className="w-fit rounded-full bg-black text-white text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1.5"
             >
-              Subscription &middot; Month {order.cycleNumber || 1} of {order.cyclesTotal || ''} &mdash; manage
+              Subscription &middot; Order {order.cycleNumber || 1} &mdash; manage
             </Link>
           ) : (
             <span className="w-fit rounded-full bg-gray-100 text-gray-500 text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1.5">One-time order</span>

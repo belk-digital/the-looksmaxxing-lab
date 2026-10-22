@@ -88,7 +88,7 @@ export async function POST(req: Request) {
 
       const isSubscriptionOrder = order.orderType === 'subscription_first' || order.orderType === 'subscription_cycle'
       if (order.paymentMethod !== 'authnet_bridge') {
-        // A subscriber who normally pays by Zelle may still pay a monthly invoice by card from the pay page.
+        // A subscriber who normally pays by Zelle may still pay a recurring invoice by card from the pay page.
         if (isSubscriptionOrder && order.paymentMethod === 'zelle' && order.paymentStatus !== 'captured') {
           await payload.update({ collection: 'orders', id: order.id, data: { paymentMethod: 'authnet_bridge' } as any, overrideAccess: true })
           order.paymentMethod = 'authnet_bridge'
@@ -128,7 +128,7 @@ export async function POST(req: Request) {
       try {
         let finalized: boolean
         if (order.orderType === 'subscription_cycle') {
-          // A monthly invoice: mark it paid. The order hook then updates the subscription and emails the receipt.
+          // A recurring invoice: mark it paid. The order hook then updates the subscription and emails the receipt.
           const { markSubscriptionOrderPaid } = await import('@/lib/subscriptions/service')
           finalized = await markSubscriptionOrderPaid(payload, order.id, { txnId: event.txnId })
         } else {

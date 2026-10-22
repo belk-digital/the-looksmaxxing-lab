@@ -9,6 +9,7 @@ import { Container } from '@/components/ui/container'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { buttonVariants } from '@/components/ui/button'
 import { useCartStore } from '@/lib/cart/store'
+import { everyLabel } from '@/lib/subscriptions/labels'
 
 type OrderItem = {
   id: string
@@ -41,7 +42,7 @@ type OrderData = {
   couponCode?: string
   paymentMethod: string
   paymentStatus?: string
-  subscription?: { month: number; months: number; id: string } | null
+  subscription?: { order: number; everyMonths: number; id: string } | null
 }
 
 export function OrderConfirmationClient({ order }: { order: OrderData }) {
@@ -95,12 +96,12 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
         {order.subscription && (
           <FadeUp delay={0.12} className="w-full max-w-2xl mb-8 print:hidden">
             <div className="bg-ink text-white p-6 rounded-2xl flex flex-col gap-2 text-center shadow-sm" data-testid="subscription-confirmation">
-              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/60">Subscription &middot; Month {order.subscription.month} of {order.subscription.months}</span>
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/60">{order.subscription.order <= 1 ? 'Subscription · First order' : `Subscription · Order ${order.subscription.order}`}</span>
               <h2 className="text-lg font-bold">Your subscription has started</h2>
               <p className="text-sm text-white/80">
                 {order.paymentStatus === 'captured'
-                  ? 'This is your first month. Each following month we email an invoice about a week before it is due, and your order ships once it is paid.'
-                  : 'Your subscription begins as soon as this first payment is confirmed. After that, each month we email an invoice about a week before it is due.'}
+                  ? `This is your first order. After this we email an invoice before each order is due (${everyLabel(order.subscription.everyMonths)}), and your order ships once it is paid.`
+                  : `Your subscription begins as soon as this first payment is confirmed. After that we email an invoice before each order is due (${everyLabel(order.subscription.everyMonths)}).`}
               </p>
               {order.subscription.id && (
                 <Link href={`/account/subscriptions/${order.subscription.id}`} className="mx-auto mt-2 inline-block bg-white text-ink rounded-full px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest">

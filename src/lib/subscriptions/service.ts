@@ -1,12 +1,11 @@
 import type { Payload, PayloadRequest } from 'payload'
-import { addDays, addMonths, invoiceDateFor, nextDueAfterPayment, diffDays, planResume, type ResumePlan } from './schedule'
+import { addDays, addMonths, invoiceDateFor, nextDueAfterPayment, diffDays, planResume, planInterval, type ResumePlan } from './schedule'
 import { getSubscriptionSettings, allowedPaymentMethods, type SubscriptionPaymentMethod } from './settings'
 import {
   cancelUnpaidInvoice,
   createCycleInvoice,
   findOpenInvoice,
   getPaidCycles,
-  nextUnpaidCycle,
 } from './invoices'
 
 type Id = string | number
@@ -40,8 +39,8 @@ const fail = (error: string): { ok: false; error: string } => ({ ok: false, erro
 // ------------------------------------------------------------------------------------------------
 
 /**
- * Brings a subscription in line with the orders that have actually been paid: months paid, status, and the
- * date of the next month. Called whenever a subscription order becomes paid (any payment method).
+ * Brings a subscription in line with the orders that have actually been paid: orders paid, status, and the
+ * date of the next order. Called whenever a subscription order becomes paid (any payment method).
  */
 export async function syncSubscription(payload: Payload, subscriptionId: Id, triggerOrderId?: Id | null, req?: PayloadRequest): Promise<any | null> {
   const sub = await getSubscription(payload, subscriptionId, req)
@@ -49,7 +48,7 @@ export async function syncSubscription(payload: Payload, subscriptionId: Id, tri
 
   const settings = await getSubscriptionSettings(payload)
   const paid = await getPaidCycles(payload, sub.id, req)
-  const total = Number(sub.planMonths)
+  const interval = planInterval(sub.planMonths)
   const cyclesCompleted = paid.size
 
   // Nothing has been paid yet (e.g. a sync fired before the payment landed): leave the status alone.
@@ -65,11 +64,9 @@ export async function syncSubscription(payload: Payload, subscriptionId: Id, tri
   const data: Record<string, unknown> = { cyclesCompleted }
   if (earliestPaid && !sub.startedAt) data.startedAt = earliestPaid.toISOString()
 
+  // A subscription has no end: it keeps going until the customer pauses it (or staff cancel it).
   let status: string = sub.status
-  if (cyclesCompleted >= total) {
-    status = 'completed'
-    Object.assign(data, { nextDueDate: null, nextInvoiceDate: null, openInvoice: null, pausedAt: null, lapsedAt: null })
-  } else if (status === 'cancelled' && !revivable) {
+  if (status === 'cancelled' && !revivable) {
     // Admin-cancelled subscription: record the payment but do not restart billing.
     if (triggerOrderId != null) {
       const { alertAdmin } = await import('@/lib/orders/alerts')
@@ -85,7 +82,7 @@ export async function syncSubscription(payload: Payload, subscriptionId: Id, tri
     if (status === 'active') {
       data.lapsedAt = null
       if (latestPaid) {
-        const due = nextDueAfterPayment(latestPaid)
+        const due = nextDueAfterPayment(latestPaid, interval)
         data.nextDueDate = due.toISOString()
         data.nextInvoiceDate = invoiceDateFor(due, settings.invoiceLeadDays).toISOString()
       }
@@ -93,7 +90,6 @@ export async function syncSubscription(payload: Payload, subscriptionId: Id, tri
       data.nextInvoiceDate = null
     }
   }
-  if (status === 'completed') data.status = 'completed'
 
   // The tracked "open invoice" may have just been paid or cancelled.
   const openId = idOf(sub.openInvoice)
@@ -154,7 +150,7 @@ export interface CheckoutSubscriptionInput {
   customerPhone?: string
   affiliateId?: Id | null
   affiliateClickId?: string | null
-  /** Coupon code that discounts every monthly invoice (only for "every monthly payment" coupons). */
+  /** Coupon code that discounts every invoice (only for "every order" coupons). */
   recurringCouponCode?: string | null
 }
 
@@ -211,7 +207,7 @@ export async function pauseSubscription(payload: Payload, id: Id): Promise<Actio
   const open = await findOpenInvoice(payload, sub.id)
   if (open) await cancelUnpaidInvoice(payload, open.id, 'subscription paused')
 
-  // A pause only stops invoices - it does not move the month's due date. Remember it so "resume" can keep to the calendar.
+  // A pause only stops invoices - it does not move the order's due date. Remember it so "resume" can keep to the calendar.
   const keepDue = open?.invoiceDueDate || sub.nextDueDate || null
   await updateSub(payload, sub.id, {
     status: 'paused',
@@ -228,7 +224,7 @@ async function planResumeFor(payload: Payload, sub: any, now: Date, req?: Payloa
   const settings = await getSubscriptionSettings(payload)
   const paid = await getPaidCycles(payload, sub.id, req)
   const lastPaidAt = [...paid.values()].reduce<Date | null>((m, v) => (!m || v.paidAt > m ? v.paidAt : m), null)
-  return planResume({ now, scheduledDue: sub.nextDueDate ? new Date(sub.nextDueDate) : null, lastPaidAt, leadDays: settings.invoiceLeadDays })
+  return planResume({ now, scheduledDue: sub.nextDueDate ? new Date(sub.nextDueDate) : null, lastPaidAt, leadDays: settings.invoiceLeadDays, intervalMonths: planInterval(sub.planMonths) })
 }
 
 export async function resumeSubscription(payload: Payload, id: Id, now = new Date()): Promise<ActionResult<{ orderId?: Id; scheduledFor?: string }>> {
@@ -236,13 +232,7 @@ export async function resumeSubscription(payload: Payload, id: Id, now = new Dat
   if (!sub) return fail('Subscription not found.')
   if (sub.status !== 'paused') return fail('This subscription is not paused.')
 
-  const paid = await getPaidCycles(payload, sub.id)
-  if (nextUnpaidCycle(paid, Number(sub.planMonths)) === null) {
-    await updateSub(payload, sub.id, { status: 'completed', pausedAt: null, nextDueDate: null, nextInvoiceDate: null })
-    return { ok: true }
-  }
-
-  // The calendar keeps running: the next month keeps its normal date (see planResume).
+  // The calendar keeps running: the next order keeps its normal date (see planResume).
   const plan = await planResumeFor(payload, sub, now)
   if (plan.mode === 'wait') {
     await updateSub(payload, sub.id, {
@@ -267,19 +257,17 @@ export async function resumeSubscription(payload: Payload, id: Id, now = new Dat
 export async function skipNextMonth(payload: Payload, id: Id, now = new Date()): Promise<ActionResult<{ nextDueDate: string }>> {
   const sub = await getSubscription(payload, id)
   if (!sub) return fail('Subscription not found.')
-  if (sub.status !== 'active') return fail('Only an active subscription can skip a month.')
-
-  const paid = await getPaidCycles(payload, sub.id)
-  if (nextUnpaidCycle(paid, Number(sub.planMonths)) === null) return fail('All months of this plan are already paid.')
+  if (sub.status !== 'active') return fail('Only an active subscription can skip a delivery.')
 
   const settings = await getSubscriptionSettings(payload)
   const open = await findOpenInvoice(payload, sub.id)
   const base = new Date(open?.invoiceDueDate || sub.nextDueDate || now)
-  if (open) await cancelUnpaidInvoice(payload, open.id, 'month skipped by customer')
+  if (open) await cancelUnpaidInvoice(payload, open.id, 'delivery skipped by customer')
 
   // Never schedule in the past: if the due date already passed, push from today.
   const from = base < now ? now : base
-  const newDue = addMonths(from, 1)
+  // "Skip" moves the next delivery back by one full interval (1, 3 or 6 months).
+  const newDue = addMonths(from, planInterval(sub.planMonths))
   await updateSub(payload, sub.id, {
     nextDueDate: newDue.toISOString(),
     nextInvoiceDate: invoiceDateFor(newDue, settings.invoiceLeadDays).toISOString(),
@@ -295,23 +283,20 @@ export async function orderNextMonthNow(payload: Payload, id: Id, now = new Date
   if (sub.status === 'lapsed') return fail('Your last invoice was not paid. Use "Pay to reactivate" instead.')
   if (sub.status !== 'active') return fail('This subscription is not active.')
 
-  const paid = await getPaidCycles(payload, sub.id)
-  if (nextUnpaidCycle(paid, Number(sub.planMonths)) === null) return fail('All months of this plan are already paid.')
-
   const open = await findOpenInvoice(payload, sub.id)
-  if (open) return { ok: true, orderId: open.id } // already has an unpaid month - just pay that one
+  if (open) return { ok: true, orderId: open.id } // already has an unpaid order - just pay that one
 
   const settings = await getSubscriptionSettings(payload)
   if (settings.minDaysBetweenEarlyOrders > 0 && sub.lastEarlyOrderAt) {
     const since = diffDays(new Date(sub.lastEarlyOrderAt), now)
     if (since < settings.minDaysBetweenEarlyOrders) {
-      return fail(`You can order the next month again in ${settings.minDaysBetweenEarlyOrders - since} day(s).`)
+      return fail(`You can order the next delivery again in ${settings.minDaysBetweenEarlyOrders - since} day(s).`)
     }
   }
 
   const due = addDays(now, settings.invoiceLeadDays)
   const result = await createCycleInvoice(payload, sub, { reason: 'early', now, dueDate: due })
-  if (!result) return fail('All months of this plan are already paid.')
+  if (!result) return fail('Could not create the invoice. Please try again.')
   await updateSub(payload, sub.id, {
     openInvoice: result.order.id,
     nextDueDate: due.toISOString(),
@@ -322,7 +307,7 @@ export async function orderNextMonthNow(payload: Payload, id: Id, now = new Date
   return { ok: true, orderId: result.order.id }
 }
 
-/** A lapsed subscription: create a fresh invoice for the month that was never paid. */
+/** A lapsed subscription: create a fresh invoice for the order that was never paid. */
 export async function reactivateSubscription(payload: Payload, id: Id, now = new Date()): Promise<ActionResult<{ orderId: Id }>> {
   const sub = await getSubscription(payload, id)
   if (!sub) return fail('Subscription not found.')
@@ -331,7 +316,7 @@ export async function reactivateSubscription(payload: Payload, id: Id, now = new
   const settings = await getSubscriptionSettings(payload)
   const due = addDays(now, settings.invoiceLeadDays)
   const result = await createCycleInvoice(payload, sub, { reason: 'reactivate', now, dueDate: due })
-  if (!result) return fail('All months of this plan are already paid.')
+  if (!result) return fail('Could not create the invoice. Please try again.')
   await updateSub(payload, sub.id, { openInvoice: result.order.id, nextDueDate: due.toISOString(), nextInvoiceDate: null })
   if (result.created) await sendInvoiceNotice(payload, result.order.id, 'reactivate')
   return { ok: true, orderId: result.order.id }
@@ -415,7 +400,7 @@ export async function onSubscriptionStatusChanged(payload: Payload, sub: any, pr
         req,
       )
     } else if (status === 'active' && (previousStatus === 'paused' || previousStatus === 'lapsed')) {
-      // Same rule as the customer's "Resume": keep the month's normal date; if it has passed, the next daily run invoices it.
+      // Same rule as the customer's "Resume": keep the order's normal date; if it has passed, the next daily run invoices it.
       const now = new Date()
       const plan = await planResumeFor(payload, sub, now, req)
       await updateSub(
@@ -445,7 +430,7 @@ export async function onSubscriptionOrderPaid(payload: Payload, order: any, req?
   if (!subscriptionId) return
   await syncSubscription(payload, subscriptionId, order.id, req)
 
-  // Customer-facing receipt for monthly orders and manual (Zelle) first payments. Card first payments get
+  // Customer-facing receipt for recurring orders and manual (Zelle) first payments. Card first payments get
   // their receipt from the normal order-confirmation email that finalizeOrder already sends.
   const needsReceipt = order.orderType === 'subscription_cycle' || (order.orderType === 'subscription_first' && order.paymentMethod === 'zelle')
   if (needsReceipt) {
@@ -475,7 +460,7 @@ export async function onSubscriptionOrderCancelled(payload: Payload, order: any,
 }
 
 /**
- * Marks a monthly order paid (used by the card-payment webhook). Reserves stock first if the invoice had been
+ * Marks a recurring order paid (used by the card-payment webhook). Reserves stock first if the invoice had been
  * cancelled and released, then flips it to paid; the order hook takes care of the subscription from there.
  */
 export async function markSubscriptionOrderPaid(

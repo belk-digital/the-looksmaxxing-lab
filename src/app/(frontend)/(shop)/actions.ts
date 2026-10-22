@@ -266,8 +266,8 @@ async function calculateCartTotals(cartItems: any[], payload: any, coupon?: any)
 
 /**
  * Checks a coupon code against a cart. On a subscription cart the coupon must be switched on for subscriptions
- * ("Can be used on subscriptions"); `options.recurringInvoice` re-checks it for a LATER monthly invoice of a
- * subscription that was started with an "every monthly payment" coupon (expiry/usage limits no longer apply then:
+ * ("Can be used on subscriptions"); `options.recurringInvoice` re-checks it for a LATER invoice of a
+ * subscription that was started with an "every order" coupon (expiry/usage limits no longer apply then:
  * the discount was promised when the customer subscribed).
  */
 export async function verifyCoupon(couponCode: string, subtotal: number, clientCartItems?: any[], options: { recurringInvoice?: boolean } = {}) {

@@ -2,6 +2,10 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import Link from 'next/link'
 
+// Cached for 1 day. Saving a product in the Payload admin clears the cache for this page straight away
+// (see src/hooks/products.ts), so edits show up without waiting for the day to pass.
+export const revalidate = 86400
+
 export const metadata = {
   title: 'All Products | Research-Grade Peptides',
   description: 'Browse all research-grade peptides and compounds from Longevia Research. ≥99% HPLC purity, COA-verified, batch-traceable. Research use only.',

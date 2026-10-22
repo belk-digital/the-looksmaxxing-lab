@@ -18,23 +18,26 @@ describe('buildSubscriptionView - which options the customer sees', () => {
     const v = buildSubscriptionView(sub(), [paid(1)])
     expect(v.actions).toEqual(['order_next_month', 'skip_month', 'pause'])
     expect(v.statusLabel).toBe('Active')
-    expect(v.monthsPaid).toBe(1)
+    expect(v.ordersPaid).toBe(1)
+    expect(v.intervalMonths).toBe(3)
     expect(v.statusHelp).toMatch(/next invoice will be emailed on/i)
   })
 
   it('active with an unpaid invoice: pay now / skip / pause (no early-order while one is open)', () => {
     const v = buildSubscriptionView(sub(), [paid(1), open(2)])
     expect(v.actions).toEqual(['pay_now', 'skip_month', 'pause'])
-    expect(v.openInvoice).toMatchObject({ month: 2, total: 45, payPath: '/pay/202/tok_2' })
-    expect(v.schedule[1]).toMatchObject({ state: 'awaiting_payment', payPath: '/pay/202/tok_2' })
-    expect(v.statusHelp).toMatch(/Month 2 is ready to pay/)
+    expect(v.openInvoice).toMatchObject({ order: 2, total: 45, payPath: '/pay/202/tok_2' })
+    expect(v.schedule[1]).toMatchObject({ order: 2, state: 'awaiting_payment', payPath: '/pay/202/tok_2' })
+    expect(v.schedule).toHaveLength(2) // the open invoice IS the next order: no extra "upcoming" row
+    expect(v.statusHelp).toMatch(/Order 2 is ready to pay/)
   })
 
   it('paused: only resume', () => {
     const v = buildSubscriptionView(sub({ status: 'paused' }), [paid(1)])
     expect(v.actions).toEqual(['resume'])
-    expect(v.schedule.map((r) => r.state)).toEqual(['paid', 'skipped_hold', 'skipped_hold'])
-    expect(v.schedule[1].label).toBe('On pause')
+    expect(v.schedule.map((r) => r.state)).toEqual(['paid', 'skipped_hold'])
+    expect(v.schedule[1]).toMatchObject({ order: 2, label: 'On pause' })
+    expect(v.statusHelp).toMatch(/keeps its normal date/)
   })
 
   it('lapsed: reactivate (or pay the fresh invoice) and pause', () => {
@@ -43,19 +46,42 @@ describe('buildSubscriptionView - which options the customer sees', () => {
     expect(buildSubscriptionView(sub({ status: 'lapsed' }), [paid(1)]).statusTone).toBe('red')
   })
 
-  it('completed / cancelled / waiting for first payment: no buttons', () => {
-    expect(buildSubscriptionView(sub({ status: 'completed' }), [paid(1), paid(2), paid(3)]).actions).toEqual([])
+  it('ended / cancelled / waiting for first payment: no buttons, and nothing is planned after the last order', () => {
+    const ended = buildSubscriptionView(sub({ status: 'completed' }), [paid(1), paid(2), paid(3)])
+    expect(ended.actions).toEqual([])
+    expect(ended.statusLabel).toBe('Ended')
+    expect(ended.schedule.map((r) => r.state)).toEqual(['paid', 'paid', 'paid']) // no "upcoming" row
     expect(buildSubscriptionView(sub({ status: 'cancelled' }), [paid(1)]).actions).toEqual([])
     const first = buildSubscriptionView(sub({ status: 'pending_payment' }), [])
     expect(first.actions).toEqual([])
     expect(first.statusLabel).toBe('Waiting for first payment')
+    expect(first.schedule).toEqual([{ order: 1, state: 'upcoming', label: 'Waiting for first payment', date: null }])
   })
 
-  it('an active plan whose months are all paid offers nothing', () => {
-    expect(buildSubscriptionView(sub({ status: 'active' }), [paid(1), paid(2), paid(3)]).actions).toEqual([])
+  it('a subscription never runs out: after any number of paid orders the options stay and the next order is listed', () => {
+    const v = buildSubscriptionView(sub({ planMonths: 1, cyclesCompleted: 5 }), [1, 2, 3, 4, 5].map((n) => paid(n)))
+    expect(v.actions).toEqual(['order_next_month', 'skip_month', 'pause'])
+    expect(v.ordersPaid).toBe(5)
+    expect(v.schedule[v.schedule.length - 1]).toMatchObject({ order: 6, state: 'upcoming', date: '2026-11-20T00:00:00Z' })
   })
 
-  it('"order next month now" respects the minimum days between early orders', () => {
+  it('the interval is the plan length (1, 3 or 6 months); anything odd counts as 1', () => {
+    for (const months of [1, 3, 6]) expect(buildSubscriptionView(sub({ planMonths: months }), [paid(1)]).intervalMonths).toBe(months)
+    expect(buildSubscriptionView(sub({ planMonths: 0 }), [paid(1)]).intervalMonths).toBe(1)
+    expect(buildSubscriptionView(sub({ planMonths: 'x' as any }), [paid(1)]).intervalMonths).toBe(1)
+  })
+
+  it('a long history shows only the newest orders (plus the next one) and says how many older ones are hidden', () => {
+    const v = buildSubscriptionView(sub({ planMonths: 1, cyclesCompleted: 12 }), Array.from({ length: 12 }, (_, i) => paid(i + 1)))
+    expect(v.schedule).toHaveLength(8)
+    expect(v.olderOrders).toBe(5) // 12 paid + 1 upcoming = 13 rows; the 5 oldest are not listed
+    expect(v.schedule[0].order).toBe(6)
+    expect(v.schedule[7]).toMatchObject({ order: 13, state: 'upcoming' })
+    expect(v.ordersPaid).toBe(12)
+    expect(buildSubscriptionView(sub(), [paid(1)]).olderOrders).toBe(0)
+  })
+
+  it('"order next delivery now" respects the minimum days between early orders', () => {
     const blocked = buildSubscriptionView(sub(), [paid(1)], { minDaysBetweenEarlyOrders: 7, daysSinceLastEarlyOrder: 2 })
     expect(blocked.actions).not.toContain('order_next_month')
     expect(blocked.actions).toContain('skip_month')
@@ -65,20 +91,20 @@ describe('buildSubscriptionView - which options the customer sees', () => {
     expect(never.actions).toContain('order_next_month')
   })
 
-  it('month rows show paid / shipped / delivered with tracking, and upcoming', () => {
-    const v = buildSubscriptionView(sub({ planMonths: 4, cyclesCompleted: 3 }), [
+  it('order rows show paid / shipped / delivered with tracking, and upcoming', () => {
+    const v = buildSubscriptionView(sub({ cyclesCompleted: 3 }), [
       paid(1, { status: 'completed' }),
       paid(2, { status: 'shipped', trackingLink: 'https://track/2' }),
       paid(3),
     ])
     expect(v.schedule.map((r) => r.state)).toEqual(['delivered', 'shipped', 'paid', 'upcoming'])
     expect(v.schedule[1].trackingLink).toBe('https://track/2')
-    expect(v.monthsPaid).toBe(3)
+    expect(v.ordersPaid).toBe(3)
   })
 
-  it('cancelled invoices are ignored, and a double-paid month counts once', () => {
+  it('cancelled invoices are ignored, and a double-paid order counts once', () => {
     const v = buildSubscriptionView(sub(), [paid(1), open(2, { status: 'cancelled' }), paid(2), paid(2, { id: 999, paidAt: '2026-12-01T00:00:00Z' })])
-    expect(v.monthsPaid).toBe(2)
+    expect(v.ordersPaid).toBe(2)
     expect(v.schedule[1].state).toBe('paid')
     expect(v.openInvoice).toBeNull()
   })
@@ -111,12 +137,13 @@ describe('cartConflict - subscriptions are checked out on their own', () => {
 })
 
 describe('invoice helpers', () => {
-  it('finds the first unpaid month', () => {
-    expect(nextUnpaidCycle(new Map(), 3)).toBe(1)
-    expect(nextUnpaidCycle(new Map([[1, 1]]), 3)).toBe(2)
-    expect(nextUnpaidCycle(new Map([[1, 1], [3, 1]]), 3)).toBe(2) // gap: month 2 still owed
-    expect(nextUnpaidCycle(new Map([[1, 1], [2, 1], [3, 1]]), 3)).toBeNull()
-    expect(nextUnpaidCycle(new Set([1, 2]), 3)).toBe(3)
+  it('finds the first unpaid order number - there is always one, a subscription has no end', () => {
+    expect(nextUnpaidCycle(new Map())).toBe(1)
+    expect(nextUnpaidCycle(new Map([[1, 1]]))).toBe(2)
+    expect(nextUnpaidCycle(new Map([[1, 1], [3, 1]]))).toBe(2) // gap: order 2 still owed
+    expect(nextUnpaidCycle(new Map([[1, 1], [2, 1], [3, 1]]))).toBe(4)
+    expect(nextUnpaidCycle(new Set([1, 2]))).toBe(3)
+    expect(nextUnpaidCycle(new Set(Array.from({ length: 200 }, (_, i) => i + 1)))).toBe(201)
   })
   it('tokens are long, unique, URL-safe and compared exactly', () => {
     const a = newInvoiceToken()
@@ -136,15 +163,16 @@ describe('invoice helpers', () => {
 
 describe('subscription emails', () => {
   const invoice = (over: any = {}) => ({
-    id: 7, orderNumber: '1007', cycleNumber: 2, cyclesTotal: 6, total: 45.5, subtotal: 40.5, shippingTotal: 5, feeTotal: 0,
+    id: 7, orderNumber: '1007', cycleNumber: 2, total: 45.5, subtotal: 40.5, shippingTotal: 5, feeTotal: 0,
     subscriptionDiscountPercent: 15, invoiceDueDate: '2026-11-20T00:00:00Z', invoiceToken: 'secrettoken123456789', paymentMethod: 'authnet_bridge',
     customerFirstName: 'Ann', items: [{ productSnapshot: { name: 'BPC-157' }, variant: '10mg', quantity: 2, price: 20.25 }], ...over,
   })
 
-  it('card invoice: clearly a subscription, shows month, amount, due date and a pay-by-card link', () => {
+  it('card invoice: clearly a subscription, shows the order number, amount, due date and a pay-by-card link', () => {
     const { subject, html } = buildInvoiceEmail({ order: invoice(), subscriptionId: 9, reason: 'scheduled' })
-    expect(subject).toBe('Subscription invoice #1007 - Month 2 of 6 (due November 20, 2026)')
-    expect(html).toContain('Subscription · Month 2 of 6')
+    expect(subject).toBe('Subscription invoice #1007 - Order 2 (due November 20, 2026)')
+    expect(html).toContain('Subscription · Order 2')
+    expect(html).toContain('Your invoice')
     expect(html).toContain('$45.50')
     expect(html).toContain('/pay/7/secrettoken123456789')
     expect(html).toContain('Pay $45.50 by card')
@@ -178,13 +206,32 @@ describe('subscription emails', () => {
     expect(lapse.html).toContain('Reactivate my subscription')
   })
 
-  it('payment received: names the month and the next invoice date; last month says thank you', () => {
+  it('payment received: names the order and the next invoice date; there is no "last month" - it just continues', () => {
     const mid = buildPaymentReceivedEmail({ order: invoice(), subscriptionId: 9, nextDueDate: '2026-12-20T00:00:00Z' })
-    expect(mid.subject).toBe('Payment received - Subscription order #1007 (Month 2 of 6)')
-    expect(mid.html).toMatch(/4 months to go/)
+    expect(mid.subject).toBe('Payment received - Subscription order #1007 (Order 2)')
     expect(mid.html).toContain('December 20, 2026')
-    const last = buildPaymentReceivedEmail({ order: invoice({ cycleNumber: 6 }), subscriptionId: 9 })
-    expect(last.html).toMatch(/last month of your plan/)
+    expect(mid.html).toMatch(/next invoice will be emailed before/)
+    expect(mid.html).not.toMatch(/to go|last month/)
+    const noDate = buildPaymentReceivedEmail({ order: invoice({ cycleNumber: 6 }), subscriptionId: 9 })
+    expect(noDate.subject).toContain('Order 6')
+    expect(noDate.html).not.toMatch(/next invoice will be emailed/)
+  })
+
+  it('every email says how often the customer gets an order ("why am I getting this")', () => {
+    const order = invoice()
+    for (const [months, words] of [[1, 'every month'], [3, 'every 3 months'], [6, 'every 6 months']] as const) {
+      for (const m of [
+        buildInvoiceEmail({ order, subscriptionId: 9, reason: 'scheduled', intervalMonths: months }),
+        buildReminderEmail({ order, subscriptionId: 9, stage: 1, intervalMonths: months }),
+        buildLapseEmail({ order, subscriptionId: 9, intervalMonths: months }),
+        buildPaymentReceivedEmail({ order, subscriptionId: 9, intervalMonths: months }),
+      ]) {
+        expect(m.html).toContain(`have an order delivered ${words} from Longevia Research`)
+        expect(m.html).toContain('never charge your card automatically')
+      }
+    }
+    // when the interval is unknown the wording stays truthful
+    expect(buildInvoiceEmail({ order, subscriptionId: 9, reason: 'scheduled' }).html).toContain('on a regular schedule')
   })
 
   it('escapes customer-controlled text so a name can never inject HTML into an email', () => {

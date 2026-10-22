@@ -7,7 +7,9 @@ import {
   invoiceDateFor,
   desiredReminderStage,
   planResume,
+  planInterval,
 } from '@/lib/subscriptions/schedule'
+import { everyLabel, EveryLabel, orderLabel, ordersCount } from '@/lib/subscriptions/labels'
 import { applyPlanDiscount } from '@/lib/subscriptions/discount'
 import {
   DEFAULT_SUBSCRIPTION_SETTINGS,
@@ -41,8 +43,35 @@ describe('addMonths', () => {
 })
 
 describe('schedule helpers', () => {
-  it('next due is one calendar month after payment', () => {
-    expect(iso(nextDueAfterPayment(d('2026-10-20T09:00:00Z')))).toBe('2026-11-20')
+  it('next due is one INTERVAL after payment: 1, 3 or 6 calendar months', () => {
+    const paid = d('2026-10-20T09:00:00Z')
+    expect(iso(nextDueAfterPayment(paid, 1))).toBe('2026-11-20')
+    expect(iso(nextDueAfterPayment(paid, 3))).toBe('2027-01-20')
+    expect(iso(nextDueAfterPayment(paid, 6))).toBe('2027-04-20')
+  })
+  it('month-end payments clamp for every interval (never spill into the next month)', () => {
+    expect(iso(nextDueAfterPayment(d('2026-08-31T09:00:00Z'), 6))).toBe('2027-02-28')
+    expect(iso(nextDueAfterPayment(d('2027-08-31T09:00:00Z'), 6))).toBe('2028-02-29')
+    expect(iso(nextDueAfterPayment(d('2026-11-30T09:00:00Z'), 3))).toBe('2027-02-28')
+    expect(iso(nextDueAfterPayment(d('2026-01-31T09:00:00Z'), 1))).toBe('2026-02-28')
+  })
+  it('planInterval: the plan length is the interval; anything that is not a whole number >= 1 counts as 1', () => {
+    expect(planInterval(1)).toBe(1)
+    expect(planInterval(3)).toBe(3)
+    expect(planInterval('6')).toBe(6)
+    expect(planInterval(2.6)).toBe(3)
+    for (const bad of [0, -2, NaN, 'x', null, undefined]) expect(planInterval(bad), String(bad)).toBe(1)
+  })
+  it('the words the customer reads: every month / every 3 months / every 6 months, Order 3, 5 orders', () => {
+    expect(everyLabel(1)).toBe('every month')
+    expect(everyLabel(3)).toBe('every 3 months')
+    expect(EveryLabel(1)).toBe('Every month')
+    expect(EveryLabel(6)).toBe('Every 6 months')
+    expect(orderLabel(3)).toBe('Order 3')
+    expect(orderLabel(null)).toBe('Subscription order')
+    expect(orderLabel(0)).toBe('Subscription order')
+    expect(ordersCount(1)).toBe('1 order')
+    expect(ordersCount(5)).toBe('5 orders')
   })
   it('invoice date is lead days before the due date', () => {
     expect(iso(invoiceDateFor(d('2026-11-20T00:00:00Z'), 7))).toBe('2026-11-13')
@@ -103,12 +132,14 @@ describe('applyPlanDiscount', () => {
 })
 
 describe('subscription settings', () => {
-  it('defaults: off, 3/6/12 months at 15%, both payment methods', () => {
+  it('defaults: off; an order every 1 / 3 / 6 months at 25% / 20% / 15%; both payment methods', () => {
     const s = DEFAULT_SUBSCRIPTION_SETTINGS
     expect(s.enabled).toBe(false)
-    expect(s.plans.map((p) => [p.months, p.discountPercent])).toEqual([[3, 15], [6, 15], [12, 15]])
+    expect(s.plans.map((p) => [p.months, p.discountPercent])).toEqual([[1, 25], [3, 20], [6, 15]])
     expect(allowedPaymentMethods(s)).toEqual(['authnet_bridge', 'zelle'])
-    expect(findActivePlan(s, 6)?.label).toBe('6 Months')
+    expect(findActivePlan(s, 6)?.label).toBe('Every 6 months')
+    expect(findActivePlan(s, 1)?.label).toBe('Every month')
+    expect(findActivePlan(s, 12)).toBeUndefined()
     expect(findActivePlan(s, 5)).toBeUndefined()
   })
 
@@ -155,8 +186,8 @@ describe('planResume: after a pause the calendar keeps running', () => {
   // month 1 was paid on Oct 20, so month 2 is due Nov 20 and its invoice goes out on Nov 13 (7 days before)
   const paid = d('2026-10-20T10:00:00Z')
   const due = d('2026-11-20T10:00:00Z')
-  const plan = (now: string, over: Partial<{ scheduledDue: Date | null; lastPaidAt: Date | null; leadDays: number }> = {}) =>
-    planResume({ now: d(now), scheduledDue: due, lastPaidAt: paid, leadDays: 7, ...over })
+  const plan = (now: string, over: Partial<{ scheduledDue: Date | null; lastPaidAt: Date | null; leadDays: number; intervalMonths: number }> = {}) =>
+    planResume({ now: d(now), scheduledDue: due, lastPaidAt: paid, leadDays: 7, intervalMonths: 1, ...over })
 
   it('a short pause: nothing is invoiced now, the month keeps its normal dates', () => {
     const p = plan('2026-10-25T09:00:00Z')
@@ -214,7 +245,7 @@ describe('planResume: after a pause the calendar keeps running', () => {
   })
 
   it('with nothing known at all it invoices now (safe fallback), 7 days to pay', () => {
-    const p = planResume({ now: d('2026-10-25T09:00:00Z'), scheduledDue: null, lastPaidAt: null, leadDays: 7 })
+    const p = planResume({ now: d('2026-10-25T09:00:00Z'), scheduledDue: null, lastPaidAt: null, leadDays: 7, intervalMonths: 1 })
     expect(p.mode).toBe('invoice_now')
     expect(iso(p.dueDate)).toBe('2026-11-01')
   })
@@ -234,5 +265,44 @@ describe('planResume: after a pause the calendar keeps running', () => {
   it('lead time 0: invoiced on the due day itself', () => {
     expect(plan('2026-11-19T09:00:00Z', { leadDays: 0 }).mode).toBe('wait')
     expect(plan('2026-11-20T11:00:00Z', { leadDays: 0 }).mode).toBe('invoice_now')
+  })
+})
+
+describe('planResume with a 3 or 6 month interval', () => {
+  const paid = d('2026-10-20T10:00:00Z')
+  const run = (now: string, intervalMonths: number, over: Partial<{ scheduledDue: Date | null }> = {}) =>
+    planResume({ now: d(now), scheduledDue: null, lastPaidAt: paid, leadDays: 7, intervalMonths, ...over })
+
+  it('3 months: paid Oct 20 -> next due Jan 20 (invoice Jan 13); a pause in November changes nothing', () => {
+    const p = run('2026-11-25T09:00:00Z', 3)
+    expect(p.mode).toBe('wait')
+    expect(iso(p.dueDate)).toBe('2027-01-20')
+    expect(iso(p.invoiceDate)).toBe('2027-01-13')
+  })
+
+  it('6 months: paid Oct 20 -> next due Apr 20 (invoice Apr 13); resuming in January still waits', () => {
+    const p = run('2027-01-10T09:00:00Z', 6)
+    expect(p.mode).toBe('wait')
+    expect(iso(p.dueDate)).toBe('2027-04-20')
+    expect(iso(p.invoiceDate)).toBe('2027-04-13')
+  })
+
+  it('a long pause past the due date invoices right away with 7 days to pay, whatever the interval', () => {
+    for (const interval of [1, 3, 6]) {
+      const p = run('2027-09-01T09:00:00Z', interval)
+      expect(p.mode, String(interval)).toBe('invoice_now')
+      expect(iso(p.dueDate), String(interval)).toBe('2027-09-08')
+    }
+  })
+
+  it('a skipped (later) due date is kept for every interval', () => {
+    const p = run('2027-01-10T09:00:00Z', 3, { scheduledDue: d('2027-04-20T10:00:00Z') })
+    expect(p.mode).toBe('wait')
+    expect(iso(p.dueDate)).toBe('2027-04-20')
+  })
+
+  it('a stored date earlier than paid + interval is ignored (the rule is: one interval after the last payment)', () => {
+    const p = run('2026-11-25T09:00:00Z', 6, { scheduledDue: d('2026-11-22T10:00:00Z') })
+    expect(iso(p.dueDate)).toBe('2027-04-20')
   })
 })

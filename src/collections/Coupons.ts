@@ -48,14 +48,14 @@ export const Coupons: CollectionConfig = {
       label: 'On a subscription, the discount applies to',
       defaultValue: 'first_month',
       options: [
-        { label: 'First month only', value: 'first_month' },
-        { label: 'Every monthly payment', value: 'every_month' },
+        { label: 'First order only', value: 'first_month' },
+        { label: 'Every order', value: 'every_month' },
       ],
       admin: {
         position: 'sidebar',
         condition: (_, siblingData) => !!siblingData?.allowOnSubscriptions,
         description:
-          'First month only: taken off the first payment, later monthly invoices are at the normal plan price. Every monthly payment: also taken off every later monthly invoice for the whole plan, even after the coupon\'s expiry date (to stop it, switch "Can be used on subscriptions" off or delete the coupon). Not available for Store Credit coupons.',
+          'First order only: taken off the first payment, later invoices are at the normal plan price. Every order: also taken off every later invoice for as long as the subscription runs, even after the coupon\'s expiry date (to stop it, switch "Can be used on subscriptions" off or delete the coupon). Not available for Store Credit coupons.',
       },
     },
     {

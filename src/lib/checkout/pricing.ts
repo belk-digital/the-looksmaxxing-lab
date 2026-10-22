@@ -6,7 +6,7 @@ import { getSubscriptionSettings, findActivePlan } from '@/lib/subscriptions/set
 
 /**
  * The single source of truth for what an order costs. Used by the Stripe PaymentIntent, the order
- * creation, and (for subscriptions) the monthly invoice job, so they can never disagree - the
+ * creation, and (for subscriptions) the invoice job, so they can never disagree - the
  * payment checks compare the amounts produced here.
  */
 
@@ -16,14 +16,14 @@ export interface PricingOptions {
   /** Reject carts whose client price snapshot differs from the live price. Default true. */
   detectPriceChange?: boolean
   /**
-   * Price every item as part of this subscription plan (used for monthly invoices of an existing
+   * Price every item as part of this subscription plan (used for later invoices of an existing
    * subscription: the discount is the one locked in at purchase, and eligibility checks are skipped).
    */
   plan?: { months: number; discountPercent: number }
   /** If the chosen shipping method's minimum order is no longer met, fall back instead of failing. */
   lenientShipping?: boolean
   /**
-   * The coupon is the "every monthly payment" coupon this subscription was started with (monthly invoices): it is
+   * The coupon is the "every order" coupon this subscription was started with (later invoices): it is
    * re-checked on those terms, and if it no longer qualifies the invoice is simply created without the discount.
    */
   recurringCoupon?: boolean
@@ -198,7 +198,7 @@ export async function computeOrderPricing(
         error: `Your cart subtotal must be at least $${selectedMethod.minOrderAmount} to use ${selectedMethod.method}.`,
       }
     }
-    // Monthly invoices: a later price change must not block the invoice - use a method with no minimum.
+    // Later invoices: a later price change must not block the invoice - use a method with no minimum.
     selectedMethod = methods.find((m: any) => !m.minOrderAmount) || methods[0]
   }
   const usedShippingName: string = selectedMethod?.method ?? shippingMethodName

@@ -19,6 +19,7 @@ import {
 import { TONES } from '../SubscriptionsClient'
 import { InfoTip } from '@/components/ui/InfoTip'
 import { HELP } from '@/lib/subscriptions/helpText'
+import { everyLabel, ordersCount } from '@/lib/subscriptions/labels'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
@@ -29,7 +30,7 @@ export interface SubscriptionDetailModel {
   planMonths: number
   discountPercent: number
   paymentMethod: string
-  /** A coupon that is taken off every monthly invoice (set when the customer subscribed with an "every monthly payment" coupon). */
+  /** A coupon that is taken off every invoice (set when the customer subscribed with an "every order" coupon). */
   recurringCouponCode: string | null
   allowedPaymentMethods: string[]
   items: { name: string; variant: string; quantity: number }[]
@@ -119,7 +120,7 @@ export function SubscriptionDetailClient({ model }: { model: SubscriptionDetailM
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           <div className="min-w-0">
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
-              {model.reference} &middot; {model.planMonths}-month plan &middot; {model.discountPercent}% off
+              {`${model.reference} · Delivered ${everyLabel(model.planMonths)} · ${model.discountPercent}% off`}
               <InfoTip label="What is the plan discount?">{HELP.planDiscount}</InfoTip>
             </span>
             <h1 className={`text-3xl font-bold tracking-tighter text-black mt-1 ${spaceGrotesk.className}`}>
@@ -140,19 +141,17 @@ export function SubscriptionDetailClient({ model }: { model: SubscriptionDetailM
           <div className="flex justify-between text-sm text-gray-600 mb-2">
             <span className="inline-flex items-center gap-1.5">
               <span>
-                <strong className="text-black">{view.monthsPaid}</strong> of {view.monthsTotal} months paid
+                <strong className="text-black">{ordersCount(view.ordersPaid)}</strong>
+                {` paid · a new order ${everyLabel(model.planMonths)}`}
               </span>
-              <InfoTip label="What counts as a paid month?">{HELP.monthsPaid}</InfoTip>
+              <InfoTip label="How often will I get an order?">{HELP.orderSchedule}</InfoTip>
             </span>
             {view.nextInvoiceDate && view.actions.includes('order_next_month') && <span>Next invoice: {day(view.nextInvoiceDate)}</span>}
           </div>
-          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div className="h-full bg-black rounded-full transition-all" style={{ width: `${Math.min(100, (view.monthsPaid / Math.max(1, view.monthsTotal)) * 100)}%` }} />
-          </div>
-          <p className="text-sm text-gray-600 mt-4">{view.statusHelp}</p>
+          <p className="text-sm text-gray-600 mt-2" data-testid="status-help">{view.statusHelp}</p>
           {model.recurringCouponCode && (
             <p className="text-sm text-gray-600 mt-2 flex items-center gap-1.5" data-testid="recurring-coupon-note">
-              <span>{`Coupon ${model.recurringCouponCode} is applied to every monthly invoice.`}</span>
+              <span>{`Coupon ${model.recurringCouponCode} is applied to every order.`}</span>
               <InfoTip label="How does my coupon work?">{HELP.couponEveryMonth}</InfoTip>
             </p>
           )}
@@ -175,17 +174,17 @@ export function SubscriptionDetailClient({ model }: { model: SubscriptionDetailM
           )}
 
           {has('order_next_month') && (
-            <Action label="What does Order next month now do?" tip={HELP.actions.orderNextMonth}>
+            <Action label="What does Order next delivery now do?" tip={HELP.actions.orderNextMonth}>
             <button
               className={btnDark}
               disabled={working}
               onClick={() => {
-                if (window.confirm('Order next month now? An invoice for your next monthly order is created right away so you can pay it today.')) {
+                if (window.confirm('Order your next delivery now? An invoice for your next order is created right away so you can pay it today.')) {
                   run('order', () => orderNextMonthAction(model.id))
                 }
               }}
             >
-              {busy === 'order' ? <Loader2 size={14} className="animate-spin" /> : <ShoppingBag size={14} />} Order next month now
+              {busy === 'order' ? <Loader2 size={14} className="animate-spin" /> : <ShoppingBag size={14} />} Order next delivery now
             </button>
             </Action>
           )}
@@ -211,21 +210,21 @@ export function SubscriptionDetailClient({ model }: { model: SubscriptionDetailM
           )}
 
           {has('skip_month') && (
-            <Action label="What does Skip next month do?" tip={HELP.actions.skip}>
+            <Action label="What does Skip next delivery do?" tip={HELP.actions.skip}>
             <button
               className={btnLight}
               disabled={working}
               onClick={() => {
                 if (
                   window.confirm(
-                    `Skip next month? Your next shipment moves from ${day(model.skipFrom)} to ${day(model.skipTo)}. You still get all ${model.planMonths} months - your plan just ends a month later.${view.openInvoice ? ' The unpaid invoice will be cancelled.' : ''}`,
+                    `Skip next delivery? Your next order moves from ${day(model.skipFrom)} to ${day(model.skipTo)} (one full interval, ${everyLabel(model.planMonths)}).${view.openInvoice ? ' The unpaid invoice will be cancelled.' : ''}`,
                   )
                 ) {
-                  run('skip', () => skipMonthAction(model.id), `Skipped. Your next shipment is now around ${day(model.skipTo)}.`)
+                  run('skip', () => skipMonthAction(model.id), `Skipped. Your next order is now around ${day(model.skipTo)}.`)
                 }
               }}
             >
-              {busy === 'skip' ? <Loader2 size={14} className="animate-spin" /> : <FastForward size={14} />} Skip next month
+              {busy === 'skip' ? <Loader2 size={14} className="animate-spin" /> : <FastForward size={14} />} Skip next delivery
             </button>
             </Action>
           )}
@@ -236,7 +235,7 @@ export function SubscriptionDetailClient({ model }: { model: SubscriptionDetailM
               className={btnLight}
               disabled={working}
               onClick={() => {
-                if (window.confirm('Pause your subscription? No invoices will be sent while paused, and any unpaid invoice is cancelled. Your next month keeps its normal date. You can resume anytime.')) {
+                if (window.confirm('Pause your subscription? No invoices will be sent while paused, and any unpaid invoice is cancelled. Your next order keeps its normal date. You can resume anytime.')) {
                   run('pause', () => pauseSubscriptionAction(model.id), 'Subscription paused.')
                 }
               }}
@@ -252,6 +251,9 @@ export function SubscriptionDetailClient({ model }: { model: SubscriptionDetailM
             </Link>
           )}
         </div>
+        {['active', 'paused', 'lapsed'].includes(model.status) && (
+          <p className="mt-4 text-xs text-gray-500" data-testid="stop-for-good">{HELP.stopForGood}</p>
+        )}
       </div>
 
       {/* ---------- what the options mean (plain words, visible without hovering) ---------- */}
@@ -266,10 +268,10 @@ export function SubscriptionDetailClient({ model }: { model: SubscriptionDetailM
               <div><dt className="font-bold text-black">Pay now</dt><dd>{HELP.actions.payNow}</dd></div>
             )}
             {view.actions.includes('order_next_month') && (
-              <div><dt className="font-bold text-black">Order next month now</dt><dd>{HELP.actions.orderNextMonth}</dd></div>
+              <div><dt className="font-bold text-black">Order next delivery now</dt><dd>{HELP.actions.orderNextMonth}</dd></div>
             )}
             {view.actions.includes('skip_month') && (
-              <div><dt className="font-bold text-black">Skip next month</dt><dd>{HELP.actions.skip}</dd></div>
+              <div><dt className="font-bold text-black">Skip next delivery</dt><dd>{HELP.actions.skip}</dd></div>
             )}
             {view.actions.includes('pause') && (
               <div><dt className="font-bold text-black">Pause subscription</dt><dd>{HELP.actions.pause}</dd></div>
@@ -288,15 +290,21 @@ export function SubscriptionDetailClient({ model }: { model: SubscriptionDetailM
       {/* ---------- schedule ---------- */}
       <div className="bg-white border border-gray-100 rounded-3xl shadow-sm p-6 md:p-8">
         <h2 className={`text-xl font-bold text-black mb-4 flex items-center gap-2 ${spaceGrotesk.className}`}>
-          Your {model.planMonths} months
+          Your orders
           <InfoTip label="How do I read this list?">{HELP.schedule}</InfoTip>
         </h2>
+        {view.olderOrders > 0 && (
+          <p className="text-xs text-gray-500 -mt-2 mb-3" data-testid="older-orders-note">
+            {`Showing your latest orders - ${ordersCount(view.olderOrders)} older than these are in `}
+            <Link href="/account/orders" className="underline">My orders</Link>.
+          </p>
+        )}
         <ul className="divide-y divide-gray-100">
           {view.schedule.map((row) => (
-            <li key={row.month} className="py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 justify-between">
+            <li key={row.order} className="py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 justify-between">
               <div className="flex items-center gap-4 min-w-0">
                 <span className="w-9 h-9 shrink-0 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center text-sm font-bold text-black">
-                  {row.month}
+                  {row.order}
                 </span>
                 <div className="min-w-0">
                   <span className={`inline-block px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-[0.1em] ${ROW_TONE[row.state]}`}>
@@ -339,7 +347,7 @@ export function SubscriptionDetailClient({ model }: { model: SubscriptionDetailM
           How you pay future invoices
           <InfoTip label="Will my card be charged automatically?">{HELP.paymentMethod}</InfoTip>
         </h2>
-        <p className="text-sm text-gray-500 mb-4">We email you a pay link (card) or Zelle instructions each month - we never charge you automatically. You can still pay any single invoice the other way from its pay page.</p>
+        <p className="text-sm text-gray-500 mb-4">We email you a pay link (card) or Zelle instructions whenever an order is due - we never charge you automatically. You can still pay any single invoice the other way from its pay page.</p>
         <div className="flex flex-wrap items-center gap-3">
           {model.allowedPaymentMethods.map((m) => (
             <label
@@ -366,7 +374,7 @@ export function SubscriptionDetailClient({ model }: { model: SubscriptionDetailM
           Shipping address
           <InfoTip label="Which orders use this address?">{HELP.address}</InfoTip>
         </h2>
-        <p className="text-sm text-gray-500 mb-4">Used for all future monthly orders (and any unpaid invoice).</p>
+        <p className="text-sm text-gray-500 mb-4">Used for all future orders (and any unpaid invoice).</p>
         <form
           className="grid grid-cols-1 sm:grid-cols-2 gap-4"
           onSubmit={(e) => {

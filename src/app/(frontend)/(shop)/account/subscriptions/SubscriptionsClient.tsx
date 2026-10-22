@@ -8,6 +8,7 @@ import { Space_Grotesk } from 'next/font/google'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { InfoTip } from '@/components/ui/InfoTip'
 import { HELP } from '@/lib/subscriptions/helpText'
+import { everyLabel, ordersCount } from '@/lib/subscriptions/labels'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
@@ -20,8 +21,7 @@ export interface SubscriptionCard {
   status: string
   statusLabel: string
   statusTone: 'green' | 'amber' | 'blue' | 'red' | 'gray'
-  monthsPaid: number
-  monthsTotal: number
+  ordersPaid: number
   help: string
   needsPayment: boolean
 }
@@ -47,14 +47,14 @@ export function SubscriptionsClient({ subscriptions }: { subscriptions: Subscrip
           My Subscriptions
           <InfoTip label="What is a subscription?" align="center">{HELP.whatIsSubscription}</InfoTip>
         </h1>
-        <p className="text-sm text-gray-500">Your monthly plans. Each month is invoiced by email and ships after it is paid.</p>
+        <p className="text-sm text-gray-500">Your subscriptions. Each order is invoiced by email when it is due and ships after it is paid.</p>
       </div>
 
       {subscriptions.length === 0 ? (
         <EmptyState
           icon={Repeat}
           title="No subscriptions yet"
-          description="Choose 'Subscribe & save' on a product page to get a 3, 6 or 12 month plan at a lower price."
+          description="Choose 'Subscribe & save' on a product page to get a regular delivery - every month, every 3 months or every 6 months - at a lower price."
           action={
             <Link href="/shop" className="bg-black text-white rounded-full px-8 py-3 text-[11px] font-bold uppercase tracking-[0.15em]">
               Browse products
@@ -73,7 +73,7 @@ export function SubscriptionsClient({ subscriptions }: { subscriptions: Subscrip
             >
               <div className="flex flex-col gap-2 min-w-0">
                 <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
-                  {s.reference} &middot; {s.planMonths}-month plan &middot; {s.discountPercent}% off
+                  {`${s.reference} · Delivered ${everyLabel(s.planMonths)} · ${s.discountPercent}% off`}
                 </span>
                 <span className="text-lg font-bold text-black truncate">{s.products.join(', ') || 'Subscription'}</span>
                 <span className="text-sm text-gray-500">{s.help}</span>
@@ -88,9 +88,9 @@ export function SubscriptionsClient({ subscriptions }: { subscriptions: Subscrip
                 </div>
                 <span className="inline-flex items-center gap-1.5 text-sm text-gray-600">
                   <span>
-                    <strong>{s.monthsPaid}</strong> of {s.monthsTotal} months paid
+                    <strong>{ordersCount(s.ordersPaid)}</strong> paid
                   </span>
-                  <InfoTip label="What counts as a paid month?" align="right">{HELP.monthsPaid}</InfoTip>
+                  <InfoTip label="What counts as a paid order?" align="right">{HELP.ordersPaid}</InfoTip>
                 </span>
                 <Link
                   href={`/account/subscriptions/${s.id}`}

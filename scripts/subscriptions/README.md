@@ -2,8 +2,9 @@
 
 ## What was added (short)
 
-- Customers can choose a 3 / 6 / 12 month plan on subscription-enabled products (15% off, editable in the admin).
-- Month 1 is paid at checkout (card through the WordPress/Authorize.net bridge, or Zelle). Every later month is its own order with an emailed pay link. Nothing is ever charged automatically.
+- Customers can choose a plan on subscription-enabled products: **an order every month (25% off), every 3 months (20% off) or every 6 months (15% off)**. Discounts and plans are editable in the admin.
+- **The plan length is how often an order is sent, and a subscription never ends by itself.** It continues until the customer pauses it (or staff end it in the admin). There is no "number of months" and no completion.
+- The first order is paid at checkout (card through the WordPress/Authorize.net bridge, or Zelle). Every later order is its own order with an emailed pay link, a few days before it is due (the "invoice lead days" setting; the live site uses 3). Nothing is ever charged automatically.
 - Staff control everything in the admin: **Subscription Settings** (master switch, plans, rules, wording), the **Subscriptions** collection, and a per-product "subscription enabled" tick.
 - One new daily job step (inside the existing `daily-maintenance` cron, so no new Vercel cron is needed) creates invoices, sends at most 3 reminders per invoice, and puts a plan on hold when a month stays unpaid.
 
@@ -26,20 +27,27 @@
    Running it twice is harmless. Do **not** use `payload migrate` on live - the live database does not list the older migrations as applied, so it would try to re-run them.
 4. **Deploy the code** (after the migration; the old code simply ignores the new columns, so the order matters).
 5. In the admin: **Subscription Settings** -> turn on the master switch, review plans/discount/wording. Then tick **Subscription enabled** on each product that should offer plans.
-6. Google Sheet (orders): add two header cells, **L1 = Order Type** and **M1 = Subscription Month** (the sheet now writes columns A to M).
+6. Google Sheet (orders): add two header cells, **L1 = Order Type** and **M1 = Subscription Order** (the sheet now writes columns A to M; M holds "Order 1", "Order 2", ...).
 7. `CRON_SECRET` must already be set in Vercel (it is). The existing daily cron now also runs the subscription step.
 
 Nothing appears to customers until step 5 (the master switch is off by default; existing subscriptions keep billing if you turn it off later).
 
-## Pause, resume and your calendar
+## How the schedule works
 
-A pause only stops invoices; it never moves a month's due date. Each month is due one month after the previous month was paid (or the later date set by "skip"). On **Resume**: if that month's invoice day is still ahead, nothing is created now and the daily job invoices it on its normal day (the page says "Your next invoice will be emailed on ..."); if the date already passed while paused, the invoice is created right away with 7 days to pay. Staff setting the status back to Active in the admin follow the same rule. "Order next month now" is still there for customers who do not want to wait.
+- **Interval** = the plan length: 1, 3 or 6 calendar months (`subscriptions.planMonths` is reused as the interval; no schema change). The next order is due **one interval after the previous order was paid**; its invoice is created and emailed `invoiceLeadDays` earlier (default 7; the live Subscription Settings currently say 3). Month ends are clamped (Aug 31 + 6 months = Feb 28).
+- Orders are numbered 1, 2, 3, ... (`orders.cycle_number`); `orders.cycles_total` is no longer written (older orders may still show a number).
+- **Skip next delivery** moves the next order back by one full interval (an open unpaid invoice is cancelled). It can be used again and again.
+- **Order next delivery now** creates the next invoice immediately; once it is paid the following order is due one interval after *that* payment.
+- **Pause** only stops invoices; it never moves a date. On **Resume**: if the order's invoice day is still ahead, nothing is created now and the daily job invoices it on its normal day (the page says "Your next invoice will be emailed on ..."); if the date already passed while paused, the invoice is created right away with 7 days to pay. Staff setting the status back to Active in the admin follow the same rule.
+- There is **no customer "stop" button** (pause covers it); the subscription page tells the customer to email support to cancel for good. Staff can set the status to Cancelled (or Ended) in the admin.
+- The status "Ended" (internally `completed`) exists only for staff to set by hand; the system never sets it.
+- The plan discount percentage is locked on the subscription when it is created; later changes to the plan settings only affect new subscriptions. Each invoice uses the product price on the day it is created.
 
 ## Coupons on subscriptions
 
 - Every coupon has **Can be used on subscriptions** (default OFF, so every existing coupon stays out of subscriptions). A coupon without it is rejected on any cart that holds a plan ("This coupon can't be used on subscriptions."), on the cart page, at checkout and again on the server when the order is placed. A switched-on coupon works on subscriptions AND on normal purchases.
-- A switched-on coupon also has **On a subscription, the discount applies to**: *First month only* (default) or *Every monthly payment*. It stacks on top of the plan discount. Store-credit coupons can only be first-month.
-- *Every monthly payment*: the code is remembered on the subscription (field "recurringCouponCode", staff can clear it) and taken off every later monthly invoice. It counts as ONE use of the coupon. It keeps working after the coupon's expiry date or usage limit is reached (the customer was promised it); it stops when staff switch the coupon off for subscriptions, change it to first-month-only, or delete it - invoices then simply go out without the discount.
+- A switched-on coupon also has **On a subscription, the discount applies to**: *First order only* (default) or *Every order*. It stacks on top of the plan discount. Store-credit coupons can only be first-order.
+- *Every order*: the code is remembered on the subscription (field "recurringCouponCode", staff can clear it) and taken off every later invoice, however many there are. It counts as ONE use of the coupon. It keeps working after the coupon's expiry date or usage limit is reached (the customer was promised it); it stops when staff switch the coupon off for subscriptions, change it to first-order-only, or delete it - invoices then simply go out without the discount.
 - The shop's existing coupon rule rounds percentage discounts DOWN to whole dollars (10% of $34 = $3); that is unchanged.
 - Needs the second database migration (`20261021_000000_add_subscription_coupons`: 3 new columns, nothing dropped). Run it BEFORE deploying the code, like the first one (see "Putting it on the live site"; the runner now applies whichever migrations are still missing, in order).
 
@@ -55,6 +63,7 @@ A pause only stops invoices; it never moves a month's due date. Each month is du
 - Switched ON in the live database (2026-10-20) with `npx tsx scripts/subscriptions/enable-live.ts bpc-157`: master switch on, plans 3/6/12 months at 15%, and the product flag on BPC-157 only. Undo with `npx tsx scripts/subscriptions/enable-live.ts --off bpc-157`. The old deployed site ignores all of this, so customers see nothing until the new code is deployed. (`verify-live.ts` expects the settings tables to be empty, so run it before switching on.)
 - **Coupon migration applied to live (2026-10-21)** with the user's approval: fresh verified backup (65 tables, 4,612 rows), `npx tsx scripts/subscriptions/apply-migration.ts --apply --i-have-a-backup` (3 new columns; the runner applies only what is still missing), then `verify-live.ts <backup-folder>` (all rows identical, the 4 test subscription orders untouched, all 26 existing coupons "not for subscriptions") and `check-live-reads.ts` (the app's real queries pass on live).
 - **All products switched on for subscriptions (2026-10-21)** at the user's request: `npx tsx scripts/subscriptions/set-products.ts --all --on` (110 of 110; the master switch in Subscription Settings was left OFF by the user, and that script never touches it). Undo with `--all --off` (or restore from the saved `.local-test/product-flags-before-*.json`). Bulk-bundle sizes still cannot be subscribed to.
+- **Interval model + test clean-up on live (2026-10-22)**, at the user's request: plans are now every month / every 3 months / every 6 months at 25% / 20% / 15% (this replaces the 3/6/12-month plans mentioned above; no database migration was needed). After a fresh verified backup (65 tables, 4,652 rows, `.local-test/backups/2026-10-22T04-07-24-922Z`) the two test subscriptions SUB-1 and SUB-2 and their 5 orders (#1071-#1075, with their items and notes) were deleted in one transaction, and BPC-157 stock was given back (+2: 498 -> 500). Compared with the backup afterwards: only those 17 rows were gone, everything else identical. In Subscription Settings only the plan names ("Every month" ...) and the agreement text were updated; the master switch (left ON by the user) and all numbers (including invoice lead days = 3) were not touched. `check-live-reads.ts` passes.
 - Rollback if ever needed: the new tables/columns are not used by the old code, so the old code keeps working; do not delete anything without asking.
 
 ## Emails when testing locally
@@ -69,8 +78,8 @@ Remember that an order placed from a local site against the live database is a R
 
 ## Things to know
 
-- There is no cancel button for customers (same as one-time orders). Staff can change a subscription's status in the admin; refunds are manual.
-- If a customer pays something late, after the system already cancelled it (for example an unpaid first month that expired), open that order in the admin and double-check stock before shipping.
+- There is no cancel button for customers (same as one-time orders): they pause it, or email support. Staff can change a subscription's status in the admin; refunds are manual.
+- If a customer pays something late, after the system already cancelled it (for example an unpaid first order that expired), open that order in the admin and double-check stock before shipping.
 - The ShipStation migration file is not in the repository history; this migration does not touch it.
 
 ## Testing locally (never touches the live database)

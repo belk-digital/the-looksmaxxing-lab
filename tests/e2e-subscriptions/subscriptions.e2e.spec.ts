@@ -58,10 +58,18 @@ test('1. the product page offers "Subscribe & save" only on subscription-enabled
   const selector = page.getByTestId('plan-selector')
   await expect(selector).toBeVisible()
   await expect(page.getByTestId('plan-one-time')).toBeVisible()
-  for (const m of [3, 6, 12]) await expect(page.getByTestId(`plan-${m}`)).toBeVisible()
-  await expect(page.getByTestId('plan-3')).toContainText('Save 15%')
-  await expect(page.getByTestId('plan-3')).toContainText('$17.00') // $20 less 15%
-  await expect(page.getByTestId('plan-3')).toContainText('/ month')
+  for (const m of [1, 3, 6]) await expect(page.getByTestId(`plan-${m}`)).toBeVisible()
+  await expect(page.getByTestId('plan-12')).toHaveCount(0) // the old 12-month plan is gone
+  await expect(page.getByTestId('plan-1')).toContainText('Save 25%')
+  await expect(page.getByTestId('plan-1')).toContainText('$15.00') // $20 less 25%
+  await expect(page.getByTestId('plan-1')).toContainText('Deliver every month')
+  await expect(page.getByTestId('plan-3')).toContainText('Save 20%')
+  await expect(page.getByTestId('plan-3')).toContainText('$16.00') // $20 less 20%
+  await expect(page.getByTestId('plan-3')).toContainText('Deliver every 3 months')
+  await expect(page.getByTestId('plan-3')).toContainText('/ order')
+  await expect(page.getByTestId('plan-6')).toContainText('Save 15%')
+  await expect(page.getByTestId('plan-6')).toContainText('$17.00') // $20 less 15%
+  await expect(page.getByTestId('plan-6')).toContainText('Deliver every 6 months')
   await expect(page.getByTestId('plan-explainer')).toHaveCount(0) // only shown once a plan is chosen
 
   await page.getByTestId('plan-6').click()
@@ -108,17 +116,19 @@ test('2. a subscription is never mixed into a cart that already has other items 
   expect(accepted).toHaveLength(1)
   const cart = await page.evaluate(() => JSON.parse(localStorage.getItem('longevia-cart-storage')!).state.items)
   expect(cart).toHaveLength(1)
-  expect(cart[0]).toMatchObject({ planMonths: 3, priceSnapshot: 17, quantity: 1 })
+  expect(cart[0]).toMatchObject({ planMonths: 3, priceSnapshot: 16, quantity: 1 })
 })
 
 test('3. checkout asks a guest to log in, shows the plan clearly, and offers only card or Zelle', async ({ page }) => {
-  await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 17, planMonths: 3 })])
+  await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 16, planMonths: 3 })])
   await page.goto('/checkout')
   await expect(page.getByTestId('subscription-notice')).toBeVisible()
-  await expect(page.getByTestId('subscription-notice')).toContainText('3-month subscription')
+  await expect(page.getByTestId('subscription-notice')).toContainText('Subscription · delivered every 3 months')
+  await expect(page.getByTestId('subscription-notice')).toContainText('It continues until you pause it')
   await expect(page.getByTestId('subscription-login-required')).toBeVisible()
-  await expect(page.getByTestId('plan-line-badge').first()).toContainText('3-month plan')
-  await expect(page.getByTestId('subscription-due-today')).toContainText('2 more monthly invoices')
+  await expect(page.getByTestId('plan-line-badge').first()).toContainText('Delivered every 3 months')
+  await expect(page.getByTestId('subscription-due-today')).toContainText('This is your first order')
+  await expect(page.getByTestId('subscription-due-today')).toContainText('every 3 months')
   await expect(page.getByText('Due today').first()).toBeVisible()
   // payment methods: no Stripe card form for plans
   await expect(page.getByText('Credit Card (via Longevia Beauty)')).toBeVisible()
@@ -142,7 +152,7 @@ test('3. checkout asks a guest to log in, shows the plan clearly, and offers onl
 })
 
 test('3b. "Log in" from checkout brings the customer straight back to checkout with the cart intact (only same-site return addresses are accepted)', async ({ page }) => {
-  await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 17, planMonths: 3 })])
+  await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 16, planMonths: 3 })])
   await page.goto('/checkout')
   await page.getByTestId('subscription-login-banner').getByRole('link', { name: 'Log in' }).click()
   await page.waitForURL(/\/login\?next=%2Fcheckout/)
@@ -151,7 +161,7 @@ test('3b. "Log in" from checkout brings the customer straight back to checkout w
   await page.locator('button[type="submit"]').click()
   await page.waitForURL((u) => u.pathname === '/checkout', { timeout: 120_000 })
   await expect(page.getByTestId('subscription-notice')).toBeVisible()
-  await expect(page.getByTestId('plan-line-badge').first()).toContainText('3-month plan')
+  await expect(page.getByTestId('plan-line-badge').first()).toContainText('Delivered every 3 months')
   await expect(page.getByTestId('subscription-login-banner')).toHaveCount(0) // logged in now
 
   // a crafted address pointing to another website is ignored
@@ -169,7 +179,7 @@ test('3b. "Log in" from checkout brings the customer straight back to checkout w
 
 test('4. a logged-in customer starts a subscription by Zelle: terms are required, then the confirmation explains what happens next', async ({ page }) => {
   await login(page, ALICE)
-  await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 17, planMonths: 3 })])
+  await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 16, planMonths: 3 })])
   await page.goto('/checkout')
   await expect(page.getByTestId('subscription-login-required')).toHaveCount(0)
 
@@ -202,13 +212,13 @@ test('4. a logged-in customer starts a subscription by Zelle: terms are required
   state.firstOrderId = Number(page.url().match(/order-confirmation\/(\d+)/)![1])
   const banner = page.getByTestId('subscription-confirmation')
   await expect(banner).toBeVisible()
-  await expect(banner).toContainText('Month 1 of 3')
+  await expect(banner).toContainText('Subscription · First order')
   await expect(banner).toContainText('Your subscription has started')
   await expect(page.getByText('Action Required: Complete Your Payment')).toBeVisible() // Zelle instructions
   await shot(page, '04-order-confirmation')
 
   const mail = await waitForEmail({ to: ALICE, subject: /Subscription Order Confirmation/ }, before)
-  expect(mail.subject).toContain('Month 1 of 3')
+  expect(mail.subject).toContain('First order')
   const rows = await sql(`select o.order_type, o.cycles_total, o.status, s.id as sub_id, s.status as sub_status from orders o join subscriptions s on s.id = o.subscription_id where o.id = $1`, [state.firstOrderId])
   expect(rows[0]).toMatchObject({ order_type: 'subscription_first', status: 'pending', sub_status: 'pending_payment' })
   state.subId = rows[0].sub_id
@@ -218,16 +228,16 @@ test('5. before the first payment the subscription page says so, and offers no r
   await login(page, ALICE)
   await go(page, '/account/subscriptions')
   await expect(page.getByText('Waiting for first payment').first()).toBeVisible()
-  await expect(page.getByText('3-month plan').first()).toBeVisible()
+  await expect(page.getByText(/Delivered every 3 months/).first()).toBeVisible()
   await shot(page, '05-list-pending')
   await go(page, `/account/subscriptions/${state.subId}`)
   await expect(page.getByRole('heading', { name: /BPC-157/ })).toBeVisible()
   await expect(page.getByText('0', { exact: false }).first()).toBeVisible()
-  await expect(page.getByRole('button', { name: /Pause subscription|Skip next month|Order next month now/ })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: /Pause subscription|Skip next delivery|Order next delivery now/ })).toHaveCount(0)
   await expect(page.getByRole('link', { name: /View my first payment/ })).toBeVisible()
   // the order list labels it clearly
   await page.goto('/account/orders')
-  await expect(page.getByText(/Subscription · Month 1 of 3/).first()).toBeVisible()
+  await expect(page.getByText(/Subscription · Order 1/).first()).toBeVisible()
 })
 
 test('6. staff mark the Zelle payment as paid -> the subscription becomes Active with all options', async ({ page, request }) => {
@@ -237,14 +247,15 @@ test('6. staff mark the Zelle payment as paid -> the subscription becomes Active
   await login(page, ALICE)
   await go(page, `/account/subscriptions/${state.subId}`)
   await expect(page.getByText('Active', { exact: true }).first()).toBeVisible()
-  await expect(page.getByText(/1\s*of 3 months paid|\b1\b.*of 3 months paid/).first()).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Order next month now', exact: true })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Skip next month', exact: true })).toBeVisible()
+  await expect(page.getByText(/1 order\s*paid/).first()).toBeVisible()
+  await expect(page.getByText(/a new order every 3 months/).first()).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Order next delivery now', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Skip next delivery', exact: true })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Pause subscription', exact: true })).toBeVisible()
   await expect(page.getByText('Paid - preparing to ship').locator('visible=true')).toHaveCount(1)
   await shot(page, '06-detail-active')
   const mail = await waitForEmail({ to: ALICE, subject: /Payment received/ }, before)
-  expect(mail.subject).toContain('Month 1 of 3')
+  expect(mail.subject).toContain('(Order 1)')
 })
 
 test('7. the daily job emails the month-2 invoice; the customer opens the link WITHOUT logging in and pays by card through the bridge', async ({ browser, request }) => {
@@ -254,7 +265,7 @@ test('7. the daily job emails the month-2 invoice; the customer opens the link W
   expect(run.status).toBe(200)
   expect(run.body.subscriptions.result.invoicesCreated).toBeGreaterThanOrEqual(1)
 
-  const mail = await waitForEmail({ to: ALICE, subject: /^Subscription invoice #\d+ - Month 2 of 3/ }, before)
+  const mail = await waitForEmail({ to: ALICE, subject: /^Subscription invoice #\d+ - Order 2/ }, before)
   const link = payLinkFrom(mail)
   state.invoiceLinkPath = link.path
   expect(mail.html).toContain('Zelle') // alice's default is Zelle
@@ -264,9 +275,10 @@ test('7. the daily job emails the month-2 invoice; the customer opens the link W
   await prepContext(ctx)
   const page = await ctx.newPage()
   await go(page, link.path)
-  await expect(page.getByRole('heading', { name: 'Your monthly invoice' })).toBeVisible()
-  await expect(page.getByText('Subscription · Month 2 of 3')).toBeVisible()
-  await expect(page.getByText('$22.00').first()).toBeVisible() // 1 x $17 + $5 shipping
+  await expect(page.getByRole('heading', { name: 'Your invoice' })).toBeVisible()
+  await expect(page.getByText('Subscription · Order 2')).toBeVisible()
+  await expect(page.getByTestId('invoice-explainer')).toContainText('an order delivered every 3 months')
+  await expect(page.getByText('$21.00').first()).toBeVisible() // 1 x $16 + $5 shipping
   await expect(page.getByText('Pay with Zelle')).toBeVisible()
   await expect(page.getByText(/Main St|Test Street|5125550100|alice@e2e/)).toHaveCount(0) // no personal details
   await shot(page, '07-pay-page-zelle')
@@ -274,7 +286,7 @@ test('7. the daily job emails the month-2 invoice; the customer opens the link W
   await page.getByRole('button', { name: /by card/ }).click() // switch to card for this invoice
   await page.waitForURL(`${WP}/**`, { timeout: 60_000 })
   await expect(page.getByTestId('fake-wordpress')).toBeVisible()
-  await expect(page.getByTestId('wp-amount')).toContainText('$22.00')
+  await expect(page.getByTestId('wp-amount')).toContainText('$21.00')
   await expect(page.getByTestId('wp-order')).toContainText('Longevia Research Order #')
   await page.locator('#pay').click() // customer pays with the test card; WordPress confirms to the site
 
@@ -287,7 +299,7 @@ test('7. the daily job emails the month-2 invoice; the customer opens the link W
   const rows = await sql(`select o.status, o.payment_status, o.payment_method, o.payment_txn_id, o.cycle_number, s.cycles_completed, s.status as sub_status, s.open_invoice_id from orders o join subscriptions s on s.id = o.subscription_id where o.id = $1`, [link.orderId])
   expect(rows[0]).toMatchObject({ status: 'paid', payment_status: 'captured', payment_method: 'authnet_bridge', cycle_number: '2', cycles_completed: '2', sub_status: 'active', open_invoice_id: null })
   expect(rows[0].payment_txn_id).toMatch(/^FAKE-/)
-  await waitForEmail({ to: ALICE, subject: /Payment received - Subscription order #\d+ \(Month 2 of 3\)/ }, before)
+  await waitForEmail({ to: ALICE, subject: /Payment received - Subscription order #\d+ \(Order 2\)/ }, before)
 })
 
 test('8. a slow confirmation shows "Confirming your payment" and flips to Paid by itself - the customer is never told to pay twice', async ({ page, request }) => {
@@ -296,9 +308,9 @@ test('8. a slow confirmation shows "Confirming your payment" and flips to Paid b
   await request.post(`${WP}/__config`, { data: { webhookDelayMs: 9000 } })
 
   answerDialogs(page, true)
-  await page.getByRole('button', { name: 'Order next month now', exact: true }).click()
+  await page.getByRole('button', { name: 'Order next delivery now', exact: true }).click()
   await page.waitForURL(/\/pay\/\d+\//, { timeout: 60_000 }) // taken straight to the new invoice
-  await expect(page.getByText('Subscription · Month 3 of 3')).toBeVisible()
+  await expect(page.getByText('Subscription · Order 3')).toBeVisible()
   await page.getByRole('button', { name: /by card/ }).click()
   await page.waitForURL(`${WP}/**`)
   await page.locator('#pay').click()
@@ -310,12 +322,15 @@ test('8. a slow confirmation shows "Confirming your payment" and flips to Paid b
   await request.post(`${WP}/__config`, { data: { webhookDelayMs: 0 } })
 
   const sub = (await sql(`select status, cycles_completed from subscriptions where id = $1`, [state.subId]))[0]
-  expect(sub).toMatchObject({ status: 'completed', cycles_completed: '3' }) // plan finished
+  expect(sub).toMatchObject({ status: 'active', cycles_completed: '3' }) // a subscription never finishes by itself
   await go(page, `/account/subscriptions/${state.subId}`)
-  await expect(page.getByText('Completed', { exact: true }).first()).toBeVisible()
-  await expect(page.getByText('All months of this plan are paid')).toBeVisible()
-  await expect(page.getByRole('button', { name: /Pause|Skip|Order next/ })).toHaveCount(0)
-  await shot(page, '08-completed')
+  await expect(page.getByText('Active', { exact: true }).first()).toBeVisible()
+  await expect(page.getByText('Completed', { exact: true })).toHaveCount(0)
+  await expect(page.getByText('Ended', { exact: true })).toHaveCount(0)
+  await expect(page.getByText(/3 orders\s*paid/).first()).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Skip next delivery', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Pause subscription', exact: true })).toBeVisible()
+  await shot(page, '08-still-active')
 })
 
 test('9. the customer pauses, resumes, skips, edits the address and changes how they pay', async ({ page, request }) => {
@@ -339,11 +354,12 @@ test('9. the customer pauses, resumes, skips, edits the address and changes how 
 
   // ---- skip
   const skipDialogs = answerDialogs(page, true)
-  await page.getByRole('button', { name: 'Skip next month', exact: true }).click()
+  await page.getByRole('button', { name: 'Skip next delivery', exact: true }).click()
   await expect.poll(async () => String((await sql(`select next_due_date from subscriptions where id = $1`, [subId]))[0].next_due_date)).not.toBe(String(dueBefore))
-  expect(skipDialogs[0]).toMatch(/Skip next month\? Your next shipment moves from .* to .*You still get all 6 months/)
+  expect(skipDialogs[0]).toMatch(/Skip next delivery\? Your next order moves from .* to .*\(one full interval, every 6 months\)/)
   const moved = ((await sql(`select next_due_date from subscriptions where id = $1`, [subId]))[0].next_due_date as Date).getTime() - new Date(dueBefore).getTime()
-  expect(moved / 86400000).toBeGreaterThanOrEqual(28)
+  expect(moved / 86400000).toBeGreaterThanOrEqual(181) // one full 6-month interval
+  expect(moved / 86400000).toBeLessThanOrEqual(184)
   expect((await sql(`select cycles_completed from subscriptions where id = $1`, [subId]))[0].cycles_completed).toBe('1')
 
   // ---- pause (nothing owed yet)
@@ -351,8 +367,8 @@ test('9. the customer pauses, resumes, skips, edits the address and changes how 
   await page.getByRole('button', { name: 'Pause subscription', exact: true }).click()
   await expect(page.getByText('Paused', { exact: true }).first()).toBeVisible()
   await expect(page.getByRole('button', { name: 'Resume subscription', exact: true })).toBeVisible()
-  await expect(page.getByRole('button', { name: /Skip next month|Pause subscription|Order next month now/ })).toHaveCount(0)
-  await expect(page.getByText(/your next month keeps its normal date/)).toBeVisible() // the paused page explains it
+  await expect(page.getByRole('button', { name: /Skip next delivery|Pause subscription|Order next delivery now/ })).toHaveCount(0)
+  await expect(page.getByTestId('status-help')).toContainText('your next order keeps its normal date') // the paused page explains it
   await shot(page, '09-paused')
 
   // ---- resume -> the calendar keeps running: no invoice is created now, the customer is told when it will be emailed
@@ -371,9 +387,9 @@ test('9. the customer pauses, resumes, skips, edits the address and changes how 
 
   // ---- "Order next month now" is still there for a customer who does not want to wait -> goes straight to the invoice
   answerDialogs(page, true)
-  await page.getByRole('button', { name: 'Order next month now', exact: true }).click()
+  await page.getByRole('button', { name: 'Order next delivery now', exact: true }).click()
   await page.waitForURL(/\/pay\/\d+\//, { timeout: 60_000 })
-  await expect(page.getByText('Subscription · Month 2 of 6')).toBeVisible()
+  await expect(page.getByText('Subscription · Order 2')).toBeVisible()
   await go(page, `/account/subscriptions/${subId}`)
   await expect(page.getByText('Active', { exact: true }).first()).toBeVisible()
   await expect(page.getByRole('link', { name: /Pay \$22\.00 now/ })).toBeVisible()
@@ -439,8 +455,8 @@ test('12. staff can tell one-time orders from subscription months in the admin',
   await page.waitForURL((u) => u.pathname.startsWith('/admin') && !u.pathname.includes('/login'), { timeout: 120_000 })
   await page.goto('/admin/collections/orders')
   await expect(page.getByText('One-time order').first()).toBeVisible({ timeout: 120_000 })
-  await expect(page.getByText('Subscription - first month').first()).toBeVisible()
-  await expect(page.getByText('Subscription - monthly order').first()).toBeVisible()
+  await expect(page.getByText('Subscription - first order').first()).toBeVisible()
+  await expect(page.getByText('Subscription - repeat order').first()).toBeVisible()
   await shot(page, '12-admin-orders')
   await page.goto('/admin/collections/subscriptions')
   await expect(page.getByText('SUB-').first()).toBeVisible({ timeout: 120_000 })
@@ -459,44 +475,44 @@ test('13. every important thing is explained in plain words (hover/keyboard on d
   await page.goto(`/products/${bpc.slug}`)
   const tip = page.getByRole('button', { name: 'What is a subscription?' })
   await tip.hover()
-  await expect(page.getByRole('tooltip')).toContainText('one order every month')
-  await expect(page.getByRole('tooltip')).toContainText('never everything at once')
+  await expect(page.getByRole('tooltip')).toContainText('every 3 months')
+  await expect(page.getByRole('tooltip')).toContainText('never in advance')
   await page.keyboard.press('Escape')
 
   // checkout
   await login(page, ALICE)
-  await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 17, planMonths: 3 })])
+  await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 16, planMonths: 3 })])
   await page.goto('/checkout')
   await page.getByRole('button', { name: 'How does subscription billing work?' }).click()
   await expect(page.getByRole('tooltip')).toContainText('never charge your card')
   await page.getByRole('button', { name: 'What is due today?' }).hover()
-  await expect(page.getByRole('tooltip').last()).toContainText('You only pay month 1 now')
-  await page.getByRole('button', { name: 'What does billed monthly mean?' }).first().hover()
-  await expect(page.getByRole('tooltip').last()).toContainText('one month at a time')
+  await expect(page.getByRole('tooltip').last()).toContainText('You only pay your first order now')
+  await page.getByRole('button', { name: 'How often will I be invoiced?' }).first().hover()
+  await expect(page.getByRole('tooltip').last()).toContainText('one order at a time')
   await shot(page, '13-checkout-help')
 
   // the subscription page: status, progress, each option, each section
   await go(page, `/account/subscriptions/${state.activeSubId}`)
   await expect(page.getByTestId('options-help')).toBeVisible()
   await page.getByTestId('options-help').locator('summary').click()
-  for (const term of ['Pay now', 'Skip next month', 'Pause subscription', 'Will you charge my card automatically?']) {
+  for (const term of ['Pay now', 'Skip next delivery', 'Pause subscription', 'Will you charge my card automatically?']) {
     await expect(page.getByTestId('options-help').getByText(term, { exact: true })).toBeVisible()
   }
-  await expect(page.getByTestId('options-help')).toContainText('You still receive every month of your plan')
+  await expect(page.getByTestId('options-help')).toContainText('one full interval')
   await expect(page.getByTestId('options-help')).toContainText('Nothing is due while paused')
 
-  await page.getByRole('button', { name: 'What does Skip next month do?' }).hover()
-  await expect(page.getByRole('tooltip')).toContainText('Moves your next shipment one month later')
+  await page.getByRole('button', { name: 'What does Skip next delivery do?' }).hover()
+  await expect(page.getByRole('tooltip')).toContainText('Moves your next delivery back by one full interval')
   await page.getByRole('button', { name: 'What does Pause do?' }).focus()
   await expect(page.getByRole('tooltip').last()).toContainText('Stops all invoices until you resume')
   await page.getByRole('button', { name: 'What does this status mean?' }).hover()
-  await expect(page.getByRole('tooltip').last()).toContainText('Your plan is running normally')
-  await page.getByRole('button', { name: 'What counts as a paid month?' }).hover()
-  await expect(page.getByRole('tooltip').last()).toContainText('counts as paid once its payment is confirmed')
+  await expect(page.getByRole('tooltip').last()).toContainText('Your subscription is running normally')
+  await page.getByRole('button', { name: 'How often will I get an order?' }).hover()
+  await expect(page.getByRole('tooltip').last()).toContainText('fixed schedule')
   await page.getByRole('button', { name: 'Will my card be charged automatically?' }).hover()
   await expect(page.getByRole('tooltip').last()).toContainText('never charge automatically')
   await page.getByRole('button', { name: 'Which orders use this address?' }).hover()
-  await expect(page.getByRole('tooltip').last()).toContainText('Future monthly orders ship to this address')
+  await expect(page.getByRole('tooltip').last()).toContainText('Future orders ship to this address')
   await page.getByRole('button', { name: 'What is the plan discount?' }).hover()
   await expect(page.getByRole('tooltip').last()).toContainText('locked in on the day you subscribe')
   await shot(page, '13-detail-help')
@@ -536,13 +552,13 @@ test('14. on a phone the "i" icons open by tapping and stay fully on screen', as
 
   await page.goto(`/products/${bpc.slug}`)
   await page.getByRole('button', { name: 'What is a subscription?' }).tap()
-  await expect(page.getByRole('tooltip')).toContainText('one order every month')
+  await expect(page.getByRole('tooltip')).toContainText('every 3 months')
   await insideScreen()
   await page.getByRole('button', { name: 'What is a subscription?' }).tap() // tap again closes
   await expect(page.getByRole('tooltip')).toHaveCount(0)
 
   await go(page, `/account/subscriptions/${state.activeSubId}`)
-  for (const name of ['What does Skip next month do?', 'What does Pause do?', 'What does this status mean?', 'What counts as a paid month?']) {
+  for (const name of ['What does Skip next delivery do?', 'What does Pause do?', 'What does this status mean?', 'How often will I get an order?']) {
     await page.getByRole('button', { name }).tap()
     await expect(page.getByRole('tooltip').last()).toBeVisible()
     await insideScreen()
@@ -550,7 +566,7 @@ test('14. on a phone the "i" icons open by tapping and stay fully on screen', as
   }
   // the always-visible help list works on a phone too
   await page.getByTestId('options-help').locator('summary').tap()
-  await expect(page.getByTestId('options-help')).toContainText('Skip next month')
+  await expect(page.getByTestId('options-help')).toContainText('Skip next delivery')
   await shot(page, '14-mobile-detail')
   await ctx.close()
 })
@@ -581,24 +597,25 @@ test('15. a product with sizes: the plan price follows the chosen size, and the 
   await login(page, ALICE)
   await seedCart(page, [])
   await go(page, '/products/peptide-sizes')
-  await expect(page.getByTestId('plan-3')).toContainText('$76.50') // 5mg: $90 less 15%
+  await expect(page.getByTestId('plan-3')).toContainText('$72.00') // 5mg: $90 less 20%
   await page.getByRole('button', { name: '10mg', exact: true }).click()
-  await expect(page.getByTestId('plan-3')).toContainText('$84.15') // 10mg: $99 less 15%
-  await expect(page.getByTestId('plan-12')).toContainText('$84.15')
-  await expect(page.getByTestId('plan-3')).toContainText('3 monthly orders · billed month by month, not all at once') // the words are spaced properly
+  await expect(page.getByTestId('plan-3')).toContainText('$79.20') // 10mg: $99 less 20%
+  await expect(page.getByTestId('plan-6')).toContainText('$84.15') // 10mg: $99 less 15%
+  await expect(page.getByTestId('plan-3')).toContainText('Deliver every 3 months')
+  await expect(page.getByTestId('plan-3')).toContainText('Subscription · pay one order at a time · pause anytime') // the words are spaced properly
   await shot(page, '15-variant-plan-prices')
 
   await page.getByTestId('plan-3').click()
   await page.getByRole('button', { name: /^Subscribe$/ }).first().click()
   await page.waitForFunction(() => (JSON.parse(localStorage.getItem('longevia-cart-storage') || '{}').state?.items || []).length === 1)
   const line = await page.evaluate(() => JSON.parse(localStorage.getItem('longevia-cart-storage') || '{}').state.items[0])
-  expect(line).toMatchObject({ variantSku: 'SIZE-10MG', planMonths: 3, priceSnapshot: 84.15 })
+  expect(line).toMatchObject({ variantSku: 'SIZE-10MG', planMonths: 3, priceSnapshot: 79.2 })
   // the cart is also saved on the server (so it follows the customer to other devices)
   await expect.poll(async () => (await sql("select 1 from carts_items where variant_sku = 'SIZE-10MG' and plan_months = 3")).length).toBe(1)
 
   await go(page, '/checkout')
   await expect(page.getByTestId('subscription-notice')).toBeVisible()
-  await expect(page.getByText('$84.15').first()).toBeVisible()
+  await expect(page.getByText('$79.20').first()).toBeVisible()
   await expect(page.getByTestId('subscription-due-today')).toBeVisible()
   await shot(page, '15-variant-checkout')
 })
@@ -608,18 +625,18 @@ test('15. a product with sizes: the plan price follows the chosen size, and the 
 // ------------------------------------------------------------------------------------------------------------
 test('16. the "i" in the order summary opens steadily: no flicker, no scrollbars, text fully readable', async ({ page }) => {
   await login(page, ALICE)
-  await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 17, planMonths: 3 })])
+  await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 16, planMonths: 3 })])
   await go(page, '/checkout')
   const list = page.locator('div[data-lenis-prevent="true"]').filter({ has: page.getByTestId('plan-line-badge') }).last()
   await expect(list).toBeVisible()
   const sizes = () => list.evaluate((el) => ({ sw: el.scrollWidth, cw: el.clientWidth, sh: el.scrollHeight, ch: el.clientHeight }))
   const before = await sizes()
 
-  const icon = list.getByRole('button', { name: 'What does billed monthly mean?' })
+  const icon = list.getByRole('button', { name: 'How often will I be invoiced?' })
   await icon.hover()
   const tip = page.getByRole('tooltip')
   await expect(tip).toBeVisible()
-  await expect(tip).toContainText('one month at a time')
+  await expect(tip).toContainText('one order at a time')
 
   // stays open, in the same place, for a good while (a flickering box would disappear/reappear)
   const box1 = await tip.boundingBox()
@@ -664,7 +681,7 @@ test('17. coupons on subscriptions: off by default; only coupons switched on for
   await sql('delete from carts_items')
   await sql('delete from carts')
   await login(page, ALICE)
-  const planCart = () => seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 17, planMonths: 3 })])
+  const planCart = () => seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 16, planMonths: 3 })])
   const NOT_ALLOWED = "This coupon can't be used on subscriptions."
 
   // ---- the cart page
@@ -686,13 +703,13 @@ test('17. coupons on subscriptions: off by default; only coupons switched on for
   await codeBox.fill('FIRST-E2E')
   await codeBox.press('Enter')
   await expect(page.getByTestId('coupon-scope-note').locator('visible=true').first()).toHaveText('Applies to your first payment only.')
-  await expect(page.getByText('$21.00').locator('visible=true').first()).toBeVisible() // $17 - $1 (10%, whole dollars) + $5 shipping
+  await expect(page.getByText('$20.00').locator('visible=true').first()).toBeVisible() // $16 - $1 (10%, whole dollars) + $5 shipping
   await shot(page, '17-checkout-first-month-coupon')
   await page.getByRole('button', { name: 'Remove' }).locator('visible=true').first().click()
 
   await codeBox.fill('EVERY-E2E')
   await codeBox.press('Enter')
-  await expect(page.getByTestId('coupon-scope-note').locator('visible=true').first()).toHaveText('Applies to every monthly payment of your plan.')
+  await expect(page.getByTestId('coupon-scope-note').locator('visible=true').first()).toHaveText('Applies to every order of your subscription.')
   await page.addStyleTag({ content: '[data-sonner-toaster] { display: none !important; }' }) // hide the pop-up messages so the picture shows the page itself
   await shot(page, '17-checkout-every-month-coupon')
 
@@ -706,18 +723,18 @@ test('17. coupons on subscriptions: off by default; only coupons switched on for
   const row = (await sql(`select s.id as sub_id, s.recurring_coupon_code, o.coupon_code, o.discount_total, o.total from orders o join subscriptions s on s.id = o.subscription_id where o.id = $1`, [firstId]))[0]
   expect(row).toMatchObject({ recurring_coupon_code: 'EVERY-E2E', coupon_code: 'EVERY-E2E' })
   expect(Number(row.discount_total)).toBe(1)
-  expect(Number(row.total)).toBe(21)
+  expect(Number(row.total)).toBe(20)
   await admin.markOrderPaid(firstId)
 
-  // ---- the customer's subscription page and the next monthly invoice show the coupon
+  // ---- the customer's subscription page and the next invoice show the coupon
   await go(page, `/account/subscriptions/${row.sub_id}`)
-  await expect(page.getByTestId('recurring-coupon-note')).toContainText('Coupon EVERY-E2E is applied to every monthly invoice.')
+  await expect(page.getByTestId('recurring-coupon-note')).toContainText('Coupon EVERY-E2E is applied to every order.')
   answerDialogs(page, true)
-  await page.getByRole('button', { name: 'Order next month now', exact: true }).click()
+  await page.getByRole('button', { name: 'Order next delivery now', exact: true }).click()
   await page.waitForURL(/\/pay\/\d+\//, { timeout: 60_000 })
   await expect(page.getByTestId('invoice-coupon-row')).toContainText('Coupon (EVERY-E2E)')
   await expect(page.getByTestId('invoice-coupon-row')).toContainText('-$1.00')
-  await expect(page.getByText('$21.00').first()).toBeVisible() // month 2: the same $21.00
+  await expect(page.getByText('$20.00').first()).toBeVisible() // order 2: the same $20.00
   await shot(page, '17-pay-page-coupon')
 
   // ---- the same normal coupon still works on a normal purchase
@@ -744,6 +761,44 @@ test('18. the coupon form in the admin: "Can be used on subscriptions" is clear,
   await expect(page.getByText('On a subscription, the discount applies to')).toHaveCount(0) // hidden until the box is ticked
   await page.getByText('Can be used on subscriptions').first().click()
   await expect(page.getByText('On a subscription, the discount applies to').first()).toBeVisible()
-  await expect(page.getByText(/Every monthly payment/).first()).toBeVisible()
+  await expect(page.getByText(/Every order/).first()).toBeVisible()
   await shot(page, '18-admin-coupon-form')
+})
+
+// ------------------------------------------------------------------------------------------------------------
+// The three plans: an order every month, every 3 months, every 6 months - the length is how often an order comes
+// ------------------------------------------------------------------------------------------------------------
+test('19. a monthly plan: 25% off, an order every month, and the next order is due one month after payment', async ({ page, request }) => {
+  await sql('delete from carts_items')
+  await sql('delete from carts')
+  await login(page, ALICE)
+  await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 15, planMonths: 1 })])
+  await go(page, '/checkout')
+  await expect(page.getByTestId('subscription-notice')).toContainText('Subscription · delivered every month')
+  await expect(page.getByTestId('plan-line-badge').first()).toContainText('Delivered every month')
+  await expect(page.getByTestId('subscription-due-today')).toContainText('every month')
+  await fillAddress(page)
+  await page.getByText('Zelle', { exact: true }).click()
+  await page.getByTestId('subscription-terms').click()
+  await page.getByRole('button', { name: /Place Zelle Order/ }).click()
+  await page.waitForURL(/\/order-confirmation\/\d+/, { timeout: 120_000 })
+  const firstId = Number(page.url().match(/order-confirmation\/(\d+)/)![1])
+  const row = (await sql(`select s.id as sub_id, s.plan_months, s.discount_percent, o.total from orders o join subscriptions s on s.id = o.subscription_id where o.id = $1`, [firstId]))[0]
+  expect(Number(row.plan_months)).toBe(1)
+  expect(Number(row.discount_percent)).toBe(25)
+  expect(Number(row.total)).toBe(20) // $15 (= $20 less 25%) + $5 shipping
+  await (await adminApi(request)).markOrderPaid(firstId)
+
+  const due = (await sql(`select next_due_date, next_invoice_date from subscriptions where id = $1`, [row.sub_id]))[0]
+  const gap = (new Date(due.next_due_date).getTime() - Date.now()) / 86400000
+  expect(gap).toBeGreaterThanOrEqual(27) // about one month away
+  expect(gap).toBeLessThanOrEqual(31)
+
+  await go(page, '/account/subscriptions')
+  await expect(page.getByText(/Delivered every month · 25% off/).first()).toBeVisible()
+  await go(page, `/account/subscriptions/${row.sub_id}`)
+  await expect(page.getByText(/a new order every month/).first()).toBeVisible()
+  await expect(page.getByText('Active', { exact: true }).first()).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Skip next delivery', exact: true })).toBeVisible()
+  await shot(page, '19-monthly-plan')
 })

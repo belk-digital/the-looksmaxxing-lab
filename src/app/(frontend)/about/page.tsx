@@ -4,6 +4,10 @@ import AboutClient from './AboutClient'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
+// Cached for 1 day. This page only changes when the code is deployed (a deploy rebuilds it),
+// so the daily refresh is just a safety net.
+export const revalidate = 86400
+
 export const metadata: Metadata = {
   title: { absolute: 'About Longevia Research — US-Made Research Peptides' },
   description: 'US-synthesized research peptides with independent COAs, ≥99% HPLC purity standard, and transparent batch documentation. Research use only.',

@@ -6,6 +6,10 @@ import { EyebrowHeading } from '@/components/editorial/EyebrowHeading'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
+// Cached for 1 day. This page only changes when the code is deployed (a deploy rebuilds it),
+// so the daily refresh is just a safety net.
+export const revalidate = 86400
+
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'How Longevia Research collects, uses, and protects your personal information when you browse, create an account, or order research peptides.',

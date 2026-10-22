@@ -1,3 +1,4 @@
+import { EveryLabel } from './labels'
 import type { Payload } from 'payload'
 
 export type SubscriptionPaymentMethod = 'authnet_bridge' | 'zelle'
@@ -25,14 +26,14 @@ export interface SubscriptionSettings {
 }
 
 export const DEFAULT_TERMS_TEXT =
-  'I understand this is a monthly subscription: I will receive an invoice by email before each shipment and the order ships after that month is paid. I can pause, skip or resume anytime from my account. Prices follow the current store price at the time of each invoice. For research use only.'
+  'I understand this is a recurring subscription: I will receive an invoice by email before each delivery, on the schedule of the plan I chose (every month, every 3 months or every 6 months), and the order ships after that invoice is paid. It continues until I pause it. I can pause, skip a delivery or resume anytime from my account. Prices follow the current store price at the time of each invoice. For research use only.'
 
 export const DEFAULT_SUBSCRIPTION_SETTINGS: SubscriptionSettings = {
   enabled: false,
   plans: [
-    { months: 3, label: '3 Months', discountPercent: 15, isActive: true },
-    { months: 6, label: '6 Months', discountPercent: 15, isActive: true },
-    { months: 12, label: '12 Months', discountPercent: 15, isActive: true },
+    { months: 1, label: 'Every month', discountPercent: 25, isActive: true },
+    { months: 3, label: 'Every 3 months', discountPercent: 20, isActive: true },
+    { months: 6, label: 'Every 6 months', discountPercent: 15, isActive: true },
   ],
   invoiceLeadDays: 7,
   finalNoticeAfterDays: 7,
@@ -69,7 +70,7 @@ export async function getSubscriptionSettings(payload: Payload): Promise<Subscri
           .filter((p: any) => p && Number(p.months) > 0)
           .map((p: any) => ({
             months: Number(p.months),
-            label: String(p.label || `${p.months} Months`),
+            label: String(p.label || EveryLabel(Number(p.months))),
             discountPercent: Math.min(100, Math.max(0, Number(p.discountPercent) || 0)),
             badge: p.badge || undefined,
             isActive: p.isActive !== false,

@@ -185,7 +185,7 @@ export async function createPayloadOrder(
     if (allowed.includes(effectivePaymentMethod as any)) {
       subscriptionPaymentMethod = effectivePaymentMethod as 'authnet_bridge' | 'zelle'
     } else if (isFreeOrder && allowed.length > 0) {
-      subscriptionPaymentMethod = allowed[0] // a fully-covered first month needs no payment method; pick a default
+      subscriptionPaymentMethod = allowed[0] // a fully-covered first order needs no payment method; pick a default
     } else {
       return { error: 'This payment method is not available for subscriptions. Please choose card or Zelle.' }
     }
@@ -340,7 +340,6 @@ export async function createPayloadOrder(
           ? {
               orderType: 'subscription_first',
               cycleNumber: 1,
-              cyclesTotal: pricing.planMonths,
               subscriptionDiscountPercent: pricing.planDiscountPercent,
             }
           : {}),
@@ -381,7 +380,7 @@ export async function createPayloadOrder(
           customerPhone: formData.phone,
           affiliateId: await findSubscriptionAffiliate(payload, couponCode, cookieJar.get('affiliate_ref')?.value),
           affiliateClickId: cookieJar.get('affiliate_click_id')?.value || null,
-          // an "every monthly payment" coupon keeps discounting the later monthly invoices
+          // an "every order" coupon keeps discounting the later invoices
           recurringCouponCode: pricing.couponApplied && pricing.couponSubscriptionScope === 'every_month' ? pricing.appliedCouponCode : null,
         })
         createdSubscriptionId = sub.id
@@ -437,7 +436,7 @@ export async function createPayloadOrder(
     // It gets finalized later by the cross-site-payment webhook once longeviabeauty.com
     // confirms the Authorize.net charge (see createCrossSitePaymentRedirect below).
 
-    // A first month that was already fully covered (coupon/points): the subscription starts right away.
+    // A first order that was already fully covered (coupon/points): the subscription starts right away.
     if (isPlan && createdSubscriptionId && total <= 0) {
       await syncSubscription(payload, createdSubscriptionId, order.id)
     }

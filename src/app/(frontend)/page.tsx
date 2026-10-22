@@ -15,9 +15,9 @@ import { Metadata } from 'next'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
-// Re-render at most once every 3 hours so CMS changes (new bestsellers, etc.)
-// show up without needing a full redeploy, while still serving from cache.
-export const revalidate = 10800
+// Cached for 1 day. Saving a product in the Payload admin clears the cache for this page straight away
+// (see src/hooks/products.ts), so best-seller changes show up without waiting for the day to pass.
+export const revalidate = 86400
 
 export const metadata: Metadata = {
   openGraph: {

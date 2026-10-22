@@ -25,7 +25,7 @@ const env = () => ({ payload, store, setUser })
 beforeAll(async () => {
   db = await createTestDatabase()
   ;({ payload, sent } = await bootPayload(db.uri))
-  store = await seedStore(payload)
+  store = await seedStore(payload, { stock: 5000 }) // plenty: every subscription here reserves stock
 })
 afterAll(async () => {
   await shutdown(payload, db)
@@ -35,8 +35,10 @@ const getSub = (id: any) => payload.findByID({ collection: 'subscriptions', id, 
 const getOrder = (id: any) => payload.findByID({ collection: 'orders', id, depth: 0, overrideAccess: true }) as Promise<any>
 const DAY = 24 * 3600 * 1000
 const days = (iso: string, from: string) => Math.round((new Date(iso).getTime() - new Date(from).getTime()) / DAY)
+/** How many days one interval spans: a plan's length IS its interval (1, 3 or 6 calendar months). */
+const SPAN: Record<number, [number, number]> = { 1: [28, 31], 3: [89, 92], 6: [181, 184] }
 
-/** Moves the customer to "month 2 invoice open". */
+/** Moves the customer to "order 2 invoice open". */
 async function withOpenInvoice(opts: Parameters<typeof startActiveSubscription>[1] = {}) {
   const s = await startActiveSubscription(env(), opts)
   const { processSubscriptions } = await import('@/lib/subscriptions/process')
@@ -46,9 +48,9 @@ async function withOpenInvoice(opts: Parameters<typeof startActiveSubscription>[
   return { ...s, invoiceId: after.openInvoice as number }
 }
 
-/** Pretends the last payment happened 90 days ago, so the next month's date has already passed. */
+/** Pretends the last payment happened 200 days ago, so the next order's date has already passed (whether the plan is every 1, 3 or 6 months). */
 async function makeOverdue(s: { subId: any; firstOrderId: any }) {
-  await payload.update({ collection: 'orders', id: s.firstOrderId, data: { paidAt: new Date(Date.now() - 90 * DAY).toISOString() } as any, overrideAccess: true })
+  await payload.update({ collection: 'orders', id: s.firstOrderId, data: { paidAt: new Date(Date.now() - 200 * DAY).toISOString() } as any, overrideAccess: true })
   await payload.update({ collection: 'subscriptions', id: s.subId, data: { nextDueDate: new Date(Date.now() - 60 * DAY).toISOString() } as any, overrideAccess: true })
 }
 const ordersOf = async (subId: any) =>
@@ -85,7 +87,7 @@ describe('pause / resume', () => {
     expect(await pauseSubscription(payload, s.subId)).toMatchObject({ ok: false })
 
     const before = await stockOf(payload, store.product.id)
-    // 3 days after the month's original due date: the date passed while paused, so the invoice goes out right away
+    // 3 days after the order's original due date: the date passed while paused, so the invoice goes out right away
     const resumeAt = new Date(new Date(invoiceBefore.invoiceDueDate).getTime() + 3 * DAY)
     const resumed: any = await resumeSubscription(payload, s.subId, resumeAt)
     expect(resumed.ok).toBe(true)
@@ -104,7 +106,7 @@ describe('pause / resume', () => {
     expect(await resumeSubscription(payload, s.subId)).toMatchObject({ ok: false }) // not paused any more
   })
 
-  it('a pause with no unpaid invoice works too, and a paused plan whose months are all paid just completes on resume', async () => {
+  it('a pause with no unpaid invoice works too, and resuming simply puts the plan back to active (a plan never "finishes")', async () => {
     const { pauseSubscription, resumeSubscription } = await import('@/lib/subscriptions/service')
     const s = await startActiveSubscription(env(), { months: 3 })
     expect(await pauseSubscription(payload, s.subId)).toEqual({ ok: true })
@@ -123,11 +125,11 @@ describe('pause / resume', () => {
   })
 })
 
-describe('skip a month', () => {
-  it('with no invoice yet: the next shipment moves a month later and no month is lost', async () => {
+describe('skip the next delivery', () => {
+  it.each([1, 3, 6])('with no invoice yet (a plan every %i month(s)): the next shipment moves ONE FULL INTERVAL later and no order number is lost', async (months) => {
     const { skipNextMonth } = await import('@/lib/subscriptions/service')
     const { processSubscriptions } = await import('@/lib/subscriptions/process')
-    const s = await startActiveSubscription(env())
+    const s = await startActiveSubscription(env(), { months })
     const before = await getSub(s.subId)
 
     const res: any = await skipNextMonth(payload, s.subId)
@@ -135,11 +137,11 @@ describe('skip a month', () => {
     const after = await getSub(s.subId)
     expect(after.cyclesCompleted).toBe(1) // nothing consumed
     const moved = days(after.nextDueDate, before.nextDueDate)
-    expect(moved).toBeGreaterThanOrEqual(28)
-    expect(moved).toBeLessThanOrEqual(31)
+    expect(moved).toBeGreaterThanOrEqual(SPAN[months][0])
+    expect(moved).toBeLessThanOrEqual(SPAN[months][1])
     expect(days(after.nextDueDate, after.nextInvoiceDate)).toBe(7)
 
-    // the OLD invoice date passes: still nothing; the NEW one arrives: invoice created for month 2
+    // the OLD invoice date passes: still nothing; the NEW one arrives: the invoice for order 2 is created
     // (judged on THIS subscription: other subscriptions in the shared test database may be due on the same day)
     await processSubscriptions(payload, new Date(before.nextInvoiceDate))
     expect((await getSub(s.subId)).openInvoice).toBeNull()
@@ -147,7 +149,19 @@ describe('skip a month', () => {
     expect((await getOrder((await getSub(s.subId)).openInvoice)).cycleNumber).toBe(2)
   })
 
-  it('with an unpaid invoice: it is cancelled (stock back) and the schedule moves from that due date', async () => {
+  it('skipping twice in a row moves two intervals; the customer can keep skipping, it is never "used up"', async () => {
+    const { skipNextMonth } = await import('@/lib/subscriptions/service')
+    const s = await startActiveSubscription(env(), { months: 3 })
+    const before = await getSub(s.subId)
+    expect((await skipNextMonth(payload, s.subId)).ok).toBe(true)
+    expect((await skipNextMonth(payload, s.subId)).ok).toBe(true)
+    const after = await getSub(s.subId)
+    expect(days(after.nextDueDate, before.nextDueDate)).toBeGreaterThanOrEqual(2 * 89)
+    expect(days(after.nextDueDate, before.nextDueDate)).toBeLessThanOrEqual(2 * 92)
+    expect(after).toMatchObject({ status: 'active', cyclesCompleted: 1 })
+  })
+
+  it('with an unpaid invoice (3-month plan): it is cancelled (stock back) and the schedule moves one interval from that due date', async () => {
     const { skipNextMonth } = await import('@/lib/subscriptions/service')
     const s = await withOpenInvoice()
     const inv = await getOrder(s.invoiceId)
@@ -159,11 +173,11 @@ describe('skip a month', () => {
     expect(sub.openInvoice).toBeNull()
     expect(await stockOf(payload, store.product.id)).toBe(stockBefore + 2)
     const moved = days(sub.nextDueDate, inv.invoiceDueDate)
-    expect(moved).toBeGreaterThanOrEqual(28)
-    expect(moved).toBeLessThanOrEqual(31)
+    expect(moved).toBeGreaterThanOrEqual(89)
+    expect(moved).toBeLessThanOrEqual(92)
   })
 
-  it('is refused when paused, waiting for first payment, or every month is already paid', async () => {
+  it('is refused when paused or waiting for the first payment, and when the subscription does not exist', async () => {
     const { skipNextMonth, pauseSubscription } = await import('@/lib/subscriptions/service')
     const a = await startActiveSubscription(env())
     await pauseSubscription(payload, a.subId)
@@ -174,10 +188,10 @@ describe('skip a month', () => {
   })
 })
 
-describe('order next month early', () => {
-  it('creates the invoice immediately; asking again just returns the same one; paying restarts the monthly clock', async () => {
+describe('order the next delivery early', () => {
+  it.each([1, 3, 6])('creates the invoice immediately; asking again just returns the same one; paying restarts the clock for a plan every %i month(s)', async (months) => {
     const { orderNextMonthNow } = await import('@/lib/subscriptions/service')
-    const s = await startActiveSubscription(env())
+    const s = await startActiveSubscription(env(), { months })
 
     const first: any = await orderNextMonthNow(payload, s.subId)
     expect(first.ok).toBe(true)
@@ -191,17 +205,18 @@ describe('order next month early', () => {
     expect(inv).toMatchObject({ cycleNumber: 2, orderType: 'subscription_cycle', paymentStatus: 'unpaid' })
     expect(sent.some((m) => m.to === s.email && /as requested/.test(m.html))).toBe(true)
 
-    // pay it (Zelle, marked by admin) -> next month is due one month from NOW, not from the old schedule
+    // pay it (Zelle, marked by admin) -> the next order is due one INTERVAL from NOW, not from the old schedule
     await payload.update({ collection: 'orders', id: inv.id, data: { status: 'paid', paymentStatus: 'captured' } as any, overrideAccess: true })
     const paid = await getSub(s.subId)
     expect(paid.cyclesCompleted).toBe(2)
     expect(paid.openInvoice).toBeNull()
     const gap = days(paid.nextDueDate, new Date().toISOString())
-    expect(gap).toBeGreaterThanOrEqual(28)
-    expect(gap).toBeLessThanOrEqual(31)
+    expect(gap).toBeGreaterThanOrEqual(SPAN[months][0])
+    expect(gap).toBeLessThanOrEqual(SPAN[months][1])
+    expect(paid.status).toBe('active') // ordering early never ends or completes anything
   })
 
-  it('refused when paused / lapsed / finished, and honours the minimum days between early orders', async () => {
+  it('refused when paused / lapsed, and honours the minimum days between early orders', async () => {
     const { orderNextMonthNow, pauseSubscription } = await import('@/lib/subscriptions/service')
     const paused = await startActiveSubscription(env())
     await pauseSubscription(payload, paused.subId)
@@ -302,7 +317,7 @@ describe('who may act: the customer-facing server actions', () => {
     expect(await actions.pauseSubscriptionAction("1; drop table orders")).toMatchObject({ ok: false })
   })
 
-  it('"order next month" / "resume" / "pay now" hand back the secure pay-page path of the invoice', async () => {
+  it('"order the next delivery" / "resume" / "pay now" hand back the secure pay-page path of the invoice', async () => {
     const actions = await import('@/app/(frontend)/(shop)/account/subscriptions/actions')
     const s = await startActiveSubscription(env())
     const early: any = await actions.orderNextMonthAction(String(s.subId))
@@ -313,7 +328,7 @@ describe('who may act: the customer-facing server actions', () => {
     expect(pay.payPath).toBe(early.payPath)
 
     await actions.pauseSubscriptionAction(String(s.subId))
-    await makeOverdue(s) // the next month is already due, so resuming hands over the invoice
+    await makeOverdue(s) // the next order is already due, so resuming hands over the invoice
     const resumed: any = await actions.resumeSubscriptionAction(String(s.subId))
     const inv2 = await getOrder((await getSub(s.subId)).openInvoice)
     expect(resumed.payPath).toBe(`/pay/${inv2.id}/${inv2.invoiceToken}`)
@@ -330,7 +345,7 @@ describe('who may act: the customer-facing server actions', () => {
 
 // Runs last on purpose: these scenarios leave active subscriptions with a scheduled invoice behind, which the older
 // "nothing happens while paused / skipped" checks above must not see.
-describe('resume keeps the calendar (a pause never moves a month\'s date)', () => {
+describe('resume keeps the calendar (a pause never moves an order\'s date)', () => {
   it('a short pause with nothing owed: resuming creates NO invoice and keeps the normal dates; the daily job invoices on the normal day', async () => {
     const { pauseSubscription, resumeSubscription } = await import('@/lib/subscriptions/service')
     const { processSubscriptions } = await import('@/lib/subscriptions/process')
@@ -403,7 +418,7 @@ describe('resume keeps the calendar (a pause never moves a month\'s date)', () =
     expect(new Date(inv.invoiceDueDate).getTime() - resumeAt.getTime()).toBeGreaterThanOrEqual(2 * DAY - 1000)
   })
 
-  it('a month moved later by "skip" keeps that later date through a pause and resume', async () => {
+  it('an order moved later by "skip" keeps that later date through a pause and resume', async () => {
     const { skipNextMonth, pauseSubscription, resumeSubscription } = await import('@/lib/subscriptions/service')
     const s = await startActiveSubscription(env())
     const skipped: any = await skipNextMonth(payload, s.subId)
@@ -451,6 +466,51 @@ describe('resume keeps the calendar (a pause never moves a month\'s date)', () =
     const inv = await getOrder((await getSub(b.subId)).openInvoice)
     expect(days(inv.invoiceDueDate, new Date().toISOString())).toBeGreaterThanOrEqual(6)
     expect(days(inv.invoiceDueDate, new Date().toISOString())).toBeLessThanOrEqual(7)
+  })
+
+  it('a 6-month plan: a pause of a few months still waits for the normal date; a pause past it invoices right away', async () => {
+    const { pauseSubscription, resumeSubscription } = await import('@/lib/subscriptions/service')
+    const s = await startActiveSubscription(env(), { months: 6 })
+    const before = await getSub(s.subId)
+    expect(days(before.nextDueDate, new Date().toISOString())).toBeGreaterThanOrEqual(180) // about half a year away
+
+    // paused for ~3 months: the next order is still months away -> no invoice, the same dates
+    await pauseSubscription(payload, s.subId)
+    const threeMonthsOn = new Date(Date.now() + 95 * DAY)
+    const early: any = await resumeSubscription(payload, s.subId, threeMonthsOn)
+    expect(early.ok).toBe(true)
+    expect(early.orderId).toBeUndefined()
+    const mid = await getSub(s.subId)
+    expect(new Date(mid.nextDueDate).getTime()).toBe(new Date(before.nextDueDate).getTime())
+    expect(mid.openInvoice).toBeNull()
+
+    // paused until 8 months later: the date has passed -> invoice now, 7 days to pay
+    await pauseSubscription(payload, s.subId)
+    const eightMonthsOn = new Date(Date.now() + 245 * DAY)
+    const late: any = await resumeSubscription(payload, s.subId, eightMonthsOn)
+    expect(late.ok).toBe(true)
+    expect(late.orderId).toBeTruthy()
+    expect(days((await getOrder(late.orderId)).invoiceDueDate, eightMonthsOn.toISOString())).toBe(7)
+  })
+
+  it('a 6-month plan with no stored due date: resume works the date out from the last payment + the plan\'s own interval', async () => {
+    const { pauseSubscription, resumeSubscription } = await import('@/lib/subscriptions/service')
+    const s = await startActiveSubscription(env(), { months: 6 })
+    const first = await getOrder(s.firstOrderId)
+    await pauseSubscription(payload, s.subId)
+    await payload.update({ collection: 'subscriptions', id: s.subId, data: { nextDueDate: null, nextInvoiceDate: null } as any, overrideAccess: true })
+
+    // 3 months on: a monthly plan would be overdue by now, a 6-month plan is not due for another ~3 months
+    const resumeAt = new Date(Date.now() + 95 * DAY)
+    const r: any = await resumeSubscription(payload, s.subId, resumeAt)
+    expect(r.ok).toBe(true)
+    expect(r.orderId).toBeUndefined() // nothing to invoice yet
+    const after = await getSub(s.subId)
+    expect(after.openInvoice).toBeNull()
+    const spanDays = days(after.nextDueDate, first.paidAt)
+    expect(spanDays).toBeGreaterThanOrEqual(SPAN[6][0]) // paid + 6 months
+    expect(spanDays).toBeLessThanOrEqual(SPAN[6][1])
+    expect(days(after.nextDueDate, after.nextInvoiceDate)).toBe(7)
   })
 
   it('the customer\'s Resume button says what happened: waits (no pay link) or hands over the invoice', async () => {

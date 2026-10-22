@@ -1,8 +1,9 @@
 import type { Payload, PayloadRequest } from 'payload'
 import { payUrl, serverUrl } from './invoices'
+import { everyLabel, orderLabel } from './labels'
 
 /**
- * Customer emails for subscriptions. Every one is clearly labelled "SUBSCRIPTION" with the month number so
+ * Customer emails for subscriptions. Every one is clearly labelled "SUBSCRIPTION" with the order number so
  * customers (and staff reading BCC copies) can tell them apart from one-time orders at a glance.
  */
 
@@ -23,13 +24,12 @@ const money = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency',
 const longDate = (d: string | Date | null | undefined) =>
   d ? new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }) : ''
 
-export const monthLabel = (order: { cycleNumber?: number | null; cyclesTotal?: number | null }) =>
-  order.cycleNumber && order.cyclesTotal ? `Month ${order.cycleNumber} of ${order.cyclesTotal}` : 'Subscription'
+export const orderTitle = (order: { cycleNumber?: number | null }) => orderLabel(order.cycleNumber)
 
 const idOf = (v: any): Id | null => (v && typeof v === 'object' ? v.id : v ?? null)
 
-const whyLine = (order: { cyclesTotal?: number | null }) =>
-  `You subscribed to a ${order.cyclesTotal || ''}-month plan at Longevia Research. Each month we email an invoice like this one - you pay it yourself and your order ships. We never charge your card automatically.`
+const whyLine = (intervalMonths?: number | null) =>
+  `You subscribed to have an order delivered ${intervalMonths ? everyLabel(intervalMonths) : 'on a regular schedule'} from Longevia Research. Whenever an order is due we email an invoice like this one - you pay it yourself and your order ships. We never charge your card automatically.`
 
 // ------------------------------------------------------------------------------------------------
 // Layout
@@ -72,7 +72,7 @@ export function renderLayout(o: LayoutOptions): string {
   }
   ${
     o.manageUrl
-      ? `<tr><td style="padding:0 40px 24px 40px;text-align:center;"><p style="margin:0;font-size:13px;color:#6b7280;">Need to change something? You can <a href="${esc(o.manageUrl)}" style="color:#111827;font-weight:600;">skip a month, pause, or update your address</a> anytime from your account.</p></td></tr>`
+      ? `<tr><td style="padding:0 40px 24px 40px;text-align:center;"><p style="margin:0;font-size:13px;color:#6b7280;">Need to change something? You can <a href="${esc(o.manageUrl)}" style="color:#111827;font-weight:600;">skip a delivery, pause, or update your address</a> anytime from your account.</p></td></tr>`
       : ''
   }
   <tr><td style="padding:24px 40px;background-color:#f9fafb;border-top:1px solid #f3f4f6;text-align:center;">
@@ -104,7 +104,7 @@ function itemsBlock(order: any): string {
 
 function amountDueBlock(order: any): string {
   return `<div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:18px;text-align:center;">
-    <p style="margin:0;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#9ca3af;font-weight:600;">${esc(monthLabel(order))} &middot; Order #${esc(order.orderNumber || order.id)}</p>
+    <p style="margin:0;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#9ca3af;font-weight:600;">${esc(orderTitle(order))} &middot; Order #${esc(order.orderNumber || order.id)}</p>
     <p style="margin:6px 0 0 0;font-size:30px;font-weight:800;color:#111827;">${money(order.total)}</p>
     ${order.invoiceDueDate ? `<p style="margin:6px 0 0 0;font-size:14px;color:#4b5563;">Due by <strong>${esc(longDate(order.invoiceDueDate))}</strong></p>` : ''}
     <p style="margin:6px 0 0 0;font-size:13px;color:#6b7280;">Your order ships as soon as this payment is received.</p>
@@ -128,39 +128,39 @@ function zelleBlock(order: any, cardUrl?: string): string {
 
 export type InvoiceEmailReason = 'scheduled' | 'early' | 'resume' | 'reactivate'
 
-export function buildInvoiceEmail(args: { order: any; subscriptionId: Id; reason: InvoiceEmailReason }): { subject: string; html: string } {
-  const { order, subscriptionId, reason } = args
+export function buildInvoiceEmail(args: { order: any; subscriptionId: Id; reason: InvoiceEmailReason; intervalMonths?: number | null }): { subject: string; html: string } {
+  const { order, subscriptionId, reason, intervalMonths } = args
   const n = order.orderNumber || order.id
   const pay = payUrl(order.id, order.invoiceToken)
   const name = esc(order.customerFirstName || 'there')
   const intro =
     reason === 'early'
-      ? `Hi ${name}, here is the invoice for your next monthly order, as requested.`
+      ? `Hi ${name}, here is the invoice for your next order, as requested.`
       : reason === 'resume'
-        ? `Hi ${name}, welcome back! Your subscription is active again. Here is the invoice for your next monthly order.`
+        ? `Hi ${name}, welcome back! Your subscription is active again. Here is the invoice for your next order.`
         : reason === 'reactivate'
           ? `Hi ${name}, here is a fresh invoice to reactivate your subscription. Once it is paid, your subscription continues as normal.`
-          : `Hi ${name}, your next monthly order is ready. Please pay the invoice below so we can ship it.`
+          : `Hi ${name}, your next order is ready. Please pay the invoice below so we can ship it.`
 
   const isCard = order.paymentMethod === 'authnet_bridge'
   const blocks = [amountDueBlock(order), isCard ? '' : zelleBlock(order, pay), itemsBlock(order)].filter(Boolean)
 
   return {
-    subject: `Subscription invoice #${n} - ${monthLabel(order)}${order.invoiceDueDate ? ` (due ${longDate(order.invoiceDueDate)})` : ''}`,
+    subject: `Subscription invoice #${n} - ${orderTitle(order)}${order.invoiceDueDate ? ` (due ${longDate(order.invoiceDueDate)})` : ''}`,
     html: renderLayout({
-      badge: `Subscription · ${monthLabel(order)}`,
-      title: 'Your monthly invoice',
+      badge: `Subscription · ${orderTitle(order)}`,
+      title: 'Your invoice',
       intro,
       blocks,
       cta: isCard ? { label: `Pay ${money(order.total)} by card`, url: pay } : { label: 'View invoice', url: pay },
       manageUrl: `${serverUrl()}/account/subscriptions/${subscriptionId}`,
-      why: whyLine(order),
+      why: whyLine(intervalMonths),
     }),
   }
 }
 
-export function buildReminderEmail(args: { order: any; subscriptionId: Id; stage: 1 | 2 }): { subject: string; html: string } {
-  const { order, subscriptionId, stage } = args
+export function buildReminderEmail(args: { order: any; subscriptionId: Id; stage: 1 | 2; intervalMonths?: number | null }): { subject: string; html: string } {
+  const { order, subscriptionId, stage, intervalMonths } = args
   const n = order.orderNumber || order.id
   const pay = payUrl(order.id, order.invoiceToken)
   const isCard = order.paymentMethod === 'authnet_bridge'
@@ -168,55 +168,50 @@ export function buildReminderEmail(args: { order: any; subscriptionId: Id; stage
   return {
     subject: final ? `Final notice: subscription invoice #${n} is still unpaid` : `Reminder: subscription invoice #${n} is due`,
     html: renderLayout({
-      badge: `Subscription · ${monthLabel(order)}`,
+      badge: `Subscription · ${orderTitle(order)}`,
       title: final ? 'Final notice' : 'Your invoice is due',
       intro: final
-        ? `Your monthly invoice has not been paid yet. If it is still unpaid in a few days your subscription will be put on hold - you can reactivate it anytime. If you would rather not receive this month, you can skip it or pause your subscription.`
-        : `This is a friendly reminder that your monthly invoice is due. You can pay now, or skip this month or pause your subscription from your account.`,
+        ? `Your invoice has not been paid yet. If it is still unpaid in a few days your subscription will be put on hold - you can reactivate it anytime. If you would rather not receive this delivery, you can skip it or pause your subscription.`
+        : `This is a friendly reminder that your invoice is due. You can pay now, or skip this delivery or pause your subscription from your account.`,
       blocks: [amountDueBlock(order), isCard ? '' : zelleBlock(order, pay)].filter(Boolean),
       cta: isCard ? { label: `Pay ${money(order.total)} by card`, url: pay } : { label: 'View invoice', url: pay },
       manageUrl: `${serverUrl()}/account/subscriptions/${subscriptionId}`,
       tone: final ? 'warning' : 'normal',
-      why: whyLine(order),
+      why: whyLine(intervalMonths),
     }),
   }
 }
 
-export function buildLapseEmail(args: { order: any; subscriptionId: Id }): { subject: string; html: string } {
-  const { order, subscriptionId } = args
+export function buildLapseEmail(args: { order: any; subscriptionId: Id; intervalMonths?: number | null }): { subject: string; html: string } {
+  const { order, subscriptionId, intervalMonths } = args
   const n = order.orderNumber || order.id
   return {
     subject: `Your subscription is on hold - invoice #${n} was not paid`,
     html: renderLayout({
       badge: 'Subscription · On hold',
       title: 'Your subscription is on hold',
-      intro: `We did not receive payment for ${esc(monthLabel(order))} (order #${esc(n)}), so we have cancelled that invoice and put your subscription on hold. Nothing else will be charged. You can continue anytime - just reactivate from your account and pay a fresh invoice.`,
+      intro: `We did not receive payment for ${esc(orderTitle(order))} (order #${esc(n)}), so we have cancelled that invoice and put your subscription on hold. Nothing else will be charged. You can continue anytime - just reactivate from your account and pay a fresh invoice.`,
       cta: { label: 'Reactivate my subscription', url: `${serverUrl()}/account/subscriptions/${subscriptionId}` },
       tone: 'warning',
-      why: whyLine(order),
+      why: whyLine(intervalMonths),
     }),
   }
 }
 
-export function buildPaymentReceivedEmail(args: { order: any; subscriptionId: Id | null; nextDueDate?: string | Date | null }): { subject: string; html: string } {
-  const { order, subscriptionId, nextDueDate } = args
+export function buildPaymentReceivedEmail(args: { order: any; subscriptionId: Id | null; nextDueDate?: string | Date | null; intervalMonths?: number | null }): { subject: string; html: string } {
+  const { order, subscriptionId, nextDueDate, intervalMonths } = args
   const n = order.orderNumber || order.id
-  const remaining = order.cyclesTotal && order.cycleNumber ? order.cyclesTotal - order.cycleNumber : null
   return {
-    subject: `Payment received - Subscription order #${n} (${monthLabel(order)})`,
+    subject: `Payment received - Subscription order #${n} (${orderTitle(order)})`,
     html: renderLayout({
-      badge: `Subscription · ${monthLabel(order)}`,
+      badge: `Subscription · ${orderTitle(order)}`,
       title: 'Payment received - thank you!',
-      intro: `We received your payment of <strong>${money(order.total)}</strong> for ${esc(monthLabel(order))}. Your order is being prepared and you will get tracking details once it ships.${
-        remaining && remaining > 0 && nextDueDate
-          ? ` Your next invoice (${remaining} month${remaining === 1 ? '' : 's'} to go) will be emailed about a week before <strong>${esc(longDate(nextDueDate))}</strong>.`
-          : remaining === 0
-            ? ' That was the last month of your plan - thank you for subscribing!'
-            : ''
+      intro: `We received your payment of <strong>${money(order.total)}</strong> for ${esc(orderTitle(order))}. Your order is being prepared and you will get tracking details once it ships.${
+        nextDueDate ? ` Your next invoice will be emailed before <strong>${esc(longDate(nextDueDate))}</strong>.` : ''
       }`,
       blocks: [itemsBlock(order)],
       cta: subscriptionId ? { label: 'View my subscription', url: `${serverUrl()}/account/subscriptions/${subscriptionId}` } : undefined,
-      why: whyLine(order),
+      why: whyLine(intervalMonths),
     }),
   }
 }
@@ -224,6 +219,14 @@ export function buildPaymentReceivedEmail(args: { order: any; subscriptionId: Id
 // ------------------------------------------------------------------------------------------------
 // Senders
 // ------------------------------------------------------------------------------------------------
+
+/** The subscription's interval in months (1, 3 or 6), for the "why am I getting this" line. */
+async function intervalOf(payload: Payload, order: any): Promise<number | null> {
+  const subId = idOf(order?.subscription)
+  if (!subId) return null
+  const sub: any = await payload.findByID({ collection: 'subscriptions' as any, id: subId, depth: 0, overrideAccess: true }).catch(() => null)
+  return sub ? Number(sub.planMonths) || null : null
+}
 
 async function loadOrder(payload: Payload, orderId: Id, req?: PayloadRequest): Promise<any | null> {
   return (await payload
@@ -234,21 +237,21 @@ async function loadOrder(payload: Payload, orderId: Id, req?: PayloadRequest): P
 export async function sendInvoiceEmail(payload: Payload, orderId: Id, reason: InvoiceEmailReason): Promise<void> {
   const order = await loadOrder(payload, orderId)
   if (!order?.guestEmail || !order.invoiceToken) return
-  const { subject, html } = buildInvoiceEmail({ order, subscriptionId: idOf(order.subscription)!, reason })
+  const { subject, html } = buildInvoiceEmail({ order, subscriptionId: idOf(order.subscription)!, reason, intervalMonths: await intervalOf(payload, order) })
   await payload.sendEmail({ to: order.guestEmail, subject, html })
 }
 
 export async function sendReminderEmail(payload: Payload, orderId: Id, stage: 1 | 2): Promise<void> {
   const order = await loadOrder(payload, orderId)
   if (!order?.guestEmail || !order.invoiceToken) return
-  const { subject, html } = buildReminderEmail({ order, subscriptionId: idOf(order.subscription)!, stage })
+  const { subject, html } = buildReminderEmail({ order, subscriptionId: idOf(order.subscription)!, stage, intervalMonths: await intervalOf(payload, order) })
   await payload.sendEmail({ to: order.guestEmail, subject, html })
 }
 
 export async function sendLapseEmail(payload: Payload, orderId: Id): Promise<void> {
   const order = await loadOrder(payload, orderId)
   if (!order?.guestEmail) return
-  const { subject, html } = buildLapseEmail({ order, subscriptionId: idOf(order.subscription)! })
+  const { subject, html } = buildLapseEmail({ order, subscriptionId: idOf(order.subscription)!, intervalMonths: await intervalOf(payload, order) })
   await payload.sendEmail({ to: order.guestEmail, subject, html })
 }
 
@@ -260,7 +263,7 @@ export async function sendPaymentReceivedEmail(payload: Payload, order: any, req
   const sub: any = subId
     ? await payload.findByID({ collection: 'subscriptions' as any, id: subId, depth: 0, overrideAccess: true, ...(req ? { req } : {}) }).catch(() => null)
     : null
-  const { subject, html } = buildPaymentReceivedEmail({ order: full, subscriptionId: subId, nextDueDate: sub?.nextDueDate })
+  const { subject, html } = buildPaymentReceivedEmail({ order: full, subscriptionId: subId, nextDueDate: sub?.nextDueDate, intervalMonths: Number(sub?.planMonths) || null })
   // BCC support, like normal order confirmations, so staff know a paid order is ready to ship.
   await payload.sendEmail({ to, bcc: SUPPORT_EMAIL, subject, html })
 }

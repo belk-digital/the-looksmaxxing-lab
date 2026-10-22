@@ -186,28 +186,33 @@ describe('plain-English help text is complete', () => {
     for (const action of seen) expect(HELP.actions[key[action]].length, action).toBeGreaterThan(30)
   })
 
-  it('the key promises are stated plainly: no automatic charging, month-by-month billing, what is due today', () => {
+  it('the key promises are stated plainly: no automatic charging, one order at a time, what is due today, what skip does', () => {
     expect(HELP.noAutoCharge).toMatch(/never charge your card/i)
-    expect(HELP.dueToday).toMatch(/only pay month 1/i)
+    expect(HELP.dueToday).toMatch(/only pay your first order/i)
     expect(HELP.dueToday).toMatch(/ever charged to your card automatically/i)
-    expect(HELP.billedMonthly).toMatch(/one month at a time/i)
-    expect(HELP.actions.skip).toMatch(/still receive every month/i)
+    expect(HELP.billedEvery).toMatch(/one order at a time/i)
+    expect(HELP.actions.skip).toMatch(/one full interval/i)
+    expect(HELP.actions.skip).toMatch(/will not receive an order for the skipped period/i)
+    expect(HELP.whatIsSubscription).toMatch(/every month, every 3 months or every 6 months/i)
+    expect(HELP.whatIsSubscription).toMatch(/until you pause it/i)
+    expect(HELP.stopForGood).toMatch(/pause/i)
+    expect(HELP.stopForGood).toMatch(/support@longeviaresearch.com/)
     expect(HELP.actions.pause).toMatch(/Nothing is due while paused/i)
     expect(HELP.paymentMethod).toMatch(/never charge automatically/i)
   })
 
   it('every subscription email tells the customer why they are receiving it', () => {
-    const order = { id: 7, orderNumber: '1007', cycleNumber: 2, cyclesTotal: 6, total: 45, subtotal: 40, shippingTotal: 5, feeTotal: 0, invoiceDueDate: '2026-11-20T00:00:00Z', invoiceToken: 'tok1234567890123456789', paymentMethod: 'authnet_bridge', items: [] }
+    const order = { id: 7, orderNumber: '1007', cycleNumber: 2, total: 45, subtotal: 40, shippingTotal: 5, feeTotal: 0, invoiceDueDate: '2026-11-20T00:00:00Z', invoiceToken: 'tok1234567890123456789', paymentMethod: 'authnet_bridge', items: [] }
     const mails = [
-      buildInvoiceEmail({ order, subscriptionId: 9, reason: 'scheduled' }),
-      buildReminderEmail({ order, subscriptionId: 9, stage: 1 }),
-      buildReminderEmail({ order, subscriptionId: 9, stage: 2 }),
-      buildLapseEmail({ order, subscriptionId: 9 }),
-      buildPaymentReceivedEmail({ order, subscriptionId: 9 }),
+      buildInvoiceEmail({ order, subscriptionId: 9, reason: 'scheduled', intervalMonths: 6 }),
+      buildReminderEmail({ order, subscriptionId: 9, stage: 1, intervalMonths: 6 }),
+      buildReminderEmail({ order, subscriptionId: 9, stage: 2, intervalMonths: 6 }),
+      buildLapseEmail({ order, subscriptionId: 9, intervalMonths: 6 }),
+      buildPaymentReceivedEmail({ order, subscriptionId: 9, intervalMonths: 6 }),
     ]
     for (const m of mails) {
       expect(m.html).toContain('Why am I getting this?')
-      expect(m.html).toContain('6-month plan')
+      expect(m.html).toContain('every 6 months')
       expect(m.html).toContain('never charge your card automatically')
     }
   })

@@ -6,6 +6,7 @@ import { getSubscriptionPlanOptions } from '@/app/(frontend)/actions/subscriptio
 import { DEFAULT_TERMS_TEXT } from '@/lib/subscriptions/settings'
 import { InfoTip } from '@/components/ui/InfoTip'
 import { HELP } from '@/lib/subscriptions/helpText'
+import { everyLabel } from '@/lib/subscriptions/labels'
 import { couponScopeNote, SUBSCRIPTION_COUPON_MESSAGE, type SubscriptionCouponScope } from '@/lib/subscriptions/couponRules'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -356,7 +357,7 @@ export function CheckoutClient() {
     <div ref={ref} data-testid={testId} className="rounded-2xl border-2 border-amber-400 bg-amber-50 p-5 text-amber-950 flex flex-col gap-3">
       <p className="text-base font-bold">Log in to start your subscription</p>
       <p className="text-sm leading-relaxed">
-        A subscription needs an account, so you can manage your plan and pay each monthly invoice. Your cart stays saved while you log in or create your account.
+        A subscription needs an account, so you can manage your subscription and pay each invoice. Your cart stays saved while you log in or create your account.
       </p>
       <div className="flex flex-wrap gap-3">
         <Link href="/login?next=%2Fcheckout" className="inline-flex h-11 items-center justify-center rounded-full bg-ink px-6 text-xs font-bold uppercase tracking-widest text-white transition-opacity hover:opacity-90">
@@ -947,12 +948,12 @@ export function CheckoutClient() {
                   <>
                   <div className="rounded-2xl border border-green-200 bg-green-50 p-5 text-sm text-green-900 flex flex-col gap-3" data-testid="subscription-notice">
                     <strong className="flex items-center gap-1.5 text-base">
-                      {planMonths}-month subscription &middot; billed monthly
+                      {`Subscription · delivered ${everyLabel(planMonths || 1)}`}
                       <InfoTip label="How does subscription billing work?">{HELP.noAutoCharge}</InfoTip>
                     </strong>
                     <p>
-                      You pay month 1 today (<strong>${total.toFixed(2)}</strong>). Then, each month, we email an invoice about a week before it is due and your order ships once it is
-                      paid. Pay by card or Zelle - we never charge your card automatically. You can pause, skip a month or order early anytime from your account.
+                      You pay your first order today (<strong>${total.toFixed(2)}</strong>). Then, {everyLabel(planMonths || 1)}, we email an invoice before it is due and your order ships once it is
+                      paid. Pay by card or Zelle - we never charge your card automatically. It continues until you pause it, and you can pause, skip a delivery or order early anytime from your account.
                     </p>
                   </div>
 
@@ -1304,7 +1305,7 @@ export function CheckoutClient() {
               </div>
               {isPlan && (
                 <p className="text-xs text-ink/50 -mt-4" data-testid="subscription-due-today">
-                  This is month 1 of {planMonths}. {Math.max(0, (planMonths || 1) - 1)} more monthly invoice{(planMonths || 1) - 1 === 1 ? '' : 's'} follow by email at that month's store price, minus your plan discount.
+                  {`This is your first order. Your next invoice is emailed before it is due (${everyLabel(planMonths || 1)}), at the store price on that day minus your plan discount, and it continues until you pause.`}
                 </p>
               )}
               

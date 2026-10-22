@@ -6,9 +6,9 @@ import { getSubscriptionSettings } from './settings'
 import { addDays } from './schedule'
 
 /**
- * Monthly invoices. Each month of a subscription is a normal order with orderType "subscription_cycle".
+ * Subscription invoices. Each order of a subscription (one per interval of 1, 3 or 6 months) is a normal order with orderType "subscription_cycle".
  *
- * Stock model for monthly orders: stock is RESERVED when the invoice is created (finalizeOrder with
+ * Stock model for recurring orders: stock is RESERVED when the invoice is created (finalizeOrder with
  * skipPaymentStatusUpdate, exactly like a Zelle order today) and RELEASED if the unpaid invoice is cancelled
  * (skip, pause, lapse). The `isFinalized` flag on the order means "stock is reserved".
  */
@@ -68,12 +68,11 @@ export async function getPaidCycles(payload: Payload, subscriptionId: Id, req?: 
   return out
 }
 
-/** Smallest month number (1..total) that has not been paid, or null when every month is paid. */
-export function nextUnpaidCycle(paid: Map<number, unknown> | Set<number>, total: number): number | null {
-  for (let n = 1; n <= total; n++) {
-    if (!(paid instanceof Set ? paid.has(n) : paid.has(n))) return n
-  }
-  return null
+/** The smallest order number (1, 2, 3, ...) that has not been paid yet. A subscription has no end, so there is always one. */
+export function nextUnpaidCycle(paid: Map<number, unknown> | Set<number>): number {
+  let n = 1
+  while (paid.has(n)) n++
+  return n
 }
 
 export async function findOpenInvoice(payload: Payload, subscriptionId: Id, req?: PayloadRequest): Promise<any | null> {
@@ -121,7 +120,7 @@ async function appendInternalNote(payload: Payload, order: any, note: string, re
 }
 
 /**
- * Cancels an UNPAID monthly invoice (skip / pause / lapse / admin) and gives its reserved stock back.
+ * Cancels an UNPAID recurring invoice (skip / pause / lapse / admin) and gives its reserved stock back.
  * Never touches an order that has been paid. Returns true if it cancelled something.
  */
 export async function cancelUnpaidInvoice(payload: Payload, orderId: Id, reason: string, req?: PayloadRequest): Promise<boolean> {
@@ -150,9 +149,9 @@ export interface CreateInvoiceOptions {
 }
 
 /**
- * Creates the next unpaid monthly invoice for a subscription (idempotent: if an open invoice already
+ * Creates the next unpaid recurring invoice for a subscription (idempotent: if an open invoice already
  * exists it is returned instead). Does NOT send email - the caller does that, so this stays testable.
- * Returns null when every month of the plan has already been paid.
+ * (Returns null only if nothing can be created; a subscription has no end.)
  */
 export async function createCycleInvoice(
   payload: Payload,
@@ -164,8 +163,7 @@ export async function createCycleInvoice(
   const settings = await getSubscriptionSettings(payload)
 
   const paid = await getPaidCycles(payload, sub.id, req)
-  const cycleNumber = nextUnpaidCycle(paid, Number(sub.planMonths))
-  if (cycleNumber === null) return null
+  const cycleNumber = nextUnpaidCycle(paid)
 
   const existing = await findOpenInvoice(payload, sub.id, req)
   if (existing) return { order: existing, created: false }
@@ -223,7 +221,6 @@ export async function createCycleInvoice(
         orderType: 'subscription_cycle',
         subscription: sub.id,
         cycleNumber,
-        cyclesTotal: Number(sub.planMonths),
         subscriptionDiscountPercent: Number(sub.discountPercent) || 0,
         invoiceDueDate: dueDate.toISOString(),
         invoiceReminderStage: 0,
@@ -258,8 +255,8 @@ export async function createCycleInvoice(
       } as any,
     })
   } catch (err) {
-    // A concurrent request (daily job vs. the customer's "order next month now" click) may have won the race:
-    // the database allows only one open invoice per month and rejects the second one (Payload reports that
+    // A concurrent request (daily job vs. the customer's "order next delivery now" click) may have won the race:
+    // the database allows only one open invoice per order number and rejects the second one (Payload reports that
     // as a generic validation error, so we do not try to recognise it - we just check whether an open invoice
     // now exists). If one does, use it; otherwise this was a real failure.
     const winner = await findOpenInvoice(payload, sub.id, req)
@@ -280,7 +277,7 @@ export async function createCycleInvoice(
 }
 
 /**
- * Finds a monthly invoice from the id + secret token in an emailed pay link. Returns null for anything that
+ * Finds a recurring invoice from the id + secret token in an emailed pay link. Returns null for anything that
  * doesn't match, so a wrong guess looks exactly like a missing page.
  */
 export async function loadInvoiceByToken(payload: Payload, orderId: string, token: string): Promise<any | null> {

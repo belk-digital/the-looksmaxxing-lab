@@ -18,7 +18,7 @@ export type CartLine = {
   quantity: number
   priceSnapshot: number
   product: MinimalProduct
-  /** Set when this line is a subscription plan (3 / 6 / 12 months); priceSnapshot is then the discounted monthly price. */
+  /** Set when this line is a subscription plan (an order every 1 / 3 / 6 months); priceSnapshot is then the discounted price of one order. */
   planMonths?: number | null
 }
 

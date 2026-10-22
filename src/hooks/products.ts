@@ -1,6 +1,6 @@
-import type { CollectionBeforeChangeHook, CollectionAfterChangeHook } from 'payload'
-import { revalidatePath } from 'next/cache'
+import type { CollectionBeforeChangeHook, CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
 import slugify from 'slugify'
+import { clearCachedPages } from '../lib/cache/clearCachedPages'
 
 export const productsBeforeChange: CollectionBeforeChangeHook = async ({
   data,
@@ -37,12 +37,22 @@ export const productsBeforeChange: CollectionBeforeChangeHook = async ({
   return data
 }
 
-export const productsAfterChange: CollectionAfterChangeHook = async ({ doc }) => {
-  try {
-    if (doc.slug) {
-      revalidatePath(`/products/${doc.slug}`)
-    }
-  } catch (err) {
-    console.error('[productsAfterChange] revalidation failed:', err)
-  }
+// Pages that are cached for a day and show product data. The product's own page is added per save.
+//   /                homepage "best sellers" cards
+//   /products        all-products listing
+//   /certificates    COA library, built from each product's COA file
+const PAGES_SHOWING_PRODUCTS = ['/', '/products', '/certificates']
+
+function productPages(...slugs: Array<string | null | undefined>): string[] {
+  return [...slugs.filter(Boolean).map((slug) => `/products/${slug}`), ...PAGES_SHOWING_PRODUCTS]
+}
+
+// Saving a product (the Save button in the admin, or code that updates stock/price) clears the cached
+// copy of that product's page right away. If the slug was changed, the old address is cleared too.
+export const productsAfterChange: CollectionAfterChangeHook = async ({ doc, previousDoc }) => {
+  clearCachedPages('productsAfterChange', productPages(doc?.slug, previousDoc?.slug))
+}
+
+export const productsAfterDelete: CollectionAfterDeleteHook = async ({ doc }) => {
+  clearCachedPages('productsAfterDelete', productPages(doc?.slug))
 }

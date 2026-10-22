@@ -293,7 +293,6 @@ export interface Media {
    */
   alt: string;
   caption?: string | null;
-  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -323,7 +322,6 @@ export interface Media {
 export interface Document {
   id: number;
   title: string;
-  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -558,7 +556,7 @@ export interface Coupon {
    */
   allowOnSubscriptions?: boolean | null;
   /**
-   * First month only: taken off the first payment, later monthly invoices are at the normal plan price. Every monthly payment: also taken off every later monthly invoice for the whole plan, even after the coupon's expiry date (to stop it, switch "Can be used on subscriptions" off or delete the coupon). Not available for Store Credit coupons.
+   * First order only: taken off the first payment, later invoices are at the normal plan price. Every order: also taken off every later invoice for as long as the subscription runs, even after the coupon's expiry date (to stop it, switch "Can be used on subscriptions" off or delete the coupon). Not available for Store Credit coupons.
    */
   subscriptionDiscountScope?: ('first_month' | 'every_month') | null;
   type: 'percentage' | 'fixed_amount' | 'free_shipping' | 'buy_one_get_one' | 'store_credit';
@@ -640,7 +638,7 @@ export interface Order {
    */
   orderNumber?: string | null;
   /**
-   * One-time order, or one month of a subscription. Set automatically.
+   * One-time order, or one order of a subscription. Set automatically.
    */
   orderType: 'one_time' | 'subscription_first' | 'subscription_cycle';
   /**
@@ -754,16 +752,16 @@ export interface Order {
   updatedAt: string;
   subscription?: (number | null) | Subscription;
   /**
-   * Which month of the plan this order is (1 = first).
+   * Which order of the subscription this is (1 = first).
    */
   cycleNumber?: number | null;
   /**
-   * Months in the plan.
+   * Not used any more (a subscription has no fixed length). Older orders may show a number.
    */
   cyclesTotal?: number | null;
   subscriptionDiscountPercent?: number | null;
   /**
-   * Payment due date of this monthly invoice.
+   * Payment due date of this invoice.
    */
   invoiceDueDate?: string | null;
   /**
@@ -825,7 +823,7 @@ export interface ProcessingFee {
   createdAt: string;
 }
 /**
- * Monthly subscription plans. Each month creates a normal order (type "Subscription"). Set Status to Paused or Cancelled to stop billing - any unpaid invoice is cancelled automatically.
+ * Subscriptions. Every interval creates a normal order (type "Subscription"). Set Status to Paused or Cancelled to stop billing - any unpaid invoice is cancelled automatically.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "subscriptions".
@@ -838,11 +836,11 @@ export interface Subscription {
   reference?: string | null;
   owner: number | User;
   /**
-   * Pending first payment = waiting for the first month to be paid. Active = billing normally. Paused = no invoices (setting this cancels any unpaid invoice). Lapsed = an invoice went unpaid; the customer can reactivate. Completed = all months paid. Cancelled = stopped by staff (unpaid invoice is cancelled; refunds are manual).
+   * Pending first payment = waiting for the first order to be paid. Active = billing normally. Paused = no invoices (setting this cancels any unpaid invoice). Lapsed = an invoice went unpaid; the customer can reactivate. Ended = closed by staff; the system never ends a subscription by itself, and nothing more is invoiced. Cancelled = stopped by staff (unpaid invoice is cancelled; refunds are manual).
    */
   status: 'pending_payment' | 'active' | 'paused' | 'lapsed' | 'completed' | 'cancelled';
   /**
-   * Plan length in months (= number of monthly orders).
+   * Billing interval in months: an order is invoiced every this many months (1, 3 or 6) until the subscription is paused.
    */
   planMonths: number;
   /**
@@ -850,7 +848,7 @@ export interface Subscription {
    */
   discountPercent: number;
   /**
-   * Products shipped every month (price follows the live store price, minus the plan discount).
+   * Products shipped with every order (price follows the live store price, minus the plan discount).
    */
   items: {
     product: number | Product;
@@ -860,11 +858,11 @@ export interface Subscription {
     id?: string | null;
   }[];
   /**
-   * How future monthly invoices are paid. The customer can change this.
+   * How future invoices are paid. The customer can change this.
    */
   paymentMethod: 'authnet_bridge' | 'zelle';
   /**
-   * A coupon that is taken off EVERY monthly invoice of this subscription (set at checkout when the customer used an "Every monthly payment" coupon). Clear it to stop the discount for future invoices.
+   * A coupon that is taken off EVERY order of this subscription (set at checkout when the customer used an "Every order" coupon). Clear it to stop the discount for future invoices.
    */
   recurringCouponCode?: string | null;
   shippingMethod?: string | null;
@@ -880,15 +878,15 @@ export interface Subscription {
   customerLastName?: string | null;
   customerPhone?: string | null;
   /**
-   * Months paid so far (recalculated from paid orders).
+   * Orders paid so far (recalculated from paid orders).
    */
   cyclesCompleted?: number | null;
   /**
-   * When the first month was paid.
+   * When the first order was paid.
    */
   startedAt?: string | null;
   /**
-   * When the next month is due / ships.
+   * When the next order is due / ships.
    */
   nextDueDate?: string | null;
   /**
@@ -896,7 +894,7 @@ export interface Subscription {
    */
   nextInvoiceDate?: string | null;
   /**
-   * The current unpaid monthly order, if any.
+   * The current unpaid order, if any.
    */
   openInvoice?: (number | null) | Order;
   firstOrder?: (number | null) | Order;
@@ -904,7 +902,7 @@ export interface Subscription {
   lapsedAt?: string | null;
   lastEarlyOrderAt?: string | null;
   /**
-   * Earns commission on every paid month.
+   * Earns commission on every paid order.
    */
   affiliate?: (number | null) | Affiliate;
   affiliateClickId?: string | null;
@@ -1177,7 +1175,6 @@ export interface BlogMedia {
    */
   alt: string;
   caption?: string | null;
-  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -1668,7 +1665,6 @@ export interface UsersSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
-  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1701,7 +1697,6 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface DocumentsSelect<T extends boolean = true> {
   title?: T;
-  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -2156,7 +2151,6 @@ export interface BlogPostsSelect<T extends boolean = true> {
 export interface BlogMediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
-  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -2527,7 +2521,7 @@ export interface PaymentMethodsSetting {
   createdAt?: string | null;
 }
 /**
- * Monthly subscription plans and billing rules. Existing subscriptions keep their locked-in discount; changes here apply to new subscriptions (timing rules apply to all).
+ * Subscription plans and billing rules. A plan is how often an order is invoiced (every month, every 3 months, every 6 months) and it continues until the customer pauses it. Existing subscriptions keep their locked-in discount; changes here apply to new subscriptions (timing rules apply to all).
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "subscription-settings".
@@ -2539,20 +2533,20 @@ export interface SubscriptionSetting {
    */
   enabled?: boolean | null;
   /**
-   * The lengths customers can choose. Discount applies to every monthly order of the plan.
+   * How often customers get an order. The discount applies to every order of the plan.
    */
   plans?:
     | {
         /**
-         * Number of monthly orders in the plan (e.g. 3, 6, 12).
+         * How often an order is invoiced, in months: 1 = every month, 3 = every 3 months, 6 = every 6 months. The subscription continues until the customer pauses it.
          */
         months: number;
         /**
-         * Shown to customers, e.g. "6 Months".
+         * Internal name only (customers see "Every N months").
          */
         label: string;
         /**
-         * Percent off the live price, every month.
+         * Percent off the live price on every order of the plan.
          */
         discountPercent: number;
         /**
@@ -2566,7 +2560,7 @@ export interface SubscriptionSetting {
   allowCard?: boolean | null;
   allowZelle?: boolean | null;
   /**
-   * Create and email each monthly invoice this many days before it is due.
+   * Create and email each invoice this many days before it is due.
    */
   invoiceLeadDays?: number | null;
   /**
@@ -2582,7 +2576,7 @@ export interface SubscriptionSetting {
    */
   firstPaymentExpiryDays?: number | null;
   /**
-   * Minimum days between "Order next month now" requests. 0 = no limit.
+   * Minimum days between "Order next delivery now" requests. 0 = no limit.
    */
   minDaysBetweenEarlyOrders?: number | null;
   /**

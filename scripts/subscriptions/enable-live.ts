@@ -35,9 +35,9 @@ await payload.updateGlobal({
       ? {}
       : {
           plans: [
-            { months: 3, label: '3 Months', discountPercent: 15, isActive: true },
-            { months: 6, label: '6 Months', discountPercent: 15, isActive: true },
-            { months: 12, label: '12 Months', discountPercent: 15, isActive: true },
+            { months: 1, label: 'Every month', discountPercent: 25, isActive: true },
+            { months: 3, label: 'Every 3 months', discountPercent: 20, isActive: true },
+            { months: 6, label: 'Every 6 months', discountPercent: 15, isActive: true },
           ],
         }),
   } as any,

@@ -55,7 +55,8 @@ const line = (sku: string, price: number, planMonths: number | null, qty = 1) =>
   product: { id: String(product.id), name: product.name, imageUrl: null },
 })
 
-async function subscribe(sku: string, price: number, months = 3) {
+// a 6-month plan (an order every 6 months) takes 15% off
+async function subscribe(sku: string, price: number, months = 6) {
   const { user, email } = await makeCustomer(payload)
   h.user = user
   h.session = email
@@ -111,13 +112,13 @@ describe('subscribing to a product with size variants', () => {
   })
 })
 
-describe('later months of a variant subscription', () => {
-  it('month 2 uses the same size at the CURRENT live price (-15%), reserves stock, and pausing gives it back', async () => {
+describe('later orders of a variant subscription', () => {
+  it('order 2 uses the same size at the CURRENT live price (-15%), reserves stock, and pausing gives it back', async () => {
     const { res, user } = await subscribe('BPC-10MG', 84.15)
     await payload.update({ collection: 'orders', id: res.orderId, data: { status: 'paid', paymentStatus: 'captured' } as any, overrideAccess: true })
     const subId = (await getOrder(res.orderId)).subscription
 
-    // the store raises the 10mg price from $99 to $110 before month 2
+    // the store raises the 10mg price from $99 to $110 before order 2
     const p: any = await payload.findByID({ collection: 'products', id: product.id, depth: 0, overrideAccess: true })
     await payload.update({
       collection: 'products',

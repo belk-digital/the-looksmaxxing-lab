@@ -41,16 +41,25 @@ export function addMonths(d: Date, months: number): Date {
   )
 }
 
-/** Next month is due one calendar month after the previous month was paid. */
-export function nextDueAfterPayment(paidAt: Date): Date {
-  return addMonths(paidAt, 1)
+/**
+ * How often an order is invoiced: the plan's length IS the interval (1 = every month, 3 = every 3 months, 6 = every 6 months).
+ * (The stored field is still called "planMonths".) Anything that is not a whole number of months >= 1 counts as 1.
+ */
+export function planInterval(planMonths: unknown): number {
+  const n = Math.round(Number(planMonths))
+  return Number.isFinite(n) && n >= 1 ? n : 1
+}
+
+/** The next order is due one interval (N calendar months) after the previous order was paid. */
+export function nextDueAfterPayment(paidAt: Date, intervalMonths: number): Date {
+  return addMonths(paidAt, planInterval(intervalMonths))
 }
 
 /**
  * What happens when a PAUSED subscription is resumed ("the calendar keeps running").
  *
- * A pause only stops invoices; it never changes WHEN a month is due. The next month keeps its normal date - one month after the
- * previous month was paid (or the later date it was moved to by "skip"):
+ * A pause only stops invoices; it never changes WHEN an order is due. The next order keeps its normal date - one interval
+ * (N months) after the previous order was paid (or the later date it was moved to by "skip"):
  *   - its invoice date is still ahead      -> 'wait': nothing is created now, the daily job sends the invoice on its normal day
  *   - the date passed while paused (or the invoice is due to go out within the lead time anyway)
  *                                          -> 'invoice_now': create the invoice right away
@@ -58,17 +67,17 @@ export function nextDueAfterPayment(paidAt: Date): Date {
  */
 export interface ResumePlan {
   mode: 'wait' | 'invoice_now'
-  /** Due date of the next month. */
+  /** Due date of the next order. */
   dueDate: Date
   /** The day the invoice is emailed ('wait'), or now ('invoice_now'). */
   invoiceDate: Date
 }
 
-export function planResume(args: { now: Date; scheduledDue: Date | null; lastPaidAt: Date | null; leadDays: number }): ResumePlan {
+export function planResume(args: { now: Date; scheduledDue: Date | null; lastPaidAt: Date | null; leadDays: number; intervalMonths: number }): ResumePlan {
   const { now, leadDays } = args
   const valid = (d: Date | null): d is Date => !!d && !isNaN(d.getTime())
-  // never earlier than one month after the last payment (that is the rule), but keep a later date set by "skip"
-  const candidates = [valid(args.scheduledDue) ? args.scheduledDue : null, valid(args.lastPaidAt) ? nextDueAfterPayment(args.lastPaidAt) : null].filter(
+  // never earlier than one interval after the last payment (that is the rule), but keep a later date set by "skip"
+  const candidates = [valid(args.scheduledDue) ? args.scheduledDue : null, valid(args.lastPaidAt) ? nextDueAfterPayment(args.lastPaidAt, args.intervalMonths) : null].filter(
     (d): d is Date => d !== null,
   )
   const original = candidates.length ? new Date(Math.max(...candidates.map((d) => d.getTime()))) : now

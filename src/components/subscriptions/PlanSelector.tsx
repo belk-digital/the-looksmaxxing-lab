@@ -5,6 +5,7 @@ import { Check, Repeat } from 'lucide-react'
 import { applyPlanDiscount } from '@/lib/subscriptions/discount'
 import { InfoTip } from '@/components/ui/InfoTip'
 import { HELP } from '@/lib/subscriptions/helpText'
+import { everyLabel } from '@/lib/subscriptions/labels'
 
 export interface PlanOption {
   months: number
@@ -18,7 +19,7 @@ const money = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency',
 /**
  * "One-time purchase" vs "Subscribe & save" on a product page.
  * Prices come from the same cents math the server uses (applyPlanDiscount), so what the customer sees here
- * is exactly what the server will charge for month one.
+ * is exactly what the server will charge for your first order.
  */
 export function PlanSelector({
   plans,
@@ -60,14 +61,14 @@ export function PlanSelector({
 
         {plans.map((plan) => {
           const active = selected === plan.months
-          const perMonth = applyPlanDiscount(unitPrice, plan.discountPercent)
+          const perOrder = applyPlanDiscount(unitPrice, plan.discountPercent)
           return (
             <button key={plan.months} type="button" className={card(active)} onClick={() => onSelect(plan.months)} data-testid={`plan-${plan.months}`}>
               {dot(active)}
               <span className="flex-1">
                 <span className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                   <span className="font-bold text-ink flex items-center gap-2">
-                    <Repeat size={14} /> Subscribe &middot; {plan.label}
+                    <Repeat size={14} /> {`Deliver ${everyLabel(plan.months)}`}
                     {plan.discountPercent > 0 && (
                       <span className="text-[10px] font-bold uppercase tracking-widest bg-green-100 text-green-700 rounded-full px-2 py-0.5">
                         Save {plan.discountPercent}%
@@ -77,12 +78,12 @@ export function PlanSelector({
                   </span>
                   <span className="font-bold text-ink">
                     {plan.discountPercent > 0 && <span className="text-ink/30 line-through font-normal mr-2">{money(unitPrice)}</span>}
-                    {money(perMonth)}
-                    <span className="text-xs font-medium text-ink/50"> / month</span>
+                    {money(perOrder)}
+                    <span className="text-xs font-medium text-ink/50"> / order</span>
                   </span>
                 </span>
                 <span className="block text-xs text-ink/50 mt-1">
-                  {`${plan.months} monthly orders · billed month by month, not all at once`}
+                  Subscription · pay one order at a time · pause anytime
                 </span>
               </span>
             </button>
@@ -92,10 +93,10 @@ export function PlanSelector({
 
       {selected !== null && (
         <ul className="mt-4 text-xs text-ink/60 leading-relaxed list-disc pl-5 space-y-1" data-testid="plan-explainer">
-          <li>You pay month 1 today. Each following month we email an invoice about a week before it is due, and your order ships once it is paid.</li>
+          <li>You pay your first order today. After that we email an invoice before each order is due, and your order ships once it is paid.</li>
           <li>We never charge your card automatically - you pay each invoice yourself, by card or Zelle.</li>
-          <li>Each invoice uses that month&apos;s store price, minus your plan discount.</li>
-          <li>Pause, skip a month or order the next month early anytime from your account.</li>
+          <li>Each invoice uses the store price on the day it is created, minus your plan discount.</li>
+          <li>It continues until you pause it. Pause, skip a delivery or order the next one early anytime from your account.</li>
         </ul>
       )}
     </div>

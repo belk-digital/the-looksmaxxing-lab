@@ -57,7 +57,7 @@ export const Orders: CollectionConfig = {
           }
         }
 
-        // Remember when an order was actually paid (used by subscriptions to schedule the next month)
+        // Remember when an order was actually paid (used by subscriptions to schedule the next order)
         if (data.paymentStatus === 'captured' && !data.paidAt && originalDoc?.paymentStatus !== 'captured') {
           data.paidAt = new Date().toISOString()
         }
@@ -110,13 +110,13 @@ export const Orders: CollectionConfig = {
       index: true,
       options: [
         { label: 'One-time order', value: 'one_time' },
-        { label: 'Subscription - first month', value: 'subscription_first' },
-        { label: 'Subscription - monthly order', value: 'subscription_cycle' },
+        { label: 'Subscription - first order', value: 'subscription_first' },
+        { label: 'Subscription - repeat order', value: 'subscription_cycle' },
       ],
       admin: {
         position: 'sidebar',
         readOnly: true,
-        description: 'One-time order, or one month of a subscription. Set automatically.',
+        description: 'One-time order, or one order of a subscription. Set automatically.',
       },
     },
     {
@@ -321,10 +321,10 @@ export const Orders: CollectionConfig = {
       admin: { initCollapsed: true, description: 'Filled in automatically for subscription orders.' },
       fields: [
         { name: 'subscription', type: 'relationship', relationTo: 'subscriptions', admin: { readOnly: true } },
-        { name: 'cycleNumber', type: 'number', admin: { readOnly: true, description: 'Which month of the plan this order is (1 = first).' } },
-        { name: 'cyclesTotal', type: 'number', admin: { readOnly: true, description: 'Months in the plan.' } },
+        { name: 'cycleNumber', type: 'number', admin: { readOnly: true, description: 'Which order of the subscription this is (1 = first).' } },
+        { name: 'cyclesTotal', type: 'number', admin: { readOnly: true, description: 'Not used any more (a subscription has no fixed length). Older orders may show a number.' } },
         { name: 'subscriptionDiscountPercent', type: 'number', admin: { readOnly: true } },
-        { name: 'invoiceDueDate', type: 'date', admin: { readOnly: true, description: 'Payment due date of this monthly invoice.' } },
+        { name: 'invoiceDueDate', type: 'date', admin: { readOnly: true, description: 'Payment due date of this invoice.' } },
         { name: 'invoiceReminderStage', type: 'number', defaultValue: 0, admin: { readOnly: true, description: '0 none, 1 due-day reminder sent, 2 final notice sent.' } },
         { name: 'invoiceToken', type: 'text', admin: { readOnly: true, description: 'Secret that lets the customer open the pay link for this invoice.' } },
       ],

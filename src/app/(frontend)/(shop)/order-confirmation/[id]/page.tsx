@@ -120,8 +120,8 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
     subscription:
       (order as any).orderType && (order as any).orderType !== 'one_time'
         ? {
-            month: (order as any).cycleNumber || 1,
-            months: (order as any).cyclesTotal || 1,
+            order: (order as any).cycleNumber || 1,
+            everyMonths: Number(typeof order.subscription === 'object' && order.subscription ? (order.subscription as any).planMonths : 1) || 1,
             id: String(typeof order.subscription === 'object' && order.subscription ? (order.subscription as any).id : order.subscription || ''),
           }
         : null,

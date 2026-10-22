@@ -8,6 +8,10 @@ import { Metadata } from 'next'
 import { buildTitle } from '@/lib/seo/buildMetadata'
 import { resolveDescription } from '@/lib/seo/descriptionOverrides'
 
+// Cached for 1 day. Saving this product in the Payload admin clears the cache for it straight away
+// (see src/hooks/products.ts), so edits show up without waiting for the day to pass.
+export const revalidate = 86400
+
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
   const { docs } = await payload.find({

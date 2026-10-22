@@ -1,6 +1,6 @@
 import { CollectionConfig } from 'payload'
 import { productsAccess } from '../access/products'
-import { productsBeforeChange, productsAfterChange } from '../hooks/products'
+import { productsBeforeChange, productsAfterChange, productsAfterDelete } from '../hooks/products'
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -12,6 +12,7 @@ export const Products: CollectionConfig = {
   hooks: {
     beforeChange: [productsBeforeChange],
     afterChange: [productsAfterChange],
+    afterDelete: [productsAfterDelete],
   },
   fields: [
     {

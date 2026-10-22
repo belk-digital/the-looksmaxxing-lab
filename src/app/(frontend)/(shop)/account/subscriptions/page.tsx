@@ -46,8 +46,7 @@ export default async function SubscriptionsPage() {
       status: sub.status,
       statusLabel: view.statusLabel,
       statusTone: view.statusTone,
-      monthsPaid: view.monthsPaid,
-      monthsTotal: view.monthsTotal,
+      ordersPaid: view.ordersPaid,
       help: view.statusHelp,
       needsPayment: !!view.openInvoice || sub.status === 'lapsed',
     })

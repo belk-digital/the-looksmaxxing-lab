@@ -29,7 +29,7 @@ export async function expirePendingOrders() {
       and: [
         { status: { equals: 'pending' } },
         { paymentStatus: { equals: 'unpaid' } },
-        // Monthly subscription invoices follow their own due-date / lapse rules (see processSubscriptions).
+        // Subscription invoices follow their own due-date / lapse rules (see processSubscriptions).
         { orderType: { not_equals: 'subscription_cycle' } },
         { or: [{ isFinalized: { equals: false } }, { isFinalized: { exists: false } }] },
         {

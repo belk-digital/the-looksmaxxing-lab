@@ -138,7 +138,7 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
     // 3. Update Coupon Usage & Deduct Store Credit
     await runStep('coupon', async () => {
       if (!order.couponCode) return
-      // A later monthly invoice of a subscription is not a new use of the coupon (and never touches a store-credit balance).
+      // A later invoice of a subscription is not a new use of the coupon (and never touches a store-credit balance).
       if (order.orderType === 'subscription_cycle') return
       const coupons = await payload.find({ collection: 'coupons', where: { code: { equals: order.couponCode } }, overrideAccess: true })
       if (coupons.docs.length === 0) return
@@ -178,7 +178,7 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
           data: { maxxPoints: currentPoints },
         })
 
-        // A monthly subscription order is created by the system, not from the customer's cart, so paying it
+        // A recurring subscription order is created by the system, not from the customer's cart, so paying it
         // must never empty whatever they are currently shopping with.
         if (order.orderType !== 'subscription_cycle') {
           const carts = await payload.find({ collection: 'carts', where: { user: { equals: userId } } })
@@ -200,7 +200,7 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
       }
     })
 
-    // 6. Send Email (monthly subscription orders get their own invoice/receipt emails instead)
+    // 6. Send Email (recurring subscription orders get their own invoice/receipt emails instead)
     await runStep('email', async () => {
       if (order.orderType === 'subscription_cycle') return
       let customerEmail = order.guestEmail
@@ -217,7 +217,7 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
           bcc: 'support@longeviaresearch.com',
           subject:
             order.orderType === 'subscription_first'
-              ? `Subscription Order Confirmation #${order.orderNumber || order.id} - Month 1 of ${order.cyclesTotal}`
+              ? `Subscription Order Confirmation #${order.orderNumber || order.id} - First order`
               : `Order Confirmation #${order.orderNumber || order.id}`,
           html: invoiceHtml,
         })

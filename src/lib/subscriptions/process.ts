@@ -1,3 +1,4 @@
+import { orderLabel } from './labels'
 import type { Payload } from 'payload'
 import { addDays, desiredReminderStage, diffDays } from './schedule'
 import { getSubscriptionSettings } from './settings'
@@ -46,10 +47,10 @@ export async function processSubscriptions(payload: Payload, now = new Date()): 
   })
   for (const sub of due.docs as any[]) {
     try {
-      if (await findOpenInvoice(payload, sub.id)) continue // already has an unpaid month
+      if (await findOpenInvoice(payload, sub.id)) continue // already has an unpaid order
       const result = await createCycleInvoice(payload, sub, { reason: 'scheduled', now })
       if (!result) {
-        // every month already paid - make sure it is marked completed
+        // nothing to invoice (should not happen: a subscription has no end) - just make sure the record is in sync
         const { syncSubscription } = await import('./service')
         await syncSubscription(payload, sub.id)
         continue
@@ -70,7 +71,7 @@ export async function processSubscriptions(payload: Payload, now = new Date()): 
     }
   }
 
-  // ---- 2. reminders and lapse for unpaid monthly invoices ----------------------------------------------
+  // ---- 2. reminders and lapse for unpaid recurring invoices ----------------------------------------------
   const openInvoices = await payload.find({
     collection: 'orders',
     where: {
@@ -109,7 +110,7 @@ export async function processSubscriptions(payload: Payload, now = new Date()): 
           const { alertAdmin } = await import('@/lib/orders/alerts')
           await alertAdmin('Subscription put on hold (invoice unpaid)', {
             Subscription: `SUB-${sub.id}`,
-            Invoice: `#${order.orderNumber || order.id} (${monthWord(order)})`,
+            Invoice: `#${order.orderNumber || order.id} (${orderLabel(order.cycleNumber)})`,
             Customer: order.guestEmail,
           })
           summary.lapsed++
@@ -157,8 +158,4 @@ export async function processSubscriptions(payload: Payload, now = new Date()): 
   }
 
   return summary
-}
-
-function monthWord(order: any): string {
-  return order.cycleNumber && order.cyclesTotal ? `Month ${order.cycleNumber} of ${order.cyclesTotal}` : 'monthly order'
 }

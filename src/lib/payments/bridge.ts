@@ -2,7 +2,7 @@ import crypto from 'crypto'
 
 /**
  * Builds the signed hand-off to the Authorize.net bridge on longeviabeauty.com (WordPress).
- * Used by the normal checkout and by the monthly subscription pay link, so both stay identical.
+ * Used by the normal checkout and by the subscription pay link, so both stay identical.
  *
  * The WordPress plugin verifies HMAC-SHA256(secret, <the base64url payload string>) and rejects hand-offs
  * older than 10 minutes, so this must be called at the moment the customer clicks "Pay" - never in advance.

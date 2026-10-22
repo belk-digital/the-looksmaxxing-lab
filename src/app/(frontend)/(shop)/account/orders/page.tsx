@@ -40,7 +40,7 @@ export default async function OrdersPage() {
     // Clear label so subscription months are never mistaken for one-time orders
     typeLabel:
       (order as any).orderType && (order as any).orderType !== 'one_time'
-        ? `Subscription · Month ${(order as any).cycleNumber || 1} of ${(order as any).cyclesTotal || ''}`.trim()
+        ? `Subscription · Order ${(order as any).cycleNumber || 1}`
         : null,
   }))
 

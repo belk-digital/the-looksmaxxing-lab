@@ -20,7 +20,7 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
 
   // Clear label so subscription orders are never confused with one-time orders.
   const subscriptionBadge = order.orderType && order.orderType !== 'one_time'
-    ? `<p style="margin: 14px 0 0 0;"><span style="display: inline-block; background: #111827; color: #ffffff; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; padding: 5px 12px; border-radius: 999px; text-transform: uppercase;">Subscription &middot; Month ${order.cycleNumber || 1} of ${order.cyclesTotal || ''}</span></p>`
+    ? `<p style="margin: 14px 0 0 0;"><span style="display: inline-block; background: #111827; color: #ffffff; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; padding: 5px 12px; border-radius: 999px; text-transform: uppercase;">Subscription &middot; Order ${order.cycleNumber || 1}</span></p>`
     : '';
 
   let itemsHtml = '';

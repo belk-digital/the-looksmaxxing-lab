@@ -13,9 +13,9 @@ import { resolveDescription } from '@/lib/seo/descriptionOverrides'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
-// Re-render at most once every 3 hours so edits to a published post show up
-// without needing a full redeploy, while still serving from cache the rest of the time.
-export const revalidate = 10800
+// Cached for 1 day. Saving a post in the Payload admin clears the cache for it straight away
+// (see src/hooks/blogPosts.ts), so edits show up without waiting for the day to pass.
+export const revalidate = 86400
 
 export async function generateStaticParams() {
   const cmsSlugs = await getCmsJournalPostSlugs()

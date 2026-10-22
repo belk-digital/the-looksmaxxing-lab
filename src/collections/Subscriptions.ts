@@ -4,7 +4,7 @@ import { afterSubscriptionChange } from '../hooks/subscriptions'
 const isStaff = (req: any) => req?.user?.role === 'admin' || req?.user?.role === 'staff'
 
 /**
- * A customer's monthly plan (3 / 6 / 12 months). One order is created per month; each month is a normal
+ * A customer's subscription: an order every 1 / 3 / 6 months until it is paused. Each order is a normal
  * order (type "Subscription"), so fulfilment, tracking and emails work exactly like any other order.
  *
  * Customers never write to this collection directly: every change they make (pause, skip, address...)
@@ -17,7 +17,7 @@ export const Subscriptions: CollectionConfig = {
     useAsTitle: 'id',
     defaultColumns: ['reference', 'owner', 'status', 'planMonths', 'cyclesCompleted', 'nextDueDate', 'paymentMethod'],
     description:
-      'Monthly subscription plans. Each month creates a normal order (type "Subscription"). Set Status to Paused or Cancelled to stop billing - any unpaid invoice is cancelled automatically.',
+      'Subscriptions. Every interval creates a normal order (type "Subscription"). Set Status to Paused or Cancelled to stop billing - any unpaid invoice is cancelled automatically.',
   },
   access: {
     read: ({ req }) => {
@@ -60,20 +60,20 @@ export const Subscriptions: CollectionConfig = {
         { label: 'Active', value: 'active' },
         { label: 'Paused', value: 'paused' },
         { label: 'Lapsed (invoice unpaid)', value: 'lapsed' },
-        { label: 'Completed', value: 'completed' },
+        { label: 'Ended (staff only)', value: 'completed' },
         { label: 'Cancelled', value: 'cancelled' },
       ],
       admin: {
         position: 'sidebar',
         description:
-          'Pending first payment = waiting for the first month to be paid. Active = billing normally. Paused = no invoices (setting this cancels any unpaid invoice). Lapsed = an invoice went unpaid; the customer can reactivate. Completed = all months paid. Cancelled = stopped by staff (unpaid invoice is cancelled; refunds are manual).',
+          'Pending first payment = waiting for the first order to be paid. Active = billing normally. Paused = no invoices (setting this cancels any unpaid invoice). Lapsed = an invoice went unpaid; the customer can reactivate. Ended = closed by staff; the system never ends a subscription by itself, and nothing more is invoiced. Cancelled = stopped by staff (unpaid invoice is cancelled; refunds are manual).',
       },
     },
     {
       name: 'planMonths',
       type: 'number',
       required: true,
-      admin: { position: 'sidebar', description: 'Plan length in months (= number of monthly orders).' },
+      admin: { position: 'sidebar', description: 'Billing interval in months: an order is invoiced every this many months (1, 3 or 6) until the subscription is paused.' },
     },
     {
       name: 'discountPercent',
@@ -87,7 +87,7 @@ export const Subscriptions: CollectionConfig = {
       type: 'array',
       required: true,
       minRows: 1,
-      admin: { description: 'Products shipped every month (price follows the live store price, minus the plan discount).' },
+      admin: { description: 'Products shipped with every order (price follows the live store price, minus the plan discount).' },
       fields: [
         { name: 'product', type: 'relationship', relationTo: 'products', required: true },
         { name: 'variantSku', type: 'text' },
@@ -104,14 +104,14 @@ export const Subscriptions: CollectionConfig = {
         { label: 'Credit Card (via Longevia Beauty)', value: 'authnet_bridge' },
         { label: 'Zelle (Manual)', value: 'zelle' },
       ],
-      admin: { description: 'How future monthly invoices are paid. The customer can change this.' },
+      admin: { description: 'How future invoices are paid. The customer can change this.' },
     },
     {
       name: 'recurringCouponCode',
       type: 'text',
       admin: {
         description:
-          'A coupon that is taken off EVERY monthly invoice of this subscription (set at checkout when the customer used an "Every monthly payment" coupon). Clear it to stop the discount for future invoices.',
+          'A coupon that is taken off EVERY order of this subscription (set at checkout when the customer used an "Every order" coupon). Clear it to stop the discount for future invoices.',
       },
     },
     { name: 'shippingMethod', type: 'text' },
@@ -138,16 +138,16 @@ export const Subscriptions: CollectionConfig = {
           name: 'cyclesCompleted',
           type: 'number',
           defaultValue: 0,
-          admin: { readOnly: true, description: 'Months paid so far (recalculated from paid orders).' },
+          admin: { readOnly: true, description: 'Orders paid so far (recalculated from paid orders).' },
         },
-        { name: 'startedAt', type: 'date', admin: { readOnly: true, description: 'When the first month was paid.' } },
-        { name: 'nextDueDate', type: 'date', admin: { description: 'When the next month is due / ships.' } },
+        { name: 'startedAt', type: 'date', admin: { readOnly: true, description: 'When the first order was paid.' } },
+        { name: 'nextDueDate', type: 'date', admin: { description: 'When the next order is due / ships.' } },
         { name: 'nextInvoiceDate', type: 'date', admin: { description: 'When the next invoice is created and emailed.' } },
         {
           name: 'openInvoice',
           type: 'relationship',
           relationTo: 'orders',
-          admin: { readOnly: true, description: 'The current unpaid monthly order, if any.' },
+          admin: { readOnly: true, description: 'The current unpaid order, if any.' },
         },
         { name: 'firstOrder', type: 'relationship', relationTo: 'orders', admin: { readOnly: true } },
         { name: 'pausedAt', type: 'date', admin: { readOnly: true } },
@@ -164,7 +164,7 @@ export const Subscriptions: CollectionConfig = {
           name: 'affiliate',
           type: 'relationship',
           relationTo: 'affiliates',
-          admin: { description: 'Earns commission on every paid month.' },
+          admin: { description: 'Earns commission on every paid order.' },
         },
         { name: 'affiliateClickId', type: 'text' },
       ],

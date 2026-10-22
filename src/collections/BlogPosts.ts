@@ -2,7 +2,7 @@ import { CollectionConfig } from 'payload'
 import { lexicalEditor, EXPERIMENTAL_TableFeature, BlocksFeature } from '@payloadcms/richtext-lexical'
 import { accessContent } from '../access/content'
 import { CalloutBox } from '../blocks/CalloutBox'
-import { blogPostsAfterChange } from '../hooks/blogPosts'
+import { blogPostsAfterChange, blogPostsAfterDelete } from '../hooks/blogPosts'
 
 export const BlogPosts: CollectionConfig = {
   slug: 'blog-posts',
@@ -121,5 +121,6 @@ export const BlogPosts: CollectionConfig = {
       },
     ],
     afterChange: [blogPostsAfterChange],
+    afterDelete: [blogPostsAfterDelete],
   },
 }

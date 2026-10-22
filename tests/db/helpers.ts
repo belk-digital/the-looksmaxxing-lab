@@ -47,7 +47,10 @@ export async function bootPayload(uri: string) {
  */
 export async function shutdown(payload: any, db: { drop: () => Promise<void> } | undefined) {
   try {
-    payload?.db?.pool?.on?.('error', () => undefined)
+    const pool = payload?.db?.pool
+    pool?.on?.('error', () => undefined)
+    // the connection Payload keeps checked out has no listener of its own, so give every client one
+    for (const client of [...(pool?._clients ?? []), ...(pool?._idle ?? [])]) client?.on?.('error', () => undefined)
   } catch {
     /* ignore */
   }
@@ -88,9 +91,9 @@ export async function seedStore(payload: any, opts: { productPrice?: number; sto
     data: {
       enabled: true,
       plans: [
-        { months: 3, label: '3 Months', discountPercent: 15, isActive: true },
-        { months: 6, label: '6 Months', discountPercent: 15, isActive: true },
-        { months: 12, label: '12 Months', discountPercent: 15, isActive: true },
+        { months: 1, label: 'Every month', discountPercent: 25, isActive: true },
+        { months: 3, label: 'Every 3 months', discountPercent: 20, isActive: true },
+        { months: 6, label: 'Every 6 months', discountPercent: 15, isActive: true },
       ],
     } as any,
   })
@@ -119,13 +122,17 @@ export async function makeCustomer(payload: any, tag = '') {
   return { user, email }
 }
 
+/** The plan length is how often an order is sent: every 1, 3 or 6 months, at these discounts. */
+export const PLAN_DISCOUNT: Record<number, number> = { 1: 25, 3: 20, 6: 15 }
+export const planPrice = (price: number, planMonths: number) => Math.round(price * (100 - (PLAN_DISCOUNT[planMonths] ?? 0))) / 100
+
 export const lineFor = (product: any, planMonths: number | null, qty = 2, price?: number) => ({
   lineId: 'line-' + randomBytes(3).toString('hex'),
   productId: String(product.id),
   variantSku: 'DEFAULT',
   variantTitle: 'DEFAULT',
   quantity: qty,
-  priceSnapshot: price ?? (planMonths ? Math.round(product.price * 85) / 100 : product.price),
+  priceSnapshot: price ?? (planMonths ? planPrice(product.price, planMonths) : product.price),
   planMonths,
   product: { id: String(product.id), name: product.name, imageUrl: null },
 })

@@ -76,7 +76,7 @@ export async function skipMonthAction(subscriptionId: string) {
   return result
 }
 
-/** "Order next month now": creates the invoice immediately and returns where to pay it. */
+/** "Order next delivery now": creates the invoice immediately and returns where to pay it. */
 export async function orderNextMonthAction(subscriptionId: string) {
   const auth = await authorize(subscriptionId)
   if ('ok' in auth) return auth

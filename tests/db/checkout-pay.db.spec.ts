@@ -113,51 +113,64 @@ describe('checkout rules for subscription plans', () => {
     const bundleLine = { ...lineFor(bundled, 3, 1), variantSku: '10mg - Kit of 5' }
     expect((await checkout({ items: [bundleLine] })).error).toMatch(/bulk bundles cannot be subscribed/i)
 
-    const wrongPrice: any = await checkout({ items: [lineFor(store.product, 3, 2, 20)] }) // undiscounted $20 instead of $17
+    const wrongPrice: any = await checkout({ items: [lineFor(store.product, 3, 2, 20)] }) // undiscounted $20 instead of $16 (3-month plan = 20% off)
     expect(wrongPrice.priceChanged).toBe(true)
-    expect(wrongPrice.updatedItems[0].priceSnapshot).toBe(17)
+    expect(wrongPrice.updatedItems[0].priceSnapshot).toBe(16)
   })
 
-  it('the plan length and its locked-in discount are stored (12 months here), with the first month priced from the live price', async () => {
-    const res = await checkout({ items: [lineFor(store.product, 12, 1)] })
+  it.each([
+    [1, 25, 15],
+    [3, 20, 16],
+    [6, 15, 17],
+  ])('a plan of %i month(s) stores its interval and its locked-in %i%% discount; order 1 is priced from the live price (%i per unit)', async (months, percent, unit) => {
+    const res = await checkout({ items: [lineFor(store.product, months, 1)] })
     expect(res.error).toBeUndefined()
     const order = await getOrder(res.orderId)
-    expect(order).toMatchObject({ orderType: 'subscription_first', cycleNumber: 1, cyclesTotal: 12, subscriptionDiscountPercent: 15 })
-    expect((await getSub(order.subscription)).planMonths).toBe(12)
+    // there is no "number of orders": a subscription has no end, so nothing is stored about a total
+    expect(order).toMatchObject({ orderType: 'subscription_first', cycleNumber: 1, cyclesTotal: null, subscriptionDiscountPercent: percent })
+    expect(order.items[0].price).toBe(unit)
+    expect(order.total).toBe(unit + 5)
+    const sub = await getSub(order.subscription)
+    expect(sub).toMatchObject({ planMonths: months, discountPercent: percent, status: 'pending_payment' })
   })
 
-  it('a coupon switched on for subscriptions (first month only) applies to the FIRST month only; later months are plain plan price', async () => {
+  it('the old 12-month plan no longer exists', async () => {
+    const res = await checkout({ items: [lineFor(store.product, 12, 1)] })
+    expect(res.error).toMatch(/no longer available/i)
+  })
+
+  it('a coupon switched on for subscriptions (first order only) applies to the FIRST order only; later orders are plain plan price', async () => {
     await payload.create({ collection: 'coupons', overrideAccess: true, data: { code: 'SAVE10', type: 'percentage', value: 10, applicableProductTypes: 'all', appliesTo: 'all', allowOnSubscriptions: true, subscriptionDiscountScope: 'first_month' } as any })
     const s = await startActiveSubscription(env(), { couponCode: 'SAVE10' })
     const first = await getOrder(s.firstOrderId)
     expect(first.couponCode).toBe('SAVE10')
-    expect(first.discountTotal).toBe(3) // floor(10% of $34)
-    expect(first.total).toBe(36) // 34 - 3 + 5
+    expect(first.discountTotal).toBe(3) // floor(10% of $32)
+    expect(first.total).toBe(34) // 32 - 3 + 5
 
     const { orderNextMonthNow } = await import('@/lib/subscriptions/service')
     const res: any = await orderNextMonthNow(payload, s.subId)
     const invoice = await getOrder(res.orderId)
     expect(invoice.couponCode).toBeFalsy()
     expect(invoice.discountTotal).toBe(0)
-    expect(invoice.total).toBe(39) // 2 x $17 + $5, no coupon
+    expect(invoice.total).toBe(37) // 2 x $16 + $5, no coupon
   })
 
-  it('fees and shipping follow the same rules as a one-time order (a processing fee is added to every month)', async () => {
+  it('fees and shipping follow the same rules as a one-time order (a processing fee is added to every order)', async () => {
     await payload.create({ collection: 'processing-fees', overrideAccess: true, data: { name: 'Card fee', type: 'percentage', amount: 3, isActive: true, isOptional: false } as any })
     const s = await startActiveSubscription(env())
     const first = await getOrder(s.firstOrderId)
-    expect(first.feeTotal).toBe(102) // cents: 3% of $34
-    expect(first.total).toBeCloseTo(34 + 5 + 1.02, 2)
+    expect(first.feeTotal).toBe(96) // cents: 3% of $32
+    expect(first.total).toBeCloseTo(32 + 5 + 0.96, 2)
     const { orderNextMonthNow } = await import('@/lib/subscriptions/service')
     const inv = await getOrder(((await orderNextMonthNow(payload, s.subId)) as any).orderId)
-    expect(inv.feeTotal).toBe(102)
+    expect(inv.feeTotal).toBe(96)
     expect(inv.appliedFees).toHaveLength(1)
-    expect(inv.total).toBeCloseTo(40.02, 2)
+    expect(inv.total).toBeCloseTo(37.96, 2)
     const fees = await payload.find({ collection: 'processing-fees', overrideAccess: true })
     for (const f of fees.docs) await payload.delete({ collection: 'processing-fees', id: f.id, overrideAccess: true })
   })
 
-  it('a free first month (fully covered) starts the subscription immediately', async () => {
+  it('a free first order (fully covered) starts the subscription immediately', async () => {
     const zone: any = (await payload.find({ collection: 'shippingzones', limit: 1, overrideAccess: true })).docs[0]
     await payload.update({ collection: 'shippingzones', id: zone.id, data: { methods: [...zone.methods, { method: 'Free Shipping', price: 0 }] } as any, overrideAccess: true })
     const free: any = await payload.create({ collection: 'products', overrideAccess: true, data: { name: 'Sample', slug: 'sample', price: 0, stock: 20, status: 'active', isVisible: true, subscriptionEnabled: true } as any })
@@ -174,18 +187,18 @@ describe('checkout rules for subscription plans', () => {
   })
 })
 
-describe('first month by card (Authorize.net bridge)', () => {
+describe('first order by card (Authorize.net bridge)', () => {
   it('order waits unpaid; the signed hand-off is only given to its owner; the webhook then activates the plan', async () => {
     const { createCrossSitePaymentRedirect } = await import('@/app/(frontend)/(shop)/checkout/actions')
     const customer = await makeCustomer(payload)
     // the customer has items in their cart (a normal checkout empties it once paid)
-    await payload.create({ collection: 'carts', overrideAccess: true, data: { user: customer.user.id, items: [{ product: store.product.id, variantSku: 'DEFAULT', quantity: 2, priceSnapshot: 17, planMonths: 3 }] } as any })
+    await payload.create({ collection: 'carts', overrideAccess: true, data: { user: customer.user.id, items: [{ product: store.product.id, variantSku: 'DEFAULT', quantity: 2, priceSnapshot: 16, planMonths: 3 }] } as any })
     const stock = await stockOf(payload, store.product.id)
 
     const res = await checkout({ items: [lineFor(store.product, 3)], method: 'authnet_bridge', customer })
     expect(res.error).toBeUndefined()
     const order = await getOrder(res.orderId)
-    expect(order).toMatchObject({ orderType: 'subscription_first', status: 'pending', paymentStatus: 'unpaid', paymentMethod: 'authnet_bridge', total: 39, isFinalized: false })
+    expect(order).toMatchObject({ orderType: 'subscription_first', status: 'pending', paymentStatus: 'unpaid', paymentMethod: 'authnet_bridge', total: 37, isFinalized: false })
     expect(await stockOf(payload, store.product.id)).toBe(stock) // not reserved until paid
     expect((await getSub(order.subscription)).status).toBe('pending_payment')
 
@@ -193,7 +206,7 @@ describe('first month by card (Authorize.net bridge)', () => {
     const handoff: any = await createCrossSitePaymentRedirect(String(order.id))
     expect(handoff.error).toBeUndefined()
     const decoded = JSON.parse(Buffer.from(handoff.fields.payload, 'base64url').toString())
-    expect(decoded).toMatchObject({ orderId: String(order.id), amountCents: 3900, currency: 'usd', email: customer.email })
+    expect(decoded).toMatchObject({ orderId: String(order.id), amountCents: 3700, currency: 'usd', email: customer.email })
     expect(handoff.fields.sig).toBe(crypto.createHmac('sha256', process.env.CROSS_SITE_PAYMENT_SECRET!).update(handoff.fields.payload).digest('hex'))
 
     // someone else (no cookie, not the owner) gets nothing
@@ -207,7 +220,7 @@ describe('first month by card (Authorize.net bridge)', () => {
     setUser(customer.user, customer.email)
 
     // WordPress confirms the card payment
-    const body = JSON.stringify({ orderId: String(order.id), amountCents: 3900, status: 'succeeded', txnId: 'FIRST-1', affiliateId: null, clickId: null })
+    const body = JSON.stringify({ orderId: String(order.id), amountCents: 3700, status: 'succeeded', txnId: 'FIRST-1', affiliateId: null, clickId: null })
     h.headers = { 'x-longevia-signature': crypto.createHmac('sha256', process.env.CROSS_SITE_PAYMENT_SECRET!).update(body).digest('hex') }
     const { POST } = await import('@/app/(frontend)/api/webhooks/cross-site-payment/route')
     const resp = await POST(new Request('http://x/api/webhooks/cross-site-payment', { method: 'POST', body }))
@@ -220,8 +233,8 @@ describe('first month by card (Authorize.net bridge)', () => {
     const cart: any = (await payload.find({ collection: 'carts', where: { user: { equals: customer.user.id } }, depth: 0, overrideAccess: true })).docs[0]
     expect(cart.items).toHaveLength(0) // a normal checkout empties the cart that was just bought
     const mail = sent.filter((m) => m.to === customer.email).find((m) => /Subscription Order Confirmation/.test(m.subject))
-    expect(mail?.subject).toBe(`Subscription Order Confirmation #${order.orderNumber} - Month 1 of 3`)
-    expect(mail?.html).toContain('Subscription &middot; Month 1 of 3')
+    expect(mail?.subject).toBe(`Subscription Order Confirmation #${order.orderNumber} - First order`)
+    expect(mail?.html).toContain('Subscription &middot; Order 1')
   })
 })
 
@@ -239,7 +252,8 @@ describe('the emailed pay page', () => {
     const mod = await import('@/app/(frontend)/(shop)/pay/[orderId]/[token]/page')
     const el: any = await mod.default({ params: Promise.resolve({ orderId: String(s.order.id), token: s.order.invoiceToken }), searchParams: Promise.resolve({}) })
     const inv = el.props.children.props.invoice
-    expect(inv).toMatchObject({ state: 'open', month: 2, monthsTotal: 3, total: 39, paymentMethod: 'zelle', discountPercent: 15 })
+    expect(inv).toMatchObject({ state: 'open', order: 2, intervalMonths: 3, total: 37, paymentMethod: 'zelle', discountPercent: 20 })
+    expect(inv).not.toHaveProperty('monthsTotal')
     expect(JSON.stringify(inv)).not.toMatch(/Main St|5551234567|10001|example\.com/)
     expect((mod as any).metadata.robots).toEqual({ index: false, follow: false })
 
@@ -262,7 +276,7 @@ describe('the emailed pay page', () => {
     expect(await notFound(String(s.order.id), 'short')).toBe(true)
     expect(await notFound(String(s.order.id + 1), s.order.invoiceToken)).toBe(true) // right token, someone else's order
     expect(await notFound('abc', s.order.invoiceToken)).toBe(true)
-    expect(await notFound(String(s.firstOrderId), s.order.invoiceToken)).toBe(true) // first month isn't payable here
+    expect(await notFound(String(s.firstOrderId), s.order.invoiceToken)).toBe(true) // the first order isn't payable here
     expect(await notFound(String(s.order.id), s.order.invoiceToken)).toBe(false) // the real one works
   })
 
@@ -273,7 +287,7 @@ describe('the emailed pay page', () => {
     expect(res.error).toBeUndefined()
     expect(res.redirectUrl).toBe(process.env.LONGEVIA_BEAUTY_BRIDGE_URL)
     const decoded = JSON.parse(Buffer.from(res.fields.payload, 'base64url').toString())
-    expect(decoded).toMatchObject({ orderId: String(s.order.id), amountCents: 3900, currency: 'usd', orderNumber: s.order.orderNumber })
+    expect(decoded).toMatchObject({ orderId: String(s.order.id), amountCents: 3700, currency: 'usd', orderNumber: s.order.orderNumber })
     expect(decoded.returnUrl).toBe(`${process.env.NEXT_PUBLIC_SERVER_URL}/pay/${s.order.id}/${s.order.invoiceToken}?returned=1`)
     expect(decoded.cancelUrl).toBe(`${process.env.NEXT_PUBLIC_SERVER_URL}/pay/${s.order.id}/${s.order.invoiceToken}`)
     expect(Math.abs(Date.now() - decoded.ts)).toBeLessThan(10_000) // made at click time (WordPress rejects > 10 min)
@@ -311,8 +325,8 @@ describe('the emailed pay page', () => {
   })
 })
 
-describe('affiliate commission on every month', () => {
-  it('the referring affiliate gets a (pending) commission for the first month and for each invoice; a cancelled invoice reverses its commission', async () => {
+describe('affiliate commission on every order', () => {
+  it('the referring affiliate gets a (pending) commission for the first order and for each invoice; a cancelled invoice reverses its commission', async () => {
     const affUser = await makeCustomer(payload, 'aff')
     const affiliate: any = await payload.create({
       collection: 'affiliates',
@@ -328,10 +342,10 @@ describe('affiliate commission on every month', () => {
 
     const conversions = async () =>
       (await payload.find({ collection: 'affiliate-conversions', where: { affiliate: { equals: affiliate.id } }, depth: 0, limit: 50, overrideAccess: true })).docs as any[]
-    expect(await conversions()).toHaveLength(1) // month 1, from the referral cookie
+    expect(await conversions()).toHaveLength(1) // order 1, from the referral cookie
     expect((await conversions())[0]).toMatchObject({ status: 'pending', order: s.firstOrderId })
 
-    // month 2 invoice is created later with NO cookie anywhere - attribution comes from the subscription
+    // order 2 invoice is created later with NO cookie anywhere - attribution comes from the subscription
     const { orderNextMonthNow, skipNextMonth } = await import('@/lib/subscriptions/service')
     const early: any = await orderNextMonthNow(payload, s.subId)
     const convs = await conversions()
