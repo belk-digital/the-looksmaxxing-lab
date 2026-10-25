@@ -30,6 +30,8 @@ import { PrimaryProductCard } from '@/components/shop/PrimaryProductCard'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { Space_Grotesk } from 'next/font/google'
 import { PRODUCT_JOURNAL_MAP, JournalLinkEntry } from '@/data/product-journal-map'
+import { pushViewItem, pushAddToCart } from '@/lib/analytics/ecommerce'
+import { trackViewContent, trackAddToCart } from '@/lib/analytics/meta-pixel'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
@@ -254,6 +256,29 @@ export function ProductClient({ product }: ProductClientProps) {
   useEffect(() => {
     if (planMonths && planOptions.length > 0 && !planOptions.some((p) => p.months === planMonths)) setPlanMonths(null)
   }, [planOptions, planMonths])
+
+  // GA4 view_item — fire once on mount for the selected/default variant.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!selectedVariant) return
+    const unitPrice = parseFloat(String(selectedVariant.salePrice || selectedVariant.price || '0').replace(/[^0-9.]/g, '')) || 0
+    pushViewItem({
+      value: unitPrice,
+      items: [{
+        item_id: product.slug,
+        item_name: product.name,
+        item_variant: selectedVariant.title,
+        price: unitPrice,
+        quantity: 1,
+      }],
+    })
+    // Meta Pixel ViewContent — fires in the same mount effect as GA4 view_item.
+    trackViewContent({
+      value:        unitPrice,
+      content_ids:  [product.slug],
+      content_name: product.name,
+    })
+  }, []) // intentionally empty — mount-only
   
   const addItemToWishlist = useWishlistStore(state => state.addItem)
   const removeItemFromWishlist = useWishlistStore(state => state.removeItem)
@@ -341,6 +366,24 @@ ${plan ? 'Replace your cart with this subscription?' : 'Replace your cart with t
       selectedVariant.title,
       plan,
     )
+
+    const effectivePrice = activePlan ? applyPlanDiscount(livePrice, activePlan.discountPercent) : livePrice
+    pushAddToCart({
+      value: effectivePrice * quantity,
+      items: [{
+        item_id: product.slug,
+        item_name: product.name,
+        item_variant: selectedVariant.title,
+        price: effectivePrice,
+        quantity,
+      }],
+    })
+    // Meta Pixel AddToCart — fires alongside GA4 add_to_cart.
+    trackAddToCart({
+      value:        effectivePrice * quantity,
+      content_ids:  [product.slug],
+      content_name: product.name,
+    })
 
     setJustAdded(true)
     toast.success('Added to cart', { 

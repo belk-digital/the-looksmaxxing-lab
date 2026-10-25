@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { buildTitle, buildDescription } from '@/lib/seo/buildMetadata'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
@@ -8,8 +7,8 @@ const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch
 export const revalidate = 86400
 
 export const metadata: Metadata = {
-  title: { absolute: buildTitle('Contact Us | Research Peptide Support') },
-  description: buildDescription('Contact Longevia Research for questions about research peptides, order support, bulk pricing, or COA documentation. US-based team. Fast response times.'),
+  title: { absolute: 'Contact Longevia Research — Peptide Orders, COAs & Support | Longevia Research' },
+  description: 'Contact Longevia Research for questions about research peptides, order support, bulk pricing, or COA documentation. US-based team. Fast response times.',
   alternates: {
     canonical: `${siteUrl}/contact`,
   },

@@ -26,6 +26,8 @@ import { Elements } from '@stripe/react-stripe-js'
 import { StripeCheckoutForm } from './StripeCheckoutForm'
 import { createPaymentIntent, getShippingMethods, getPaymentMethodsSettings } from './actions'
 import { Space_Grotesk } from 'next/font/google'
+import { pushBeginCheckout } from '@/lib/analytics/ecommerce'
+import { trackInitiateCheckout } from '@/lib/analytics/meta-pixel'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
 
@@ -43,6 +45,8 @@ export function CheckoutClient() {
   const [termsError, setTermsError] = useState(false)
   const loginCardRef = useRef<HTMLDivElement>(null)
   const termsCardRef = useRef<HTMLDivElement>(null)
+  /** GA4 begin_checkout deduplication — useRef prevents Strict Mode double-fire. */
+  const checkoutStartedRef = useRef(false)
   const [subInfo, setSubInfo] = useState<{ allowedMethods: string[]; termsText: string } | null>(null)
   useEffect(() => {
     if (!isPlan) return
@@ -228,6 +232,31 @@ export function CheckoutClient() {
       }
     }
   }, [paymentOptions.map((m: any) => m.methodId).join(','), paymentMethod])
+
+  // GA4 begin_checkout — fires once when the checkout page first loads with items.
+  useEffect(() => {
+    if (checkoutStartedRef.current || items.length === 0) return
+    checkoutStartedRef.current = true
+    const cartValue = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
+    pushBeginCheckout({
+      value: cartValue,
+      coupon: storedCouponCode || undefined,
+      items: items.map((item) => ({
+        item_id: item.product.slug || item.productId,
+        item_name: item.product.name,
+        item_variant: item.variantTitle || item.variantSku || undefined,
+        price: item.priceSnapshot,
+        quantity: item.quantity,
+      })) as [import('@/lib/analytics/ecommerce').EcomItem, ...import('@/lib/analytics/ecommerce').EcomItem[]],
+    })
+    // Meta Pixel InitiateCheckout — same deduplication gate as GA4 (checkoutStartedRef above).
+    trackInitiateCheckout({
+      value:       cartValue,
+      content_ids: items.map(item => item.product.slug || item.productId),
+      num_items:   items.reduce((s, item) => s + item.quantity, 0),
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // intentionally mount-only
 
   const currentPaymentMethodConfig = paymentOptions.find((m: any) => m.methodId === paymentMethod)
 

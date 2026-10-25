@@ -10,6 +10,8 @@ import { FadeUp } from '@/components/motion/FadeUp'
 import { buttonVariants } from '@/components/ui/button'
 import { useCartStore } from '@/lib/cart/store'
 import { everyLabel } from '@/lib/subscriptions/labels'
+import { pushPurchase, claimPurchaseEvent, buildPurchaseItems, type EcomItem } from '@/lib/analytics/ecommerce'
+import { trackPurchase } from '@/lib/analytics/meta-pixel'
 
 type OrderItem = {
   id: string
@@ -18,6 +20,8 @@ type OrderItem = {
   quantity: number
   price: number
   image: string
+  /** Product slug or ID — used as item_id in GA4 ecommerce payloads. */
+  productId?: string
 }
 
 type OrderData = {
@@ -54,6 +58,52 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
       useCartStore.getState().clear()
     }
   }, [order.paymentMethod, order.paymentStatus])
+
+  // GA4 purchase — fire once after payment is confirmed, deduplicated by localStorage.
+  useEffect(() => {
+    // Fire for Stripe orders (always finalized before this page loads) and
+    // authnet_bridge orders where the payment is confirmed captured.
+    // Do NOT fire for Zelle/manual (paymentStatus 'unpaid' at landing time).
+    const isConfirmed =
+      order.paymentMethod === 'stripe' || order.paymentStatus === 'captured'
+    if (!isConfirmed) return
+
+    // claimPurchaseEvent writes a localStorage key so repeated page visits don't re-fire.
+    if (!claimPurchaseEvent(order.id)) return
+
+    if (order.items.length === 0) return
+
+    // GA4 revenue reconciliation (Phase 42 — integer-cent allocation):
+    //   buildPurchaseItems allocates coupon discount at the line level in integer cents.
+    //   Last line absorbs any remainder, guaranteeing Σ(price × qty) === value exactly.
+    //   tax = 0  (Longevia collects no statutory sales tax)
+    //   processing_fee = custom event param (feeTotal/100); NOT inside GA4 ecommerce object
+    //   redeemed loyalty points = payment offset, excluded from revenue value
+    const _itemSubtotal   = order.subtotal
+    const _couponDiscount = order.discountTotal ?? 0
+    const revenueValue = _itemSubtotal - _couponDiscount
+    pushPurchase({
+      transaction_id: order.id,
+      value:          revenueValue,
+      shipping:       order.shipping,
+      tax:            0,
+      processing_fee: order.processingFee,
+      coupon:         order.couponCode || undefined,
+      items: buildPurchaseItems(
+        order.items,
+        _itemSubtotal,
+        _couponDiscount,
+      ) as [EcomItem, ...EcomItem[]],
+    })
+    // Meta Pixel Purchase — same deduplication gate as GA4 (claimPurchaseEvent above).
+    trackPurchase({
+      value:          revenueValue,
+      content_ids:    order.items.map(i => i.productId ?? i.id),
+      transaction_id: order.id,
+      num_items:      order.items.reduce((s, i) => s + i.quantity, 0),
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // intentionally mount-only — deduplication is via localStorage
 
   return (
     <>
