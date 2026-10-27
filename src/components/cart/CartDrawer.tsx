@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { PlanLineBadge } from '@/components/subscriptions/PlanLineBadge'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -12,11 +12,14 @@ import { useCartStore } from '@/lib/cart/store'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ShoppingBag } from 'lucide-react'
 import { useLenis } from 'lenis/react'
+import { pushViewCart, pushRemoveFromCart } from '@/lib/analytics/ecommerce'
 
 export function CartDrawer() {
   const { isOpen, closeCart, items, removeItem, updateQuantity } = useCartStore()
   const lenis = useLenis()
   const [freeShippingThreshold, setFreeShippingThreshold] = useState<number>(300) // Fallback
+  // Tracks previous isOpen value so view_cart fires only on false→true transitions.
+  const wasOpenRef = useRef(false)
 
   useEffect(() => {
     async function fetchThreshold() {
@@ -39,20 +42,36 @@ export function CartDrawer() {
     fetchThreshold()
   }, [])
 
-  // Lock body scroll when open
+  // Lock body scroll when open; fire view_cart on the false→true transition with items.
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
       document.documentElement.style.overflow = 'hidden'
+      // Fire once per open gesture, only when items exist.
+      if (!wasOpenRef.current && items.length > 0) {
+        const value = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
+        pushViewCart({
+          value,
+          items: items.map((item) => ({
+            item_id: item.product?.slug || item.productId,
+            item_name: item.product?.name || item.productId,
+            item_variant: item.variantTitle || item.variantSku || undefined,
+            price: item.priceSnapshot,
+            quantity: item.quantity,
+          })),
+        })
+      }
+      wasOpenRef.current = true
     } else {
       document.body.style.overflow = 'unset'
       document.documentElement.style.overflow = 'unset'
+      wasOpenRef.current = false
     }
     return () => {
       document.body.style.overflow = 'unset'
       document.documentElement.style.overflow = 'unset'
     }
-  }, [isOpen])
+  }, [isOpen, items])
 
   // Esc key to close
   useEffect(() => {
@@ -62,6 +81,23 @@ export function CartDrawer() {
     window.addEventListener('keydown', handleEsc)
     return () => window.removeEventListener('keydown', handleEsc)
   }, [closeCart])
+
+  // Capture item details before the store mutation so the GA4 payload is always accurate.
+  const handleRemoveItem = (lineId: string) => {
+    const item = items.find((i) => i.lineId === lineId)
+    if (!item) return // guard: item already gone, nothing to track
+    pushRemoveFromCart({
+      value: item.priceSnapshot * item.quantity,
+      items: [{
+        item_id: item.product?.slug || item.productId,
+        item_name: item.product?.name || item.productId,
+        item_variant: item.variantTitle || item.variantSku || undefined,
+        price: item.priceSnapshot,
+        quantity: item.quantity,
+      }],
+    })
+    removeItem(lineId)
+  }
 
   const subtotal = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
   const progressToFreeShipping = Math.min((subtotal / freeShippingThreshold) * 100, 100)
@@ -175,8 +211,8 @@ export function CartDrawer() {
                                 </span>
                                 <PlanLineBadge months={item.planMonths} />
                               </div>
-                              <button 
-                                onClick={() => removeItem(item.lineId)}
+                              <button
+                                onClick={() => handleRemoveItem(item.lineId)}
                                 className="text-ink/30 hover:text-error transition-colors p-1.5 bg-black/0 hover:bg-error/10 rounded-full -mt-1 -mr-1"
                                 aria-label="Remove item"
                               >

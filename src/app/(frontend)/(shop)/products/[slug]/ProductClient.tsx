@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent, useMotionValue, useSpring } from 'framer-motion'
@@ -77,6 +77,11 @@ interface ProductData {
 
 interface ProductClientProps {
   product: ProductData
+  /**
+   * Server-rendered research section, passed in from the page so its copy stays out of this
+   * client bundle. Undefined for products with no research content defined.
+   */
+  researchSection?: React.ReactNode
 }
 
 function SlideToCartButton({ onAdd, disabled, isAdded }: { onAdd: () => void, disabled: boolean, isAdded: boolean }) {
@@ -131,9 +136,11 @@ function SlideToCartButton({ onAdd, disabled, isAdded }: { onAdd: () => void, di
   )
 }
 
-export function ProductClient({ product }: ProductClientProps) {
+export function ProductClient({ product, researchSection }: ProductClientProps) {
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0]?.id || '')
   const [quantity, setQuantity] = useState(1)
+  // Tracks the last variantId for which view_item fired so we never double-fire (e.g. Strict Mode).
+  const viewItemLastFiredVariantRef = useRef<string | null>(null)
   const [descOpen, setDescOpen] = useState(true)
   const [deliveryOpen, setDeliveryOpen] = useState(true)
 
@@ -257,10 +264,13 @@ export function ProductClient({ product }: ProductClientProps) {
     if (planMonths && planOptions.length > 0 && !planOptions.some((p) => p.months === planMonths)) setPlanMonths(null)
   }, [planOptions, planMonths])
 
-  // GA4 view_item — fire once on mount for the selected/default variant.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // GA4 view_item — fires on mount for the default variant and again whenever the
+  // user explicitly switches to a different variant. The ref guard prevents the
+  // Strict Mode double-invocation (same variantId fires only once per session).
   useEffect(() => {
     if (!selectedVariant) return
+    if (viewItemLastFiredVariantRef.current === selectedVariant.id) return
+    viewItemLastFiredVariantRef.current = selectedVariant.id
     const unitPrice = parseFloat(String(selectedVariant.salePrice || selectedVariant.price || '0').replace(/[^0-9.]/g, '')) || 0
     pushViewItem({
       value: unitPrice,
@@ -272,13 +282,13 @@ export function ProductClient({ product }: ProductClientProps) {
         quantity: 1,
       }],
     })
-    // Meta Pixel ViewContent — fires in the same mount effect as GA4 view_item.
+    // Meta Pixel ViewContent — fires alongside GA4 view_item on each variant selection.
     trackViewContent({
       value:        unitPrice,
       content_ids:  [product.slug],
       content_name: product.name,
     })
-  }, []) // intentionally empty — mount-only
+  }, [selectedVariantId]) // re-fires when the user picks a different variant
   
   const addItemToWishlist = useWishlistStore(state => state.addItem)
   const removeItemFromWishlist = useWishlistStore(state => state.removeItem)
@@ -835,6 +845,9 @@ ${plan ? 'Replace your cart with this subscription?' : 'Replace your cart with t
 
         </Container>
       </section>
+
+      {/* 4.5 Published research evidence (server-rendered; null unless defined for this slug) */}
+      {researchSection}
 
       {/* 5. Related Editorial Carousel */}
       <section className="w-full py-32 bg-[#f8fafc] border-t border-blue-100/50 overflow-hidden relative">

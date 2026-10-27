@@ -9,7 +9,6 @@ interface ProductJsonLdProps {
   sku?: string
   images: string[]
   categories: string[]
-  faqs: { question: string; answer: string }[]
   hasVariants: boolean
   variants: { sku: string; price: string; title: string; [key: string]: any }[]
   averageRating?: number
@@ -26,7 +25,6 @@ export function ProductJsonLd({
   sku,
   images,
   categories,
-  faqs,
   hasVariants,
   variants,
   averageRating,
@@ -191,22 +189,6 @@ export function ProductJsonLd({
   }
 
   const schemas: Record<string, unknown>[] = [productSchema, breadcrumbSchema]
-
-  if (faqs.length > 0) {
-    const faqSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: faqs.map((faq) => ({
-        '@type': 'Question',
-        name: faq.question,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: faq.answer,
-        },
-      })),
-    }
-    schemas.push(faqSchema)
-  }
 
   return (
     <>

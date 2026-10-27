@@ -1,6 +1,7 @@
 import React from 'react'
 import { ProductClient } from './ProductClient'
 import { ProductJsonLd } from '@/components/ProductJsonLd'
+import { ProductResearchSection } from '@/components/shop/ProductResearchSection'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
@@ -458,7 +459,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         sku={rawProduct.sku ?? undefined}
         images={mappedImages}
         categories={mappedCategories}
-        faqs={mappedFaqs}
         hasVariants={rawProduct.hasVariants || false}
         variants={mappedVariants}
         averageRating={rawProduct.averageRating || 0}
@@ -466,7 +466,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         reviews={mappedReviews}
       />
       <main className="mt-20 flex-1">
-        <ProductClient product={productData as any} />
+        <ProductClient
+          product={productData as any}
+          researchSection={<ProductResearchSection slug={rawProduct.slug} />}
+        />
       </main>
     </div>
   )
