@@ -10,20 +10,20 @@ const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch
 
 export const metadata: Metadata = {
   title: { absolute: 'Research Peptides & Custom Blends — COA-Verified | Longevia Research' },
-  description: 'Shop 30+ research-grade peptides and custom blends — BPC-157, KLOW, GLOW, Tirzepatide, NAD⁺ and more. Every batch ≥99% HPLC purity with a batch-traceable COA.',
+  description: 'Shop research-grade peptides, GLP-1 compounds, and custom blends — BPC-157, KLOW, Tirzepatide, NAD⁺, GHK-Cu and more. Batch-traceable COA on every order. Research use only.',
   alternates: {
     canonical: `${siteUrl}/shop`,
   },
   openGraph: {
     images: [{ url: '/og/og-shop.webp', width: 1200, height: 630, alt: 'Shop Research Peptides — Longevia Research' }],
     title: 'Research Peptides & Custom Blends — COA-Verified | Longevia Research',
-    description: 'Shop 30+ research-grade peptides and custom blends — BPC-157, KLOW, GLOW, Tirzepatide, NAD⁺ and more. Every batch ≥99% HPLC purity with a batch-traceable COA.',
+    description: 'Shop research-grade peptides, GLP-1 compounds, and custom blends — BPC-157, KLOW, Tirzepatide, NAD⁺, GHK-Cu and more. Batch-traceable COA on every order. Research use only.',
     url: `${siteUrl}/shop`,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Research Peptides & Custom Blends — COA-Verified | Longevia Research',
-    description: 'Shop 30+ research-grade peptides and custom blends — BPC-157, KLOW, GLOW, Tirzepatide, NAD⁺ and more. Every batch ≥99% HPLC purity with a batch-traceable COA.',
+    description: 'Shop research-grade peptides, GLP-1 compounds, and custom blends — BPC-157, KLOW, Tirzepatide, NAD⁺, GHK-Cu and more. Batch-traceable COA on every order. Research use only.',
     images: ['/og/og-shop.webp'],
   },
 }

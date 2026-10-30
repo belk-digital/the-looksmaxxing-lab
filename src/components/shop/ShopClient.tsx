@@ -198,7 +198,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
              >
                <Image 
                  src="/new-images/glow-and-nad-bg-image.webp"
-                 alt="TB-500 (Thymosin Beta-4) research peptide vial splashing through water on a marble surface, ≥98% purity, research use only"
+                 alt="TB-500 (Thymosin Beta-4) research peptide vial splashing through water on a marble surface, ≥99% purity, research use only"
                  fill 
                  className="object-cover object-center"
                  priority
@@ -226,7 +226,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
             transition={{ duration: 0.8, delay: 0.6 }}
             className="text-body-lg lg:text-xl text-ink/70 max-w-[720px] mx-auto text-center mt-6 sm:mt-12 leading-relaxed px-6"
           >
-            Explore our complete catalog of research-grade peptides and compounds. Filter by category, purity, and availability to find exactly what your guideline requires.
+            Browse our complete catalog of research-grade compounds — from GLP-1 receptor agonists to growth-factor peptides and NAD⁺ precursors. Filter by category and availability to find the compound your protocol requires. All products are strictly for laboratory and research use only.
           </motion.p>
 
         </div>

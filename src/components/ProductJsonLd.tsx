@@ -152,6 +152,7 @@ export function ProductJsonLd({
       lowPrice: lowestPrice.toFixed(2),
       highPrice: highestPrice.toFixed(2),
       offerCount: variants.length,
+      hasMerchantReturnPolicy: returnPolicy,
     }
   } else {
     productSchema.offers = {

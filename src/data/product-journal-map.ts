@@ -125,47 +125,15 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
       title: 'Kisspeptin-10 & MOTS-C: Hormonal-Metabolic Axis',
       subtitle: 'HPG axis regulation and mitochondrial signaling in female physiology research',
     },
-    {
-      slug: 'peptide-reconstitution-storage-guide',
-      title: 'Peptide Reconstitution & Storage Guide',
-      subtitle: 'Bacteriostatic water, concentration math, and shelf life after reconstitution',
-    },
-    {
-      slug: 'peptide-coa-hplc-purity-testing-guide',
-      title: 'How to Read a Peptide COA',
-      subtitle: 'HPLC purity %, LC-MS identity, and endotoxin results explained for researchers',
-    },
   ],
   'epithalon': [
     {
       slug: 'kisspeptin-mots-c-hormonal-metabolic-research',
       title: 'Kisspeptin-10 & MOTS-C: Hormonal-Metabolic Axis',
-      subtitle: 'Longevity peptide stacking in female hormonal-metabolic axis research',
-    },
-  ],
-  'reconstitution-solution': [
-    {
-      slug: 'peptide-reconstitution-storage-guide',
-      title: 'Peptide Reconstitution & Storage Guide',
-      subtitle: 'How to store reconstitution solution: bacteriostatic water, concentration math, shelf life',
-    },
-    {
-      slug: 'peptide-coa-hplc-purity-testing-guide',
-      title: 'How to Read a Peptide COA',
-      subtitle: 'HPLC purity %, LC-MS identity, and endotoxin results explained for researchers',
-    },
-    {
-      slug: 'why-peptide-purity-matters-in-scientific-research',
-      title: 'Why Peptide Purity Matters in Research',
-      subtitle: 'How to read HPLC purity figures, mass spec identity data, and spot an unreliable supplier',
+      subtitle: 'Kisspeptin-10 and MOTS-C in female hormonal and metabolic axis research',
     },
   ],
   'nad-plus': [
-    {
-      slug: 'nad-plus-peptide-mitochondrial-sirtuin-research-guide',
-      title: 'NAD+ Mitochondrial & Sirtuin Research Guide',
-      subtitle: 'Mitochondrial ATP production, sirtuin and PARP pathways, and age-related NAD+ decline',
-    },
     {
       slug: 'nad-vs-nmn-vs-nr-research-comparison',
       title: 'NAD+ vs. NMN vs. NR: Research Comparison',
@@ -173,11 +141,6 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
     },
   ],
   'nad-plus-500mg-1000mg-45-sprays': [
-    {
-      slug: 'nad-plus-peptide-mitochondrial-sirtuin-research-guide',
-      title: 'NAD+ Mitochondrial & Sirtuin Research Guide',
-      subtitle: 'Mitochondrial ATP production, sirtuin and PARP pathways, and age-related NAD+ decline',
-    },
     {
       slug: 'nad-vs-nmn-vs-nr-research-comparison',
       title: 'NAD+ vs. NMN vs. NR: Research Comparison',
@@ -188,21 +151,21 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
     {
       slug: 'cjc-1295-ipamorelin-muscle-recovery-research',
       title: 'CJC-1295 + Ipamorelin: GH Axis Research',
-      subtitle: 'Growth hormone secretagogue stack for muscle recovery and body composition',
+      subtitle: 'CJC-1295 and Ipamorelin: GHRH receptor and GHS-R1a pharmacology in GH axis research',
     },
   ],
   'ipamorelin': [
     {
       slug: 'cjc-1295-ipamorelin-muscle-recovery-research',
       title: 'CJC-1295 + Ipamorelin: GH Axis Research',
-      subtitle: 'Growth hormone secretagogue stack for muscle recovery and body composition',
+      subtitle: 'CJC-1295 and Ipamorelin: GHRH receptor and GHS-R1a pharmacology in GH axis research',
     },
   ],
   'cjc-ipamorelin': [
     {
       slug: 'cjc-1295-ipamorelin-muscle-recovery-research',
       title: 'CJC-1295 + Ipamorelin: GH Axis Research',
-      subtitle: 'Growth hormone secretagogue stack for muscle recovery and body composition',
+      subtitle: 'CJC-1295 and Ipamorelin: GHRH receptor and GHS-R1a pharmacology in GH axis research',
     },
   ],
   'mt2-spray': [
@@ -248,21 +211,21 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
     {
       slug: 'cjc-1295-ipamorelin-muscle-recovery-research',
       title: 'CJC-1295 + Ipamorelin: GH Axis Research',
-      subtitle: 'Growth hormone secretagogue stack for muscle recovery and body composition',
+      subtitle: 'CJC-1295 and Ipamorelin: GHRH receptor and GHS-R1a pharmacology in GH axis research',
     },
   ],
   'cjc-ipamorelin-5mg-5mg-spray': [
     {
       slug: 'cjc-1295-ipamorelin-muscle-recovery-research',
       title: 'CJC-1295 + Ipamorelin: GH Axis Research',
-      subtitle: 'Growth hormone secretagogue stack for muscle recovery and body composition',
+      subtitle: 'CJC-1295 and Ipamorelin: GHRH receptor and GHS-R1a pharmacology in GH axis research',
     },
   ],
   'epithalon-10mg-50mg-45-sprays': [
     {
       slug: 'kisspeptin-mots-c-hormonal-metabolic-research',
       title: 'Kisspeptin-10 & MOTS-C: Hormonal-Metabolic Axis',
-      subtitle: 'Longevity peptide stacking in female hormonal-metabolic axis research',
+      subtitle: 'Kisspeptin-10 and MOTS-C in female hormonal and metabolic axis research',
     },
   ],
   'ghk-cu-50mg-100mg-45-sprays': [
@@ -276,7 +239,7 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
     {
       slug: 'cjc-1295-ipamorelin-muscle-recovery-research',
       title: 'CJC-1295 + Ipamorelin: GH Axis Research',
-      subtitle: 'Growth hormone secretagogue stack for muscle recovery and body composition',
+      subtitle: 'CJC-1295 and Ipamorelin: GHRH receptor and GHS-R1a pharmacology in GH axis research',
     },
   ],
   'kisspeptin-10mg-45-sprays': [
@@ -357,24 +320,9 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
   ],
   'bpc-tb-500': [
     {
-      slug: 'bpc-157-tb-500-synergy',
-      title: 'BPC-157 + TB-500: Synergy Research',
-      subtitle: 'Mechanistic differences between BPC-157 angiogenesis and TB-500 actin pathways',
-    },
-    {
       slug: 'stack-research-peptides-safe-combinations-avoid',
       title: 'Stacking Research Peptides: Safe Combinations',
       subtitle: 'How BPC-157 and TB-500 are studied together in soft tissue repair models',
-    },
-    {
-      slug: 'peptide-reconstitution-storage-guide',
-      title: 'Peptide Reconstitution & Storage Guide',
-      subtitle: 'Bacteriostatic water, concentration math, and correct storage temperature',
-    },
-    {
-      slug: 'peptide-coa-hplc-purity-testing-guide',
-      title: 'How to Read a Peptide COA',
-      subtitle: 'HPLC purity %, LC-MS identity, and endotoxin results explained for researchers',
     },
   ],
   'glutathione': [
@@ -384,11 +332,6 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
       subtitle: 'Findings from 194 studies on topical, oral, and injectable glutathione',
     },
     {
-      slug: 'peptide-coa-hplc-purity-testing-guide',
-      title: 'How to Read a Peptide COA',
-      subtitle: 'HPLC purity %, LC-MS identity, and endotoxin results explained for researchers',
-    },
-    {
       slug: 'endotoxin-lal-testing-peptide-coa',
       title: 'Endotoxin & LAL Testing on a Peptide COA',
       subtitle: 'Why the endotoxin row matters and what <1 EU/mg means for research quality',
@@ -396,8 +339,8 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
   ],
   'klow-blend': [
     {
-      slug: 'bpc-157-tb-500-synergy',
-      title: 'BPC-157 + TB-500: Synergy Research',
+      slug: 'stack-research-peptides-safe-combinations-avoid',
+      title: 'Stacking Research Peptides: Safe Combinations',
       subtitle: 'Mechanistic differences between BPC-157 angiogenesis and TB-500 actin pathways',
     },
     {
@@ -408,14 +351,88 @@ export const PRODUCT_JOURNAL_MAP: Record<string, JournalLinkEntry[]> = {
   ],
   'klow-80mg-45-sprays': [
     {
-      slug: 'bpc-157-tb-500-synergy',
-      title: 'BPC-157 + TB-500: Synergy Research',
+      slug: 'stack-research-peptides-safe-combinations-avoid',
+      title: 'Stacking Research Peptides: Safe Combinations',
       subtitle: 'Mechanistic differences between BPC-157 angiogenesis and TB-500 actin pathways',
     },
     {
       slug: 'ghk-cu-pharmacokinetics',
       title: 'The Pharmacokinetics of GHK-Cu',
       subtitle: 'Fibroblast activation, collagen synthesis, and clinical implications',
+    },
+  ],
+  'glow-blend': [
+    {
+      slug: 'stack-research-peptides-safe-combinations-avoid',
+      title: 'Stacking Research Peptides: Safe Combinations',
+      subtitle: 'Mechanistic differences between BPC-157 angiogenesis and TB-500 actin pathways',
+    },
+    {
+      slug: 'ghk-cu-pharmacokinetics',
+      title: 'The Pharmacokinetics of GHK-Cu',
+      subtitle: 'Fibroblast activation, collagen synthesis, and clinical implications',
+    },
+  ],
+  'glow-70mg-45-sprays': [
+    {
+      slug: 'stack-research-peptides-safe-combinations-avoid',
+      title: 'Stacking Research Peptides: Safe Combinations',
+      subtitle: 'Mechanistic differences between BPC-157 angiogenesis and TB-500 actin pathways',
+    },
+    {
+      slug: 'ghk-cu-pharmacokinetics',
+      title: 'The Pharmacokinetics of GHK-Cu',
+      subtitle: 'Fibroblast activation, collagen synthesis, and clinical implications',
+    },
+  ],
+
+  'cjc-1295-w-dac': [
+    {
+      slug: 'cjc-1295-ipamorelin-muscle-recovery-research',
+      title: 'CJC-1295 + Ipamorelin: GH Axis Research',
+      subtitle: 'CJC-1295 with and without DAC: GHRH receptor binding and pulsatile GH secretion research',
+    },
+  ],
+  'ghrp-2': [
+    {
+      slug: 'cjc-1295-ipamorelin-muscle-recovery-research',
+      title: 'CJC-1295 + Ipamorelin: GH Axis Research',
+      subtitle: 'GHRH analogue and ghrelin receptor agonist selectivity compared in GH secretagogue research',
+    },
+  ],
+  'ghrp-6': [
+    {
+      slug: 'cjc-1295-ipamorelin-muscle-recovery-research',
+      title: 'CJC-1295 + Ipamorelin: GH Axis Research',
+      subtitle: 'GHRH analogue and ghrelin receptor agonist selectivity compared in GH secretagogue research',
+    },
+  ],
+  'ghrp-2-100mg-45-sprays': [
+    {
+      slug: 'cjc-1295-ipamorelin-muscle-recovery-research',
+      title: 'CJC-1295 + Ipamorelin: GH Axis Research',
+      subtitle: 'GHRH analogue and ghrelin receptor agonist selectivity compared in GH secretagogue research',
+    },
+  ],
+  'ghrp-6-10mg-45-sprays': [
+    {
+      slug: 'cjc-1295-ipamorelin-muscle-recovery-research',
+      title: 'CJC-1295 + Ipamorelin: GH Axis Research',
+      subtitle: 'GHRH analogue and ghrelin receptor agonist selectivity compared in GH secretagogue research',
+    },
+  ],
+  'sermorelin': [
+    {
+      slug: 'cjc-1295-ipamorelin-muscle-recovery-research',
+      title: 'CJC-1295 + Ipamorelin: GH Axis Research',
+      subtitle: 'GHRH analogue benchmarking in growth hormone axis secretagogue research',
+    },
+  ],
+  'oxytocin': [
+    {
+      slug: 'oxytocin-research-mechanism-social-bonding-pathways',
+      title: 'Oxytocin: Mechanism & Social Bonding Research',
+      subtitle: 'OXTR signaling, neurohypophyseal release pathways, and social behavior models',
     },
   ],
 
