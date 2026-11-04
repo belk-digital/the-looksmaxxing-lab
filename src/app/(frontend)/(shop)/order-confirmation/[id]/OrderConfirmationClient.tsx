@@ -26,6 +26,8 @@ type OrderItem = {
 
 type OrderData = {
   id: string
+  /** The confirmation-page URL id; the server uses it to rebuild the Meta Purchase event. */
+  orderRef?: string
   customerName: string
   email: string
   shippingAddress: {
@@ -101,6 +103,7 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
       content_ids:    order.items.map(i => i.productId ?? i.id),
       transaction_id: order.id,
       num_items:      order.items.reduce((s, i) => s + i.quantity, 0),
+      orderRef:       order.orderRef,
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // intentionally mount-only — deduplication is via localStorage

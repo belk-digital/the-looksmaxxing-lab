@@ -46,9 +46,9 @@ const schemaCollectionPage = {
   },
 }
 
-// Cached for 1 day. Saving a product in the Payload admin clears the cache for this page straight away
+// Cached for 2 days. Saving a product in the Payload admin clears the cache for this page straight away
 // (see src/hooks/products.ts), so edits show up without waiting for the day to pass.
-export const revalidate = 86400
+export const revalidate = 172800
 
 export default async function CertificatesPage() {
   const payload = await getPayload({ config: configPromise })

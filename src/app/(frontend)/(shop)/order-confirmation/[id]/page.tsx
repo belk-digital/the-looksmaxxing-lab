@@ -97,6 +97,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
   // Format OrderData
   const orderData = {
     id: order.orderNumber || String(order.id),
+    orderRef: id,
     customerName: `${order.customerFirstName || ''} ${order.customerLastName || ''}`.trim() || 'Customer',
     email: order.guestEmail || '',
     shippingAddress: {

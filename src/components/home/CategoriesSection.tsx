@@ -26,7 +26,7 @@ const CATEGORY_IMAGES = [
   '/featured-images/white-blue-dna-helix.webp', // 3
   '/featured-images/category-4.JPG', // 4
   '/featured-images/microscopic-liquid-drops.webp', // 5
-  '/featured-images/category-6.png', // 6
+  '/featured-images/category-6.webp', // 6
   '/featured-images/clear-dropper-side-profile.webp', // 7
   '/featured-images/category-8.png' // 8
 ]

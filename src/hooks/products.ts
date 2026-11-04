@@ -37,11 +37,12 @@ export const productsBeforeChange: CollectionBeforeChangeHook = async ({
   return data
 }
 
-// Pages that are cached for a day and show product data. The product's own page is added per save.
+// Pages that are cached for 2 days and show product data. The product's own page is added per save.
 //   /                homepage "best sellers" cards
+//   /shop            the shop page (only has an effect once /shop itself is cached; harmless until then)
 //   /products        all-products listing
 //   /certificates    COA library, built from each product's COA file
-const PAGES_SHOWING_PRODUCTS = ['/', '/products', '/certificates']
+const PAGES_SHOWING_PRODUCTS = ['/', '/shop', '/products', '/certificates']
 
 function productPages(...slugs: Array<string | null | undefined>): string[] {
   return [...slugs.filter(Boolean).map((slug) => `/products/${slug}`), ...PAGES_SHOWING_PRODUCTS]

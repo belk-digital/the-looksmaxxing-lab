@@ -98,7 +98,7 @@ describe('clearCachedPages', () => {
 })
 
 describe('product hooks', () => {
-  const ALWAYS = ['/', '/products', '/certificates']
+  const ALWAYS = ['/', '/shop', '/products', '/certificates']
 
   it('saving a product clears its page and the pages that show products', async () => {
     await run(productsAfterChange, { doc: { slug: 'bpc-157' }, previousDoc: { slug: 'bpc-157' } })

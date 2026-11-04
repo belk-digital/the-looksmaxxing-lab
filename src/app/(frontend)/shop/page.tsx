@@ -28,7 +28,10 @@ export const metadata: Metadata = {
   },
 }
 
-export const dynamic = 'force-dynamic'
+// Cached for 2 days. Saving a product in the Payload admin clears the cache for this page straight away
+// (see src/hooks/products.ts). The category filters (?category=...) are applied in the browser after the
+// page loads (see src/components/shop/ShopParams.tsx), so every visitor shares the same cached page.
+export const revalidate = 172800
 
 export default async function ShopPage() {
   let categories: any[] = []
@@ -59,19 +62,17 @@ export default async function ShopPage() {
   // Fetch initial page of products
   const initialProductsRes = await getShopProducts({ page: 1, limit: 24 })
 
+  // This page is now saved and reused for 2 days, so it must NEVER be saved while the database is failing:
+  // an error panel or an empty shop would then be served to everyone for 2 days. Throwing instead makes Next.js
+  // keep serving the last good copy and try again on the next visit.
   if (dbError) {
-    return (
-      <div className="min-h-screen bg-white pt-32 px-6 flex flex-col items-center">
-        <div className="bg-red-50 border border-red-200 text-red-600 p-6 rounded-xl max-w-2xl w-full">
-          <h2 className="text-xl font-bold mb-2">Database Connection Error</h2>
-          <p className="mb-4">The shop page crashed because it couldn't connect to Supabase on Vercel.</p>
-          <pre className="bg-red-100 p-4 rounded-lg overflow-x-auto text-xs font-mono">{dbError}</pre>
-        </div>
-      </div>
-    )
+    throw new Error(`Shop page could not load its categories: ${dbError}`)
+  }
+  if (!initialProductsRes.success) {
+    throw new Error('Shop page could not load its products')
   }
 
-  const products = initialProductsRes.success ? (initialProductsRes.products as any[]) : []
+  const products = initialProductsRes.products as any[]
 
   const itemListSchema = {
     '@context': 'https://schema.org',

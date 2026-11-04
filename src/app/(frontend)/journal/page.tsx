@@ -6,9 +6,9 @@ import { getAllJournalPosts } from '@/lib/blog/getPosts'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
-// Cached for 1 day. Saving a post in the Payload admin clears the cache for this page straight away
+// Cached for 2 days. Saving a post in the Payload admin clears the cache for this page straight away
 // (see src/hooks/blogPosts.ts), so new and edited posts show up without waiting for the day to pass.
-export const revalidate = 86400
+export const revalidate = 172800
 
 export const metadata: Metadata = {
   title: { absolute: 'Peptide Research Journal — Science Guides & Lab References | Longevia' },

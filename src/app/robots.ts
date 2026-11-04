@@ -22,8 +22,6 @@ export default function robots(): MetadataRoute.Robots {
           '/affiliates/apply',
           '/test-design',
           '/test-motion',
-          '/run-script',
-          '/add-bulk-bundles',
         ],
       },
       {

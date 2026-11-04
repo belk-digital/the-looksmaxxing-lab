@@ -43,7 +43,7 @@ const slides = [
   },
   {
     image: '/new-images/motsc-and-retatrutide-on-ice.webp',
-    alt: 'Longevia Research — MOTS-c and Retatrutide Research Peptides on Ice',
+    alt: 'Longevia Research — MOTS-c and GLOW Research Peptides on Ice',
     desktopBgClass: 'bg-[#F9FAFB]', // Slightly different light gray
   }
 ]

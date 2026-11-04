@@ -20,32 +20,30 @@ function staticPostsAsUnified(): UnifiedJournalPost[] {
   }))
 }
 
+// A database failure is deliberately NOT caught here. The journal pages are saved for 2 days, so quietly
+// returning an empty list would save a journal without its Payload posts and serve it to everyone for 2 days.
+// Letting the error through makes Next.js keep serving the last good copy and try again on the next visit.
 async function cmsPostsAsUnified(): Promise<UnifiedJournalPost[]> {
-  try {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-      collection: 'blog-posts',
-      where: { status: { equals: 'published' } },
-      sort: '-publishedAt',
-      limit: 100,
-      depth: 1,
-    })
+  const payload = await getPayload({ config: configPromise })
+  const { docs } = await payload.find({
+    collection: 'blog-posts',
+    where: { status: { equals: 'published' } },
+    sort: '-publishedAt',
+    limit: 100,
+    depth: 1,
+  })
 
-    return docs.map((post: any) => ({
-      slug: post.slug,
-      title: post.title,
-      category: post.category || '',
-      date: formatPostDate(post.publishedAt || post.createdAt),
-      sortDate: post.publishedAt || post.createdAt,
-      readTime: post.readTime || estimateReadingTime(post.content),
-      excerpt: post.excerpt || '',
-      heroImage: getFeaturedImageUrl(post),
-      source: 'cms' as const,
-    }))
-  } catch (err) {
-    console.error('Failed to fetch CMS blog posts', err)
-    return []
-  }
+  return docs.map((post: any) => ({
+    slug: post.slug,
+    title: post.title,
+    category: post.category || '',
+    date: formatPostDate(post.publishedAt || post.createdAt),
+    sortDate: post.publishedAt || post.createdAt,
+    readTime: post.readTime || estimateReadingTime(post.content),
+    excerpt: post.excerpt || '',
+    heroImage: getFeaturedImageUrl(post),
+    source: 'cms' as const,
+  }))
 }
 
 // Merges Payload-authored posts with the hardcoded JOURNAL_POSTS array so both
@@ -142,29 +140,28 @@ function toShopProduct(product: any): ShopProduct {
   }
 }
 
+// Returns null ONLY when the post really doesn't exist (or isn't published). A database failure is deliberately
+// NOT turned into null: the journal post page is saved for 2 days, and null becomes a 404 page, so a failed
+// lookup would save a real post as "not found" for 2 days. Letting the error through makes Next.js keep the
+// last good copy and try again on the next visit.
 export async function getCmsJournalPost(slug: string): Promise<{
   post: any
   relatedProducts: ShopProduct[]
 } | null> {
-  try {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-      collection: 'blog-posts',
-      where: { and: [{ slug: { equals: slug } }, { status: { equals: 'published' } }] },
-      depth: 2,
-      limit: 1,
-    })
+  const payload = await getPayload({ config: configPromise })
+  const { docs } = await payload.find({
+    collection: 'blog-posts',
+    where: { and: [{ slug: { equals: slug } }, { status: { equals: 'published' } }] },
+    depth: 2,
+    limit: 1,
+  })
 
-    const post = docs[0]
-    if (!post) return null
+  const post = docs[0]
+  if (!post) return null
 
-    const relatedProducts: ShopProduct[] = Array.isArray(post.relatedProducts)
-      ? post.relatedProducts.filter((p: any) => typeof p === 'object').map(toShopProduct)
-      : []
+  const relatedProducts: ShopProduct[] = Array.isArray(post.relatedProducts)
+    ? post.relatedProducts.filter((p: any) => typeof p === 'object').map(toShopProduct)
+    : []
 
-    return { post, relatedProducts }
-  } catch (err) {
-    console.error(`Failed to fetch CMS blog post "${slug}"`, err)
-    return null
-  }
+  return { post, relatedProducts }
 }

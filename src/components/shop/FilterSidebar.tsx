@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState, useEffect, useCallback, Suspense } from 'react'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
+import { useShopParams } from '@/components/shop/ShopParams'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Filter, X } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -33,7 +34,8 @@ export interface FilterSidebarProps {
 function FilterSidebarInner({ categories = [] }: FilterSidebarProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
+  // The filters in the address bar (see ShopParams.tsx for why this isn't Next's useSearchParams).
+  const searchParams = useShopParams()
   const [isOpen, setIsOpen] = useState(false)
 
   // Local state for optimistic UI updates before pushing to URL

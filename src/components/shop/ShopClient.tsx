@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState, useEffect, Suspense, useCallback } from 'react'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import React, { useState, useEffect, useRef } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
+import { ShopParamsProvider, ShopParamsSync, useShopParams } from '@/components/shop/ShopParams'
 import { Container } from '@/components/ui/container'
 import { FilterSidebar } from '@/components/shop/FilterSidebar'
 import { PrimaryProductCard, Product } from '@/components/shop/PrimaryProductCard'
@@ -28,8 +29,12 @@ export interface ShopClientProps {
 function ShopClientInner({ initialProducts, totalPages, categories }: ShopClientProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
-  
+  // The filters in the address bar (see ShopParams.tsx for why this isn't Next's useSearchParams).
+  const searchParams = useShopParams()
+  const queryKey = searchParams.toString()
+  // The filters the products on screen were loaded for. '' = the default, unfiltered grid that came with the page.
+  const gridQuery = useRef('')
+
   const [products, setProducts] = useState<Product[]>(initialProducts)
   const [currentPage, setCurrentPage] = useState(1)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
@@ -64,6 +69,10 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
 
   // Filter update trigger
   useEffect(() => {
+    // The page already arrives with the default grid, so there is nothing to load until the filters change.
+    if (queryKey === gridQuery.current) return
+    let cancelled = false
+
     // When searchParams change, reset to page 1 and fetch new products
     const fetchFiltered = async () => {
       const categoriesParam = searchParams.getAll('category')
@@ -80,17 +89,25 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
         sort: searchParams.get('sort') || undefined,
       })
 
+      // Ignore an answer for filters that have since changed, so a slow old request can't overwrite a newer one.
+      if (cancelled) return
       if (res.success) {
+        gridQuery.current = queryKey
         setProducts(res.products as Product[])
         setCurrentPage(1)
         setHasMore(res.hasNextPage || false)
       }
     }
     fetchFiltered()
-  }, [searchParams])
+    return () => {
+      cancelled = true
+    }
+  }, [searchParams, queryKey])
 
   // Infinite scroll trigger
   useEffect(() => {
+    // Wait until the grid on screen belongs to the current filters (the address-bar filters arrive just after load).
+    if (queryKey !== gridQuery.current) return
     if (isInView && hasMore && !isLoadingMore) {
       setIsLoadingMore(true)
       const fetchMore = async () => {
@@ -109,6 +126,11 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
           sort: searchParams.get('sort') || undefined,
         })
 
+        // The filters changed while this page was loading: drop it, the new filters load their own page 1.
+        if (queryKey !== gridQuery.current) {
+          setIsLoadingMore(false)
+          return
+        }
         if (res.success && res.products) {
           setProducts(prev => [...prev, ...(res.products as Product[])])
           setCurrentPage(nextPage)
@@ -120,7 +142,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
       }
       fetchMore()
     }
-  }, [isInView, hasMore, isLoadingMore, currentPage, searchParams])
+  }, [isInView, hasMore, isLoadingMore, currentPage, searchParams, queryKey])
 
   // Active chips extraction
   const getActiveChips = () => {
@@ -267,8 +289,8 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
               </span>
             </div>
 
-            <Select 
-              defaultValue={searchParams.get('sort') || 'newest'}
+            <Select
+              value={searchParams.get('sort') || 'newest'}
               onValueChange={(val) => {
                 const params = new URLSearchParams(searchParams.toString())
                 params.set('sort', val)
@@ -358,9 +380,13 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
 }
 
 export function ShopClient(props: ShopClientProps) {
+  // '' = the default, unfiltered shop. This is what the cached page is built with, so the full product grid is
+  // in the saved HTML. <ShopParamsSync> then supplies the real address-bar filters as soon as the page loads.
+  const [query, setQuery] = useState('')
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#F5F5F7] w-full" />}>
+    <ShopParamsProvider value={query}>
+      <ShopParamsSync onChange={setQuery} />
       <ShopClientInner {...props} />
-    </Suspense>
+    </ShopParamsProvider>
   )
 }

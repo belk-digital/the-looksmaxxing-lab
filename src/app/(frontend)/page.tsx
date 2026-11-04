@@ -15,9 +15,9 @@ import { Metadata } from 'next'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
-// Cached for 1 day. Saving a product in the Payload admin clears the cache for this page straight away
+// Cached for 2 days. Saving a product in the Payload admin clears the cache for this page straight away
 // (see src/hooks/products.ts), so best-seller changes show up without waiting for the day to pass.
-export const revalidate = 86400
+export const revalidate = 172800
 
 export const metadata: Metadata = {
   openGraph: {
@@ -113,15 +113,15 @@ const homepageFaqSchema = {
 }
 
 export default async function Homepage() {
-  let products = []
-  try {
-    const res = await getShopProducts({ limit: 8, sort: 'newest', isBestSeller: true })
-    if (res.success && res.products) {
-      products = res.products as any[]
-    }
-  } catch (e) {
-    console.error("Failed to fetch featured products", e)
+  // The home page is saved for 2 days, so it must NEVER be saved while the database is failing: an empty
+  // "best sellers" row would be served to everyone for 2 days. getShopProducts reports a failure as
+  // { success: false } instead of throwing, so turn that into a real error. Next.js then keeps serving the
+  // last good copy and tries again on the next visit.
+  const res = await getShopProducts({ limit: 8, sort: 'newest', isBestSeller: true })
+  if (!res.success) {
+    throw new Error(`Home page could not load its featured products: ${'error' in res ? res.error : 'unknown error'}`)
   }
+  const products = (res.products ?? []) as any[]
 
   return (
     <>
