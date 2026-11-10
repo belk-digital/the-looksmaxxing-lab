@@ -22,6 +22,11 @@ export default function LoginPage() {
   // where to go after logging in (e.g. back to checkout); only a path on this site is ever accepted
   const [next, setNext] = useState<string | null>(null)
   useEffect(() => setNext(nextPathFromSearch(window.location.search)), [])
+  // Set when someone was sent here from a page that needs a login (e.g. a nasal spray product): we explain why.
+  const [fromCatalogue, setFromCatalogue] = useState(false)
+  useEffect(() => {
+    setFromCatalogue(new URLSearchParams(window.location.search).get('reason') === 'catalogue')
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -99,7 +104,14 @@ export default function LoginPage() {
           <p className="text-sm text-gray-500 mb-8">
             Don't have an account? <Link href={withNext('/register', next)} className="text-black font-bold hover:underline transition-all">Sign Up</Link>
           </p>
-          
+
+          {fromCatalogue && (
+            <div role="status" className="mb-6 rounded-xl border border-[#5984c4]/25 bg-[#5984c4]/[0.06] px-4 py-3 text-sm leading-relaxed text-gray-700">
+              <span className="font-bold text-black">Members catalogue.</span> Nasal spray products are available to
+              logged-in customers. Log in, or sign up for a free account, and we'll take you straight back.
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <button
               type="button"

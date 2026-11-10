@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { JOURNAL_POSTS } from '@/data/journal-posts'
 import { getCmsJournalPostEntries } from '@/lib/blog/getPosts'
+import { isRestrictedSlug } from '@/lib/access/restrictedProducts'
 
 // Regenerate at most every 3h so newly published products/posts reach the sitemap without a redeploy.
 export const revalidate = 10800
@@ -117,8 +118,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       depth: 0,
     })
 
+    // Nasal-spray pages need a login, so they must not be advertised to search engines.
     productPages = products
-      .filter((p) => p.slug && !REDIRECTED_PRODUCT_SLUGS.has(p.slug))
+      .filter((p) => p.slug && !REDIRECTED_PRODUCT_SLUGS.has(p.slug) && !isRestrictedSlug(p.slug))
       .map((p) => ({
         url: `${siteUrl}/products/${p.slug}`,
         lastModified: new Date(p.updatedAt),

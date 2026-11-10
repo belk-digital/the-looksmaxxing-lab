@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input'
 import { QuantityStepper } from '@/components/shop/QuantityStepper'
 import { useCartStore } from '@/lib/cart/store'
 import { PrimaryProductCard } from '@/components/shop/PrimaryProductCard'
+import { RestrictedCartNotice } from '@/components/shop/RestrictedCartNotice'
 import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
 import { Space_Grotesk } from 'next/font/google'
 
@@ -328,7 +329,9 @@ export function CartClient() {
           Your Cart <span className="text-ink/30 ml-2 font-normal">({items.reduce((acc, i) => acc + i.quantity, 0)})</span>
         </h1>
       </div>
-      
+
+      <RestrictedCartNotice returnTo="/cart" />
+
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 lg:gap-20">
         {/* Left Column: Items */}
         <div className="flex flex-col">

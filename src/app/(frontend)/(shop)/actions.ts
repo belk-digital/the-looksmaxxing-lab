@@ -5,6 +5,9 @@ import configPromise from '@payload-config'
 import { getPayloadUser } from '@/lib/auth/getPayloadUser'
 import { revalidatePath } from 'next/cache'
 import { couponRuleForCart } from '@/lib/subscriptions/couponRules'
+import { isLoggedIn } from '@/lib/access/viewer'
+import { publicProductsClause } from '@/lib/access/restrictedQuery'
+import { withoutRestricted } from '@/lib/access/restrictedProducts'
 
 export async function addToCart(productId: string | number, quantity: number = 1, providedVariantSku?: string, providedPriceSnapshot?: number) {
   try {
@@ -382,7 +385,7 @@ export async function verifyCoupon(couponCode: string, subtotal: number, clientC
   }
 }
 
-export async function getShopProducts(params: {
+type ShopQuery = {
   page?: number
   limit?: number
   categories?: string[]
@@ -392,7 +395,12 @@ export async function getShopProducts(params: {
   minPrice?: number
   maxPrice?: number
   sort?: string
-}) {
+}
+
+// The product list behind the shop and the home page.
+// `includeRestricted` is NOT something a caller can pass in from the browser: this function is private to this
+// file, and the two exported wrappers below decide it (never from anything the browser sends).
+async function queryShopProducts(params: ShopQuery, includeRestricted: boolean) {
   try {
     const payload = await getPayload({ config: configPromise })
 
@@ -401,6 +409,12 @@ export async function getShopProducts(params: {
         { isVisible: { equals: true } },
         { status: { equals: 'active' } }
       ]
+    }
+
+    // Nasal sprays are for logged-in customers only: leave them out unless the caller is allowed to see them.
+    if (!includeRestricted) {
+      const publicOnly = await publicProductsClause(payload)
+      if (publicOnly) where.and.push(publicOnly)
     }
 
     if (params.categories && params.categories.length > 0) {
@@ -544,7 +558,8 @@ export async function getShopProducts(params: {
 
     return {
       success: true,
-      products: uiProducts,
+      // Second lock: even if the query above were ever wrong, a restricted product never reaches the public list.
+      products: includeRestricted ? uiProducts : withoutRestricted(uiProducts),
       totalPages: results.totalPages,
       page: results.page,
       hasNextPage: results.hasNextPage,
@@ -552,6 +567,23 @@ export async function getShopProducts(params: {
   } catch (err: any) {
     return { success: false, error: err.message, products: [], totalPages: 0 }
   }
+}
+
+/**
+ * The PUBLIC product list: never contains nasal sprays. This is what cached pages (home, shop) are built with,
+ * because a cached page is shared by everyone and cannot know who is looking. It is also what a logged-out
+ * visitor gets if they call it directly.
+ */
+export async function getShopProducts(params: ShopQuery) {
+  return queryShopProducts(params, false)
+}
+
+/**
+ * The product list for whoever is asking: includes nasal sprays only when the server confirms the person is
+ * logged in (it reads the login cookie itself; nothing the browser sends can switch it on).
+ */
+export async function getShopProductsForViewer(params: ShopQuery) {
+  return queryShopProducts(params, await isLoggedIn())
 }
 
 export async function getUserDefaultAddress() {

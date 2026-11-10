@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { ShopParamsProvider, ShopParamsSync, useShopParams } from '@/components/shop/ShopParams'
 import { Container } from '@/components/ui/container'
 import { FilterSidebar } from '@/components/shop/FilterSidebar'
@@ -18,7 +19,8 @@ import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '@/components/ui/dropdown-menu'
 
 import { Category } from '@/components/shop/FilterSidebar'
-import { getShopProducts } from '@/app/(frontend)/(shop)/actions'
+import { getShopProductsForViewer } from '@/app/(frontend)/(shop)/actions'
+import { isRestrictionEnabled } from '@/lib/access/restrictedProducts'
 
 export interface ShopClientProps {
   initialProducts: Product[]
@@ -32,8 +34,13 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
   // The filters in the address bar (see ShopParams.tsx for why this isn't Next's useSearchParams).
   const searchParams = useShopParams()
   const queryKey = searchParams.toString()
-  // The filters the products on screen were loaded for. '' = the default, unfiltered grid that came with the page.
-  const gridQuery = useRef('')
+  // Who is looking. The cached page is built for everyone, so it never contains the nasal sprays (logged-in
+  // customers only); once we know the visitor is logged in, the grid is loaded again with the sprays included.
+  const { status } = useSession()
+  const viewer = status === 'authenticated' ? 'member' : 'guest'
+  const wantedKey = `${viewer}|${queryKey}`
+  // What the products on screen were loaded for (viewer + filters). 'guest|' = the default grid that came with the page.
+  const gridKey = useRef('guest|')
 
   const [products, setProducts] = useState<Product[]>(initialProducts)
   const [currentPage, setCurrentPage] = useState(1)
@@ -69,8 +76,11 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
 
   // Filter update trigger
   useEffect(() => {
-    // The page already arrives with the default grid, so there is nothing to load until the filters change.
-    if (queryKey === gridQuery.current) return
+    // Wait until we know whether the visitor is logged in.
+    if (status === 'loading') return
+    // The page already arrives with the default grid, so there is nothing to load until the filters change
+    // (or the visitor turns out to be logged in, and should also see the nasal sprays).
+    if (wantedKey === gridKey.current) return
     let cancelled = false
 
     // When searchParams change, reset to page 1 and fetch new products
@@ -79,7 +89,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
       const minP = searchParams.get('minPrice')
       const maxP = searchParams.get('maxPrice')
       
-      const res = await getShopProducts({
+      const res = await getShopProductsForViewer({
         page: 1,
         categories: categoriesParam.length > 0 ? categoriesParam : undefined,
         inStock: searchParams.get('inStock') === 'true',
@@ -92,7 +102,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
       // Ignore an answer for filters that have since changed, so a slow old request can't overwrite a newer one.
       if (cancelled) return
       if (res.success) {
-        gridQuery.current = queryKey
+        gridKey.current = wantedKey
         setProducts(res.products as Product[])
         setCurrentPage(1)
         setHasMore(res.hasNextPage || false)
@@ -102,12 +112,12 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
     return () => {
       cancelled = true
     }
-  }, [searchParams, queryKey])
+  }, [searchParams, queryKey, status, wantedKey])
 
   // Infinite scroll trigger
   useEffect(() => {
-    // Wait until the grid on screen belongs to the current filters (the address-bar filters arrive just after load).
-    if (queryKey !== gridQuery.current) return
+    // Wait until the grid on screen belongs to the current filters and visitor (these arrive just after load).
+    if (wantedKey !== gridKey.current) return
     if (isInView && hasMore && !isLoadingMore) {
       setIsLoadingMore(true)
       const fetchMore = async () => {
@@ -116,7 +126,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
         const minP = searchParams.get('minPrice')
         const maxP = searchParams.get('maxPrice')
 
-        const res = await getShopProducts({
+        const res = await getShopProductsForViewer({
           page: nextPage,
           categories: categoriesParam.length > 0 ? categoriesParam : undefined,
           inStock: searchParams.get('inStock') === 'true',
@@ -126,8 +136,8 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
           sort: searchParams.get('sort') || undefined,
         })
 
-        // The filters changed while this page was loading: drop it, the new filters load their own page 1.
-        if (queryKey !== gridQuery.current) {
+        // The filters (or the visitor) changed while this page was loading: drop it, the new ones load their own page 1.
+        if (wantedKey !== gridKey.current) {
           setIsLoadingMore(false)
           return
         }
@@ -142,7 +152,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
       }
       fetchMore()
     }
-  }, [isInView, hasMore, isLoadingMore, currentPage, searchParams, queryKey])
+  }, [isInView, hasMore, isLoadingMore, currentPage, searchParams, queryKey, wantedKey])
 
   // Active chips extraction
   const getActiveChips = () => {
@@ -359,6 +369,23 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
             {!hasMore && (
               <div className="w-full text-center pt-24 pb-12 text-label-md uppercase tracking-wider text-ink/60">
                 You've reached the end of the catalog.
+              </div>
+            )}
+
+            {/* Logged-out visitors don't see the nasal sprays: tell them where to find the rest of the catalogue. */}
+            {!hasMore && status === 'unauthenticated' && isRestrictionEnabled() && (
+              <div className="mx-auto mb-12 flex max-w-2xl flex-col items-center gap-5 rounded-3xl bg-ink px-6 py-10 text-center text-cream sm:px-12">
+                <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-cream/60">Members catalogue</span>
+                <h3 className="font-display text-2xl leading-snug sm:text-3xl">There's more to see.</h3>
+                <p className="max-w-md text-sm leading-relaxed text-cream/70">
+                  Log in or create a free account to see our full catalogue, including our nasal spray formats.
+                </p>
+                <Link
+                  href="/login?next=%2Fshop"
+                  className="inline-flex items-center justify-center rounded-full bg-cream px-9 py-4 text-[10px] font-bold uppercase tracking-[0.25em] text-ink transition-colors hover:bg-white"
+                >
+                  Log in to see more
+                </Link>
               </div>
             )}
           </>

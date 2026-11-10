@@ -42,15 +42,22 @@ export function ClientHeader({ categories: initialCategories = [] }: any) {
   const [isLoadingMenu, setIsLoadingMenu] = useState(initialCategories.length === 0)
 
   useEffect(() => {
-    if (initialCategories.length === 0) {
+    // Wait until the login state is known: the menu lists nasal sprays only for logged-in customers, so it is
+    // loaded once the state is known and loaded again if it changes (logging in or out without a page reload).
+    if (initialCategories.length === 0 && status !== 'loading') {
+      let cancelled = false
       import('@/app/(frontend)/actions/megaMenu').then(module => {
         module.getMegaMenuData().then(data => {
+          if (cancelled) return
           setCategoriesData(data)
           setIsLoadingMenu(false)
         })
       })
+      return () => {
+        cancelled = true
+      }
     }
-  }, [initialCategories])
+  }, [initialCategories, status])
 
   const cartHydrated = useRef(false)
   const wishlistHydrated = useRef(false)

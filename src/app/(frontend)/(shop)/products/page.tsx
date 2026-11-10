@@ -1,6 +1,8 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import Link from 'next/link'
+import { publicProductsClause } from '@/lib/access/restrictedQuery'
+import { withoutRestricted } from '@/lib/access/restrictedProducts'
 
 // Cached for 2 days. Saving a product in the Payload admin clears the cache for this page straight away
 // (see src/hooks/products.ts), so edits show up without waiting for the day to pass.
@@ -15,11 +17,15 @@ export const metadata = {
 export default async function ProductsPage() {
   const payload = await getPayload({ config: configPromise })
   
-  const products = await payload.find({
+  // This page is cached and shared by everyone, so it lists the PUBLIC products only:
+  // nasal sprays are for logged-in customers and never appear here.
+  const publicOnly = await publicProductsClause(payload)
+  const found = await payload.find({
     collection: 'products',
-    where: { status: { equals: 'active' } },
+    where: { and: [{ status: { equals: 'active' } }, ...(publicOnly ? [publicOnly] : [])] },
     limit: 50,
   })
+  const products = { docs: withoutRestricted(found.docs) }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">

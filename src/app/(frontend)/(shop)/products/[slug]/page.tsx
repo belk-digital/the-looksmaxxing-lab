@@ -8,6 +8,8 @@ import configPromise from '@payload-config'
 import { Metadata } from 'next'
 import { buildTitle } from '@/lib/seo/buildMetadata'
 import { resolveDescription } from '@/lib/seo/descriptionOverrides'
+import { publicProductsClause } from '@/lib/access/restrictedQuery'
+import { withoutRestricted } from '@/lib/access/restrictedProducts'
 
 // Cached for 2 days. Saving this product in the Payload admin clears the cache for it straight away
 // (see src/hooks/products.ts), so edits show up without waiting for the day to pass.
@@ -325,6 +327,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     relatedProducts: [] as any[],
   }
 
+  // This page is cached and shared by everyone, so its "related products" are always the PUBLIC list:
+  // nasal sprays are never suggested here (they are for logged-in customers only).
+  const publicOnly = await publicProductsClause(payload)
+
   // Fetch related products (same category)
   if (rawProduct.categories && rawProduct.categories.length > 0) {
     const categoryIds = rawProduct.categories
@@ -351,13 +357,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 equals: 'active',
               },
             },
+            ...(publicOnly ? [publicOnly] : []),
           ],
         },
         limit: 4,
         depth: 1, // Only need basic info and main image
       })
 
-      productData.relatedProducts = relatedDocs.map((p: any) => {
+      productData.relatedProducts = withoutRestricted(relatedDocs).map((p: any) => {
         let imageUrl = '/temp-products/product-image.png'
         let hoverImageUrl = undefined
         if (
@@ -398,19 +405,18 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     const { docs: recentDocs } = await payload.find({
       collection: 'products',
       where: {
-        id: {
-          not_equals: rawProduct.id,
-        },
-        status: {
-          equals: 'active',
-        },
+        and: [
+          { id: { not_equals: rawProduct.id } },
+          { status: { equals: 'active' } },
+          ...(publicOnly ? [publicOnly] : []),
+        ],
       },
       sort: '-createdAt',
       limit: 4,
       depth: 1,
     })
 
-    productData.relatedProducts = recentDocs.map((p: any) => {
+    productData.relatedProducts = withoutRestricted(recentDocs).map((p: any) => {
       let imageUrl = '/temp-products/product-image.png'
       let hoverImageUrl = undefined
       if (

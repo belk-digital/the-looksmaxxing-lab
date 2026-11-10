@@ -27,10 +27,13 @@ const nav = vi.hoisted(() => ({
   search: '',
   bailout: false,
   inView: false,
+  authStatus: 'unauthenticated' as 'loading' | 'authenticated' | 'unauthenticated',
   listeners: new Set<() => void>(),
   push: vi.fn(),
 }))
 const getShopProducts = vi.hoisted(() => vi.fn())
+
+vi.mock('next-auth/react', () => ({ useSession: () => ({ status: nav.authStatus, data: null }) }))
 
 vi.mock('next/navigation', async () => {
   const R = await import('react')
@@ -53,8 +56,11 @@ vi.mock('next/navigation', async () => {
   }
 })
 
+// The shop screen loads its list through the viewer-aware function (it includes nasal sprays only for logged-in
+// customers); the test stands in for the server with one mock.
 vi.mock('@/app/(frontend)/(shop)/actions', () => ({
   getShopProducts: (...args: unknown[]) => getShopProducts(...args),
+  getShopProductsForViewer: (...args: unknown[]) => getShopProducts(...args),
 }))
 
 vi.mock('framer-motion', async () => {
@@ -185,6 +191,7 @@ beforeEach(() => {
   nav.search = ''
   nav.bailout = false
   nav.inView = false
+  nav.authStatus = 'unauthenticated'
   nav.listeners.clear()
   nav.push.mockReset()
   getShopProducts.mockReset()
@@ -297,5 +304,115 @@ describe('in the browser', () => {
     await waitFor(() => expect(screen.getByTestId('sort-select').getAttribute('data-value')).toBe('price-asc'))
     await waitFor(() => expect(cards()).toEqual(['Cheap']))
     expect(getShopProducts.mock.calls[0][0]).toMatchObject({ sort: 'price-asc' })
+  })
+})
+
+describe('nasal sprays (logged-in customers only)', () => {
+  const FULL = ['Alpha', 'Beta', 'Spray-One', 'Spray-Two']
+
+  it('a logged-in customer gets the full catalogue loaded right after the page appears', async () => {
+    nav.authStatus = 'authenticated'
+    getShopProducts.mockResolvedValue(ok(FULL))
+    render(React.createElement(ShopClient, props()))
+
+    await waitFor(() => expect(cards()).toEqual(FULL))
+    expect(getShopProducts).toHaveBeenCalledTimes(1)
+    expect(getShopProducts.mock.calls[0][0]).toMatchObject({ page: 1 })
+  })
+
+  it('a logged-out visitor keeps the public grid and triggers no extra request', async () => {
+    nav.authStatus = 'unauthenticated'
+    render(React.createElement(ShopClient, props()))
+    await act(async () => undefined)
+    expect(cards()).toEqual(['Alpha', 'Beta'])
+    expect(getShopProducts).not.toHaveBeenCalled()
+  })
+
+  it('waits until it is known whether the visitor is logged in, then loads once', async () => {
+    nav.authStatus = 'loading'
+    nav.search = 'category=Hormonal%20Health'
+    getShopProducts.mockResolvedValue(ok(['Spray-Filtered']))
+    const view = render(React.createElement(ShopClient, props()))
+    await act(async () => undefined)
+    expect(getShopProducts).not.toHaveBeenCalled()
+
+    nav.authStatus = 'authenticated'
+    view.rerender(React.createElement(ShopClient, props()))
+    await waitFor(() => expect(cards()).toEqual(['Spray-Filtered']))
+    expect(getShopProducts).toHaveBeenCalledTimes(1)
+    expect(getShopProducts.mock.calls[0][0]).toMatchObject({ page: 1, categories: ['Hormonal Health'] })
+  })
+
+  it('logging out replaces the full grid with the public one', async () => {
+    nav.authStatus = 'authenticated'
+    getShopProducts.mockResolvedValue(ok(FULL))
+    const view = render(React.createElement(ShopClient, props()))
+    await waitFor(() => expect(cards()).toEqual(FULL))
+
+    nav.authStatus = 'unauthenticated'
+    getShopProducts.mockResolvedValue(ok(['Alpha', 'Beta']))
+    view.rerender(React.createElement(ShopClient, props()))
+    await waitFor(() => expect(cards()).toEqual(['Alpha', 'Beta']))
+  })
+
+  it('a slow answer for the logged-out grid cannot overwrite the logged-in grid', async () => {
+    nav.authStatus = 'unauthenticated'
+    const slowGuest = deferred<ReturnType<typeof ok>>()
+    nav.search = 'onSale=true'
+    getShopProducts.mockReturnValueOnce(slowGuest.promise)
+    const view = render(React.createElement(ShopClient, props()))
+
+    nav.authStatus = 'authenticated'
+    getShopProducts.mockResolvedValueOnce(ok(['Member-Result']))
+    view.rerender(React.createElement(ShopClient, props()))
+    await waitFor(() => expect(cards()).toEqual(['Member-Result']))
+
+    await act(async () => {
+      slowGuest.resolve(ok(['Guest-Result']))
+    })
+    expect(cards()).toEqual(['Member-Result'])
+  })
+
+  describe('the "log in to see more" nudge at the end of the catalogue', () => {
+    it('is shown to a logged-out visitor, and leads to the login page and back to the shop', async () => {
+      render(React.createElement(ShopClient, props()))
+      const link = await screen.findByRole('link', { name: 'Log in to see more' })
+      expect(link.getAttribute('href')).toBe('/login?next=%2Fshop')
+      expect(document.body.textContent).toContain('full catalogue')
+    })
+
+    it('is not shown to a logged-in customer', async () => {
+      nav.authStatus = 'authenticated'
+      getShopProducts.mockResolvedValue(ok(FULL))
+      render(React.createElement(ShopClient, props()))
+      await waitFor(() => expect(cards()).toEqual(FULL))
+      expect(screen.queryByRole('link', { name: 'Log in to see more' })).toBeNull()
+    })
+
+    it('is not shown while the login state is still being checked (no flash)', () => {
+      nav.authStatus = 'loading'
+      render(React.createElement(ShopClient, props()))
+      expect(screen.queryByRole('link', { name: 'Log in to see more' })).toBeNull()
+    })
+
+    it('is not shown when the restriction is switched off', () => {
+      const saved = process.env.NEXT_PUBLIC_RESTRICT_SPRAYS
+      process.env.NEXT_PUBLIC_RESTRICT_SPRAYS = 'false'
+      render(React.createElement(ShopClient, props()))
+      expect(screen.queryByRole('link', { name: 'Log in to see more' })).toBeNull()
+      if (saved === undefined) delete process.env.NEXT_PUBLIC_RESTRICT_SPRAYS
+      else process.env.NEXT_PUBLIC_RESTRICT_SPRAYS = saved
+    })
+
+    it('is not part of the cached page (it appears only once the visitor is known to be logged out)', () => {
+      nav.bailout = true // while a page is built, Next.js cannot read the URL...
+      nav.authStatus = 'loading' // ...and next-auth reports "loading": nobody's login state is known yet
+      const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+      const html = renderToString(React.createElement(ShopClient, props()))
+      spy.mockRestore()
+      // the cached page is built before anyone's login state is known: no nudge, no personalised content
+      expect(html).not.toContain('Log in to see more')
+      expect(html).toContain('Alpha')
+    })
   })
 })

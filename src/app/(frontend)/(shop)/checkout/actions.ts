@@ -14,6 +14,7 @@ import { computeOrderPricing } from '@/lib/checkout/pricing'
 import { loadShippingMethods, loadActiveProcessingFees } from '@/lib/checkout/data'
 import { getSubscriptionSettings, allowedPaymentMethods } from '@/lib/subscriptions/settings'
 import { createSubscriptionForCheckout, syncSubscription } from '@/lib/subscriptions/service'
+import { restrictedOrderError } from '@/lib/access/orderGuard'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2024-04-10' as any,
@@ -65,6 +66,10 @@ export async function createPaymentIntent(
     return { error: pricing.error, updatedItems: pricing.updatedItems, priceChanged: pricing.priceChanged }
   }
   const { total } = pricing
+
+  // Nasal sprays: logged-in customers only (checked here, before any payment is started).
+  const restrictedError = await restrictedOrderError(pricing.productsById)
+  if (restrictedError) return { error: restrictedError, loginRequired: true }
 
   // Subscription plans are paid by card through the Authorize.net bridge or by Zelle - never with Stripe.
   if (pricing.planMonths != null) {
@@ -162,6 +167,10 @@ export async function createPayloadOrder(
     subtotal, discountAmount, finalShipping, feeTotal, appliedFees, tax,
     pointsToRedeem, total, liveItems, productsById,
   } = pricing
+
+  // Nasal sprays: logged-in customers only (checked here, before any order or payment is created).
+  const restrictedError = await restrictedOrderError(productsById)
+  if (restrictedError) return { error: restrictedError, loginRequired: true }
 
   // --- Validate how this order is being paid -------------------------------------------
   // paymentIntentId is client-supplied; it selects the payment path, so every path is

@@ -3,6 +3,8 @@ import type { Metadata } from 'next'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { CertificatesClient, type COA } from './CertificatesClient'
+import { publicProductsClause } from '@/lib/access/restrictedQuery'
+import { withoutRestricted } from '@/lib/access/restrictedProducts'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
 
@@ -56,12 +58,17 @@ export default async function CertificatesPage() {
   // Read-only query, same Local API pattern already used in generateStaticParams/generateMetadata
   // for product pages. depth: 1 resolves the coaFile upload relation and its categories relation
   // so we can read real file URLs and category names without a second round-trip.
-  const { docs } = await payload.find({
+  // This page is cached and shared by everyone, so it lists the PUBLIC products only: the test reports for
+  // nasal sprays (logged-in customers only) are not listed here.
+  const publicOnly = await publicProductsClause(payload)
+
+  const { docs: allDocs } = await payload.find({
     collection: 'products',
-    where: { status: { equals: 'active' } },
+    where: { and: [{ status: { equals: 'active' } }, ...(publicOnly ? [publicOnly] : [])] },
     depth: 1,
     limit: 1000,
   })
+  const docs = withoutRestricted(allDocs)
 
   const coas: COA[] = docs
     .filter((p: any) => typeof p.coaFile === 'object' && p.coaFile?.url)

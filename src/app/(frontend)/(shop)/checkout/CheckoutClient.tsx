@@ -24,6 +24,7 @@ import { useSession } from 'next-auth/react'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 import { StripeCheckoutForm } from './StripeCheckoutForm'
+import { RestrictedCartNotice } from '@/components/shop/RestrictedCartNotice'
 import { createPaymentIntent, getShippingMethods, getPaymentMethodsSettings } from './actions'
 import { Space_Grotesk } from 'next/font/google'
 import { pushBeginCheckout } from '@/lib/analytics/ecommerce'
@@ -576,6 +577,8 @@ export function CheckoutClient() {
             Secure Checkout
           </h1>
         </div>
+
+        <RestrictedCartNotice returnTo="/checkout" />
 
         {/* Mobile Summary Accordion */}
         <div className="lg:hidden mb-8 bg-[#F5F5F7]/40 rounded-3xl p-1 shadow-sm border border-slate-100">

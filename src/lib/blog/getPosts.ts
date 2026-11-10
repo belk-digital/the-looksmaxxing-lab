@@ -5,6 +5,7 @@ import { getFeaturedImageUrl, formatPostDate } from './postDisplay'
 import { estimateReadingTime } from './readingTime'
 import type { UnifiedJournalPost } from './types'
 import type { Product as ShopProduct } from '@/components/shop/PrimaryProductCard'
+import { withoutRestricted } from '@/lib/access/restrictedProducts'
 
 function staticPostsAsUnified(): UnifiedJournalPost[] {
   return JOURNAL_POSTS.map((p) => ({
@@ -159,8 +160,9 @@ export async function getCmsJournalPost(slug: string): Promise<{
   const post = docs[0]
   if (!post) return null
 
+  // A journal post page is cached and shared by everyone, so it never shows nasal-spray products.
   const relatedProducts: ShopProduct[] = Array.isArray(post.relatedProducts)
-    ? post.relatedProducts.filter((p: any) => typeof p === 'object').map(toShopProduct)
+    ? withoutRestricted((post.relatedProducts as any[]).filter((p: any) => typeof p === 'object' && p !== null)).map(toShopProduct)
     : []
 
   return { post, relatedProducts }
