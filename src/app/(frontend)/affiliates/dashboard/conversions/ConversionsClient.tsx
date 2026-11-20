@@ -1,11 +1,9 @@
 'use client'
 
 import React from 'react'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { motion, Variants } from 'framer-motion'
 import { Target } from 'lucide-react'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 interface ConversionsClientProps {
   conversions: {

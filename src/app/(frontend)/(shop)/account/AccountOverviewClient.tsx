@@ -3,10 +3,8 @@
 import React from 'react'
 import Link from 'next/link'
 import { ArrowRight, Package, LifeBuoy, TrendingUp, Heart, Calendar, MapPin, Wallet, Users, BarChart3 } from 'lucide-react'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { motion, Variants } from 'framer-motion'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 export interface AccountOverviewProps {
   stats: {

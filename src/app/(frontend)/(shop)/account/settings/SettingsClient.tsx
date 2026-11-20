@@ -7,11 +7,9 @@ import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ExternalLink, Shield, Save, Bell, Globe } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { toast } from 'sonner'
 import { UpdatePasswordDialog } from '@/components/account/SecurityDialogs'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 export interface AccountSettingsProps {
   user: {

@@ -3,15 +3,13 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { LayoutDashboard, Link as LinkIcon, Target, DollarSign, WalletCards, Settings, LogOut, Medal } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 import { signOut } from 'next-auth/react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog'
 import { useState } from 'react'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 const NAV_ITEMS = [
   { name: 'Overview', href: '/affiliates/dashboard', icon: LayoutDashboard },

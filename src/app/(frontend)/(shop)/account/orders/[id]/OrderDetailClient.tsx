@@ -4,15 +4,13 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft, Package, RotateCcw, MapPin, CreditCard, Truck } from 'lucide-react'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { motion } from 'framer-motion'
 import { useCartStore } from '@/lib/cart/store'
 import { resolveLegacySku } from '@/lib/cart/variantMatch'
 import { useRouter } from 'next/navigation'
 import { couponPartOfDiscount, memberDiscountLabel } from '@/lib/membership/discount'
 import { deliveryTimeLabel } from '@/lib/checkout/shipping'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 type OrderStatus = 'Placed' | 'Processing' | 'Shipped' | 'Delivered'
 const STATUS_STEPS: OrderStatus[] = ['Placed', 'Processing', 'Shipped', 'Delivered']

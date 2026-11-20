@@ -28,12 +28,10 @@ import { StaggerChildren, staggerItemVariants } from '@/components/motion/Stagge
 import { CompactProductCard } from '@/components/shop/CompactProductCard'
 import { PrimaryProductCard } from '@/components/shop/PrimaryProductCard'
 import { FadeUp } from '@/components/motion/FadeUp'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { PRODUCT_JOURNAL_MAP, JournalLinkEntry } from '@/data/product-journal-map'
 import { pushViewItem, pushAddToCart } from '@/lib/analytics/ecommerce'
 import { trackViewContent, trackAddToCart } from '@/lib/analytics/meta-pixel'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 interface ProductData {
   id: string

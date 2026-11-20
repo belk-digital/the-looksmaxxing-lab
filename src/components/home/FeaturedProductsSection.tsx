@@ -4,12 +4,10 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { PrimaryProductCard, Product } from '@/components/shop/PrimaryProductCard'
 import { FadeUp } from '@/components/motion/FadeUp'
 import { Container } from '@/components/ui/container'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import Link from 'next/link'
 import useEmblaCarousel from 'embla-carousel-react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 export function FeaturedProductsSection({ products = [] }: { products?: Product[] }) {
   // Use provided products or fallback to empty array

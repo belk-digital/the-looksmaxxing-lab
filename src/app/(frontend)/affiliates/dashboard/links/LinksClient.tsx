@@ -1,14 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { motion, Variants, AnimatePresence } from 'framer-motion'
 import { Copy, Check, ExternalLink, Edit2, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { updateCouponCode } from './actions'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 interface LinksClientProps {
   referralLink: string;

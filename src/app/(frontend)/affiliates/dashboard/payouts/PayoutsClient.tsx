@@ -1,12 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { motion, Variants } from 'framer-motion'
 import { WalletCards, ArrowRight, Loader2, CheckCircle2, Clock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 interface PayoutsClientProps {
   payoutRequests: {

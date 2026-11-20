@@ -6,11 +6,9 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ShoppingBag, Heart } from 'lucide-react'
 import { EmptyState } from '@/components/shared/EmptyState'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { useWishlistStore } from '@/lib/wishlist/store'
 import { useEffect, useState } from 'react'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 export interface WishlistItem {
   id: string;

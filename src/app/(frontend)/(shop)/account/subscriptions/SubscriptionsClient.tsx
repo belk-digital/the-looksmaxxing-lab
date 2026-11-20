@@ -4,13 +4,11 @@ import React from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Repeat } from 'lucide-react'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { InfoTip } from '@/components/ui/InfoTip'
 import { HELP } from '@/lib/subscriptions/helpText'
 import { everyLabel, ordersCount } from '@/lib/subscriptions/labels'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 export interface SubscriptionCard {
   id: string

@@ -29,11 +29,9 @@ import { CouponNotUsedNote, MemberDiscountNudge, MemberDiscountRow, MemberNotUse
 import { memberDiscountAmount, splitDiscounts } from '@/lib/membership/discount'
 import { deliveryTimeLabel, isExpressShippingName } from '@/lib/checkout/shipping'
 import { createPaymentIntent, getShippingMethods, getPaymentMethodsSettings } from './actions'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { pushBeginCheckout } from '@/lib/analytics/ecommerce'
 import { trackInitiateCheckout } from '@/lib/analytics/meta-pixel'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
 
 const stripePromise = typeof window !== 'undefined' ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '') : null
 

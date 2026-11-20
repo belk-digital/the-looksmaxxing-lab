@@ -3,11 +3,9 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, MousePointerClick, Target, DollarSign, Wallet, Copy, Check, ExternalLink } from 'lucide-react'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { motion, Variants } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 export interface DashboardClientProps {
   stats: {

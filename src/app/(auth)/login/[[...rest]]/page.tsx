@@ -6,12 +6,10 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { toast } from 'sonner'
 import { nextPathFromSearch, withNext } from '@/lib/auth/safeRedirect'
 import { MEMBERS_ONLY_SUMMARY } from '@/lib/access/restrictedProducts'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 export default function LoginPage() {
   const router = useRouter()

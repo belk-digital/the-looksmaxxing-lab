@@ -19,9 +19,7 @@ import { memberDiscountAmount, splitDiscounts } from '@/lib/membership/discount'
 import { useSession } from 'next-auth/react'
 import { EXPRESS_SHIPPING_PRICE_CENTS } from '@/lib/checkout/shipping'
 import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
-import { Space_Grotesk } from 'next/font/google'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 
 
 

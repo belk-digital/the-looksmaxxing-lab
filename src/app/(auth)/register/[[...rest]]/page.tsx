@@ -5,13 +5,11 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { toast } from 'sonner'
 import { registerUser } from '@/app/(frontend)/actions/auth'
 import { signIn } from 'next-auth/react'
 import { nextPathFromSearch, withNext } from '@/lib/auth/safeRedirect'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 export default function RegisterPage() {
   const router = useRouter()

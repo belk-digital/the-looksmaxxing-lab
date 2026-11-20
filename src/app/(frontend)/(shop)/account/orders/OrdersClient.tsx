@@ -6,9 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ChevronLeft, ChevronRight, Filter, Package } from 'lucide-react'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Space_Grotesk } from 'next/font/google'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 
 export interface OrderItem {
   id: string;

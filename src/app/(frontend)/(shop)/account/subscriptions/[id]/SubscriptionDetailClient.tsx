@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { ArrowLeft, CreditCard, Loader2, Pause, Play, FastForward, ShoppingBag, RotateCcw } from 'lucide-react'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import type { SubscriptionView, ScheduleRow } from '@/lib/subscriptions/view'
 import {
   pauseSubscriptionAction,
@@ -20,8 +20,6 @@ import { TONES } from '../SubscriptionsClient'
 import { InfoTip } from '@/components/ui/InfoTip'
 import { HELP } from '@/lib/subscriptions/helpText'
 import { everyLabel, ordersCount } from '@/lib/subscriptions/labels'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 export interface SubscriptionDetailModel {
   id: string

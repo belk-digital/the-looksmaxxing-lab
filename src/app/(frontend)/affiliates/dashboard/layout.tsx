@@ -2,12 +2,10 @@ import React from 'react'
 import { redirect } from 'next/navigation'
 import { Container } from '@/components/ui/container'
 import { AffiliateSidebar } from '@/components/affiliates/AffiliateSidebar'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { getPayloadUser } from '@/lib/auth/getPayloadUser'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 export const metadata = {
   title: 'Affiliate Dashboard | Longevia Research',

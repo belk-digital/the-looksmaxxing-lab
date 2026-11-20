@@ -1,12 +1,10 @@
 'use client'
 
 import React from 'react'
-import { Space_Grotesk } from 'next/font/google'
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 import { motion, Variants } from 'framer-motion'
 import { Settings2, Save } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
 interface SettingsClientProps {
   initialCurrency: string;

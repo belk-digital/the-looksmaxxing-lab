@@ -24,7 +24,7 @@ vi.mock('next-auth/react', () => ({
   useSession: () => ({ status: h.status, data: h.status === 'authenticated' ? { user: { email: 'a@b.co' } } : null }),
 }))
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }), usePathname: () => '/cart' }))
-vi.mock('next/font/google', () => ({ Space_Grotesk: () => ({ className: 'font-grotesk' }) }))
+vi.mock('next/font/local', () => ({ default: () => ({ className: 'font-grotesk', variable: '' }) }))
 vi.mock('next/image', async () => {
   const R = await import('react')
   return { default: (props: any) => R.createElement('img', { alt: props.alt, src: typeof props.src === 'string' ? props.src : '' }) }

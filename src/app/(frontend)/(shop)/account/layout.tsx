@@ -1,9 +1,7 @@
 import React from 'react'
 import { Container } from '@/components/ui/container'
 import { AccountSidebar } from '@/components/account/AccountSidebar'
-import { Space_Grotesk } from 'next/font/google'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
+import { spaceGrotesk } from '@/lib/fonts/spaceGrotesk'
 
 import { getPayloadUser } from '@/lib/auth/getPayloadUser'
 import { getPayload } from 'payload'
