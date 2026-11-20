@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { OrderConfirmationClient } from './OrderConfirmationClient'
 import { notFound } from 'next/navigation'
+import { estimatedDeliveryText } from '@/lib/checkout/shipping'
 
 export const metadata = {
   title: 'Order Confirmed',
@@ -107,13 +108,15 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
       postalCode: order.shippingAddress?.postalCode || '',
       country: order.shippingAddress?.country || 'US'
     },
-    estimatedDelivery: order.shippingMethod === 'express' ? '1-3 Business Days' : '5-7 Business Days',
+    estimatedDelivery: estimatedDeliveryText(order.shippingMethod),
     items: formattedItems,
     subtotal: order.subtotal || 0,
     shipping: order.shippingTotal || 0,
     processingFee: (order.feeTotal ? order.feeTotal / 100 : order.taxTotal) || 0,
     total: order.total || 0,
     discountTotal: order.discountTotal || 0,
+    memberDiscountTotal: order.memberDiscountTotal || 0,
+    memberDiscountPercent: order.memberDiscountPercent ?? null,
     redeemedPoints: order.redeemedPoints || 0,
     couponCode: order.couponCode || '',
     paymentMethod: order.paymentMethod || 'stripe',

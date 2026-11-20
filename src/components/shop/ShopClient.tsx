@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import { ShopParamsProvider, ShopParamsSync, useShopParams } from '@/components/shop/ShopParams'
 import { Container } from '@/components/ui/container'
 import { FilterSidebar } from '@/components/shop/FilterSidebar'
+import { ShopSearchBox } from '@/components/shop/ShopSearchBox'
 import { PrimaryProductCard, Product } from '@/components/shop/PrimaryProductCard'
 import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
 import { motion, useInView, useScroll, useTransform } from 'framer-motion'
@@ -20,7 +21,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '@/compon
 
 import { Category } from '@/components/shop/FilterSidebar'
 import { getShopProductsForViewer } from '@/app/(frontend)/(shop)/actions'
-import { isRestrictionEnabled } from '@/lib/access/restrictedProducts'
+import { isRestrictionEnabled, MEMBERS_ONLY_SUMMARY } from '@/lib/access/restrictedProducts'
 
 export interface ShopClientProps {
   initialProducts: Product[]
@@ -34,8 +35,9 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
   // The filters in the address bar (see ShopParams.tsx for why this isn't Next's useSearchParams).
   const searchParams = useShopParams()
   const queryKey = searchParams.toString()
-  // Who is looking. The cached page is built for everyone, so it never contains the nasal sprays (logged-in
-  // customers only); once we know the visitor is logged in, the grid is loaded again with the sprays included.
+  // Who is looking. The cached page is built for everyone, so it never contains the members-only products (logged-in
+  // customers only: nasal sprays, GLP-3RTA, Tirzepatide, Semaglutide); once we know the visitor is logged in, the grid
+  // is loaded again with them included.
   const { status } = useSession()
   const viewer = status === 'authenticated' ? 'member' : 'guest'
   const wantedKey = `${viewer}|${queryKey}`
@@ -79,7 +81,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
     // Wait until we know whether the visitor is logged in.
     if (status === 'loading') return
     // The page already arrives with the default grid, so there is nothing to load until the filters change
-    // (or the visitor turns out to be logged in, and should also see the nasal sprays).
+    // (or the visitor turns out to be logged in, and should also see the members-only products).
     if (wantedKey === gridKey.current) return
     let cancelled = false
 
@@ -97,6 +99,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
         minPrice: minP ? parseInt(minP) : undefined,
         maxPrice: maxP ? parseInt(maxP) : undefined,
         sort: searchParams.get('sort') || undefined,
+        q: searchParams.get('q') || undefined,
       })
 
       // Ignore an answer for filters that have since changed, so a slow old request can't overwrite a newer one.
@@ -134,6 +137,7 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
           minPrice: minP ? parseInt(minP) : undefined,
           maxPrice: maxP ? parseInt(maxP) : undefined,
           sort: searchParams.get('sort') || undefined,
+          q: searchParams.get('q') || undefined,
         })
 
         // The filters (or the visitor) changed while this page was loading: drop it, the new ones load their own page 1.
@@ -185,6 +189,24 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
   }
 
   const activeChips = getActiveChips()
+
+  // Search: lives in the address bar (?q=) like the other filters. It replaces the current address instead of adding
+  // a new one, so typing doesn't fill the back button's history with half-typed words.
+  const searchQuery = searchParams.get('q') ?? ''
+  const setSearch = (query: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (query) params.set('q', query)
+    else params.delete('q')
+    // "Relevance" only exists while searching.
+    if (!query && params.get('sort') === 'relevance') params.delete('sort')
+    const qs = params.toString()
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false })
+  }
+
+  // Search results come best-match-first until the visitor picks another sort.
+  const sortParam = searchParams.get('sort')
+  const defaultSort = searchQuery ? 'relevance' : 'newest'
+  const sortValue = !sortParam || (sortParam === 'relevance' && !searchQuery) ? defaultSort : sortParam
 
   return (
     <div className="w-full bg-[#f3f4f6] min-h-screen">
@@ -267,8 +289,8 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
       <Container size="page" className="pb-12" id="products-grid">
         {/* Top Toolbar */}
         <div className={`flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 bg-white/95 backdrop-blur-xl border border-ink/10 p-2.5 sm:p-4 rounded-2xl shadow-sm sticky z-30 transition-all duration-300 ${isScrollingDown ? 'top-3 sm:top-6' : 'top-[78px] sm:top-[120px]'}`}>
-          {/* Top Row: Buttons */}
-          <div className="flex items-center justify-between gap-2.5 sm:gap-4 w-full">
+          {/* Top Row: Buttons. On phones the search box gets its own full-width row above Filters + Sort. */}
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:gap-4 w-full">
             <div className="flex items-center gap-2 sm:gap-4 flex-1 sm:flex-initial">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -299,18 +321,26 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
               </span>
             </div>
 
+            <ShopSearchBox
+              value={searchQuery}
+              onSearch={setSearch}
+              className="order-first w-full sm:order-none sm:w-auto sm:flex-1 sm:max-w-md"
+            />
+
             <Select
-              value={searchParams.get('sort') || 'newest'}
+              value={sortValue}
               onValueChange={(val) => {
                 const params = new URLSearchParams(searchParams.toString())
                 params.set('sort', val)
                 router.push(`${pathname}?${params.toString()}`, { scroll: false })
               }}
             >
-              <SelectTrigger className="w-auto min-w-[110px] sm:min-w-[140px] bg-white/75 backdrop-blur-xl border border-ink/10 focus:ring-0 shadow-sm hover:bg-white/90 rounded-full px-3 sm:px-4 h-9 sm:h-10 text-xs sm:text-sm justify-between gap-1.5 sm:gap-2 transition-all">
+              <SelectTrigger className="w-auto min-w-[110px] sm:min-w-[140px] sm:ml-auto bg-white/75 backdrop-blur-xl border border-ink/10 focus:ring-0 shadow-sm hover:bg-white/90 rounded-full px-3 sm:px-4 h-9 sm:h-10 text-xs sm:text-sm justify-between gap-1.5 sm:gap-2 transition-all">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent className="bg-white/95 backdrop-blur-xl border-ink/10 rounded-2xl shadow-2xl p-2 z-[60]">
+                {/* Only offered while searching: it is the order the search results come in. */}
+                {searchQuery && <SelectItem value="relevance" className="rounded-xl cursor-pointer text-xs sm:text-sm">Relevance</SelectItem>}
                 <SelectItem value="newest" className="rounded-xl cursor-pointer text-xs sm:text-sm">Newest</SelectItem>
                 <SelectItem value="price-asc" className="rounded-xl cursor-pointer text-xs sm:text-sm">Price: Low to High</SelectItem>
                 <SelectItem value="price-desc" className="rounded-xl cursor-pointer text-xs sm:text-sm">Price: High to Low</SelectItem>
@@ -372,13 +402,13 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
               </div>
             )}
 
-            {/* Logged-out visitors don't see the nasal sprays: tell them where to find the rest of the catalogue. */}
+            {/* Logged-out visitors don't see the members-only products: tell them where to find the rest of the catalogue. */}
             {!hasMore && status === 'unauthenticated' && isRestrictionEnabled() && (
               <div className="mx-auto mb-12 flex max-w-2xl flex-col items-center gap-5 rounded-3xl bg-ink px-6 py-10 text-center text-cream sm:px-12">
                 <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-cream/60">Members catalogue</span>
                 <h3 className="font-display text-2xl leading-snug sm:text-3xl">There's more to see.</h3>
                 <p className="max-w-md text-sm leading-relaxed text-cream/70">
-                  Log in or create a free account to see our full catalogue, including our nasal spray formats.
+                  Log in or create a free account to see our full catalogue, including our {MEMBERS_ONLY_SUMMARY}.
                 </p>
                 <Link
                   href="/login?next=%2Fshop"
@@ -393,7 +423,9 @@ function ShopClientInner({ initialProducts, totalPages, categories }: ShopClient
           <EmptyState 
             icon={Search} 
             title="No products found" 
-            description="Try adjusting your filters to find what you're looking for." 
+            description={searchQuery
+              ? `Nothing matched “${searchQuery}”. Check the spelling, try a shorter word, or clear the search.`
+              : "Try adjusting your filters to find what you're looking for."}
             action={
               <Button variant="outline" onClick={() => router.push('/shop')} className="rounded-full">
                 Clear all filters

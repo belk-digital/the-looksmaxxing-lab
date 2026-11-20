@@ -144,14 +144,18 @@ describe('checkout (the server is the final judge)', () => {
     expect((await payload.count({ collection: 'subscriptions', overrideAccess: true })).totalDocs).toBe(subsBefore)
   })
 
-  it('the same coupon on a normal one-time order still works', async () => {
+  it('a smaller coupon on a logged-in customer one-time order loses to their member discount (discounts cannot be combined)', async () => {
     await makeCoupon({ code: 'PLAIN-ONETIME' })
     const { user, email } = await login()
     const { createPayloadOrder } = await import('@/app/(frontend)/(shop)/checkout/actions')
     const res: any = await createPayloadOrder([lineFor(store.product, null, 1)], 'Standard Shipping', 'PLAIN-ONETIME', false, { ...FORM, email }, 'manual', undefined, 'zelle')
     expect(res.error).toBeUndefined()
     const order = await getOrder(res.orderId)
-    expect(order.discountTotal).toBeCloseTo(2, 2) // 10% of $20
+    // the customer is logged in, so their 20% member discount ($4) saves more than the 10% coupon ($2): discounts cannot be
+    // combined, so the member discount applies and the coupon is not used (and not recorded)
+    expect(order.discountTotal).toBeCloseTo(4, 2)
+    expect(order.memberDiscountTotal).toBeCloseTo(4, 2)
+    expect(order.couponCode).toBe('')
     expect(order.orderType).toBe('one_time')
     void user
   })

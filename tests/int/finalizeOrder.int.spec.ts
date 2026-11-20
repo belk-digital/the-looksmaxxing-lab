@@ -129,6 +129,21 @@ describe('finalizeOrder', () => {
     expect(db.products[10].stock).toBe(8)
   })
 
+  it('deducts only the COUPON\'s part of the discount from store credit, not the member discount', async () => {
+    // $30 off in total = $10 member discount + $20 from the store credit
+    const { fake, db } = makeFake({ order: { couponCode: 'CREDIT', discountTotal: 30, memberDiscountTotal: 10 } })
+    state.fake = fake
+    await finalizeOrder(1)
+    expect(db.coupons[3].remainingBalance).toBe(3000) // $50.00 - $20.00 (not $50.00 - $30.00)
+  })
+
+  it('an order with no member discount deducts the whole discount, exactly as before', async () => {
+    const { fake, db } = makeFake({ order: { couponCode: 'CREDIT', discountTotal: 20, memberDiscountTotal: 0 } })
+    state.fake = fake
+    await finalizeOrder(1)
+    expect(db.coupons[3].remainingBalance).toBe(3000)
+  })
+
   it('deducts store credit in cents (discountTotal is dollars, balance is cents)', async () => {
     const { fake, db } = makeFake({ order: { couponCode: 'CREDIT', discountTotal: 20 } })
     state.fake = fake

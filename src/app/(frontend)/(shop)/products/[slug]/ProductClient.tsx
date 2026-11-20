@@ -780,8 +780,8 @@ ${plan ? 'Replace your cart with this subscription?' : 'Replace your cart with t
                             <Truck size={18} strokeWidth={1.5} />
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[10px] uppercase tracking-wider text-ink/40 font-bold">Standard Delivery</span>
-                            <span className="text-sm font-semibold text-ink">3-4 Working Days</span>
+                            <span className="text-[10px] uppercase tracking-wider text-ink/40 font-bold">Express Delivery</span>
+                            <span className="text-sm font-semibold text-ink">2-3 Business Days</span>
                           </div>
                         </div>
                         <div className="flex items-center gap-4 group">
@@ -789,8 +789,8 @@ ${plan ? 'Replace your cart with this subscription?' : 'Replace your cart with t
                             <Sparkles size={18} strokeWidth={1.5} />
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[10px] uppercase tracking-wider text-ink/40 font-bold">Free Shipping</span>
-                            <span className="text-sm font-semibold text-ink">On all orders above $300</span>
+                            <span className="text-[10px] uppercase tracking-wider text-ink/40 font-bold">Express Shipping</span>
+                            <span className="text-sm font-semibold text-ink">Flat $20 on every order</span>
                           </div>
                         </div>
                       </div>

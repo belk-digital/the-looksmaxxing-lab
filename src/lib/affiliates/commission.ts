@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import type { Order, Affiliate, AffiliateClick } from '@/payload-types'
 import { generateAdminAffiliateConversionEmail } from '@/lib/emails/generateAdminAffiliateConversionEmail'
+import { couponPartOfDiscount } from '@/lib/membership/discount'
 
 export async function computeCommission(order: Order, affiliateId: string | number): Promise<number> {
   const payload = await getPayload({ config })
@@ -14,8 +15,9 @@ export async function computeCommission(order: Order, affiliateId: string | numb
     slug: 'affiliate-settings',
   }) as any // Cast since types might not be generated yet
 
-  // The affiliate coupon discount (they gave away X% so don't earn on the discount amount)
-  const affiliateCouponDiscount = order.couponCode === affiliate.couponCode ? (order.discountTotal ?? 0) : 0
+  // The affiliate coupon discount (they gave away X% so don't earn on the discount amount). Only the COUPON's part
+  // counts: a member discount the customer also got is the store's own, not something the affiliate handed out.
+  const affiliateCouponDiscount = order.couponCode === affiliate.couponCode ? couponPartOfDiscount(order) : 0
 
   const commissionOn = affiliate.commissionOn ?? settings?.defaultCommissionOn ?? 'subtotal_after_coupon'
   const eligibleSubtotal = commissionOn === 'subtotal_after_coupon'

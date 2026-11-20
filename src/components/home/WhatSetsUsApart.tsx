@@ -201,8 +201,11 @@ export function WhatSetsUsApart() {
           <div className="flex flex-col gap-6 sm:gap-8">
             {PILLARS.map((pillar, idx) => (
               <FadeUp key={idx} delay={0.2 + (idx * 0.1)}>
-                <div className="relative w-full aspect-[4/5] sm:aspect-[16/9] rounded-[2rem] bg-ink overflow-hidden shadow-xl flex flex-col justify-end">
-                  
+                {/* The 4:5 / 16:9 shape is only the MINIMUM size (the hidden spacer below shares one grid cell with the text), so the card
+                    grows with its text instead of pushing it out of the top - which is what happened on narrow screens and at 125%+ zoom. */}
+                <div className="relative grid w-full grid-cols-1 rounded-[2rem] bg-ink overflow-hidden shadow-xl">
+                  <div aria-hidden="true" className="col-start-1 row-start-1 w-full aspect-[4/5] sm:aspect-[16/9]" />
+
                   {/* Background Image */}
                   <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-transparent z-20 pointer-events-none" />
                   <Image 
@@ -213,8 +216,8 @@ export function WhatSetsUsApart() {
                   />
                   
                   {/* Content Overlay */}
-                  <div className="relative z-30 p-6 sm:p-8 w-full">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mb-4 border border-white/20">
+                  <div className="relative z-30 col-start-1 row-start-1 self-end p-6 sm:p-8 w-full">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mb-4 border border-white/20">
                       <pillar.icon className="w-5 h-5 sm:w-6 sm:h-6 text-gold" strokeWidth={1.5} />
                     </div>
                     <h3 className="text-2xl sm:text-3xl font-display text-white mb-3 tracking-tight drop-shadow-md">

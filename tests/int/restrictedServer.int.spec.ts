@@ -1,6 +1,6 @@
 /**
- * Server side of the nasal-spray rule: who gets sprays in the shop list, header menu, search and Payload's
- * public API.
+ * Server side of the members-only rule (nasal sprays, and GLP-3RTA / Tirzepatide / Semaglutide in every format):
+ * who gets them in the shop list, header menu, search, the /products page, checkout and Payload's public API.
  *
  * A small fake database stands in for Postgres. It understands exactly the filters the real queries use and
  * THROWS on any filter it does not know, so these tests also prove the code never relies on Payload's
@@ -11,7 +11,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { NON_SPRAY_SLUGS, SPRAY_SLUGS } from './fixtures/liveProductSlugs'
+import { GATED_COMPOUND_VIAL_SLUGS, MEMBERS_ONLY_SLUGS, NON_SPRAY_SLUGS, PUBLIC_SLUGS, SPRAY_SLUGS } from './fixtures/liveProductSlugs'
 
 // ─── Fake database ────────────────────────────────────────────────────────────
 
@@ -110,7 +110,9 @@ import ProductsPage from '../../src/app/(frontend)/(shop)/products/page'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 const fakePayload = { find: (args: unknown) => fakeFind(args) }
-const isSpray = (slug: string) => /spray/i.test(slug)
+// Members-only = a nasal spray, or one of the gated compounds (GLP-3RTA, Tirzepatide, Semaglutide) in any format.
+const isMembersOnly = (slug: string) => MEMBERS_ONLY_SLUGS.includes(slug)
+const PUBLIC_COUNT = PUBLIC_SLUGS.length // 46 products a logged-out visitor can see
 const savedFlag = process.env.NEXT_PUBLIC_RESTRICT_SPRAYS
 
 beforeEach(() => {
@@ -139,14 +141,21 @@ async function allShopSlugs(load: (p: { page: number; limit: number }) => Promis
 // ─── The database lookup ─────────────────────────────────────────────────────
 
 describe('finding the restricted products', () => {
-  it('finds exactly the 49 spray products and asks the database with a wildcard "contains"', async () => {
+  it('finds exactly the 52 members-only products (49 sprays + 3 gated vials) and asks the database with wildcard "contains"', async () => {
     const ids = await getRestrictedProductIds(fakePayload as any)
-    expect(ids).toHaveLength(49)
-    const sprayIds = PRODUCTS.filter((p) => isSpray(p.slug)).map((p) => p.id)
-    expect([...ids].sort()).toEqual([...sprayIds].sort())
+    expect(ids).toHaveLength(52)
+    const expectedIds = PRODUCTS.filter((p) => isMembersOnly(p.slug)).map((p) => p.id)
+    expect([...ids].sort()).toEqual([...expectedIds].sort())
 
     const call = state.finds[0]
-    expect(call.where).toEqual({ slug: { contains: 'spray' } })
+    expect(call.where).toEqual({
+      or: [
+        { slug: { contains: 'spray' } },
+        { slug: { contains: 'glp-3rta' } },
+        { slug: { contains: 'tirzepatide' } },
+        { slug: { contains: 'semaglutide' } },
+      ],
+    })
     expect(call.overrideAccess).toBe(true) // so it can never recurse into the access rule that uses it
   })
 
@@ -167,52 +176,61 @@ describe('finding the restricted products', () => {
 // ─── Shop list ───────────────────────────────────────────────────────────────
 
 describe('the shop product list', () => {
-  it('gives a logged-out visitor every non-spray product and no spray, page after page', async () => {
+  it('gives a logged-out visitor every public product and nothing members-only, page after page', async () => {
     const slugs = await allShopSlugs((p) => getShopProducts(p))
-    expect(slugs).toHaveLength(49)
-    expect(slugs.some(isSpray)).toBe(false)
-    expect(new Set(slugs).size).toBe(49)
+    expect(slugs).toHaveLength(PUBLIC_COUNT)
+    expect(slugs.some(isMembersOnly)).toBe(false)
+    expect(new Set(slugs).size).toBe(PUBLIC_COUNT)
+    expect([...slugs].sort()).toEqual([...PUBLIC_SLUGS].sort())
+  })
+
+  it('leaves out GLP-3RTA, Tirzepatide and Semaglutide (vials) for a logged-out visitor', async () => {
+    const slugs = await allShopSlugs((p) => getShopProducts(p))
+    for (const slug of GATED_COMPOUND_VIAL_SLUGS) expect(slugs).not.toContain(slug)
+    expect(slugs).toContain('bpc-157') // and still lists ordinary vials
   })
 
   it('paging stays correct for a logged-out visitor (no short or empty pages)', async () => {
     const first = await getShopProducts({ page: 1, limit: 24 })
     expect(first.products).toHaveLength(24)
-    expect(first.totalPages).toBe(3)
-    const last = await getShopProducts({ page: 3, limit: 24 })
-    expect(last.products).toHaveLength(1)
+    expect(first.totalPages).toBe(2)
+    const last = await getShopProducts({ page: 2, limit: 24 })
+    expect(last.products).toHaveLength(PUBLIC_COUNT - 24)
+    expect(last.hasNextPage).toBe(false)
   })
 
-  it('gives a logged-in customer the full catalogue including the sprays', async () => {
+  it('gives a logged-in customer the full catalogue including the sprays and the gated compounds', async () => {
     state.loggedIn = true
     const slugs = await allShopSlugs((p) => getShopProductsForViewer(p))
     expect(slugs).toHaveLength(98)
-    expect(slugs.filter(isSpray)).toHaveLength(49)
+    expect(slugs.filter(isMembersOnly)).toHaveLength(52)
+    for (const slug of GATED_COMPOUND_VIAL_SLUGS) expect(slugs).toContain(slug)
   })
 
   it('gives a logged-out visitor the public list even through the viewer-aware function', async () => {
     state.loggedIn = false
     const slugs = await allShopSlugs((p) => getShopProductsForViewer(p))
-    expect(slugs).toHaveLength(49)
-    expect(slugs.some(isSpray)).toBe(false)
+    expect(slugs).toHaveLength(PUBLIC_COUNT)
+    expect(slugs.some(isMembersOnly)).toBe(false)
   })
 
   it('cannot be talked into showing sprays: a "includeRestricted" flag sent by the browser is ignored', async () => {
     const res = await (getShopProducts as any)({ limit: 100, includeRestricted: true })
-    expect(res.products.some((p: any) => isSpray(p.slug))).toBe(false)
+    expect(res.products.some((p: any) => isMembersOnly(p.slug))).toBe(false)
     const viaViewer = await (getShopProductsForViewer as any)({ limit: 100, includeRestricted: true })
-    expect(viaViewer.products.some((p: any) => isSpray(p.slug))).toBe(false) // still logged out
+    expect(viaViewer.products.some((p: any) => isMembersOnly(p.slug))).toBe(false) // still logged out
   })
 
   it('still hides sprays when the category filter is used', async () => {
     const res = await getShopProducts({ limit: 100, categories: ['Cat'] })
     expect(res.products.length).toBeGreaterThan(0)
-    expect(res.products.some((p: any) => isSpray(p.slug))).toBe(false)
+    expect(res.products.some((p: any) => isMembersOnly(p.slug))).toBe(false)
   })
 
   it('second lock: even if the database filter failed, no spray reaches a logged-out visitor', async () => {
     state.ignoreIdExclusion = true
     const res = await getShopProducts({ limit: 100 })
-    expect(res.products.some((p: any) => isSpray(p.slug))).toBe(false)
+    expect(res.products.some((p: any) => isMembersOnly(p.slug))).toBe(false)
   })
 
   it('shows sprays to everyone when the kill switch is off', async () => {
@@ -222,25 +240,123 @@ describe('the shop product list', () => {
   })
 })
 
+// ─── Shop search box ─────────────────────────────────────────────────────────
+
+describe('the shop search box (?q=)', () => {
+  const productCalls = () => state.finds.filter((call) => call.collection === 'products')
+
+  it('finds products for a logged-out visitor, and never a spray (even when searching for one)', async () => {
+    const res = await getShopProductsForViewer({ q: 'bpc' })
+    expect(res.success).toBe(true)
+    expect(res.products.map((p: any) => p.slug)).toContain('bpc-157')
+    expect(res.products.some((p: any) => isMembersOnly(p.slug))).toBe(false)
+
+    const spray = await getShopProductsForViewer({ q: 'bpc 157 spray' })
+    expect(spray.products.some((p: any) => isMembersOnly(p.slug))).toBe(false)
+    const bare = await getShopProductsForViewer({ q: 'spray' })
+    expect(bare.products).toEqual([])
+  })
+
+  it('cannot find GLP-3RTA, Tirzepatide or Semaglutide for a logged-out visitor, by any of their names', async () => {
+    for (const q of ['tirzepatide', 'semaglutide', 'glp-3rta', 'glp 3rta', 'tirz', 'sema', 'reta', 'retatrutide', 'tirzepetide']) {
+      const res = await getShopProductsForViewer({ q })
+      expect(res.success).toBe(true)
+      expect(res.products.some((p: any) => isMembersOnly(p.slug))).toBe(false)
+    }
+  })
+
+  it('finds the sprays and the gated compounds for a logged-in customer', async () => {
+    state.loggedIn = true
+    const res = await getShopProductsForViewer({ q: 'bpc 157 spray' })
+    expect(res.products.some((p: any) => isMembersOnly(p.slug))).toBe(true)
+    for (const slug of GATED_COMPOUND_VIAL_SLUGS) {
+      const found = await getShopProductsForViewer({ q: slug })
+      expect(found.products.map((p: any) => p.slug)).toContain(slug)
+    }
+  })
+
+  it('the public list (what cached pages use) never searches into the sprays', async () => {
+    state.loggedIn = true
+    const res = await getShopProducts({ q: 'bpc 157 spray' })
+    expect(res.products.some((p: any) => isMembersOnly(p.slug))).toBe(false)
+  })
+
+  it('second lock: no spray reaches a logged-out search even if the database filter failed', async () => {
+    state.ignoreIdExclusion = true
+    const res = await getShopProductsForViewer({ q: 'bpc 157 spray' })
+    expect(res.products.some((p: any) => isMembersOnly(p.slug))).toBe(false)
+  })
+
+  it('searches only inside the products the visitor could see anyway (the other filters still apply)', async () => {
+    const [ranking, listing] = [await getShopProductsForViewer({ q: 'bpc' }), productCalls()]
+    expect(ranking.success).toBe(true)
+    // both queries carry the "no sprays" exclusion; the second one is limited to the ranked ids
+    expect(listing).toHaveLength(3) // restricted ids, the search pool, the final list
+    expect(JSON.stringify(listing[1].where)).toContain('not_in')
+    expect(JSON.stringify(listing[2].where)).toContain('not_in')
+    expect(JSON.stringify(listing[2].where)).toContain('"in"')
+  })
+
+  it('answers with every match in one page (nothing to page through)', async () => {
+    const res = await getShopProductsForViewer({ q: 'tb 500' })
+    expect(res.success).toBe(true)
+    expect(res.products.length).toBeGreaterThan(0)
+    expect(res.hasNextPage).toBe(false)
+    expect(res.totalPages).toBe(1)
+  })
+
+  it('a search with no match is an empty list, not an error, and skips the final lookup', async () => {
+    const res = await getShopProductsForViewer({ q: 'zzzzzz' })
+    expect(res).toMatchObject({ success: true, products: [], hasNextPage: false })
+    expect(productCalls()).toHaveLength(2) // restricted ids + the search pool; no third query
+  })
+
+  it('keeps the visitor-chosen sort, and only uses best-match order when none was chosen', async () => {
+    await getShopProductsForViewer({ q: 'bpc', sort: 'price-asc' })
+    expect(productCalls().at(-1).sort).toBe('price')
+
+    const chosen = await getShopProductsForViewer({ q: 'bpc', sort: 'relevance' })
+    const unchosen = await getShopProductsForViewer({ q: 'bpc' })
+    expect(chosen.products.map((p: any) => p.slug)).toEqual(unchosen.products.map((p: any) => p.slug))
+    expect(unchosen.products[0].slug).toBe('bpc-157') // the product NAMED bpc-157 comes first
+  })
+
+  it('ignores a search that is blank or not text, and cuts an oversized one', async () => {
+    for (const q of ['', '   ', undefined, 123, { $ne: 1 }]) {
+      const res = await (getShopProductsForViewer as any)({ q, limit: 100 })
+      expect(res.products).toHaveLength(PUBLIC_COUNT) // the ordinary (public) list
+    }
+    const huge = await getShopProductsForViewer({ q: `bpc ${'x'.repeat(5000)}` })
+    expect(huge.success).toBe(true)
+  })
+
+  it('combines with the other filters', async () => {
+    const res = await getShopProductsForViewer({ q: 'bpc', categories: ['Cat'] })
+    expect(res.products.length).toBeGreaterThan(0)
+    const none = await getShopProductsForViewer({ q: 'bpc', categories: ['Not A Category'] })
+    expect(none.products).toEqual([])
+  })
+})
+
 // ─── Header menu ─────────────────────────────────────────────────────────────
 
 describe('the header menu', () => {
   it('shows a logged-out visitor 3 real products per category, none of them sprays', async () => {
     const menu = await getMegaMenuData()
     expect(menu[0].products).toHaveLength(3)
-    expect(menu[0].products.some((p: any) => isSpray(p.slug))).toBe(false)
+    expect(menu[0].products.some((p: any) => isMembersOnly(p.slug))).toBe(false)
   })
 
   it('shows a logged-in customer the sprays too', async () => {
     state.loggedIn = true
     const menu = await getMegaMenuData()
-    expect(menu[0].products.some((p: any) => isSpray(p.slug))).toBe(true)
+    expect(menu[0].products.some((p: any) => isMembersOnly(p.slug))).toBe(true)
   })
 
   it('second lock: no spray in a logged-out menu even if the database filter failed', async () => {
     state.ignoreIdExclusion = true
     const menu = await getMegaMenuData()
-    expect(menu[0].products.some((p: any) => isSpray(p.slug))).toBe(false)
+    expect(menu[0].products.some((p: any) => isMembersOnly(p.slug))).toBe(false)
   })
 })
 
@@ -254,20 +370,32 @@ describe('search', () => {
 
   it('finds no spray for a logged-out visitor, even when searching for one by name', async () => {
     const { body } = await search('BPC 157 spray')
-    expect(body.some((p) => isSpray(p.slug))).toBe(false)
+    expect(body.some((p) => isMembersOnly(p.slug))).toBe(false)
   })
 
   it('still finds the ordinary products for a logged-out visitor', async () => {
     const { body } = await search('bpc 157')
     expect(body.length).toBeGreaterThan(0)
-    expect(body.every((p) => !isSpray(p.slug))).toBe(true)
+    expect(body.every((p) => !isMembersOnly(p.slug))).toBe(true)
     expect(body.some((p) => p.slug === 'bpc-157')).toBe(true)
   })
 
   it('finds sprays for a logged-in customer', async () => {
     state.loggedIn = true
     const { body } = await search('BPC 157 spray')
-    expect(body.some((p) => isSpray(p.slug))).toBe(true)
+    expect(body.some((p) => isMembersOnly(p.slug))).toBe(true)
+  })
+
+  it('finds no GLP-3RTA, Tirzepatide or Semaglutide for a logged-out visitor, but finds them for a logged-in customer', async () => {
+    for (const q of ['tirzepatide', 'semaglutide', 'glp-3rta', 'retatrutide']) {
+      const out = await search(q)
+      expect(out.body.some((p) => isMembersOnly(p.slug))).toBe(false)
+    }
+    state.loggedIn = true
+    for (const slug of GATED_COMPOUND_VIAL_SLUGS) {
+      const { body } = await search(slug)
+      expect(body.map((p) => p.slug)).toContain(slug)
+    }
   })
 
   it('is never stored and reused for someone else', async () => {
@@ -278,7 +406,7 @@ describe('search', () => {
   it('second lock: no spray in logged-out results even if the database filter failed', async () => {
     state.ignoreIdExclusion = true
     const { body } = await search('BPC 157 spray')
-    expect(body.some((p) => isSpray(p.slug))).toBe(false)
+    expect(body.some((p) => isMembersOnly(p.slug))).toBe(false)
   })
 })
 
@@ -290,23 +418,24 @@ describe('the /products list page (cached, shared by everyone)', () => {
     return [...html.matchAll(/href="\/products\/([^"]+)"/g)].map((m) => m[1])
   }
 
-  it('lists the ordinary products and no spray', async () => {
+  it('lists the public products and nothing members-only (no spray, no GLP-3RTA / Tirzepatide / Semaglutide)', async () => {
     const links = await productLinks()
-    expect(links).toHaveLength(49)
-    expect(links.some(isSpray)).toBe(false)
+    expect(links).toHaveLength(PUBLIC_COUNT)
+    expect(links.some(isMembersOnly)).toBe(false)
+    for (const slug of GATED_COMPOUND_VIAL_SLUGS) expect(links).not.toContain(slug)
   })
 
   it('second lock: no spray even if the database filter failed', async () => {
     state.ignoreIdExclusion = true
     const links = await productLinks()
-    expect(links.some(isSpray)).toBe(false)
+    expect(links.some(isMembersOnly)).toBe(false)
   })
 
   it('is unchanged when the kill switch is off (the first 50 products, sprays included)', async () => {
     process.env.NEXT_PUBLIC_RESTRICT_SPRAYS = 'false'
     const links = await productLinks()
     expect(links).toHaveLength(50)
-    expect(links.some(isSpray)).toBe(true)
+    expect(links.some(isMembersOnly)).toBe(true)
   })
 })
 
@@ -325,14 +454,21 @@ describe('the checkout guard', () => {
     expect(await restrictedOrderError(basket('bpc-157', 'bpc-157-spray'))).toBe(RESTRICTED_LOGIN_MESSAGE)
   })
 
-  it('allows a logged-in customer to order sprays', async () => {
+  it.each(GATED_COMPOUND_VIAL_SLUGS)('refuses a logged-out order that contains %s', async (slug) => {
+    expect(await restrictedOrderError(basket('bpc-157', slug))).toBe(RESTRICTED_LOGIN_MESSAGE)
+    expect(await restrictedOrderError(basket(slug))).toBe(RESTRICTED_LOGIN_MESSAGE)
+  })
+
+  it('allows a logged-in customer to order sprays and the gated compounds', async () => {
     state.loggedIn = true
     expect(await restrictedOrderError(basket('bpc-157-spray'))).toBeNull()
+    for (const slug of GATED_COMPOUND_VIAL_SLUGS) expect(await restrictedOrderError(basket(slug))).toBeNull()
   })
 
   it('allows everything when switched off', async () => {
     process.env.NEXT_PUBLIC_RESTRICT_SPRAYS = 'false'
     expect(await restrictedOrderError(basket('bpc-157-spray'))).toBeNull()
+    expect(await restrictedOrderError(basket('tirzepatide', 'semaglutide', 'glp-3rta'))).toBeNull()
   })
 })
 
@@ -341,13 +477,14 @@ describe('the checkout guard', () => {
 describe("Payload's public products API", () => {
   const read = (req: any) => (productsAccess as any).read({ req })
 
-  it('hides the sprays from anyone not signed in to the admin', async () => {
+  it('hides the members-only products from anyone not signed in to the admin', async () => {
     const result = await read({ payload: fakePayload })
     expect(result).toEqual({ and: [{ status: { equals: 'active' } }, { id: { not_in: expect.any(Array) } }] })
-    // and the rule really leaves exactly the non-sprays when applied to the products
+    // and the rule really leaves exactly the public products when applied to the products
     const visible = PRODUCTS.filter((p) => matches(p, result)).map((p) => p.slug)
-    expect(visible).toHaveLength(49)
-    expect(visible.some(isSpray)).toBe(false)
+    expect(visible).toHaveLength(PUBLIC_COUNT)
+    expect(visible.some(isMembersOnly)).toBe(false)
+    for (const slug of GATED_COMPOUND_VIAL_SLUGS) expect(visible).not.toContain(slug)
   })
 
   it('lets admins and staff see everything', async () => {

@@ -25,6 +25,9 @@ import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 import { StripeCheckoutForm } from './StripeCheckoutForm'
 import { RestrictedCartNotice } from '@/components/shop/RestrictedCartNotice'
+import { CouponNotUsedNote, MemberDiscountNudge, MemberDiscountRow, MemberNotUsedNote } from '@/components/shop/MemberDiscount'
+import { memberDiscountAmount, splitDiscounts } from '@/lib/membership/discount'
+import { deliveryTimeLabel, isExpressShippingName } from '@/lib/checkout/shipping'
 import { createPaymentIntent, getShippingMethods, getPaymentMethodsSettings } from './actions'
 import { Space_Grotesk } from 'next/font/google'
 import { pushBeginCheckout } from '@/lib/analytics/ecommerce'
@@ -188,7 +191,7 @@ export function CheckoutClient() {
 
   // Coupon State
   const [couponCode, setCouponCode] = useState('')
-  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; freeShipping: boolean; description: string; subscriptionScope?: SubscriptionCouponScope | null } | null>(null)
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; freeShipping: boolean; description: string; subscriptionScope?: SubscriptionCouponScope | null; type?: string } | null>(null)
   const [isVerifyingCoupon, setIsVerifyingCoupon] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState<string>('')
 
@@ -263,9 +266,24 @@ export function CheckoutClient() {
 
   const selectedMethodObj = visibleShippingMethods.find(m => m.method === shippingMethod) || visibleShippingMethods[0]
   const shippingCost = (selectedMethodObj?.price || 0) / 100
-  const isExpressShipping = shippingMethod.toLowerCase().includes('express')
-  const finalShipping = (appliedCoupon?.freeShipping && !isExpressShipping) ? 0 : shippingCost
-  const discountAmount = appliedCoupon ? appliedCoupon.discount : 0
+  const isExpressShipping = isExpressShippingName(shippingMethod)
+  // Member discount: a logged-in customer gets 20% off an ordinary order (a subscription plan has its own plan
+  // discount). It cannot be combined with a discount code: the order gets whichever saves more (a gift card is paid on
+  // top). The server works out the same thing from the login session and is what is charged.
+  const isMember = !!user && !isPlan
+  const discountSplit = splitDiscounts({
+    subtotal,
+    coupon: appliedCoupon ? { discount: appliedCoupon.discount, isStoreCredit: appliedCoupon.type === 'store_credit' } : null,
+    isMember,
+  })
+  // a code that was entered but is not used (the member discount saves as much or more) must not change anything else either
+  const couponInEffect = !!appliedCoupon && !discountSplit.couponDisplaced
+  const finalShipping = (couponInEffect && appliedCoupon?.freeShipping && !isExpressShipping) ? 0 : shippingCost
+  const memberDiscount = discountSplit.memberDiscount
+  const couponDiscount = discountSplit.couponDiscount
+  const discountAmount = discountSplit.totalDiscount
+  // What logging in would save (shown to visitors who are not logged in).
+  const memberSavingsIfLoggedIn = !user && !isPlan ? memberDiscountAmount(subtotal) : 0
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount)
   
   // Calculate dynamic fees
@@ -333,6 +351,7 @@ export function CheckoutClient() {
           freeShipping: result.freeShipping || false,
           description: result.description || 'Coupon applied',
           subscriptionScope: (result.subscriptionScope as SubscriptionCouponScope | null | undefined) ?? null,
+          type: result.type ?? undefined,
         })
         setCouponCode('')
         setCoupon(result.code || code.trim())
@@ -641,6 +660,8 @@ export function CheckoutClient() {
                           <div className="flex flex-col">
                             <span className="text-sm font-bold text-green-700">{appliedCoupon.code}</span>
                             <span className="text-xs font-medium text-green-600/70">{appliedCoupon.description}</span>
+                            {discountSplit.couponDisplaced ? <CouponNotUsedNote /> : null}
+                            {discountSplit.memberDisplaced ? <MemberNotUsedNote /> : null}
                             {isPlan && appliedCoupon.subscriptionScope ? (
                               <span className="text-xs font-semibold text-green-700" data-testid="coupon-scope-note">{couponScopeNote(appliedCoupon.subscriptionScope)}</span>
                             ) : null}
@@ -705,16 +726,19 @@ export function CheckoutClient() {
                       <span className="text-ink font-bold">${subtotal.toFixed(2)}</span>
                     </div>
                     
+                    <MemberDiscountRow amount={memberDiscount} />
+                <MemberDiscountNudge savings={memberSavingsIfLoggedIn} returnTo="/checkout" />
+
                     <AnimatePresence>
-                      {appliedCoupon && (
-                        <motion.div 
-                          initial={{ height: 0, opacity: 0 }} 
-                          animate={{ height: 'auto', opacity: 1 }} 
+                      {couponInEffect && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
                           className="flex justify-between items-center text-sm font-medium text-green-600 overflow-hidden"
                         >
                           <span className="py-1">Discount ({appliedCoupon.code})</span>
-                          <span className="py-1 font-bold">-${appliedCoupon.discount.toFixed(2)}</span>
+                          <span className="py-1 font-bold">-${couponDiscount.toFixed(2)}</span>
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -953,15 +977,15 @@ export function CheckoutClient() {
                         />
                         <div className="flex flex-col">
                           <span className="text-sm font-bold text-ink">{method.method}</span>
-                          {method.estimatedDays && (
-                            <span className="text-xs text-ink/60 mt-0.5">{method.estimatedDays === 5 && method.method === 'Standard Shipping' ? '5-7' : method.estimatedDays} business days</span>
+                          {deliveryTimeLabel(method) && (
+                            <span className="text-xs text-ink/60 mt-0.5" data-testid="shipping-delivery-time">{deliveryTimeLabel(method)}</span>
                           )}
                         </div>
                       </div>
                       <span className="text-sm font-bold text-ink">
                         {(() => {
-                          const isExpress = method.method.toLowerCase().includes('express')
-                          const isFreeShipping = appliedCoupon?.freeShipping && !isExpress
+                          const isExpress = isExpressShippingName(method.method)
+                          const isFreeShipping = couponInEffect && appliedCoupon?.freeShipping && !isExpress
                           if (isFreeShipping || method.price === 0) return 'Free'
                           return `$${(method.price / 100).toFixed(2)}`
                         })()}
@@ -1213,6 +1237,8 @@ export function CheckoutClient() {
                       <div className="flex flex-col">
                         <span className="text-sm font-bold text-green-700">{appliedCoupon.code}</span>
                         <span className="text-xs font-medium text-green-600/70">{appliedCoupon.description}</span>
+                            {discountSplit.couponDisplaced ? <CouponNotUsedNote /> : null}
+                            {discountSplit.memberDisplaced ? <MemberNotUsedNote /> : null}
                             {isPlan && appliedCoupon.subscriptionScope ? (
                               <span className="text-xs font-semibold text-green-700" data-testid="coupon-scope-note">{couponScopeNote(appliedCoupon.subscriptionScope)}</span>
                             ) : null}
@@ -1277,16 +1303,19 @@ export function CheckoutClient() {
                   <span className="text-ink font-bold">${subtotal.toFixed(2)}</span>
                 </div>
                 
+                <MemberDiscountRow amount={memberDiscount} />
+                <MemberDiscountNudge savings={memberSavingsIfLoggedIn} returnTo="/checkout" />
+
                 <AnimatePresence>
-                  {appliedCoupon && (
-                    <motion.div 
-                      initial={{ height: 0, opacity: 0 }} 
-                      animate={{ height: 'auto', opacity: 1 }} 
+                  {couponInEffect && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       className="flex justify-between items-center text-sm font-medium text-green-600 overflow-hidden"
                     >
                       <span className="py-1">Discount ({appliedCoupon.code})</span>
-                      <span className="py-1 font-bold">-${appliedCoupon.discount.toFixed(2)}</span>
+                      <span className="py-1 font-bold">-${couponDiscount.toFixed(2)}</span>
                     </motion.div>
                   )}
                 </AnimatePresence>

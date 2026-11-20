@@ -1,4 +1,5 @@
 import type { Payload } from 'payload'
+import { FALLBACK_SHIPPING_METHODS } from './shipping'
 
 /** Shipping methods of the first shipping zone, with the same fallback the checkout has always used. */
 export async function loadShippingMethods(payload: Payload): Promise<any[]> {
@@ -12,11 +13,8 @@ export async function loadShippingMethods(payload: Payload): Promise<any[]> {
     return zones.docs[0].methods as any[]
   }
 
-  // Fallback if none exist
-  return [
-    { method: 'Standard Shipping', price: 0, estimatedDays: 5 },
-    { method: 'Express Shipping', price: 2500, estimatedDays: 2 },
-  ]
+  // Fallback if none exist: every order ships by Express Shipping ($20, 2-3 business days)
+  return FALLBACK_SHIPPING_METHODS.map((method) => ({ ...method }))
 }
 
 export async function loadActiveProcessingFees(payload: Payload): Promise<any[]> {

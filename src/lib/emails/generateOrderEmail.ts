@@ -1,3 +1,7 @@
+import { MEMBER_DISCOUNT_LABEL, couponPartOfDiscount, memberDiscountLabel } from '../membership/discount';
+import { deliveryTimeLabel } from '../checkout/shipping';
+import { ZELLE_QR_ALT, ZELLE_QR_URL } from '../payments/zelleQr';
+
 export async function generateOrderInvoiceHtml(order: any, payload?: any, customNote?: string): Promise<string> {
   const orderNumber = order.orderNumber || order.id;
   const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -82,11 +86,33 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
     itemsHtml = itemsHtmlArray.join('');
   }
 
-  const discountRow = discountTotal > 0 ? `
+  // discountTotal is everything taken off; the member discount is shown on its own line and the coupon (if any) on
+  // another. Orders from before the member discount existed have no member part, so they read exactly as before.
+  // e.g. "2-3 business days" for Express Shipping (nothing for a method with no delivery time on record)
+  const shippingDeliveryTime = deliveryTimeLabel({ method: order.shippingMethod });
+
+  const memberDiscount = order.memberDiscountTotal || 0;
+  const couponDiscount = couponPartOfDiscount(order);
+
+  const memberRow = memberDiscount > 0 ? `
+    <tr>
+      <td style="padding: 8px 0; font-size: 14px; color: #6b7280;">${memberDiscountLabel(order.memberDiscountPercent)}</td>
+      <td align="right" style="padding: 8px 0; font-size: 14px; color: #16a34a;">-${formatMoney(memberDiscount)}</td>
+    </tr>
+  ` : '';
+
+  const discountRow = couponDiscount > 0 ? `
     <tr>
       <td style="padding: 8px 0; font-size: 14px; color: #6b7280;">Discount ${order.couponCode ? `(${order.couponCode})` : ''}</td>
-      <td align="right" style="padding: 8px 0; font-size: 14px; color: #16a34a;">-${formatMoney(discountTotal)}</td>
+      <td align="right" style="padding: 8px 0; font-size: 14px; color: #16a34a;">-${formatMoney(couponDiscount)}</td>
     </tr>
+  ` : '';
+
+  // A short thank-you under the total, so the saving is hard to miss.
+  const memberSavingsNote = memberDiscount > 0 ? `
+                <tr>
+                  <td colspan="2" style="padding: 12px 0 0 0; font-size: 13px; color: #16a34a; font-weight: 600;">You saved ${formatMoney(memberDiscount)} with your ${MEMBER_DISCOUNT_LABEL.toLowerCase()}.</td>
+                </tr>
   ` : '';
 
   const pointsRow = redeemedPoints > 0 ? `
@@ -123,7 +149,7 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
       const isZelle = order.paymentMethod === 'zelle';
       const qrHtml = isZelle ? `
                 <div style="margin-bottom: 16px;">
-                  <img src="https://pub-0ab0207d475a48e7b7e92a35418eace6.r2.dev/email-assets/longevia-zelle-qr.jpeg" alt="Zelle QR Code" style="width: 200px; height: 200px; border-radius: 8px; border: 2px solid #FDE68A;" />
+                  <img src="${ZELLE_QR_URL}" alt="${ZELLE_QR_ALT}" width="200" height="200" style="display: inline-block; width: 200px; height: 200px; border-radius: 8px; border: 2px solid #FDE68A;" />
                 </div>
       ` : '';
 
@@ -137,8 +163,8 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
                   Your order has been placed but is currently unpaid. To complete your purchase and begin processing, please send <strong>${formatMoney(total)}</strong> via ${isZelle ? 'Zelle' : 'Apple Pay'} to:
                 </p>
                 ${qrHtml}
-                <div style="background-color: #ffffff; padding: 12px; border-radius: 6px; display: inline-block; border: 1px solid #FDE68A; margin-bottom: 16px;">
-                  <strong style="font-size: 18px; color: #111827;">support@longeviaresearch.com</strong>
+                <div style="background-color: #ffffff; padding: 12px; border-radius: 6px; display: inline-block; max-width: 100%; box-sizing: border-box; border: 1px solid #FDE68A; margin-bottom: 16px;">
+                  <strong style="font-size: 16px; color: #111827;">support@<wbr>longeviaresearch.com</strong>
                 </div>
                 <p style="margin: 0; color: #92400E; font-size: 13px;">
                   <strong>Important:</strong> You must include your Order Number (<strong>#${orderNumber}</strong>) in the payment notes.
@@ -234,10 +260,11 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
                   <td style="padding: 8px 0; font-size: 14px; color: #6b7280;">Subtotal</td>
                   <td align="right" style="padding: 8px 0; font-size: 14px; color: #111827;">${formatMoney(subtotal)}</td>
                 </tr>
+                ${memberRow}
                 ${discountRow}
                 ${pointsRow}
                 <tr>
-                  <td style="padding: 8px 0; font-size: 14px; color: #6b7280;">Shipping (${order.shippingMethod || 'Standard'})</td>
+                  <td style="padding: 8px 0; font-size: 14px; color: #6b7280;">Shipping (${order.shippingMethod || 'Standard'}${shippingDeliveryTime ? ` &middot; ${shippingDeliveryTime}` : ''})</td>
                   <td align="right" style="padding: 8px 0; font-size: 14px; color: #111827;">${shippingTotal === 0 ? 'Free' : formatMoney(shippingTotal)}</td>
                 </tr>
                 ${feeRow}
@@ -245,6 +272,7 @@ export async function generateOrderInvoiceHtml(order: any, payload?: any, custom
                   <td style="padding: 16px 0 0 0; font-size: 16px; font-weight: 700; color: #111827; border-top: 1px solid #e5e7eb;">Total</td>
                   <td align="right" style="padding: 16px 0 0 0; font-size: 18px; font-weight: 800; color: #111827; border-top: 1px solid #e5e7eb;">${formatMoney(total)}</td>
                 </tr>
+                ${memberSavingsNote}
               </table>
             </td>
           </tr>

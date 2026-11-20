@@ -10,6 +10,8 @@ import { FadeUp } from '@/components/motion/FadeUp'
 import { buttonVariants } from '@/components/ui/button'
 import { useCartStore } from '@/lib/cart/store'
 import { everyLabel } from '@/lib/subscriptions/labels'
+import { ZELLE_QR_ALT, ZELLE_QR_URL } from '@/lib/payments/zelleQr'
+import { couponPartOfDiscount, memberDiscountLabel } from '@/lib/membership/discount'
 import { pushPurchase, claimPurchaseEvent, buildPurchaseItems, type EcomItem } from '@/lib/analytics/ecommerce'
 import { trackPurchase } from '@/lib/analytics/meta-pixel'
 
@@ -44,6 +46,9 @@ type OrderData = {
   processingFee: number
   total: number
   discountTotal?: number
+  /** The part of discountTotal that was the member discount (logged-in customers). */
+  memberDiscountTotal?: number
+  memberDiscountPercent?: number | null
   redeemedPoints?: number
   couponCode?: string
   paymentMethod: string
@@ -199,11 +204,14 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
 
               {order.paymentMethod === 'zelle' && (
                 <div className="flex justify-center mb-4 mt-2">
+                  {/* Served untouched (unoptimized): re-compressing a QR code can make it harder to scan. */}
                   <Image 
-                    src="https://pub-0ab0207d475a48e7b7e92a35418eace6.r2.dev/email-assets/longevia-zelle-qr.jpeg"
-                    alt="Zelle payment QR code for completing your Longevia Research order"
+                    src={ZELLE_QR_URL}
+                    alt={ZELLE_QR_ALT}
                     width={200} 
                     height={200} 
+                    unoptimized
+                    data-testid="zelle-qr"
                     className="rounded-xl border-2 border-yellow-200 shadow-sm"
                   />
                 </div>
@@ -317,10 +325,16 @@ export function OrderConfirmationClient({ order }: { order: OrderData }) {
                         <td className="py-2 text-ink/60">Subtotal</td>
                         <td className="py-2 text-ink font-medium">${order.subtotal.toFixed(2)}</td>
                       </tr>
-                      {!!order.discountTotal && order.discountTotal > 0 && (
+                      {!!order.memberDiscountTotal && order.memberDiscountTotal > 0 && (
+                        <tr data-testid="order-member-discount">
+                          <td className="py-2 text-ink/60">{memberDiscountLabel(order.memberDiscountPercent)}</td>
+                          <td className="py-2 font-medium text-green-600 print:text-green-600">-${order.memberDiscountTotal.toFixed(2)}</td>
+                        </tr>
+                      )}
+                      {couponPartOfDiscount(order) > 0 && (
                         <tr>
                           <td className="py-2 text-ink/60">Discount {order.couponCode ? `(${order.couponCode})` : ''}</td>
-                          <td className="py-2 font-medium text-green-600 print:text-green-600">-${order.discountTotal.toFixed(2)}</td>
+                          <td className="py-2 font-medium text-green-600 print:text-green-600">-${couponPartOfDiscount(order).toFixed(2)}</td>
                         </tr>
                       )}
                       <tr>

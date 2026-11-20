@@ -1,9 +1,10 @@
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
 import { clearCachedPages } from '../lib/cache/clearCachedPages'
 
-// The journal list page shows every post, so it is cleared along with the post's own page.
+// The journal list page shows every post, and the home page shows the latest few, so both are cleared along with the
+// post's own page.
 function postPages(...slugs: Array<string | null | undefined>): string[] {
-  return [...slugs.filter(Boolean).map((slug) => `/journal/${slug}`), '/journal']
+  return [...slugs.filter(Boolean).map((slug) => `/journal/${slug}`), '/journal', '/']
 }
 
 // Saving a blog post in the admin clears the cached copy of that post's page right away.

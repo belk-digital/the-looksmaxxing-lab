@@ -37,6 +37,10 @@ export const metadata: Metadata = {
 }
 
 import { getShopProducts } from '@/app/(frontend)/(shop)/actions'
+import { getLatestJournalPosts } from '@/lib/blog/getPosts'
+
+// How many of the newest journal posts the home page shows (the same newest-first list as the /journal page).
+const HOME_JOURNAL_POST_COUNT = 5
 
 // Plain-text FAQ entries matching the visible FaqSection component (FaqSection.tsx).
 // JSX answer content (React <Link> elements) is reduced to plain text here — the same
@@ -74,7 +78,7 @@ const homepageFaqSchema = {
       "name": "What are your shipping and fulfillment times?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "All orders are fulfilled from our US-based facilities. We offer standard shipping (3–5 business days) and expedited 2-day shipping on orders over $300. Orders placed before 2 PM EST typically ship same day. All peptides are dispatched using validated cold-chain packaging to maintain molecular integrity in transit."
+        "text": "All orders are fulfilled from our US-based facilities. Every order ships by Express Shipping for a flat $20, with delivery in 2–3 business days. Orders placed before 2 PM EST typically ship same day. All peptides are dispatched using validated cold-chain packaging to maintain molecular integrity in transit."
       }
     },
     {
@@ -117,7 +121,13 @@ export default async function Homepage() {
   // "best sellers" row would be served to everyone for 2 days. getShopProducts reports a failure as
   // { success: false } instead of throwing, so turn that into a real error. Next.js then keeps serving the
   // last good copy and tries again on the next visit.
-  const res = await getShopProducts({ limit: 8, sort: 'newest', isBestSeller: true })
+  // The journal row takes the newest posts from the same list the /journal page uses. A failure there is passed on as
+  // an error too (getAllJournalPosts does not swallow it), for the same reason: never save a home page with a missing
+  // or out-of-date journal row for 2 days. Saving a post in the admin clears this page (see src/hooks/blogPosts.ts).
+  const [res, latestJournalPosts] = await Promise.all([
+    getShopProducts({ limit: 8, sort: 'newest', isBestSeller: true }),
+    getLatestJournalPosts(HOME_JOURNAL_POST_COUNT),
+  ])
   if (!res.success) {
     throw new Error(`Home page could not load its featured products: ${'error' in res ? res.error : 'unknown error'}`)
   }
@@ -133,7 +143,7 @@ export default async function Homepage() {
           <CategoriesSection />
           <AboutTeaser />
           <WhatSetsUsApart />
-          <JournalTeaser />
+          <JournalTeaser posts={latestJournalPosts} />
           <FaqSection />
           <NewsletterSection />
         </div>

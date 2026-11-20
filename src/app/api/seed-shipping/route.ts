@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { EXPRESS_SHIPPING_NAME, EXPRESS_SHIPPING_PRICE_CENTS } from '@/lib/checkout/shipping'
 
 export async function GET() {
   const payload = await getPayload({ config: configPromise })
@@ -17,8 +18,8 @@ export async function GET() {
       data: {
         name: 'Domestic (US Only)',
         methods: [
-          { method: 'Standard Shipping', price: 500, estimatedDays: 5 },
-          { method: 'Express Shipping', price: 1500, estimatedDays: 2 }
+          // Every order ships by Express Shipping ($20, 2-3 business days)
+          { method: EXPRESS_SHIPPING_NAME, price: EXPRESS_SHIPPING_PRICE_CENTS, estimatedDays: 2 },
         ]
       },
       overrideAccess: true,

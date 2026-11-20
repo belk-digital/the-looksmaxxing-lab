@@ -132,21 +132,21 @@ describe('product hooks', () => {
 })
 
 describe('blog post hooks', () => {
-  it('saving a post clears its page and the journal list', async () => {
+  it('saving a post clears its page, the journal list and the home page (which shows the latest posts)', async () => {
     await run(blogPostsAfterChange, { doc: { slug: 'my-post' }, previousDoc: { slug: 'my-post' } })
     runQueued()
-    expect(cleared()).toEqual(['/journal/my-post', '/journal'])
+    expect(cleared()).toEqual(['/journal/my-post', '/journal', '/'])
   })
 
   it('also clears the old address when the slug was renamed', async () => {
     await run(blogPostsAfterChange, { doc: { slug: 'new-slug' }, previousDoc: { slug: 'old-slug' } })
     runQueued()
-    expect(cleared()).toEqual(['/journal/new-slug', '/journal/old-slug', '/journal'])
+    expect(cleared()).toEqual(['/journal/new-slug', '/journal/old-slug', '/journal', '/'])
   })
 
-  it('deleting a post clears its page and the journal list', async () => {
+  it('deleting a post clears its page, the journal list and the home page', async () => {
     await run(blogPostsAfterDelete, { doc: { slug: 'gone' } })
     runQueued()
-    expect(cleared()).toEqual(['/journal/gone', '/journal'])
+    expect(cleared()).toEqual(['/journal/gone', '/journal', '/'])
   })
 })

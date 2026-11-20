@@ -1,5 +1,6 @@
 /**
- * Checkout refuses nasal-spray orders from logged-out visitors, in BOTH places an order can start:
+ * Checkout refuses members-only orders (nasal sprays, and GLP-3RTA / Tirzepatide / Semaglutide in any format)
+ * from logged-out visitors, in BOTH places an order can start:
  *  - createPaymentIntent (starts the card payment)
  *  - createPayloadOrder  (creates the order)
  * and does so before any payment or order is created.
@@ -80,6 +81,22 @@ describe('createPaymentIntent (starting a card payment)', () => {
     expect(h.stripeCreate).not.toHaveBeenCalled()
   })
 
+  it.each(['glp-3rta', 'tirzepatide', 'semaglutide'])('refuses a logged-out visitor with %s (vial) in the basket, and never contacts Stripe', async (slug) => {
+    h.pricing = pricingFor('bpc-157', slug)
+    const res: any = await createPaymentIntent([], 'standard', undefined, false)
+    expect(res.error).toBe(RESTRICTED_LOGIN_MESSAGE)
+    expect(res.loginRequired).toBe(true)
+    expect(h.stripeCreate).not.toHaveBeenCalled()
+  })
+
+  it('lets a logged-in customer pay for a gated compound', async () => {
+    h.loggedIn = true
+    h.pricing = pricingFor('tirzepatide', 'semaglutide', 'glp-3rta')
+    const res: any = await createPaymentIntent([], 'standard', undefined, false)
+    expect(res.error).toBeUndefined()
+    expect(res.clientSecret).toBe('secret_test')
+  })
+
   it('lets a logged-in customer pay for a spray', async () => {
     h.loggedIn = true
     const res: any = await createPaymentIntent([], 'standard', undefined, false)
@@ -114,6 +131,14 @@ describe('createPayloadOrder (creating the order)', () => {
   const place = () => createPayloadOrder([], 'standard', undefined, false, { email: 'a@b.co' }, 'pi_test')
 
   it('refuses a logged-out visitor with a spray in the basket, and creates nothing', async () => {
+    const res: any = await place()
+    expect(res.error).toBe(RESTRICTED_LOGIN_MESSAGE)
+    expect(res.loginRequired).toBe(true)
+    expect(h.payloadCreate).not.toHaveBeenCalled()
+  })
+
+  it.each(['glp-3rta', 'tirzepatide', 'semaglutide'])('refuses a logged-out visitor with %s (vial) in the basket, and creates nothing', async (slug) => {
+    h.pricing = pricingFor('bpc-157', slug)
     const res: any = await place()
     expect(res.error).toBe(RESTRICTED_LOGIN_MESSAGE)
     expect(res.loginRequired).toBe(true)

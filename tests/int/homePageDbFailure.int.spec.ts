@@ -5,19 +5,25 @@
  * What is tested:
  * - A failed product lookup (getShopProducts returns { success: false }) or a thrown error makes the page
  *   throw, so Next.js keeps the last good copy.
+ * - The same for the journal row: a failed lookup of the newest journal posts also makes the page throw (never save a
+ *   home page with a missing or out-of-date journal row), and the page passes the 5 newest posts to the journal section.
  * - A working lookup shows the products; a genuinely empty result still renders.
  *
- * No database: the product loader and the heavy page sections are mocked.
+ * No database: the product loader, the journal loader and the heavy page sections are mocked.
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 const getShopProducts = vi.hoisted(() => vi.fn())
+const getLatestJournalPosts = vi.hoisted(() => vi.fn())
 
 vi.mock('next/dynamic', () => ({ default: () => () => null }))
 vi.mock('@/app/(frontend)/(shop)/actions', () => ({
   getShopProducts: (...args: unknown[]) => getShopProducts(...args),
+}))
+vi.mock('@/lib/blog/getPosts', () => ({
+  getLatestJournalPosts: (...args: unknown[]) => getLatestJournalPosts(...args),
 }))
 vi.mock('@/components/home/HomePreloaderWrapper', () => ({ HomePreloaderWrapper: ({ children }: any) => children }))
 vi.mock('@/components/home/Hero', () => ({ Hero: () => null }))
@@ -32,9 +38,24 @@ vi.mock('@/components/home/FeaturedProductsSection', async () => {
 
 const loadHome = async () => (await import('../../src/app/(frontend)/page')).default
 
+const NEWEST = [1, 2, 3, 4, 5].map((n) => ({ slug: 'post-' + n, title: 'Post ' + n, category: 'Guides', readTime: '5 min read', heroImage: '/x.webp' }))
+
 beforeEach(() => {
   getShopProducts.mockReset()
+  getLatestJournalPosts.mockReset()
+  getLatestJournalPosts.mockResolvedValue(NEWEST)
 })
+
+// Finds every React element in a rendered tree that carries a 'posts' prop (the journal section, whose component is mocked away).
+function findPostsProps(node: any, found: any[] = []): any[] {
+  if (!node || typeof node !== 'object') return found
+  if (Array.isArray(node)) { node.forEach((n) => findPostsProps(n, found)); return found }
+  if (node.props) {
+    if ('posts' in node.props) found.push(node.props.posts)
+    findPostsProps(node.props.children, found)
+  }
+  return found
+}
 
 describe('home page when the database fails', () => {
   it('throws when the product lookup reports a failure, instead of rendering an empty best-sellers row', async () => {
@@ -47,6 +68,25 @@ describe('home page when the database fails', () => {
     getShopProducts.mockRejectedValue(new Error('connection reset'))
     const Homepage = await loadHome()
     await expect(Homepage()).rejects.toThrow('connection reset')
+  })
+})
+
+describe('home page journal row', () => {
+  it('throws when the newest journal posts cannot be loaded, instead of saving a home page without them', async () => {
+    getShopProducts.mockResolvedValue({ success: true, products: [{ name: 'BPC-157' }], totalPages: 1 })
+    getLatestJournalPosts.mockRejectedValue(new Error('journal db down'))
+    const Homepage = await loadHome()
+    await expect(Homepage()).rejects.toThrow('journal db down')
+  })
+
+  it('asks for the 5 newest posts and hands them, in order, to the journal section', async () => {
+    getShopProducts.mockResolvedValue({ success: true, products: [{ name: 'BPC-157' }], totalPages: 1 })
+    const Homepage = await loadHome()
+    const page = await Homepage()
+    expect(getLatestJournalPosts).toHaveBeenCalledWith(5)
+    const handed = findPostsProps(page)
+    expect(handed.length).toBe(1)
+    expect(handed[0].map((p: any) => p.slug)).toEqual(NEWEST.map((p) => p.slug))
   })
 })
 

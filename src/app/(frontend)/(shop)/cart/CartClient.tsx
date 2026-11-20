@@ -14,6 +14,10 @@ import { QuantityStepper } from '@/components/shop/QuantityStepper'
 import { useCartStore } from '@/lib/cart/store'
 import { PrimaryProductCard } from '@/components/shop/PrimaryProductCard'
 import { RestrictedCartNotice } from '@/components/shop/RestrictedCartNotice'
+import { CouponNotUsedNote, MemberDiscountNudge, MemberDiscountRow, MemberNotUsedNote } from '@/components/shop/MemberDiscount'
+import { memberDiscountAmount, splitDiscounts } from '@/lib/membership/discount'
+import { useSession } from 'next-auth/react'
+import { EXPRESS_SHIPPING_PRICE_CENTS } from '@/lib/checkout/shipping'
 import { StaggerChildren, staggerItemVariants } from '@/components/motion/StaggerChildren'
 import { Space_Grotesk } from 'next/font/google'
 
@@ -23,11 +27,14 @@ const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
 
 export function CartClient() {
   const { items, removeItem, updateQuantity, couponCode: storedCouponCode, setCoupon } = useCartStore()
+  const { data: session } = useSession()
 
   // Dynamic Data States
   const [shippingCost, setShippingCost] = useState<number | null>(null)
   const [freeShippingThreshold, setFreeShippingThreshold] = useState<number | null>(null)
-  const [taxAmount, setTaxAmount] = useState<number>(0)
+  // The processing fees (set from the shop's settings). The fee in dollars is worked out below, on the discounted subtotal.
+  const [feePercent, setFeePercent] = useState<number>(0)
+  const [feeFixed, setFeeFixed] = useState<number>(0)
   const [isLoadingData, setIsLoadingData] = useState(true)
 
   // Coupon States
@@ -50,7 +57,7 @@ export function CartClient() {
         const shippingRes = await fetch('/api/shippingzones')
         const shippingData = await shippingRes.json()
         
-        let estimatedShipping = 15 // Fallback
+        let estimatedShipping = EXPRESS_SHIPPING_PRICE_CENTS / 100 // Fallback: every order ships by Express Shipping
         if (shippingData?.docs?.length > 0) {
           // Grab the first available shipping method price from the first zone
           const firstZone = shippingData.docs[0]
@@ -69,24 +76,26 @@ export function CartClient() {
         const feesRes = await fetch('/api/processing-fees')
         const feesData = await feesRes.json()
         
-        let calculatedTax = 0
+        let percent = 0
+        let fixed = 0
         if (feesData?.docs?.length > 0) {
           feesData.docs.forEach((fee: any) => {
             if (fee.isActive && !fee.isOptional) {
               if (fee.type === 'percentage') {
-                calculatedTax += subtotal * (fee.amount / 100)
+                percent += fee.amount / 100
               } else if (fee.type === 'fixed_amount') {
-                calculatedTax += (fee.amount / 100) // Assuming amount is in cents
+                fixed += (fee.amount / 100) // Assuming amount is in cents
               }
             }
           })
         }
 
         setShippingCost(estimatedShipping)
-        setTaxAmount(calculatedTax)
+        setFeePercent(percent)
+        setFeeFixed(fixed)
       } catch (err) {
         console.error("Error fetching dynamic cart data", err)
-        setShippingCost(15) // Fallback
+        setShippingCost(EXPRESS_SHIPPING_PRICE_CENTS / 100) // Fallback
       } finally {
         setIsLoadingData(false)
       }
@@ -239,6 +248,7 @@ export function CartClient() {
   // Calculate Discounts
   let discountAmount = 0
   let isFreeShipping = false
+  let couponGivesFreeShipping = false
   let eligibleSubtotal = 0
 
   if (freeShippingThreshold !== null && subtotal >= freeShippingThreshold) {
@@ -247,7 +257,7 @@ export function CartClient() {
 
   if (activeCoupon) {
     if (activeCoupon.freeShipping) {
-      isFreeShipping = true
+      couponGivesFreeShipping = true // counts only if the code is actually used (see below)
     }
     
     // Calculate eligible subtotal
@@ -290,9 +300,27 @@ export function CartClient() {
     }
   }
 
-  // Final Total Calculations
+  // Member discount: a logged-in customer gets 20% off an ordinary order, taken before any coupon (a subscription plan
+  // has its own plan discount). The server works out the same amount from the login session when the order is placed.
+  const isMember = !!session?.user && !items.some((item) => item.planMonths)
+  // It cannot be combined with a discount code: the order gets whichever saves more (a gift card is paid on top).
+  const discountSplit = splitDiscounts({
+    subtotal,
+    coupon: activeCoupon ? { discount: discountAmount, isStoreCredit: activeCoupon.type === 'store_credit' } : null,
+    isMember,
+  })
+  const couponInEffect = !!activeCoupon && !discountSplit.couponDisplaced
+  if (couponGivesFreeShipping && couponInEffect) isFreeShipping = true
+  const memberDiscount = discountSplit.memberDiscount
+  const couponDiscount = discountSplit.couponDiscount
+  const totalDiscount = discountSplit.totalDiscount
+  // What logging in would save (shown to visitors who are not logged in).
+  const memberSavingsIfLoggedIn = !session?.user && !items.some((item) => item.planMonths) ? memberDiscountAmount(subtotal) : 0
+
+  // Final Total Calculations (the processing fee is charged on the subtotal after discounts)
+  const taxAmount = Math.max(0, subtotal - totalDiscount) * feePercent + feeFixed
   const finalShipping = (isFreeShipping || subtotal === 0) ? 0 : (shippingCost || 0)
-  const finalTotal = Math.max(0, subtotal - discountAmount + finalShipping + taxAmount)
+  const finalTotal = Math.max(0, subtotal - totalDiscount + finalShipping + taxAmount)
 
   if (items.length === 0) {
     return (
@@ -416,9 +444,15 @@ export function CartClient() {
                 <span className="font-medium">${subtotal.toFixed(2)}</span>
               </div>
               
+              {/* Member discount (logged-in customers), or what logging in would save */}
+              <MemberDiscountRow amount={memberDiscount} className="text-base" />
+              {discountSplit.couponDisplaced ? <CouponNotUsedNote /> : null}
+              {discountSplit.memberDisplaced ? <MemberNotUsedNote /> : null}
+              <MemberDiscountNudge savings={memberSavingsIfLoggedIn} returnTo="/cart" />
+
               {/* Discount Row */}
               <AnimatePresence>
-                {activeCoupon && (
+                {couponInEffect && (
                   <motion.div 
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
@@ -431,7 +465,7 @@ export function CartClient() {
                         <X size={14} />
                       </button>
                     </span>
-                    <span className="font-bold">-${discountAmount.toFixed(2)}</span>
+                    <span className="font-bold">-${couponDiscount.toFixed(2)}</span>
                   </motion.div>
                 )}
               </AnimatePresence>

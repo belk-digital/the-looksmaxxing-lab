@@ -10,6 +10,13 @@
  *   APPLY to a remote (e.g. Supabase production) database - requires an explicit backup confirmation:
  *     npx tsx scripts/subscriptions/apply-migration.ts --apply --i-have-a-backup
  *
+ *   ONLY ONE migration (touches nothing else, even if other migrations are still pending):
+ *     npx tsx scripts/subscriptions/apply-migration.ts --only member-discount
+ *     npx tsx scripts/subscriptions/apply-migration.ts --only member-discount --apply --additive-only
+ *   --additive-only is the alternative to --i-have-a-backup for a remote database: the script checks every statement
+ *   it is about to run and refuses unless each one only ADDS something that is not there yet (ADD COLUMN IF NOT EXISTS,
+ *   CREATE TABLE/INDEX IF NOT EXISTS). Such a migration cannot change or remove an existing row, column or table.
+ *
  * Why this exists instead of `payload migrate`: this project's production database does not record the
  * older migration files as applied, so `payload migrate` would try to re-run all of them. This script
  * runs ONLY the new, additive, idempotent subscription statements.
@@ -17,6 +24,7 @@
  * Migrations handled (a migration that is already fully applied is skipped):
  *   1. 20261020_000000_add_subscriptions         - subscriptions, plans, order/cart/product columns
  *   2. 20261021_000000_add_subscription_coupons  - "valid for subscriptions" coupon settings
+ *   3. 20261120_000000_add_member_discount_to_orders - 2 columns on orders (member discount amount + percent)
  *
  * Safety:
  *   - dry run first: shows exactly what is missing, touches nothing
@@ -29,6 +37,7 @@ import 'dotenv/config'
 import { Client } from 'pg'
 import * as subscriptionsMigration from '../../src/migrations/20261020_000000_add_subscriptions'
 import * as couponsMigration from '../../src/migrations/20261021_000000_add_subscription_coupons'
+import * as memberDiscountMigration from '../../src/migrations/20261120_000000_add_member_discount_to_orders'
 
 interface MigrationInfo {
   name: string
@@ -50,11 +59,34 @@ const MIGRATIONS: MigrationInfo[] = [
     newTables: couponsMigration.EXPECTED_NEW_TABLES,
     newColumns: couponsMigration.EXPECTED_NEW_COLUMNS,
   },
+  {
+    name: memberDiscountMigration.MIGRATION_NAME,
+    statements: memberDiscountMigration.MEMBER_DISCOUNT_UP_STATEMENTS,
+    newTables: memberDiscountMigration.EXPECTED_NEW_TABLES,
+    newColumns: memberDiscountMigration.EXPECTED_NEW_COLUMNS,
+  },
 ]
 
-const args = new Set(process.argv.slice(2))
+const argv = process.argv.slice(2)
+const args = new Set(argv)
 const APPLY = args.has('--apply')
 const HAS_BACKUP = args.has('--i-have-a-backup')
+const ADDITIVE_ONLY = args.has('--additive-only')
+/** --only <part of a migration name>  or  --only=<part of a migration name> */
+const ONLY: string | null = (() => {
+  const eq = argv.find((a) => a.startsWith('--only='))
+  if (eq) return eq.slice('--only='.length) || null
+  const i = argv.indexOf('--only')
+  return i >= 0 ? argv[i + 1] ?? '' : null
+})()
+
+/** A statement that can only ADD something that is not there yet: it can never change or remove existing data. */
+const ADDITIVE_STATEMENT = [
+  /^ALTER TABLE "?\w+"? ADD COLUMN IF NOT EXISTS /i,
+  /^CREATE TABLE IF NOT EXISTS /i,
+  /^CREATE (UNIQUE )?INDEX IF NOT EXISTS /i,
+]
+const isAdditive = (statement: string) => ADDITIVE_STATEMENT.some((re) => re.test(statement.trim()))
 
 const COUNT_TABLES = ['orders', 'orders_items', 'users', 'products', 'carts', 'carts_items', 'affiliates', 'affiliate_conversions', 'coupons', 'addresses', 'processing_fees', 'shippingzones']
 const REQUIRED_EXISTING = ['orders', 'carts_items', 'products', 'users', 'affiliates', 'coupons', 'payload_locked_documents_rels', 'payload_migrations']
@@ -72,9 +104,26 @@ async function main() {
   console.log(' Mode                 :', APPLY ? 'APPLY (will change the database)' : 'DRY RUN (changes nothing)')
   console.log('============================================================')
 
-  if (APPLY && !isLocal && !HAS_BACKUP) {
+  // --only: work on exactly one migration and leave every other one alone
+  let selected = MIGRATIONS
+  if (ONLY !== null) {
+    if (!ONLY) throw new Error('--only needs part of a migration name, e.g. --only member-discount')
+    const wanted = ONLY.toLowerCase().replace(/[-\s]+/g, '_')
+    selected = MIGRATIONS.filter((m) => m.name.toLowerCase().includes(wanted))
+    if (selected.length !== 1) {
+      throw new Error(`--only "${ONLY}" must match exactly one migration, it matched ${selected.length}: ${MIGRATIONS.map((m) => m.name).join(', ')}`)
+    }
+    console.log(' Only this migration  :', selected[0].name)
+  }
+  const nonAdditive = selected.flatMap((m) => m.statements).filter((s) => !isAdditive(s))
+  const allAdditive = nonAdditive.length === 0
+
+  if (ADDITIVE_ONLY && !allAdditive) {
+    throw new Error(`--additive-only refused: ${nonAdditive.length} statement(s) are not purely "add something new", e.g. ${nonAdditive[0].trim().replace(/\s+/g, ' ').slice(0, 80)}`)
+  }
+  if (APPLY && !isLocal && !HAS_BACKUP && !(ADDITIVE_ONLY && allAdditive)) {
     throw new Error(
-      'Refusing to modify a REMOTE database without --i-have-a-backup. Take a backup/snapshot first (Supabase dashboard), then re-run with that flag.',
+      'Refusing to modify a REMOTE database without --i-have-a-backup (or --additive-only for a migration that only adds new things). Take a backup/snapshot first (Supabase dashboard), then re-run with that flag.',
     )
   }
 
@@ -97,7 +146,7 @@ async function main() {
     // What is still missing for each migration. The coupons migration alters the "subscriptions" table, so it can only
     // run after the first one (they run in order inside the same transaction, which is also fine on a fresh database).
     const pending: { m: MigrationInfo; missingTables: string[]; missingCols: string[] }[] = []
-    for (const m of MIGRATIONS) {
+    for (const m of selected) {
       const missingTables = m.newTables.filter((t) => !tables.has(t))
       const missingCols: string[] = []
       for (const [t, c] of m.newColumns) if (!(await hasCol(t, c))) missingCols.push(`${t}.${c}`)
@@ -166,13 +215,23 @@ async function main() {
       }
       const nonOneTimeAfter = Number((await q(`select count(*)::int as n from orders where order_type is distinct from 'one_time'`))[0].n)
       if (nonOneTimeAfter !== nonOneTimeBefore) throw new Error(`post-check failed: subscription orders changed (${nonOneTimeBefore} -> ${nonOneTimeAfter})`)
-      if (await hasCol('coupons', 'allow_on_subscriptions')) {
+      const appliedNow = (name: string) => pending.some((p) => p.m.name === name)
+      if (appliedNow(couponsMigration.MIGRATION_NAME) && (await hasCol('coupons', 'allow_on_subscriptions'))) {
         const badCoupons = Number((await q(`select count(*)::int as n from coupons where allow_on_subscriptions is distinct from false`))[0].n)
         if (badCoupons !== 0) throw new Error(`post-check failed: ${badCoupons} existing coupons are not set to "not for subscriptions"`)
       }
+      if (appliedNow(memberDiscountMigration.MIGRATION_NAME) && (await hasCol('orders', 'member_discount_total'))) {
+        // every order placed before the member discount existed must read "no member discount" (so its pages and emails do not change)
+        const badOrders = Number(
+          (await q(`select count(*)::int as n from orders where member_discount_total is distinct from 0 or member_discount_percent is not null`))[0].n,
+        )
+        if (badOrders !== 0) throw new Error(`post-check failed: ${badOrders} existing orders do not read "no member discount"`)
+      }
 
       await client.query('COMMIT')
-      console.log('\nCOMMITTED. Row counts unchanged; order types unchanged; every existing coupon is "not for subscriptions".')
+      console.log('\nCOMMITTED. Row counts unchanged; order types unchanged. Checked for what ran now: new tables/columns exist;' +
+        (appliedNow(couponsMigration.MIGRATION_NAME) ? ' every existing coupon is "not for subscriptions";' : '') +
+        (appliedNow(memberDiscountMigration.MIGRATION_NAME) ? ' every existing order reads "no member discount";' : ''))
     } catch (err) {
       await client.query('ROLLBACK')
       console.error('\nROLLED BACK - the database was NOT changed.')

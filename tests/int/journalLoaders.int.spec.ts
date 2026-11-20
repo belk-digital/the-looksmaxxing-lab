@@ -20,7 +20,7 @@ vi.mock('payload', () => ({
 }))
 vi.mock('@payload-config', () => ({ default: {} }))
 
-import { getAllJournalPosts, getCmsJournalPost } from '../../src/lib/blog/getPosts'
+import { getAllJournalPosts, getCmsJournalPost, getLatestJournalPosts } from '../../src/lib/blog/getPosts'
 
 const cmsDoc = (over: Record<string, unknown> = {}) => ({
   slug: 'new-cms-post',
@@ -55,6 +55,41 @@ describe('journal list', () => {
     const posts = await getAllJournalPosts()
     expect(posts.length).toBeGreaterThan(0)
     expect(posts.every((p) => p.source === 'static')).toBe(true)
+  })
+})
+
+describe('latest posts (the home page journal row)', () => {
+  it('are the first posts of the /journal list, in exactly the same order', async () => {
+    find.mockResolvedValue({ docs: [cmsDoc(), cmsDoc({ slug: 'older-cms-post', title: 'Older', publishedAt: '2098-06-01T00:00:00.000Z' })] })
+    const all = await getAllJournalPosts()
+    const latest = await getLatestJournalPosts(5)
+
+    expect(latest.length).toBe(5)
+    expect(latest.map((p) => p.slug)).toEqual(all.slice(0, 5).map((p) => p.slug))
+    // a Payload post that is newer than every built-in post shows first
+    expect(latest[0]).toMatchObject({ slug: 'new-cms-post', source: 'cms' })
+    expect(latest[1]).toMatchObject({ slug: 'older-cms-post', source: 'cms' })
+  })
+
+  it('a newly published Payload post pushes the oldest of the five out', async () => {
+    find.mockResolvedValue({ docs: [] })
+    const before = (await getLatestJournalPosts(5)).map((p) => p.slug)
+    find.mockResolvedValue({ docs: [cmsDoc()] })
+    const after = (await getLatestJournalPosts(5)).map((p) => p.slug)
+
+    expect(after[0]).toBe('new-cms-post')
+    expect(after.slice(1)).toEqual(before.slice(0, 4))
+  })
+
+  it('gives only as many as asked for, and nothing for 0', async () => {
+    find.mockResolvedValue({ docs: [] })
+    expect((await getLatestJournalPosts(3)).length).toBe(3)
+    expect(await getLatestJournalPosts(0)).toEqual([])
+  })
+
+  it('passes a database failure on instead of returning a home page journal row without its Payload posts', async () => {
+    find.mockRejectedValue(new Error('db down'))
+    await expect(getLatestJournalPosts(5)).rejects.toThrow('db down')
   })
 })
 

@@ -1,5 +1,5 @@
 /**
- * Nasal-spray products can only be ordered by a logged-in customer. SERVER ONLY.
+ * Members-only products (nasal sprays, GLP-3RTA, Tirzepatide, Semaglutide) can only be ordered by a logged-in customer. SERVER ONLY.
  *
  * The pages hide them from everyone else, but a basket can still hold one (added before logging out, or a saved
  * basket), and an order can be sent straight to the server, so the check is repeated where the order is

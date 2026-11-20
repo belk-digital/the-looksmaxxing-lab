@@ -58,6 +58,32 @@ export const LOGIN_PROMPT_MAX_DELAY_MS = 12000
 export const LOGIN_PROMPT_PRELOAD_LEAD_MS = 2000
 
 /**
+ * Keeping the popup from becoming a page's Largest Contentful Paint (LCP, a Google page-speed measure: when the
+ * biggest thing on the page appeared). Text in the popup counts as a candidate, and it appears seconds after
+ * load, so on a page whose own biggest item is SMALLER than the popup's biggest text block, a visitor who has not
+ * touched the page yet would have the popup replace it and the page would score as slow. (Chrome stops measuring
+ * at the visitor's first scroll, click, tap or key press, so once they have interacted there is no risk.)
+ *
+ * Measured in a real browser, the popup's biggest text block is about 22,900 px² on desktop, 17,700 on a tablet
+ * and 16,200 on a phone. This is that number with some headroom: if the page's own biggest item is larger than
+ * it, the popup can never replace it and appears on its normal timer; if not, the popup waits for the first
+ * interaction. If you ever make the popup's text bigger, raise this.
+ */
+export const LOGIN_PROMPT_LCP_GUARD_PX = 30_000
+/** After that first interaction the popup appears this long later, so it is not a jolt on top of their click. */
+export const LOGIN_PROMPT_AFTER_INTERACTION_MS = 1000
+
+/**
+ * Could the popup become the page's LCP? `largestPageCandidatePx` is the size (in px²) of the page's biggest
+ * contentful item so far, 0 if it has none yet, or null when the browser does not measure LCP (then nothing is
+ * being scored and it is safe to show).
+ */
+export function popupCouldBecomeLcp(largestPageCandidatePx: number | null, guardPx: number = LOGIN_PROMPT_LCP_GUARD_PX): boolean {
+  if (largestPageCandidatePx === null || !Number.isFinite(largestPageCandidatePx)) return false
+  return largestPageCandidatePx <= guardPx
+}
+
+/**
  * If the popup falls due while something else is in the way (the age-verification gate, another dialog, a hidden
  * browser tab), it re-checks at this interval, up to MAX_RETRIES times, and appears as soon as the way is clear.
  */
@@ -69,6 +95,20 @@ export function pickPromptDelay(random: () => number = Math.random): number {
   const span = LOGIN_PROMPT_MAX_DELAY_MS - LOGIN_PROMPT_MIN_DELAY_MS
   return LOGIN_PROMPT_MIN_DELAY_MS + Math.floor(random() * (span + 1))
 }
+
+/**
+ * The corner shortcut (a small fixed "Members: save 20%" button that opens this popup on demand).
+ * It is not a reminder, so none of the popup's caps or cooldowns apply to it: it simply sits in the corner of every
+ * page the popup may appear on, for logged-out visitors, until they log in. It appears this long after the page has
+ * loaded (so it never competes with the page's own content) and, like the popup, never before the age gate is passed.
+ */
+export const LOGIN_SHORTCUT_DELAY_MS = 2500
+/**
+ * Same idea as LOGIN_PROMPT_LCP_GUARD_PX, for the shortcut's much smaller text (about 5,000 px²): if the page's own
+ * biggest item is no bigger than this, the shortcut waits for the visitor's first scroll/click/tap/key press, so it can
+ * never become that page's Largest Contentful Paint.
+ */
+export const LOGIN_SHORTCUT_LCP_GUARD_PX = 12_000
 
 /** Pages (and everything below them) where the popup is never shown. */
 const EXCLUDED_PATHS = [
@@ -146,6 +186,22 @@ export type PromptContext = {
    * page: stop waiting) from "just not yet" (the age gate is still up: keep waiting).
    */
   skipAgeGate?: boolean
+}
+
+/**
+ * May the corner shortcut be on screen right now? Same audience and pages as the popup (logged-out visitors, not on
+ * sign-in / basket / checkout / account pages, restriction on, age gate passed), but with none of the reminder limits.
+ */
+export function shouldShowLoginShortcut(ctx: {
+  authStatus: AuthStatus
+  pathname: string | null | undefined
+  local: StorageLike | null | undefined
+  enabled?: boolean
+}): boolean {
+  if (!(ctx.enabled ?? isRestrictionEnabled())) return false
+  if (ctx.authStatus !== 'unauthenticated') return false
+  if (!isPromptPath(ctx.pathname)) return false
+  return safeGet(ctx.local, AGE_VERIFIED_KEY) === 'true'
 }
 
 /** Should the popup be offered right now? (The caller still waits for the page to load plus the random delay.) */

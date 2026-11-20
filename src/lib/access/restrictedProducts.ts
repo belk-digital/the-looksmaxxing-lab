@@ -1,31 +1,40 @@
 /**
- * Nasal-spray products are only for logged-in customers.
+ * Members-only products are only for logged-in customers.
  *
  * This file is the single definition of "restricted". It has no Node or database imports, so the
  * middleware (which runs on the edge), server code and browser code can all use it.
  *
- * A product is restricted when its address (slug) contains "spray". There is no separate "format" field on
- * a product, and every nasal-spray product on the site has "spray" in its slug (e.g. bpc-157-spray,
- * tb-500-5mg-10mg-45-sprays). If this ever needs to be controlled from the admin, replace
- * `isRestrictedSlug` with a check of a product checkbox (that needs a database migration).
+ * A product is restricted when its address (slug) contains one of RESTRICTED_SLUG_FRAGMENTS. There is no
+ * separate "format" or "members-only" field on a product, so the address is what we go by:
+ *  - "spray": every nasal-spray product (e.g. bpc-157-spray, tb-500-5mg-10mg-45-sprays);
+ *  - "glp-3rta", "tirzepatide", "semaglutide": those compounds in EVERY format, so the vial products
+ *    (glp-3rta, tirzepatide, semaglutide) as well as their sprays. Added 2026-11-20.
+ * To make another compound members-only, add its name here (it must appear in the product's slug and in no other
+ * product's slug). If this ever needs to be controlled from the admin, replace `isRestrictedSlug` with a check of a
+ * product checkbox (that needs a database migration).
  *
- * Kill switch: set NEXT_PUBLIC_RESTRICT_SPRAYS=false in Vercel (and redeploy) to show sprays to everyone again.
+ * Kill switch: set NEXT_PUBLIC_RESTRICT_SPRAYS=false in Vercel (and redeploy) to show everything to everyone again.
+ * (The name is from when only the sprays were restricted; it now switches off the whole restriction.)
  */
 
-export const RESTRICTED_SLUG_FRAGMENT = 'spray'
+export const RESTRICTED_SLUG_FRAGMENTS: readonly string[] = ['spray', 'glp-3rta', 'tirzepatide', 'semaglutide']
+
+/** What members-only means in plain words, for the sentences shown to visitors. Keep in step with the list above. */
+export const MEMBERS_ONLY_SUMMARY = 'nasal sprays and GLP-1 compounds'
 
 /** Why a visitor was sent to the login page. The login page uses it to explain what is going on. */
 export const LOGIN_REASON_CATALOGUE = 'catalogue'
 
-export const RESTRICTED_LOGIN_MESSAGE =
-  'Nasal spray products are available to logged-in customers. Please log in or create a free account to continue.'
+export const RESTRICTED_LOGIN_MESSAGE = `Our ${MEMBERS_ONLY_SUMMARY} are available to logged-in customers. Please log in or create a free account to continue.`
 
 export function isRestrictionEnabled(): boolean {
   return process.env.NEXT_PUBLIC_RESTRICT_SPRAYS !== 'false'
 }
 
 export function isRestrictedSlug(slug: unknown): boolean {
-  return isRestrictionEnabled() && typeof slug === 'string' && slug.toLowerCase().includes(RESTRICTED_SLUG_FRAGMENT)
+  if (!isRestrictionEnabled() || typeof slug !== 'string') return false
+  const address = slug.toLowerCase()
+  return RESTRICTED_SLUG_FRAGMENTS.some((fragment) => address.includes(fragment))
 }
 
 /** Leaves restricted products out of a list (anything with a `slug`). */

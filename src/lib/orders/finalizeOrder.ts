@@ -3,6 +3,7 @@ import type { Payload } from 'payload'
 import { sql } from '@payloadcms/db-postgres'
 import configPromise from '@payload-config'
 import { attributeOrder } from '@/lib/affiliates/commission'
+import { couponPartOfDiscount } from '@/lib/membership/discount'
 
 /**
  * Atomically flips is_finalized false -> true. Only one concurrent caller (e.g. the Stripe
@@ -148,9 +149,10 @@ export async function finalizeOrder(orderId: string | number, paymentIntentMetad
         usageCount: (coupon.usageCount || 0) + 1,
       }
 
-      // remainingBalance is stored in cents; order.discountTotal is in dollars.
+      // remainingBalance is stored in cents; the discount is in dollars. Only the COUPON's part of the discount comes
+      // off the balance (the member discount, if the customer got one, was never paid from the store credit).
       if (coupon.type === 'store_credit' && typeof coupon.remainingBalance === 'number') {
-        updateData.remainingBalance = Math.max(0, coupon.remainingBalance - Math.round((order.discountTotal || 0) * 100))
+        updateData.remainingBalance = Math.max(0, coupon.remainingBalance - Math.round(couponPartOfDiscount(order as any) * 100))
       }
 
       await payload.update({

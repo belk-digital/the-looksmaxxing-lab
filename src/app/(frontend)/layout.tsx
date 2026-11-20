@@ -11,6 +11,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { GlobalNavigationSpinner } from '@/components/shared/GlobalNavigationSpinner'
 import { AgeVerificationGate } from '@/components/shared/AgeVerificationGate'
 import { LoginPrompt } from '@/components/shared/LoginPrompt'
+import { LoginShortcut } from '@/components/shared/LoginShortcut'
 import { NextAuthProvider } from '@/components/Providers'
 
 const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://longeviaresearch.com').replace(/\/+$/, '')
@@ -183,6 +184,8 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
             </LayoutClientWrapper>
             {/* "Log in to see the full catalogue" popup: renders nothing until a logged-out visitor has interacted. */}
             <LoginPrompt />
+            {/* The small fixed "Members: save 20%" button (bottom-left) that opens the same popup on demand. */}
+            <LoginShortcut />
           </NextAuthProvider>
           <Toaster />
         </SmoothScroll>

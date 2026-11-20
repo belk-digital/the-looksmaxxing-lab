@@ -118,7 +118,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       depth: 0,
     })
 
-    // Nasal-spray pages need a login, so they must not be advertised to search engines.
+    // Members-only product pages need a login, so they must not be advertised to search engines.
     productPages = products
       .filter((p) => p.slug && !REDIRECTED_PRODUCT_SLUGS.has(p.slug) && !isRestrictedSlug(p.slug))
       .map((p) => ({

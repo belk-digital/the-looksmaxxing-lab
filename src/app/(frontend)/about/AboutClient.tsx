@@ -25,7 +25,7 @@ const ABOUT_FAQS: FaqItem[] = [
   },
   {
     question: "Where do you ship from?",
-    answer: "All orders are fulfilled from our US-based warehouses. Domestic orders ship same day when placed before 2:00 PM ET on business days. Standard delivery takes 3–5 business days; expedited 2-day delivery is available on orders over $300. We also ship internationally to most countries, subject to local research compound import regulations."
+    answer: "All orders are fulfilled from our US-based warehouses. Domestic orders ship same day when placed before 2:00 PM ET on business days. Every order ships by Express Shipping for a flat $20, with delivery in 2–3 business days. We also ship internationally to most countries, subject to local research compound import regulations."
   },
   {
     question: "How should I store lyophilized peptides?",
@@ -115,7 +115,7 @@ export default function AboutClient() {
     {
       id: "01",
       title: "Retail Research Peptides - Single & Multi-Vial Orders",
-      desc: "Our complete catalog of 24+ research-grade peptides available for immediate dispatch in single or multi-vial quantities. All retail orders include a lot-specific COA, ship from US-based facilities, and are available for standard or 2-day expedited delivery.",
+      desc: "Our complete catalog of 24+ research-grade peptides available for immediate dispatch in single or multi-vial quantities. All retail orders include a lot-specific COA, ship from US-based facilities, and ship by Express Shipping, delivered in 2–3 business days.",
       image: "/new-images/three-flying-vials.webp"
     },
     {
@@ -150,7 +150,7 @@ export default function AboutClient() {
           <div className="animate-marquee flex items-center whitespace-nowrap w-max opacity-[0.04]">
               {Array(4).fill(0).map((_, i) => (
                 <span key={i} className="text-[12vw] lg:text-[7vw] xl:text-[5vw] font-serif uppercase tracking-tighter mx-8 text-ink">
-                  US-SYNTHESIZED &bull; &ge;99% HPLC PURITY &bull; INDEPENDENT COA ON EVERY ORDER &bull; FREE SHIPPING OVER $300 &bull; 2-DAY DELIVERY ON ORDERS $300+ &bull; 
+                  US-SYNTHESIZED &bull; &ge;99% HPLC PURITY &bull; INDEPENDENT COA ON EVERY ORDER &bull; EXPRESS SHIPPING $20 &bull; 2-3 BUSINESS DAYS &bull; 
                 </span>
              ))}
           </div>

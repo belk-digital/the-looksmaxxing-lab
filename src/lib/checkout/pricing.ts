@@ -3,6 +3,7 @@ import { verifyCoupon, getUserMaxxPoints } from '@/app/(frontend)/(shop)/actions
 import { loadShippingMethods, loadActiveProcessingFees } from './data'
 import { applyPlanDiscount } from '@/lib/subscriptions/discount'
 import { getSubscriptionSettings, findActivePlan } from '@/lib/subscriptions/settings'
+import { MEMBER_DISCOUNT_PERCENT, splitDiscounts } from '@/lib/membership/discount'
 
 /**
  * The single source of truth for what an order costs. Used by the Stripe PaymentIntent, the order
@@ -27,6 +28,12 @@ export interface PricingOptions {
    * re-checked on those terms, and if it no longer qualifies the invoice is simply created without the discount.
    */
   recurringCoupon?: boolean
+  /**
+   * Is the customer a logged-in member (gets the member discount)? Normally left out: it is then read from the login
+   * session of the request, which is what the real checkout wants (nothing the browser sends can switch it on).
+   * Passing it is for code that has no request, and for tests. It never applies to subscription plans.
+   */
+  isMember?: boolean
 }
 
 export interface PricingFailure {
@@ -40,7 +47,14 @@ export interface PricingSuccess {
   liveItems: any[]
   productsById: Map<any, any>
   subtotal: number
+  /** EVERYTHING taken off the subtotal: the member discount plus the coupon discount (this is what orders store as discountTotal). */
   discountAmount: number
+  /** The member-discount part of `discountAmount` (0 when not a member, or on a subscription plan). */
+  memberDiscountAmount: number
+  /** The percent the member discount was calculated at, or null when no member discount was given. */
+  memberDiscountPercent: number | null
+  /** The coupon part of `discountAmount`. */
+  couponDiscountAmount: number
   freeShipping: boolean
   finalShipping: number
   feeTotal: number
@@ -54,6 +68,8 @@ export interface PricingSuccess {
   planDiscountPercent: number | null
   /** The shipping method actually used (may differ from the requested one when lenient). */
   shippingMethodName: string
+  /** True when a valid coupon was offered but NOT used, because the member discount saves the same or more (they cannot be combined). */
+  couponDisplacedByMember: boolean
   /** The coupon (if any) that actually gave a discount, and how long it lasts on a subscription. */
   couponApplied: boolean
   appliedCouponCode: string | null
@@ -172,6 +188,7 @@ export async function computeOrderPricing(
   let couponApplied = false
   let appliedCouponCode: string | null = null
   let couponSubscriptionScope: 'first_month' | 'every_month' | null = null
+  let couponIsStoreCredit = false
 
   if (couponCode) {
     const couponRes = await verifyCoupon(couponCode, subtotal, liveItems, { recurringInvoice: options.recurringCoupon === true })
@@ -179,6 +196,7 @@ export async function computeOrderPricing(
       discountAmount = couponRes.discount || 0
       freeShipping = couponRes.freeShipping || false
       couponApplied = true
+      couponIsStoreCredit = couponRes.type === 'store_credit'
       appliedCouponCode = couponRes.code || couponCode
       couponSubscriptionScope = (couponRes.subscriptionScope as 'first_month' | 'every_month' | null | undefined) ?? null
     } else if (plan && !plan.forced) {
@@ -187,6 +205,37 @@ export async function computeOrderPricing(
       return { error: couponRes.error || 'This coupon cannot be used on this subscription.' }
     }
   }
+
+  // Member discount: logged-in customers get MEMBER_DISCOUNT_PERCENT % off an ordinary order. Subscription plans never
+  // get it (they have their own plan discount, and later invoices are made without a customer present). Who is logged
+  // in is read from the request's session here, on the server: nothing the browser sends can switch it on.
+  let isMember = false
+  if (!plan) {
+    if (options.isMember !== undefined) {
+      isMember = options.isMember
+    } else {
+      const { isLoggedIn } = await import('@/lib/access/viewer')
+      isMember = await isLoggedIn()
+    }
+  }
+  // The member discount cannot be combined with another discount: the order gets whichever saves more. (A gift card
+  // is the exception: it is paid on top.) A code that loses is simply not used: it is not applied, not recorded on the
+  // order and not counted as used.
+  const split = splitDiscounts({
+    subtotal,
+    coupon: couponApplied ? { discount: discountAmount, isStoreCredit: couponIsStoreCredit } : null,
+    isMember,
+  })
+  const couponDisplacedByMember = split.couponDisplaced
+  if (couponDisplacedByMember) {
+    couponApplied = false
+    appliedCouponCode = null
+    freeShipping = false
+    couponSubscriptionScope = null
+  }
+  const memberDiscountAmount = split.memberDiscount
+  const couponDiscountAmount = split.couponDiscount
+  discountAmount = split.totalDiscount
 
   const methods = await loadShippingMethods(payload)
   let selectedMethod = methods.find((m: any) => m.method === shippingMethodName) || methods[0]
@@ -242,6 +291,9 @@ export async function computeOrderPricing(
     productsById,
     subtotal,
     discountAmount,
+    memberDiscountAmount,
+    memberDiscountPercent: memberDiscountAmount > 0 ? MEMBER_DISCOUNT_PERCENT : null,
+    couponDiscountAmount,
     freeShipping,
     finalShipping,
     feeTotal,
@@ -253,6 +305,7 @@ export async function computeOrderPricing(
     planMonths: plan ? plan.months : null,
     planDiscountPercent: plan ? plan.discountPercent : null,
     shippingMethodName: usedShippingName,
+    couponDisplacedByMember,
     couponApplied,
     appliedCouponCode,
     couponSubscriptionScope,

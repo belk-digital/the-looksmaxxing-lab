@@ -19,8 +19,9 @@ import { render, screen, cleanup, act } from '@testing-library/react'
 
 const h = vi.hoisted(() => ({ downloads: 0 }))
 
-vi.mock('next-auth/react', () => ({ useSession: () => ({ status: 'unauthenticated', data: null }) }))
-vi.mock('next/navigation', () => ({ usePathname: () => '/shop' }))
+vi.mock('next-auth/react', () => ({ useSession: () => ({ status: 'unauthenticated', data: null }), signIn: async () => ({ error: null, ok: true }) }))
+vi.mock('next/navigation', () => ({ usePathname: () => '/shop', useRouter: () => ({ refresh: () => undefined, push: () => undefined }) }))
+vi.mock('sonner', () => ({ toast: { success: () => undefined, error: () => undefined } }))
 vi.mock('lenis/react', () => ({ useLenis: () => ({ stop: () => undefined, start: () => undefined }) }))
 vi.mock('@/lib/access/loginPrompt', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/lib/access/loginPrompt')>()),
@@ -100,7 +101,7 @@ describe('the file that ships with every page stays tiny', () => {
 
   it('only imports small, already-bundled things statically', () => {
     expect(staticImports.sort()).toEqual(
-      ['@/lib/access/loginPrompt', '@/lib/access/restrictedProducts', 'next-auth/react', 'next/dynamic', 'next/navigation', 'react'].sort(),
+      ['@/lib/access/loginPrompt', '@/lib/access/loginPromptBus', '@/lib/access/restrictedProducts', 'next-auth/react', 'next/dynamic', 'next/navigation', 'react'].sort(),
     )
   })
 

@@ -18,6 +18,7 @@ import * as migration_20260913_000000_add_authnet_bridge_payment_method from './
 import * as migration_20260913_010000_add_payment_methods_settings from './20260913_010000_add_payment_methods_settings';
 import * as migration_20261020_000000_add_subscriptions from './20261020_000000_add_subscriptions';
 import * as migration_20261021_000000_add_subscription_coupons from './20261021_000000_add_subscription_coupons';
+import * as migration_20261120_000000_add_member_discount_to_orders from './20261120_000000_add_member_discount_to_orders';
 
 export const migrations = [
   {
@@ -119,5 +120,10 @@ export const migrations = [
     up: migration_20261021_000000_add_subscription_coupons.up,
     down: migration_20261021_000000_add_subscription_coupons.down,
     name: '20261021_000000_add_subscription_coupons',
+  },
+  {
+    up: migration_20261120_000000_add_member_discount_to_orders.up,
+    down: migration_20261120_000000_add_member_discount_to_orders.down,
+    name: '20261120_000000_add_member_discount_to_orders',
   },
 ];

@@ -32,6 +32,46 @@
 
 Nothing appears to customers until step 5 (the master switch is off by default; existing subscriptions keep billing if you turn it off later).
 
+## Member discount (20% for logged-in customers) - rollout, 2026-11-20
+
+**One more database migration, and it MUST be applied BEFORE the new code is deployed.** New code deployed first cannot place orders (the order record has two new columns). It is the same safe, additive process as the two above:
+
+1. **Back up the database** (as in "Putting it on the live site").
+2. **Dry run**, then **apply** - the runner applies only what is still missing (here just the third migration) and checks that every existing order afterwards reads "no member discount":
+
+   ```
+   npx tsx scripts/subscriptions/apply-migration.ts
+   npx tsx scripts/subscriptions/apply-migration.ts --apply --i-have-a-backup
+   ```
+
+3. **Deploy the code.**
+
+**Status: APPLIED to the live database on 2026-11-20** (user's go-ahead). It was run with the narrow form, which touches this one migration only and refuses to run anything that is not a pure "add something new" statement:
+
+```
+npx tsx scripts/subscriptions/apply-migration.ts --only member-discount              # dry run
+npx tsx scripts/subscriptions/apply-migration.ts --only member-discount --apply --additive-only
+```
+
+Result: 2 columns added, 0 new tables, one transaction, row counts identical before/after (132 orders, 244 order items, 44 users, 110 products...), the 6 subscription orders untouched, every existing order reads "no member discount". A second dry run then said "Nothing to do: every migration is already applied". No separate backup was taken (the migration only adds columns, so it cannot alter or remove existing data); the code is NOT deployed yet.
+
+`--additive-only` is accepted instead of `--i-have-a-backup` only when every statement is `ADD COLUMN IF NOT EXISTS` / `CREATE TABLE IF NOT EXISTS` / `CREATE INDEX IF NOT EXISTS`; the older subscription migrations contain other statements, so for them `--i-have-a-backup` is still required.
+
+What the migration does (`20261120_000000_add_member_discount_to_orders`): adds `orders.member_discount_total` (numeric, default 0) and `orders.member_discount_percent` (numeric, empty). Nothing is dropped or rewritten. Rolling the code back does not require rolling the database back (the old code ignores the columns).
+
+**The rule** (one place: `src/lib/membership/discount.ts`, `MEMBER_DISCOUNT_PERCENT = 20`):
+
+- A customer who is logged in when they place an ordinary (one-time) order gets 20% off the merchandise subtotal, to the nearest cent. It is decided on the server from the login session; nothing the browser sends can switch it on.
+- **It cannot be combined with any other discount.** If a customer also enters a discount code (percentage, fixed amount, free shipping...), the order gets WHICHEVER SAVES MORE, never both; an exact tie goes to the member discount. A code that loses is simply not used: it is not applied, not recorded on the order (`couponCode` stays empty), not counted as used (no `usageCount` change) and does not give free shipping; the cart and checkout tell the customer ("Not used: your Member discount saves more"). A code that wins replaces the member discount (the order records no member discount). **Gift cards / store credit are the one exception**: they are money the customer already holds, so they are paid on top (member discount first, the card covers the rest and keeps what it did not need). Flip `MEMBER_DISCOUNT_STACKS_WITH_STORE_CREDIT` in `src/lib/membership/discount.ts` to treat them like any other code. Everything is decided in `splitDiscounts` (the one place).
+- **Affiliates:** an affiliate's code is normally worth less than 20%, so for a logged-in customer it loses to the member discount and is not recorded on that order. The sale is still credited if the customer arrived through the affiliate's link (the `affiliate_ref` cookie); a code typed with no link is not credited for that order.
+- Subscription plans never get it (they have their own 15-25% plan discount), and neither do later invoices.
+- `orders.discount_total` is EVERYTHING taken off (member discount + coupon), so subtotal - discount + shipping + fees - points = total always holds; `member_discount_total` is the member part. Store-credit deduction and affiliate commission use only the coupon part (`couponPartOfDiscount`).
+- It is shown as "Member discount (20%)" in the cart, the checkout, the order confirmation page, the account order page and the order email. Logged-out visitors see what logging in would save, and the login popup advertises it.
+
+**Shipping** is now one method, Express Shipping, $20, "2-3 business days" (wording in `src/lib/checkout/shipping.ts`; the price itself is in the admin under Shipping Zones, where the live site already has exactly one method). An order records the method that was actually charged, not the name the browser sent.
+
+**Zelle QR code**: one definition, `src/lib/payments/zelleQr.ts`, used by the confirmation page, the subscription pay page and every email that asks for a Zelle payment.
+
 ## How the schedule works
 
 - **Interval** = the plan length: 1, 3 or 6 calendar months (`subscriptions.planMonths` is reused as the interval; no schema change). The next order is due **one interval after the previous order was paid**; its invoice is created and emailed `invoiceLeadDays` earlier (default 7; the live Subscription Settings currently say 3). Month ends are clamped (Aug 31 + 6 months = Feb 28).

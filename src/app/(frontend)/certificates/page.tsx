@@ -59,7 +59,7 @@ export default async function CertificatesPage() {
   // for product pages. depth: 1 resolves the coaFile upload relation and its categories relation
   // so we can read real file URLs and category names without a second round-trip.
   // This page is cached and shared by everyone, so it lists the PUBLIC products only: the test reports for
-  // nasal sprays (logged-in customers only) are not listed here.
+  // members-only products (logged-in customers only) are not listed here.
   const publicOnly = await publicProductsClause(payload)
 
   const { docs: allDocs } = await payload.find({

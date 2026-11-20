@@ -23,11 +23,19 @@ const h = vi.hoisted(() => ({
   status: 'unauthenticated' as 'loading' | 'authenticated' | 'unauthenticated',
   pathname: '/shop',
   lenis: { stop: vi.fn(), start: vi.fn() },
+  // the popup's login form
+  signIn: vi.fn(async (..._args: unknown[]) => ({ error: null, ok: true }) as { error: string | null; ok: boolean } | undefined),
+  refresh: vi.fn(),
+  toast: vi.fn(),
   pickDelay: vi.fn(() => 40),
 }))
 
-vi.mock('next-auth/react', () => ({ useSession: () => ({ status: h.status, data: null }) }))
-vi.mock('next/navigation', () => ({ usePathname: () => h.pathname }))
+vi.mock('next-auth/react', () => ({
+  useSession: () => ({ status: h.status, data: null }),
+  signIn: (...args: unknown[]) => h.signIn(...args),
+}))
+vi.mock('sonner', () => ({ toast: { success: (...args: unknown[]) => h.toast(...args), error: vi.fn() } }))
+vi.mock('next/navigation', () => ({ usePathname: () => h.pathname, useRouter: () => ({ refresh: h.refresh, push: vi.fn() }) }))
 vi.mock('lenis/react', () => ({ useLenis: () => h.lenis }))
 vi.mock('@/app/(frontend)/actions/cart', () => ({ syncCartToPayload: async () => undefined }))
 
@@ -37,6 +45,7 @@ vi.mock('@/lib/access/loginPrompt', async (importOriginal) => ({
   pickPromptDelay: () => h.pickDelay(),
   LOGIN_PROMPT_PRELOAD_LEAD_MS: 15,
   LOGIN_PROMPT_RETRY_MS: 20,
+  LOGIN_PROMPT_AFTER_INTERACTION_MS: 30,
 }))
 
 vi.mock('next/dynamic', async () => {
@@ -125,6 +134,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup()
   vi.restoreAllMocks()
+  vi.unstubAllGlobals()
   if (savedFlag === undefined) delete process.env.NEXT_PUBLIC_RESTRICT_SPRAYS
   else process.env.NEXT_PUBLIC_RESTRICT_SPRAYS = savedFlag
 })
@@ -233,6 +243,196 @@ describe('showing the popup', () => {
     visibility.mockReturnValue('visible')
     expect(await screen.findByRole('dialog')).toBeTruthy()
     visibility.mockRestore()
+  })
+})
+
+// ─── Page speed: never become the page's Largest Contentful Paint ─────────────
+//
+// A fake browser LCP measurement: the page's biggest contentful item so far is `size` px².
+// (The popup's own biggest text block is about 23,000 px²; the limit in the app is 30,000.)
+
+const fakeLcp = (size: number | 'unsupported' | 'throws') => {
+  class FakeObserver {
+    static supportedEntryTypes = size === 'unsupported' ? ['mark'] : ['largest-contentful-paint']
+    constructor(private callback: (list: { getEntries: () => unknown[] }) => void) {
+      if (size === 'throws') throw new Error('measurement broke')
+    }
+    observe() {
+      const entries = typeof size === 'number' ? [{ size: Math.min(size, 1) }, { size }] : [] // later entries are bigger
+      setTimeout(() => this.callback({ getEntries: () => entries }), 0)
+    }
+    takeRecords() {
+      return []
+    }
+    disconnect() {}
+  }
+  vi.stubGlobal('PerformanceObserver', FakeObserver)
+}
+const INPUTS = ['pointerdown', 'keydown', 'touchstart', 'wheel']
+const listenedTypes = (spy: ReturnType<typeof vi.spyOn>) => (spy.mock.calls as unknown[][]).map(([type]) => String(type))
+
+describe('page speed: it never becomes the page\'s Largest Contentful Paint', () => {
+  it('on a page whose own biggest item is large (photo, hero), it appears on its normal timer with no listeners at all', async () => {
+    fakeLcp(500_000)
+    const add = vi.spyOn(window, 'addEventListener')
+    render(prompt())
+    expect(await screen.findByRole('dialog')).toBeTruthy()
+    for (const type of INPUTS) expect(listenedTypes(add)).not.toContain(type)
+  })
+
+  it('on a nearly empty page (biggest item smaller than the popup\'s text) it WAITS instead of taking over', async () => {
+    fakeLcp(14_850)
+    render(prompt())
+    await sleep(400) // well past the 40 ms delay (+ the 100 ms measurement)
+    expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  it('treats a page with nothing contentful yet as one to wait on (the popup would BE the LCP)', async () => {
+    fakeLcp(0)
+    render(prompt())
+    await sleep(400)
+    expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  it('draws the line at the limit: exactly 30,000 waits, 30,001 does not', async () => {
+    fakeLcp(30_000)
+    render(prompt())
+    await sleep(400)
+    expect(screen.queryByRole('dialog')).toBeNull()
+    cleanup()
+
+    fakeLcp(30_001)
+    render(prompt())
+    expect(await screen.findByRole('dialog')).toBeTruthy()
+  })
+
+  it.each(INPUTS)('and appears a moment after the visitor\'s first %s', async (type) => {
+    fakeLcp(14_850)
+    render(prompt())
+    await sleep(400)
+    expect(screen.queryByRole('dialog')).toBeNull()
+
+    act(() => void window.dispatchEvent(new Event(type)))
+    expect(await screen.findByRole('dialog')).toBeTruthy()
+    expect(sessionStorage.getItem(LOGIN_PROMPT_SHOWN_COUNT_KEY)).toBe('1')
+  })
+
+  it('stops listening after the first interaction, and appears only once', async () => {
+    fakeLcp(14_850)
+    const remove = vi.spyOn(window, 'removeEventListener')
+    render(prompt())
+    await sleep(400)
+    act(() => void window.dispatchEvent(new Event('pointerdown')))
+    await screen.findByRole('dialog')
+    for (const type of INPUTS) expect(listenedTypes(remove)).toContain(type)
+    act(() => void window.dispatchEvent(new Event('keydown')))
+    await sleep(120)
+    expect(sessionStorage.getItem(LOGIN_PROMPT_SHOWN_COUNT_KEY)).toBe('1')
+  })
+
+  it('waits for the age gate first, and once the visitor has passed it (which took a click) it needs no second interaction', async () => {
+    fakeLcp(14_850)
+    localStorage.removeItem(AGE_VERIFIED_KEY)
+    render(prompt())
+    await sleep(400)
+    expect(screen.queryByRole('dialog')).toBeNull() // the age gate is still up
+
+    localStorage.setItem(AGE_VERIFIED_KEY, 'true') // passing the gate is a click
+    expect(await screen.findByRole('dialog')).toBeTruthy()
+  })
+
+  it('after an interaction it still waits for another open dialog to be gone', async () => {
+    fakeLcp(14_850)
+    render(prompt())
+    await sleep(400)
+    document.body.style.overflow = 'hidden' // some other dialog / scroll lock is up
+    act(() => void window.dispatchEvent(new Event('pointerdown')))
+    await sleep(200)
+    expect(screen.queryByRole('dialog')).toBeNull()
+
+    document.body.style.overflow = ''
+    expect(await screen.findByRole('dialog')).toBeTruthy()
+  })
+
+  it('moving to another page drops the old wait: interactions then only ever show the new page\'s popup, once', async () => {
+    fakeLcp(14_850)
+    const { rerender } = render(prompt())
+    await sleep(300) // waiting for an interaction on /shop
+    h.pathname = '/about'
+    rerender(prompt())
+    await sleep(300) // now waiting on /about
+    act(() => void window.dispatchEvent(new Event('pointerdown')))
+    expect(await screen.findByRole('dialog')).toBeTruthy()
+    await sleep(150)
+    expect(sessionStorage.getItem(LOGIN_PROMPT_SHOWN_COUNT_KEY)).toBe('1')
+  })
+
+  it('leaves no listeners behind when the visitor leaves the page (or the component goes away) without interacting', async () => {
+    fakeLcp(14_850)
+    const add = vi.spyOn(window, 'addEventListener')
+    const remove = vi.spyOn(window, 'removeEventListener')
+    const { unmount } = render(prompt())
+    await sleep(300) // now waiting for an interaction
+    for (const type of INPUTS) expect(listenedTypes(add)).toContain(type)
+    expect(listenedTypes(remove)).not.toContain('keydown')
+
+    unmount()
+    for (const type of INPUTS) expect(listenedTypes(remove)).toContain(type)
+  })
+
+  it('has nothing to protect when the browser does not measure LCP: it simply appears', async () => {
+    fakeLcp('unsupported')
+    const add = vi.spyOn(window, 'addEventListener')
+    render(prompt())
+    expect(await screen.findByRole('dialog')).toBeTruthy()
+    for (const type of INPUTS) expect(listenedTypes(add)).not.toContain(type)
+  })
+
+  it('never lets a broken measurement stop it from appearing', async () => {
+    fakeLcp('throws')
+    render(prompt())
+    expect(await screen.findByRole('dialog')).toBeTruthy()
+  })
+
+  it('does not even take the measurement for logged-in visitors', async () => {
+    h.status = 'authenticated'
+    const observed = vi.fn()
+    class Spy {
+      static supportedEntryTypes = ['largest-contentful-paint']
+      constructor() {
+        observed()
+      }
+      observe() {}
+      takeRecords() {
+        return []
+      }
+      disconnect() {}
+    }
+    vi.stubGlobal('PerformanceObserver', Spy)
+    render(prompt())
+    await sleep(300)
+    expect(observed).not.toHaveBeenCalled()
+  })
+
+  it('does not take the measurement while the page is loading, only when the popup is due', async () => {
+    const observed = vi.fn()
+    class Spy {
+      static supportedEntryTypes = ['largest-contentful-paint']
+      constructor() {
+        observed()
+      }
+      observe() {}
+      takeRecords() {
+        return []
+      }
+      disconnect() {}
+    }
+    vi.stubGlobal('PerformanceObserver', Spy)
+    render(prompt())
+    await sleep(15) // before the 40 ms delay is up
+    expect(observed).not.toHaveBeenCalled()
+    await sleep(200)
+    expect(observed).toHaveBeenCalledTimes(1)
   })
 })
 
@@ -442,7 +642,7 @@ describe('reminders: it comes back on other pages, but closing it is respected',
     expect(await screen.findByRole('dialog')).toBeTruthy()
   })
 
-  it('choosing Log in or Create account is NOT closing it: if they come back without logging in, it appears again', async () => {
+  it('choosing Create account is NOT closing it: if they come back without logging in, it appears again', async () => {
     const { rerender } = render(prompt())
     await screen.findByRole('dialog')
     fireEvent.click(screen.getByRole('link', { name: /create free account/i }))
@@ -477,21 +677,28 @@ describe('the dialog', () => {
     const dialog = screen.getByRole('dialog')
     expect(dialog.getAttribute('aria-modal')).toBe('true')
     expect(screen.getByRole('dialog', { name: 'Unlock the full catalogue.' })).toBe(dialog)
-    expect(dialog.textContent).toContain('nasal sprays')
+    // advertises the member discount, and never names the GLP-1 compounds
+    expect(dialog.textContent).toContain('20% member discount')
+    expect(dialog.textContent).toContain('20% off every order')
+    // and says plainly that it is not combinable
+    expect(dialog.textContent).toContain("can't be combined with other discounts")
+    expect(dialog.textContent).not.toMatch(/glp/i)
     expect(dialog.getAttribute('aria-describedby')).toBeTruthy()
   })
 
-  it('has Log in and Create free account links that bring the visitor back to this page', () => {
+  it('has Create free account and Forgot password links that bring the visitor back to this page (logging in itself happens in the popup)', () => {
     open({ returnTo: '/products/bpc-157' })
-    expect(screen.getByRole('link', { name: /log in/i }).getAttribute('href')).toBe('/login?next=%2Fproducts%2Fbpc-157')
     expect(screen.getByRole('link', { name: /create free account/i }).getAttribute('href')).toBe('/register?next=%2Fproducts%2Fbpc-157')
+    expect(screen.getByRole('link', { name: /forgot password/i }).getAttribute('href')).toBe('/forgot-password?next=%2Fproducts%2Fbpc-157')
+    expect(screen.queryByRole('link', { name: /^log in$/i })).toBeNull() // Log in is a button of the form, not a link to another page
+    expect(screen.getByRole('button', { name: 'Log in' }).getAttribute('type')).toBe('submit')
   })
 
   it('never carries an unsafe return address into the links', () => {
     for (const bad of ['//evil.example', 'https://evil.example', 'javascript:alert(1)', '/login']) {
       cleanup()
       open({ returnTo: bad })
-      expect(screen.getByRole('link', { name: /log in/i }).getAttribute('href')).toBe('/login')
+      expect(screen.getByRole('link', { name: /forgot password/i }).getAttribute('href')).toBe('/forgot-password')
       expect(screen.getByRole('link', { name: /create free account/i }).getAttribute('href')).toBe('/register')
     }
   })
@@ -512,7 +719,7 @@ describe('the dialog', () => {
 
   it('keeps Tab and Shift+Tab inside the dialog', () => {
     open()
-    const loginLink = screen.getByRole('link', { name: /log in/i })
+    const loginButton = screen.getByRole('button', { name: 'Log in' })
     const maybeLater = screen.getByRole('button', { name: 'Maybe later' })
 
     maybeLater.focus()
@@ -524,7 +731,27 @@ describe('the dialog', () => {
     first.focus()
     fireEvent.keyDown(first, { key: 'Tab', shiftKey: true })
     expect(screen.getByRole('dialog').contains(document.activeElement)).toBe(true)
-    expect(loginLink).toBeTruthy()
+    expect(loginButton).toBeTruthy()
+  })
+
+  it('Tab also wraps round the form fields: from the last control to the Close button, and back', () => {
+    open()
+    const close = screen.getByRole('button', { name: 'Close' })
+    const maybeLater = screen.getByRole('button', { name: 'Maybe later' })
+    const dialog = screen.getByRole('dialog')
+    // every control of the form is inside the Tab loop, between Close and Maybe later
+    const controls = [...dialog.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input:not([disabled])')]
+    expect(controls[0]).toBe(close)
+    expect(controls[controls.length - 1]).toBe(maybeLater)
+    for (const name of ['Continue with Google', 'Log in', 'Show password']) {
+      expect(controls).toContain(screen.getByRole('button', { name }))
+    }
+    expect(controls).toContain(screen.getByLabelText('Email'))
+    expect(controls).toContain(screen.getByLabelText('Password'))
+
+    maybeLater.focus()
+    fireEvent.keyDown(maybeLater, { key: 'Tab' })
+    expect(document.activeElement).toBe(close)
   })
 
   it('locks page scrolling while open and restores it afterwards', () => {
@@ -608,9 +835,9 @@ describe('the dialog', () => {
     expect(screen.getByRole('dialog')).toBeTruthy()
   })
 
-  it('choosing Log in or Create account does not count as closing it', () => {
+  it('choosing Create account or Forgot password does not count as closing it', () => {
     const { onDismiss } = open()
-    fireEvent.click(screen.getByRole('link', { name: /log in/i }))
+    fireEvent.click(screen.getByRole('link', { name: /forgot password/i }))
     fireEvent.click(screen.getByRole('link', { name: /create free account/i }))
     expect(onDismiss).not.toHaveBeenCalled()
   })
@@ -618,7 +845,7 @@ describe('the dialog', () => {
 
 // ─── Basket notice ────────────────────────────────────────────────────────────
 
-describe('the basket notice for logged-out visitors holding a nasal spray', () => {
+describe('the basket notice for logged-out visitors holding a members-only product', () => {
   const line = (slug: string) => ({
     lineId: slug,
     productId: slug,
@@ -635,9 +862,15 @@ describe('the basket notice for logged-out visitors holding a nasal spray', () =
     setBasket('bpc-157', 'bpc-157-spray')
     render(notice('/cart'))
 
-    expect(screen.getByRole('alert').textContent).toContain('nasal spray')
+    expect(screen.getByRole('alert').textContent).toContain('members-only products')
     expect(screen.getByRole('link', { name: 'Log in' }).getAttribute('href')).toBe('/login?next=%2Fcart')
     expect(screen.getByRole('link', { name: 'Create account' }).getAttribute('href')).toBe('/register?next=%2Fcart')
+  })
+
+  it.each(['glp-3rta', 'tirzepatide', 'semaglutide'])('is shown when the basket holds %s (vial)', (slug) => {
+    setBasket('bpc-157', slug)
+    render(notice('/cart'))
+    expect(screen.getByRole('alert').textContent).toContain('members-only products')
   })
 
   it('returns to checkout when shown on the checkout page', () => {
@@ -653,7 +886,7 @@ describe('the basket notice for logged-out visitors holding a nasal spray', () =
     expect(screen.queryByRole('alert')).toBeNull()
   })
 
-  it('is not shown when the basket has no nasal spray', () => {
+  it('is not shown when the basket has no members-only product', () => {
     setBasket('bpc-157', 'tb-500')
     render(notice('/cart'))
     expect(screen.queryByRole('alert')).toBeNull()

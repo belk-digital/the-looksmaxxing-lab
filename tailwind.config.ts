@@ -4,6 +4,12 @@ const config: Config = {
   content: ['./src/**/*.{ts,tsx,mdx}'],
   theme: {
     extend: {
+      screens: {
+        // Used by the login popup. "split" = room for two columns: tablets and up, AND phones turned sideways.
+        // "short" = a short screen (a phone on its side, a small browser window): tighter spacing.
+        split: { raw: '(min-width: 768px), (min-width: 560px) and (max-height: 520px)' },
+        short: { raw: '(max-height: 520px)' },
+      },
       colors: {
         // Backgrounds
         cream: {

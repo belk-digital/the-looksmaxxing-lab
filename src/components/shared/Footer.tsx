@@ -184,7 +184,7 @@ export function Footer() {
   }, [])
 
   return (
-    <footer className="w-full relative z-40 bg-ink print:hidden" style={{ pointerEvents: 'auto' }}>
+    <footer data-site-footer className="w-full relative z-40 bg-ink print:hidden" style={{ pointerEvents: 'auto' }}>
       <FooterContent />
     </footer>
   )

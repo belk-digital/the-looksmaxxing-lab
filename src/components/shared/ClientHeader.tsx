@@ -16,7 +16,7 @@ import { SearchOverlay } from './SearchOverlay'
 const CartDrawer = dynamic(() => import('@/components/cart/CartDrawer').then(mod => mod.CartDrawer), { ssr: false })
 
 const ANNOUNCEMENTS = [
-  "FREE SHIPPING ON ORDERS OVER $300",
+  "EXPRESS SHIPPING $20 · 2-3 BUSINESS DAYS",
   "NEW PEPTIDE BLENDS JUST DROPPED",
   "SUBSCRIBE FOR 15% OFF YOUR FIRST ORDER"
 ]
@@ -42,7 +42,7 @@ export function ClientHeader({ categories: initialCategories = [] }: any) {
   const [isLoadingMenu, setIsLoadingMenu] = useState(initialCategories.length === 0)
 
   useEffect(() => {
-    // Wait until the login state is known: the menu lists nasal sprays only for logged-in customers, so it is
+    // Wait until the login state is known: the menu lists members-only products only for logged-in customers, so it is
     // loaded once the state is known and loaded again if it changes (logging in or out without a page reload).
     if (initialCategories.length === 0 && status !== 'loading') {
       let cancelled = false

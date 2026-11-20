@@ -9,6 +9,7 @@ import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
 import { Space_Grotesk } from 'next/font/google'
 import { toast } from 'sonner'
 import { nextPathFromSearch, withNext } from '@/lib/auth/safeRedirect'
+import { MEMBERS_ONLY_SUMMARY } from '@/lib/access/restrictedProducts'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
@@ -22,7 +23,7 @@ export default function LoginPage() {
   // where to go after logging in (e.g. back to checkout); only a path on this site is ever accepted
   const [next, setNext] = useState<string | null>(null)
   useEffect(() => setNext(nextPathFromSearch(window.location.search)), [])
-  // Set when someone was sent here from a page that needs a login (e.g. a nasal spray product): we explain why.
+  // Set when someone was sent here from a page that needs a login (a members-only product): we explain why.
   const [fromCatalogue, setFromCatalogue] = useState(false)
   useEffect(() => {
     setFromCatalogue(new URLSearchParams(window.location.search).get('reason') === 'catalogue')
@@ -107,7 +108,7 @@ export default function LoginPage() {
 
           {fromCatalogue && (
             <div role="status" className="mb-6 rounded-xl border border-[#5984c4]/25 bg-[#5984c4]/[0.06] px-4 py-3 text-sm leading-relaxed text-gray-700">
-              <span className="font-bold text-black">Members catalogue.</span> Nasal spray products are available to
+              <span className="font-bold text-black">Members catalogue.</span> Our {MEMBERS_ONLY_SUMMARY} are available to
               logged-in customers. Log in, or sign up for a free account, and we'll take you straight back.
             </div>
           )}

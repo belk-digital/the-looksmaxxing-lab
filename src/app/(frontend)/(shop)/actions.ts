@@ -8,6 +8,7 @@ import { couponRuleForCart } from '@/lib/subscriptions/couponRules'
 import { isLoggedIn } from '@/lib/access/viewer'
 import { publicProductsClause } from '@/lib/access/restrictedQuery'
 import { withoutRestricted } from '@/lib/access/restrictedProducts'
+import { rankProducts } from '@/lib/search/products'
 
 export async function addToCart(productId: string | number, quantity: number = 1, providedVariantSku?: string, providedPriceSnapshot?: number) {
   try {
@@ -376,6 +377,8 @@ export async function verifyCoupon(couponCode: string, subtotal: number, clientC
       code: coupon.code,
       discount,
       description,
+      // 'store_credit' = a gift card (paid on top of the member discount); every other kind competes with it
+      type: coupon.type as string,
       freeShipping: coupon.freeShipping || coupon.type === 'free_shipping',
       // 'first_month' | 'every_month' on a subscription cart, null on a normal purchase
       subscriptionScope: rule.scope,
@@ -394,8 +397,14 @@ type ShopQuery = {
   isBestSeller?: boolean
   minPrice?: number
   maxPrice?: number
+  // 'relevance' only means something together with `q` (a search); on its own it falls back to newest first.
   sort?: string
+  // What the visitor typed in the shop's search box.
+  q?: string
 }
+
+// Longest search text we act on (the box is typed into by visitors, so never trust its size).
+const MAX_SEARCH_LENGTH = 100
 
 // The product list behind the shop and the home page.
 // `includeRestricted` is NOT something a caller can pass in from the browser: this function is private to this
@@ -411,7 +420,7 @@ async function queryShopProducts(params: ShopQuery, includeRestricted: boolean) 
       ]
     }
 
-    // Nasal sprays are for logged-in customers only: leave them out unless the caller is allowed to see them.
+    // Members-only products are for logged-in customers only: leave them out unless the caller is allowed to see them.
     if (!includeRestricted) {
       const publicOnly = await publicProductsClause(payload)
       if (publicOnly) where.and.push(publicOnly)
@@ -460,13 +469,42 @@ async function queryShopProducts(params: ShopQuery, includeRestricted: boolean) 
       where.and.push({ price: priceQuery })
     }
 
+    // Search. It runs on top of every filter above (including the members-only exclusion), so it can only ever
+    // rank products the visitor could already see in the grid. The matching itself happens here rather than in
+    // the database so it behaves like the header search (old product names, typos); the catalogue is small.
+    const searchText = typeof params.q === 'string' ? params.q.trim().slice(0, MAX_SEARCH_LENGTH) : ''
+    let rankedIds: Array<string | number> | null = null
+    if (searchText) {
+      const pool = await payload.find({
+        collection: 'products',
+        where,
+        pagination: false,
+        depth: 1, // category names
+        select: { name: true, description: true, seoDescription: true, categories: true },
+        overrideAccess: true,
+      })
+      const searchable = pool.docs.map((doc: any) => ({
+        id: doc.id as string | number,
+        name: String(doc.name ?? ''),
+        description: String(doc.description || doc.seoDescription || ''),
+        categories: (doc.categories || []).map((c: any) => (typeof c === 'object' && c ? c.name : '')).join(' '),
+      }))
+      rankedIds = rankProducts(searchable, searchText).map((match) => match.id)
+
+      if (rankedIds.length === 0) {
+        return { success: true, products: [], totalPages: 0, page: 1, hasNextPage: false }
+      }
+      where.and.push({ id: { in: rankedIds } })
+    }
+
     let sortParam = '-createdAt'
     if (params.sort === 'price-asc') sortParam = 'price'
     if (params.sort === 'price-desc') sortParam = '-price'
     if (params.sort === 'newest') sortParam = '-createdAt'
     if (params.sort === 'name-asc') sortParam = 'name'
 
-    const limit = params.limit || 24
+    // A search answers in ONE page holding every match (there are only ever a handful), so nothing is left to page.
+    const limit = rankedIds ? rankedIds.length : params.limit || 24
     const page = params.page || 1
 
     const results = await payload.find({
@@ -479,7 +517,14 @@ async function queryShopProducts(params: ShopQuery, includeRestricted: boolean) 
       overrideAccess: true,
     })
 
-    const uiProducts = results.docs.map(doc => {
+    // While searching, "best match first" unless the visitor picked another sort.
+    let docs = results.docs
+    if (rankedIds && (!params.sort || params.sort === 'relevance')) {
+      const rank = new Map(rankedIds.map((id, index) => [String(id), index]))
+      docs = [...docs].sort((a, b) => (rank.get(String(a.id)) ?? 0) - (rank.get(String(b.id)) ?? 0))
+    }
+
+    const uiProducts = docs.map(doc => {
       let imageUrl = '/temp-products/product-image.png'
       let hoverImageUrl: string | undefined = undefined
 
@@ -570,7 +615,7 @@ async function queryShopProducts(params: ShopQuery, includeRestricted: boolean) 
 }
 
 /**
- * The PUBLIC product list: never contains nasal sprays. This is what cached pages (home, shop) are built with,
+ * The PUBLIC product list: never contains members-only products (nasal sprays, GLP-3RTA, Tirzepatide, Semaglutide). This is what cached pages (home, shop) are built with,
  * because a cached page is shared by everyone and cannot know who is looking. It is also what a logged-out
  * visitor gets if they call it directly.
  */
@@ -579,7 +624,7 @@ export async function getShopProducts(params: ShopQuery) {
 }
 
 /**
- * The product list for whoever is asking: includes nasal sprays only when the server confirms the person is
+ * The product list for whoever is asking: includes members-only products only when the server confirms the person is
  * logged in (it reads the login cookie itself; nothing the browser sends can switch it on).
  */
 export async function getShopProductsForViewer(params: ShopQuery) {

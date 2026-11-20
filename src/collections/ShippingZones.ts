@@ -24,7 +24,7 @@ export const ShippingZones: CollectionConfig = {
       fields: [
         { name: 'method', type: 'text', required: true },
         { name: 'price', type: 'number', required: true, admin: { description: 'Price in cents (e.g. 500 = $5.00). Set to 0 for free shipping' } },
-        { name: 'estimatedDays', type: 'number' },
+        { name: 'estimatedDays', type: 'number', admin: { description: 'A single number of days. Express methods always show "2-3 business days" to customers whatever is entered here.' } },
         { name: 'minOrderAmount', type: 'number', admin: { description: 'Minimum subtotal required for this method to appear (e.g., 100 for free shipping over $100)' } },
       ],
       admin: {

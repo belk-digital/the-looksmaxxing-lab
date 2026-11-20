@@ -109,3 +109,15 @@ export const NON_SPRAY_SLUGS: string[] = [
   "tirzepatide",
   "vip",
 ]
+
+/**
+ * Vial products that are members-only because of WHICH COMPOUND they are (GLP-3RTA, Tirzepatide, Semaglutide),
+ * not because of their format. Added 2026-11-20. Their spray versions are already in SPRAY_SLUGS.
+ */
+export const GATED_COMPOUND_VIAL_SLUGS: string[] = ["glp-3rta", "semaglutide", "tirzepatide"]
+
+/** Everything a logged-out visitor can see: the vial and supply products that are not members-only (46). */
+export const PUBLIC_SLUGS: string[] = NON_SPRAY_SLUGS.filter((slug) => !GATED_COMPOUND_VIAL_SLUGS.includes(slug))
+
+/** Everything a logged-out visitor can NOT see: all 49 sprays plus the 3 gated vial products (52). */
+export const MEMBERS_ONLY_SLUGS: string[] = [...SPRAY_SLUGS, ...GATED_COMPOUND_VIAL_SLUGS]

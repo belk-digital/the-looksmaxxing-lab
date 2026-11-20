@@ -12,6 +12,8 @@
  * - A slow answer for old filters can never overwrite the newer filters; "load more" can't mix pages from
  *   different filters.
  * - The sort dropdown follows the URL.
+ * - The search box (?q=): typing searches after a pause, it shares the address bar with the other filters, and an
+ *   answer from the address bar can never overwrite what the visitor has typed since.
  *
  * No database and no real browser: Next's router, the product loader, framer-motion and the product card are mocked.
  */
@@ -19,7 +21,7 @@
 import React from 'react'
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { renderToString } from 'react-dom/server'
-import { render, screen, act, waitFor, cleanup } from '@testing-library/react'
+import { render, screen, act, waitFor, cleanup, fireEvent } from '@testing-library/react'
 
 // ─── Mocks ────────────────────────────────────────────────────────────────────
 
@@ -30,6 +32,7 @@ const nav = vi.hoisted(() => ({
   authStatus: 'unauthenticated' as 'loading' | 'authenticated' | 'unauthenticated',
   listeners: new Set<() => void>(),
   push: vi.fn(),
+  replace: vi.fn(),
 }))
 const getShopProducts = vi.hoisted(() => vi.fn())
 
@@ -38,7 +41,7 @@ vi.mock('next-auth/react', () => ({ useSession: () => ({ status: nav.authStatus,
 vi.mock('next/navigation', async () => {
   const R = await import('react')
   return {
-    useRouter: () => ({ push: nav.push }),
+    useRouter: () => ({ push: nav.push, replace: nav.replace }),
     usePathname: () => '/shop',
     useSearchParams: () => {
       // While Next.js builds a cached page it cannot read the URL and throws this kind of error.
@@ -194,6 +197,7 @@ beforeEach(() => {
   nav.authStatus = 'unauthenticated'
   nav.listeners.clear()
   nav.push.mockReset()
+  nav.replace.mockReset()
   getShopProducts.mockReset()
   getShopProducts.mockResolvedValue(ok(['Default-From-Server']))
 })
@@ -304,6 +308,193 @@ describe('in the browser', () => {
     await waitFor(() => expect(screen.getByTestId('sort-select').getAttribute('data-value')).toBe('price-asc'))
     await waitFor(() => expect(cards()).toEqual(['Cheap']))
     expect(getShopProducts.mock.calls[0][0]).toMatchObject({ sort: 'price-asc' })
+  })
+})
+
+describe('the search box', () => {
+  const box = () => screen.getByLabelText('Search products') as HTMLInputElement
+  const form = () => box().closest('form') as HTMLFormElement
+  const type = (text: string) => fireEvent.change(box(), { target: { value: text } })
+  const wait = (ms: number) => act(async () => new Promise((resolve) => setTimeout(resolve, ms)))
+  /** The address the shop last asked for, e.g. "/shop?q=bpc". */
+  const lastReplace = () => nav.replace.mock.calls.at(-1)?.[0] as string | undefined
+
+  it('is in the filter bar, labelled for screen readers, with a phone-friendly keyboard and no zoom-in on iPhones', () => {
+    render(React.createElement(ShopClient, props()))
+    expect(form().getAttribute('role')).toBe('search')
+    expect(box().getAttribute('inputmode')).toBe('search')
+    expect(box().getAttribute('enterkeyhint')).toBe('search')
+    // iOS Safari zooms the page in when a text box has a font smaller than 16px
+    expect(box().className).toContain('text-base')
+    expect(box().className).not.toMatch(/(^|\s)text-(xs|sm)(\s|$)/)
+  })
+
+  it('is part of the saved (cached) page, but empty', () => {
+    nav.bailout = true
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    const html = renderToString(React.createElement(ShopClient, props()))
+    spy.mockRestore()
+    expect(html).toContain('aria-label="Search products"')
+    expect(html).not.toContain('Clear search')
+  })
+
+  it('searches a moment after the visitor stops typing, not on every key', async () => {
+    render(React.createElement(ShopClient, props()))
+    type('b')
+    type('bp')
+    type('bpc')
+    expect(nav.replace).not.toHaveBeenCalled()
+
+    await waitFor(() => expect(nav.replace).toHaveBeenCalledTimes(1))
+    expect(lastReplace()).toBe('/shop?q=bpc')
+    expect(nav.push).not.toHaveBeenCalled() // replace, so the back button isn't filled with half-typed words
+  })
+
+  it('Enter searches straight away', () => {
+    render(React.createElement(ShopClient, props()))
+    type('tirz')
+    fireEvent.submit(form())
+    expect(lastReplace()).toBe('/shop?q=tirz')
+    expect(nav.replace).toHaveBeenCalledTimes(1)
+  })
+
+  it('trims spaces and does not search for nothing', () => {
+    render(React.createElement(ShopClient, props()))
+    type('   ')
+    fireEvent.submit(form())
+    expect(nav.replace).not.toHaveBeenCalled()
+    type('  bpc  ')
+    fireEvent.submit(form())
+    expect(lastReplace()).toBe('/shop?q=bpc')
+  })
+
+  it('keeps the other filters when searching', async () => {
+    nav.search = 'category=Hormonal%20Health&onSale=true'
+    getShopProducts.mockResolvedValue(ok(['Gamma']))
+    render(React.createElement(ShopClient, props()))
+    await waitFor(() => expect(cards()).toEqual(['Gamma']))
+    type('bpc')
+    fireEvent.submit(form())
+    const url = new URL(lastReplace()!, 'https://x.test')
+    expect(url.searchParams.get('q')).toBe('bpc')
+    expect(url.searchParams.getAll('category')).toEqual(['Hormonal Health'])
+    expect(url.searchParams.get('onSale')).toBe('true')
+  })
+
+  it('asks the server for the search and shows what comes back', async () => {
+    nav.search = 'q=bpc'
+    getShopProducts.mockResolvedValue(ok(['BPC-157']))
+    render(React.createElement(ShopClient, props()))
+    await waitFor(() => expect(cards()).toEqual(['BPC-157']))
+    expect(getShopProducts.mock.calls[0][0]).toMatchObject({ page: 1, q: 'bpc' })
+    expect(box().value).toBe('bpc')
+  })
+
+  it('shows "Relevance" as the sort while searching (and not otherwise), until another sort is picked', async () => {
+    render(React.createElement(ShopClient, props()))
+    const options = () => screen.getByTestId('sort-select').textContent
+    expect(screen.getByTestId('sort-select').getAttribute('data-value')).toBe('newest')
+    expect(options()).not.toContain('Relevance')
+
+    getShopProducts.mockResolvedValue(ok(['BPC-157']))
+    setUrl('q=bpc')
+    await waitFor(() => expect(screen.getByTestId('sort-select').getAttribute('data-value')).toBe('relevance'))
+    expect(options()).toContain('Relevance')
+    expect(getShopProducts.mock.calls[0][0].sort).toBeUndefined() // the server uses best-match order by default
+
+    setUrl('q=bpc&sort=price-asc')
+    await waitFor(() => expect(screen.getByTestId('sort-select').getAttribute('data-value')).toBe('price-asc'))
+  })
+
+  it('a leftover "relevance" sort without a search falls back to newest', async () => {
+    nav.search = 'sort=relevance'
+    render(React.createElement(ShopClient, props()))
+    await waitFor(() => expect(screen.getByTestId('sort-select').getAttribute('data-value')).toBe('newest'))
+  })
+
+  it('the clear button empties the box and the search, and keeps the other filters', async () => {
+    nav.search = 'q=bpc&category=Hormonal%20Health'
+    getShopProducts.mockResolvedValue(ok(['BPC-157']))
+    render(React.createElement(ShopClient, props()))
+    await waitFor(() => expect(box().value).toBe('bpc'))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear search' }))
+    expect(box().value).toBe('')
+    const url = new URL(lastReplace()!, 'https://x.test')
+    expect(url.searchParams.has('q')).toBe(false)
+    expect(url.searchParams.getAll('category')).toEqual(['Hormonal Health'])
+    expect(screen.queryByRole('button', { name: 'Clear search' })).toBeNull()
+  })
+
+  it('clearing the search also drops the "relevance" sort', async () => {
+    nav.search = 'q=bpc&sort=relevance'
+    getShopProducts.mockResolvedValue(ok(['BPC-157']))
+    render(React.createElement(ShopClient, props()))
+    await waitFor(() => expect(box().value).toBe('bpc'))
+    fireEvent.click(screen.getByRole('button', { name: 'Clear search' }))
+    expect(lastReplace()).toBe('/shop')
+  })
+
+  it('Escape clears the box', async () => {
+    nav.search = 'q=bpc'
+    getShopProducts.mockResolvedValue(ok(['BPC-157']))
+    render(React.createElement(ShopClient, props()))
+    await waitFor(() => expect(box().value).toBe('bpc'))
+    fireEvent.keyDown(box(), { key: 'Escape' })
+    expect(box().value).toBe('')
+    expect(lastReplace()).toBe('/shop')
+  })
+
+  it('follows the address bar when it changes from elsewhere (back button, "Clear all filters")', async () => {
+    nav.search = 'q=bpc'
+    render(React.createElement(ShopClient, props()))
+    await waitFor(() => expect(box().value).toBe('bpc'))
+
+    getShopProducts.mockResolvedValue(ok(['Alpha', 'Beta']))
+    setUrl('')
+    await waitFor(() => expect(box().value).toBe(''))
+    setUrl('q=tirz')
+    await waitFor(() => expect(box().value).toBe('tirz'))
+    // and following the address bar is not mistaken for the visitor searching
+    await wait(600)
+    expect(nav.replace).not.toHaveBeenCalled()
+  })
+
+  it('a late answer from the address bar never overwrites what was typed since', async () => {
+    render(React.createElement(ShopClient, props()))
+    type('bp')
+    fireEvent.submit(form())
+    expect(lastReplace()).toBe('/shop?q=bp')
+
+    // the visitor carries on typing before the address bar has caught up...
+    type('bpc')
+    // ...then the address bar answers for the OLD text
+    setUrl('q=bp')
+    expect(box().value).toBe('bpc')
+
+    // the newer text is still searched for, and its answer doesn't disturb the box either
+    await waitFor(() => expect(lastReplace()).toBe('/shop?q=bpc'))
+    setUrl('q=bpc')
+    expect(box().value).toBe('bpc')
+    await wait(600)
+    expect(nav.replace).toHaveBeenCalledTimes(2)
+  })
+
+  it('typing back to what the address bar had before it caught up still searches for it', () => {
+    render(React.createElement(ShopClient, props()))
+    type('bp')
+    fireEvent.submit(form()) // asks for q=bp; the address bar still says "nothing"
+    type('') // the visitor deletes it again straight away
+    fireEvent.submit(form())
+    expect(nav.replace.mock.calls.map((c) => c[0])).toEqual(['/shop?q=bp', '/shop'])
+  })
+
+  it('says what was searched for when nothing matches', async () => {
+    nav.search = 'q=zzz'
+    getShopProducts.mockResolvedValue(ok([]))
+    render(React.createElement(ShopClient, props()))
+    await waitFor(() => expect(screen.getByText('No products found')).toBeTruthy())
+    expect(document.body.textContent).toContain('Nothing matched “zzz”')
   })
 })
 

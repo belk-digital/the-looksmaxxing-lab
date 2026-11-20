@@ -67,7 +67,7 @@ export async function createPaymentIntent(
   }
   const { total } = pricing
 
-  // Nasal sprays: logged-in customers only (checked here, before any payment is started).
+  // Members-only products: logged-in customers only (checked here, before any payment is started).
   const restrictedError = await restrictedOrderError(pricing.productsById)
   if (restrictedError) return { error: restrictedError, loginRequired: true }
 
@@ -164,11 +164,11 @@ export async function createPayloadOrder(
     return { error: pricing.error, updatedItems: pricing.updatedItems, priceChanged: pricing.priceChanged }
   }
   const {
-    subtotal, discountAmount, finalShipping, feeTotal, appliedFees, tax,
+    subtotal, discountAmount, memberDiscountAmount, memberDiscountPercent, finalShipping, feeTotal, appliedFees, tax,
     pointsToRedeem, total, liveItems, productsById,
   } = pricing
 
-  // Nasal sprays: logged-in customers only (checked here, before any order or payment is created).
+  // Members-only products: logged-in customers only (checked here, before any order or payment is created).
   const restrictedError = await restrictedOrderError(productsById)
   if (restrictedError) return { error: restrictedError, loginRequired: true }
 
@@ -335,15 +335,22 @@ export async function createPayloadOrder(
         paymentStatus: total <= 0 ? 'captured' : 'unpaid',
         fulfillmentStatus: 'unfulfilled',
         subtotal: Math.round(subtotal * 100) / 100,
+        // discountTotal is EVERYTHING taken off (member discount + coupon), so subtotal - discountTotal + ... = total always
+        // holds. The member part is stored separately so pages and emails can show it as "Member discount".
         discountTotal: Math.round(discountAmount * 100) / 100,
+        memberDiscountTotal: Math.round(memberDiscountAmount * 100) / 100,
+        memberDiscountPercent,
         redeemedPoints: Math.round(pointsToRedeem * 100) / 100,
         shippingTotal: Math.round(finalShipping * 100) / 100,
         taxTotal: Math.round(tax * 100) / 100,
         feeTotal: Math.round(feeTotal * 100),
         appliedFees,
         total: Math.round(total * 100) / 100,
-        shippingMethod: shippingMethodName,
-        couponCode: couponCode || '',
+        // The method actually charged (the shop's own list decides), not whatever name the browser sent: a page left open
+        // from before the shipping options changed must never leave an order labelled with a method that no longer exists.
+        shippingMethod: pricing.shippingMethodName,
+        // a code that lost to the member discount was not used, so it is not recorded (and not counted as used)
+        couponCode: pricing.couponDisplacedByMember ? '' : couponCode || '',
         paymentMethod: paymentMethod || 'stripe',
         ...(isPlan
           ? {

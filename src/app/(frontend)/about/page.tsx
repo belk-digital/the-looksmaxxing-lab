@@ -95,7 +95,7 @@ export default function AboutPage() {
         "@type": "Question",
         "name": "Where do your compounds ship from?",
         "acceptedAnswer": { "@type": "Answer",
-          "text": "All orders ship from US-based warehouses. Same-day shipping for orders before 2 PM ET. Standard delivery 3-5 days; expedited 2-day on orders over $300. International shipping available."
+          "text": "All orders ship from US-based warehouses. Same-day shipping for orders before 2 PM ET. Every order ships Express for a flat $20, delivered in 2-3 business days. International shipping available."
         }
       },
       {

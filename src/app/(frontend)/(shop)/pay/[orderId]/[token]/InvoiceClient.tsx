@@ -11,6 +11,7 @@ import { HELP } from '@/lib/subscriptions/helpText'
 import { submitBridgeHandoff } from '@/lib/payments/submitHandoff'
 import { startInvoiceCardPayment } from '../../actions'
 import { everyLabel, orderLabel } from '@/lib/subscriptions/labels'
+import { ZELLE_QR_ALT, ZELLE_QR_URL } from '@/lib/payments/zelleQr'
 
 export interface InvoiceViewModel {
   orderId: string
@@ -40,7 +41,7 @@ const money = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency',
 const date = (iso: string | null) =>
   iso ? new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }) : ''
 
-const ZELLE_QR = 'https://pub-0ab0207d475a48e7b7e92a35418eace6.r2.dev/email-assets/longevia-zelle-qr.jpeg'
+const ZELLE_QR = ZELLE_QR_URL
 
 export function InvoiceClient({ invoice }: { invoice: InvoiceViewModel }) {
   const router = useRouter()
@@ -179,7 +180,7 @@ export function InvoiceClient({ invoice }: { invoice: InvoiceViewModel }) {
                     Send <strong>{money(invoice.total)}</strong> via Zelle to:
                   </p>
                   <div className="flex justify-center my-4">
-                    <Image src={ZELLE_QR} alt="Zelle payment QR code" width={180} height={180} className="rounded-xl border-2 border-amber-200" />
+                    <Image src={ZELLE_QR} alt={ZELLE_QR_ALT} width={180} height={180} unoptimized data-testid="zelle-qr" className="rounded-xl border-2 border-amber-200" />
                   </div>
                   <p className="text-center font-mono font-bold text-ink bg-white border border-amber-200 rounded-lg py-2 px-3 break-all">
                     support@longeviaresearch.com

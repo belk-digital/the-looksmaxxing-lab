@@ -7,7 +7,9 @@
 import { describe, it, expect } from 'vitest'
 import {
   AGE_VERIFIED_KEY,
+  LOGIN_PROMPT_AFTER_INTERACTION_MS,
   LOGIN_PROMPT_CLOSED_KEY,
+  LOGIN_PROMPT_LCP_GUARD_PX,
   LOGIN_PROMPT_MAX_DELAY_MS,
   LOGIN_PROMPT_MAX_PER_SESSION,
   LOGIN_PROMPT_MIN_DELAY_MS,
@@ -17,16 +19,20 @@ import {
   LOGIN_PROMPT_PAGES_KEY,
   LOGIN_PROMPT_REAPPEAR_AFTER_MS,
   LOGIN_PROMPT_SHOWN_COUNT_KEY,
+  LOGIN_SHORTCUT_DELAY_MS,
+  LOGIN_SHORTCUT_LCP_GUARD_PX,
   cooldownActive,
   countPageView,
   isPromptPath,
   markPromptClosed,
   markPromptShown,
   pickPromptDelay,
+  popupCouldBecomeLcp,
   readCount,
   safeGet,
   safeSet,
   shouldOfferLoginPrompt,
+  shouldShowLoginShortcut,
   type PromptContext,
 } from '../../src/lib/access/loginPrompt'
 
@@ -276,6 +282,33 @@ describe('the random delay before the popup appears', () => {
   })
 })
 
+describe('keeping the popup from becoming the page\'s Largest Contentful Paint (LCP)', () => {
+  it('can only take over on a page whose own biggest item is no bigger than the popup\'s biggest text block', () => {
+    expect(popupCouldBecomeLcp(14_850)).toBe(true) // e.g. a product page whose image has not loaded: just a heading
+    expect(popupCouldBecomeLcp(0)).toBe(true) // nothing contentful yet: the popup would BE the LCP
+    expect(popupCouldBecomeLcp(LOGIN_PROMPT_LCP_GUARD_PX)).toBe(true) // exactly at the limit: still waits
+    expect(popupCouldBecomeLcp(LOGIN_PROMPT_LCP_GUARD_PX + 1)).toBe(false)
+    expect(popupCouldBecomeLcp(517 * 646)).toBe(false) // a product photo
+    expect(popupCouldBecomeLcp(1195 * 464)).toBe(false) // a hero image
+  })
+
+  it('has nothing to protect when the browser does not measure LCP (or the measurement is nonsense)', () => {
+    expect(popupCouldBecomeLcp(null)).toBe(false)
+    expect(popupCouldBecomeLcp(Number.NaN)).toBe(false)
+    expect(popupCouldBecomeLcp(Number.POSITIVE_INFINITY)).toBe(false)
+  })
+
+  it('uses a limit above the popup\'s measured text sizes (22,900 px² desktop, 17,700 tablet, 16,200 phone)', () => {
+    expect(LOGIN_PROMPT_LCP_GUARD_PX).toBeGreaterThan(24_100) // the largest candidate seen, with headroom
+    expect(LOGIN_PROMPT_AFTER_INTERACTION_MS).toBeGreaterThan(0)
+  })
+
+  it('the limit can be tuned through the second argument', () => {
+    expect(popupCouldBecomeLcp(50_000, 60_000)).toBe(true)
+    expect(popupCouldBecomeLcp(50_000, 40_000)).toBe(false)
+  })
+})
+
 describe('telling "never here" from "not yet"', () => {
   it('the age gate being up is "not yet": skipping the age gate says it could appear', () => {
     const gateUp = ctx({ local: store() })
@@ -317,5 +350,61 @@ describe('blocked or missing storage (private browsing)', () => {
 
   it('treats broken storage as "age gate not passed", so the popup stays away rather than risk stacking', () => {
     expect(shouldOfferLoginPrompt(ctx({ local: broken, session: broken }))).toBe(false)
+  })
+})
+
+// ─── The corner shortcut ──────────────────────────────────────────────────────
+
+describe('shouldShowLoginShortcut (the small "Members: save 20%" button in the corner)', () => {
+  const verified = store({ [AGE_VERIFIED_KEY]: 'true' })
+  const base = { authStatus: 'unauthenticated' as const, pathname: '/shop', local: verified, enabled: true }
+
+  it('is for logged-out visitors on ordinary pages, once the age gate has been passed', () => {
+    expect(shouldShowLoginShortcut(base)).toBe(true)
+    for (const pathname of ['/', '/shop', '/products/bpc-157', '/journal/x', '/about']) {
+      expect(shouldShowLoginShortcut({ ...base, pathname })).toBe(true)
+    }
+  })
+
+  it('is never for a logged-in customer, and not while it is still unknown whether they are', () => {
+    expect(shouldShowLoginShortcut({ ...base, authStatus: 'authenticated' })).toBe(false)
+    expect(shouldShowLoginShortcut({ ...base, authStatus: 'loading' })).toBe(false)
+  })
+
+  it('is never on sign-in, basket, checkout or account pages', () => {
+    for (const pathname of ['/login', '/register', '/cart', '/checkout', '/account', '/account/orders', '/order-confirmation/1', '/pay/1/x', '/admin']) {
+      expect(shouldShowLoginShortcut({ ...base, pathname })).toBe(false)
+    }
+    expect(shouldShowLoginShortcut({ ...base, pathname: null })).toBe(false)
+    expect(shouldShowLoginShortcut({ ...base, pathname: undefined })).toBe(false)
+  })
+
+  it('never sits on top of the age gate, and storage that cannot be read counts as "not passed"', () => {
+    expect(shouldShowLoginShortcut({ ...base, local: store() })).toBe(false)
+    expect(shouldShowLoginShortcut({ ...base, local: store({ [AGE_VERIFIED_KEY]: 'false' }) })).toBe(false)
+    expect(shouldShowLoginShortcut({ ...base, local: null })).toBe(false)
+    expect(shouldShowLoginShortcut({ ...base, local: { getItem: () => { throw new Error('blocked') }, setItem: () => undefined } })).toBe(false)
+  })
+
+  it('is off when the restriction (kill switch) is off', () => {
+    expect(shouldShowLoginShortcut({ ...base, enabled: false })).toBe(false)
+  })
+
+  it('has none of the popup\'s reminder limits: closing the popup or using up its 3 reminders does not hide it', () => {
+    const used = store({
+      [AGE_VERIFIED_KEY]: 'true',
+      [LOGIN_PROMPT_SHOWN_COUNT_KEY]: String(LOGIN_PROMPT_MAX_PER_SESSION),
+      [LOGIN_PROMPT_CLOSED_KEY]: String(NOW),
+      [LOGIN_PROMPT_DISMISSED_KEY]: String(NOW),
+    })
+    expect(shouldShowLoginShortcut({ ...base, local: used })).toBe(true)
+  })
+
+  it('has sensible timings: a short wait after load, and a smaller LCP guard than the popup\'s', () => {
+    expect(LOGIN_SHORTCUT_DELAY_MS).toBeGreaterThanOrEqual(1000)
+    expect(LOGIN_SHORTCUT_DELAY_MS).toBeLessThanOrEqual(6000)
+    expect(LOGIN_SHORTCUT_LCP_GUARD_PX).toBeLessThan(LOGIN_PROMPT_LCP_GUARD_PX)
+    expect(popupCouldBecomeLcp(5_000, LOGIN_SHORTCUT_LCP_GUARD_PX)).toBe(true)
+    expect(popupCouldBecomeLcp(500_000, LOGIN_SHORTCUT_LCP_GUARD_PX)).toBe(false)
   })
 })

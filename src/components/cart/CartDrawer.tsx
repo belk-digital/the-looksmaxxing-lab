@@ -13,11 +13,16 @@ import { EmptyState } from '@/components/shared/EmptyState'
 import { ShoppingBag } from 'lucide-react'
 import { useLenis } from 'lenis/react'
 import { pushViewCart, pushRemoveFromCart } from '@/lib/analytics/ecommerce'
+import { EXPRESS_DELIVERY_TIME, EXPRESS_SHIPPING_NAME, EXPRESS_SHIPPING_PRICE_CENTS } from '@/lib/checkout/shipping'
 
 export function CartDrawer() {
   const { isOpen, closeCart, items, removeItem, updateQuantity } = useCartStore()
   const lenis = useLenis()
-  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number>(300) // Fallback
+  // The subtotal at which shipping becomes free, if the shop has a free-shipping method at all (it does not when every
+  // order ships by Express Shipping). null = no free-shipping goal to show.
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number | null>(null)
+  // The shop's shipping method as shown to customers (from the shipping zone, with the Express defaults until it loads)
+  const [shippingNote, setShippingNote] = useState<{ name: string; price: number }>({ name: EXPRESS_SHIPPING_NAME, price: EXPRESS_SHIPPING_PRICE_CENTS })
   // Tracks previous isOpen value so view_cart fires only on false→true transitions.
   const wasOpenRef = useRef(false)
 
@@ -33,6 +38,8 @@ export function CartDrawer() {
             if (freeMethod) {
               setFreeShippingThreshold(freeMethod.minOrderAmount)
             }
+            const paid = firstZone.methods.find((m: any) => m.price > 0) || firstZone.methods[0]
+            if (paid?.method) setShippingNote({ name: String(paid.method), price: Number(paid.price) || 0 })
           }
         }
       } catch (err) {
@@ -100,8 +107,9 @@ export function CartDrawer() {
   }
 
   const subtotal = items.reduce((acc, item) => acc + item.priceSnapshot * item.quantity, 0)
-  const progressToFreeShipping = Math.min((subtotal / freeShippingThreshold) * 100, 100)
-  const amountToFreeShipping = freeShippingThreshold - subtotal
+  const hasFreeShippingGoal = freeShippingThreshold !== null && freeShippingThreshold > 0
+  const progressToFreeShipping = hasFreeShippingGoal ? Math.min((subtotal / (freeShippingThreshold as number)) * 100, 100) : 0
+  const amountToFreeShipping = hasFreeShippingGoal ? (freeShippingThreshold as number) - subtotal : 1
 
   return (
     <AnimatePresence>
@@ -161,13 +169,16 @@ export function CartDrawer() {
             ) : (
               /* Populated Cart */
               <>
-                {/* Shipping Progress */}
-                <div className="px-6 md:px-8 py-5 bg-[#F8F8FA] shrink-0">
+                {/* Shipping: a free-shipping progress bar only if the shop has a free-shipping method; otherwise what shipping costs */}
+                <div className="px-6 md:px-8 py-5 bg-[#F8F8FA] shrink-0" data-testid="drawer-shipping-note">
                   <p className="text-xs font-bold uppercase tracking-wider text-ink/70 text-center mb-3">
-                    {amountToFreeShipping > 0 
-                      ? `Add $${amountToFreeShipping.toFixed(2)} more for free shipping`
-                      : "🎉 You've unlocked free shipping!"}
+                    {!hasFreeShippingGoal
+                      ? `${shippingNote.name}: $${(shippingNote.price / 100).toFixed(2)} · ${EXPRESS_DELIVERY_TIME}`
+                      : amountToFreeShipping > 0
+                        ? `Add $${amountToFreeShipping.toFixed(2)} more for free shipping`
+                        : "🎉 You've unlocked free shipping!"}
                   </p>
+                  {hasFreeShippingGoal && (
                   <div className="w-full h-2 bg-black/5 rounded-full overflow-hidden shadow-inner">
                     <motion.div 
                       className="h-full bg-gradient-to-r from-[#C9B58E] to-[#b09d76] rounded-full shadow-[0_0_12px_rgba(201,181,142,0.8)] relative"
@@ -178,6 +189,7 @@ export function CartDrawer() {
                       <div className="absolute inset-0 bg-white/20 w-full h-full animate-[shimmer_2s_infinite]" style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)', transform: 'skewX(-20deg)' }} />
                     </motion.div>
                   </div>
+                  )}
                 </div>
 
                 {/* Items List */}

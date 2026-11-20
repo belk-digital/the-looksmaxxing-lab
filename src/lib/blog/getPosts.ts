@@ -55,6 +55,13 @@ export async function getAllJournalPosts(): Promise<UnifiedJournalPost[]> {
   return all.sort((a, b) => new Date(b.sortDate).getTime() - new Date(a.sortDate).getTime())
 }
 
+// The newest posts, exactly as the /journal page orders them (it is the same list, cut short). The home page shows these.
+// A database failure is passed on, like getAllJournalPosts: the home page is saved for 2 days, so it must not be saved
+// with an empty or out-of-date journal row.
+export async function getLatestJournalPosts(count: number): Promise<UnifiedJournalPost[]> {
+  return (await getAllJournalPosts()).slice(0, Math.max(0, count))
+}
+
 export async function getCmsJournalPostSlugs(): Promise<string[]> {
   try {
     const payload = await getPayload({ config: configPromise })
@@ -160,7 +167,7 @@ export async function getCmsJournalPost(slug: string): Promise<{
   const post = docs[0]
   if (!post) return null
 
-  // A journal post page is cached and shared by everyone, so it never shows nasal-spray products.
+  // A journal post page is cached and shared by everyone, so it never shows members-only products.
   const relatedProducts: ShopProduct[] = Array.isArray(post.relatedProducts)
     ? withoutRestricted((post.relatedProducts as any[]).filter((p: any) => typeof p === 'object' && p !== null)).map(toShopProduct)
     : []

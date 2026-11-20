@@ -9,6 +9,8 @@ import { motion } from 'framer-motion'
 import { useCartStore } from '@/lib/cart/store'
 import { resolveLegacySku } from '@/lib/cart/variantMatch'
 import { useRouter } from 'next/navigation'
+import { couponPartOfDiscount, memberDiscountLabel } from '@/lib/membership/discount'
+import { deliveryTimeLabel } from '@/lib/checkout/shipping'
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '700'] })
 
@@ -69,6 +71,9 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
   }).format(new Date(order.createdAt))
 
   const subtotal = order.subtotal || 0
+  // discountTotal is everything taken off; the member discount is shown on its own line, the coupon on another.
+  const memberDiscount = Number(order.memberDiscountTotal) || 0
+  const couponDiscount = couponPartOfDiscount(order)
   const shipping = order.shippingTotal || 0
   const processingFee = (order.feeTotal ? order.feeTotal / 100 : order.taxTotal) || 0
   const total = order.total || 0
@@ -271,6 +276,12 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                 {order.shippingAddress.line2 && <span>{order.shippingAddress.line2}</span>}
                 <span>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.postalCode}</span>
                 <span>{order.shippingAddress.country}</span>
+                {order.shippingMethod && (
+                  <span className="mt-3 text-xs font-bold uppercase tracking-wider text-black" data-testid="order-shipping-method">
+                    {order.shippingMethod}
+                    {deliveryTimeLabel({ method: order.shippingMethod }) ? ` · ${deliveryTimeLabel({ method: order.shippingMethod })}` : ''}
+                  </span>
+                )}
               </div>
             </div>
           )}
@@ -287,10 +298,16 @@ export function OrderDetailClient({ order }: OrderDetailProps) {
                 <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
-              {!!order.discountTotal && order.discountTotal > 0 && (
+              {memberDiscount > 0 && (
+                <div className="flex justify-between text-green-500" data-testid="order-member-discount">
+                  <span>{memberDiscountLabel(order.memberDiscountPercent)}</span>
+                  <span>-${memberDiscount.toFixed(2)}</span>
+                </div>
+              )}
+              {couponDiscount > 0 && (
                 <div className="flex justify-between text-green-500">
                   <span>Discount {order.couponCode ? `(${order.couponCode})` : ''}</span>
-                  <span>-${order.discountTotal.toFixed(2)}</span>
+                  <span>-${couponDiscount.toFixed(2)}</span>
                 </div>
               )}
               <div className="flex justify-between text-gray-500">

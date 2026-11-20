@@ -716,7 +716,18 @@ export interface Order {
    * Before discounts/shipping/tax
    */
   subtotal?: number | null;
+  /**
+   * Everything taken off the subtotal: the member discount plus any coupon
+   */
   discountTotal?: number | null;
+  /**
+   * The part of the discount that was the member discount (logged-in customers)
+   */
+  memberDiscountTotal?: number | null;
+  /**
+   * The member discount percent that was applied (empty if none)
+   */
+  memberDiscountPercent?: number | null;
   /**
    * Maxx Points used in this order ($1 per point)
    */
@@ -1067,6 +1078,9 @@ export interface Shippingzone {
          * Price in cents (e.g. 500 = $5.00). Set to 0 for free shipping
          */
         price: number;
+        /**
+         * A single number of days. Express methods always show "2-3 business days" to customers whatever is entered here.
+         */
         estimatedDays?: number | null;
         /**
          * Minimum subtotal required for this method to appear (e.g., 100 for free shipping over $100)
@@ -1984,6 +1998,8 @@ export interface OrdersSelect<T extends boolean = true> {
       };
   subtotal?: T;
   discountTotal?: T;
+  memberDiscountTotal?: T;
+  memberDiscountPercent?: T;
   redeemedPoints?: T;
   shippingTotal?: T;
   taxTotal?: T;

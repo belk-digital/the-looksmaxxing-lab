@@ -1,6 +1,7 @@
 import type { Payload, PayloadRequest } from 'payload'
 import { payUrl, serverUrl } from './invoices'
 import { everyLabel, orderLabel } from './labels'
+import { ZELLE_QR_ALT, ZELLE_QR_URL } from '../payments/zelleQr'
 
 /**
  * Customer emails for subscriptions. Every one is clearly labelled "SUBSCRIPTION" with the order number so
@@ -10,7 +11,7 @@ import { everyLabel, orderLabel } from './labels'
 type Id = string | number
 
 const SUPPORT_EMAIL = 'support@longeviaresearch.com'
-const ZELLE_QR = 'https://pub-0ab0207d475a48e7b7e92a35418eace6.r2.dev/email-assets/longevia-zelle-qr.jpeg'
+const ZELLE_QR = ZELLE_QR_URL
 
 export const esc = (v: unknown): string =>
   String(v ?? '')
@@ -115,8 +116,8 @@ function zelleBlock(order: any, cardUrl?: string): string {
   return `<div style="background-color:#FEF3C7;border:1px solid #FDE68A;padding:20px;border-radius:10px;text-align:center;">
     <h3 style="margin:0 0 10px 0;color:#92400E;font-size:16px;">Pay with Zelle</h3>
     <p style="margin:0 0 14px 0;color:#92400E;font-size:14px;line-height:1.5;">Please send <strong>${money(order.total)}</strong> via Zelle to:</p>
-    <img src="${ZELLE_QR}" alt="Zelle QR Code" style="width:180px;height:180px;border-radius:8px;border:2px solid #FDE68A;" />
-    <div style="margin:14px 0;"><span style="background:#fff;padding:10px 14px;border-radius:6px;border:1px solid #FDE68A;font-size:16px;font-weight:700;color:#111827;display:inline-block;">${SUPPORT_EMAIL}</span></div>
+    <img src="${ZELLE_QR}" alt="${ZELLE_QR_ALT}" width="180" height="180" style="display:inline-block;width:180px;height:180px;border-radius:8px;border:2px solid #FDE68A;" />
+    <div style="margin:14px 0;"><span style="background:#fff;padding:10px 14px;border-radius:6px;border:1px solid #FDE68A;font-size:16px;font-weight:700;color:#111827;display:inline-block;max-width:100%;box-sizing:border-box;">${SUPPORT_EMAIL.replace("@", "@<wbr>")}</span></div>
     <p style="margin:0;color:#92400E;font-size:13px;"><strong>Important:</strong> include your order number (<strong>#${esc(order.orderNumber || order.id)}</strong>) in the payment note.</p>
     ${cardUrl ? `<p style="margin:14px 0 0 0;font-size:13px;color:#92400E;">Prefer a card? <a href="${esc(cardUrl)}" style="color:#92400E;font-weight:700;">Pay by card instead</a>.</p>` : ''}
   </div>`

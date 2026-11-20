@@ -328,7 +328,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   }
 
   // This page is cached and shared by everyone, so its "related products" are always the PUBLIC list:
-  // nasal sprays are never suggested here (they are for logged-in customers only).
+  // members-only products are never suggested here (they are for logged-in customers only).
   const publicOnly = await publicProductsClause(payload)
 
   // Fetch related products (same category)

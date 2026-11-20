@@ -261,7 +261,18 @@ export const Orders: CollectionConfig = {
       ],
     },
     { name: 'subtotal', type: 'number', admin: { position: 'sidebar', description: 'Before discounts/shipping/tax' } },
-    { name: 'discountTotal', type: 'number', admin: { position: 'sidebar' } },
+    { name: 'discountTotal', type: 'number', admin: { position: 'sidebar', description: 'Everything taken off the subtotal: the member discount plus any coupon' } },
+    {
+      name: 'memberDiscountTotal',
+      type: 'number',
+      defaultValue: 0,
+      admin: { position: 'sidebar', readOnly: true, description: 'The part of the discount that was the member discount (logged-in customers)' },
+    },
+    {
+      name: 'memberDiscountPercent',
+      type: 'number',
+      admin: { position: 'sidebar', readOnly: true, description: 'The member discount percent that was applied (empty if none)' },
+    },
     { name: 'redeemedPoints', type: 'number', defaultValue: 0, admin: { position: 'sidebar', description: 'Maxx Points used in this order ($1 per point)' } },
     { name: 'shippingTotal', type: 'number', admin: { position: 'sidebar' }, defaultValue: 0 },
     {

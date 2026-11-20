@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { rewriteQuery, searchProducts, type SearchableProduct } from '@/lib/search/products'
+import { rankProducts, rewriteQuery, searchProducts, type SearchableProduct } from '@/lib/search/products'
 
 const p = (id: number, name: string, slug: string, description = '', categories = ''): SearchableProduct => ({
   id, name, slug, description, categories, price: 100, imageUrl: null, descriptor: '',
@@ -53,5 +53,65 @@ describe('searchProducts', () => {
   })
   it('caps results at the limit', () => {
     expect(searchProducts(catalogue, 'peptide', 3).length).toBeLessThanOrEqual(3)
+  })
+})
+
+// The shop grid's search: every match, best first, no weak matches.
+describe('rankProducts (shop search)', () => {
+  const shop = [
+    p(1, 'BPC-157', 'bpc-157', 'Body protection compound studied in tissue research.', 'Recovery & Tissue Repair'),
+    p(2, 'BPC-157 — Spray', 'bpc-157-spray', 'Intranasal BPC-157 spray for research.', 'Recovery & Tissue Repair'),
+    p(3, 'TB-500', 'tb-500', 'Thymosin beta-4 fragment. Often compared with BPC-157 in recovery research.', 'Recovery & Tissue Repair'),
+    p(4, 'Tirzepatide', 'tirzepatide', 'Dual GIP/GLP-1 agonist. Careful interpretation of assay data.', 'Metabolic Research'),
+    p(5, 'Glp-3RTA 10mg–60mg', 'glp-3rta', 'Triple receptor agonist research compound.', 'Metabolic Research'),
+    p(6, 'Thymosin Alpha-1', 'thymosin-alpha-1', 'Synthetic 28-amino-acid peptide.', 'Immune Regulation'),
+    p(7, 'NAD⁺', 'nad', 'Coenzyme research compound.', 'Longevity Research'),
+  ]
+  const ids = (q: string) => rankProducts(shop, q).map((x) => x.id)
+
+  it('puts name matches before category matches before description matches', () => {
+    // 1 and 2 are named BPC-157; 3 only mentions it in its description
+    expect(ids('bpc')).toEqual([1, 2, 3])
+    expect(ids('recovery')).toEqual([1, 2, 3]) // category match on all three, original order kept
+  })
+
+  it('returns only real matches, not a loose fuzzy "maybe" for every long description', () => {
+    expect(ids('tirz')).toEqual([4])
+    expect(ids('thymosin')).toEqual([6, 3]) // named Thymosin (6) before only mentioning it in the description (3)
+    expect(ids('zzz')).toEqual([])
+  })
+
+  it('needs every word of the query', () => {
+    expect(ids('bpc spray')).toEqual([2])
+    expect(ids('bpc nothinghere')).toEqual([])
+  })
+
+  it.each(['bpc-157', 'bpc 157', 'BPC/157', 'bpc157', 'BPC  157'])('reads "%s" the same as BPC-157', (q) => {
+    expect(ids(q)).toEqual([1, 2, 3])
+  })
+
+  it('is not case sensitive', () => {
+    expect(ids('TIRZEPATIDE')).toEqual(ids('tirzepatide'))
+  })
+
+  it('still understands the old name (reta / retatrutide)', () => {
+    expect(ids('reta')).toEqual([5])
+    expect(ids('retatrutide')).toEqual([5])
+  })
+
+  it('forgives a typo only when nothing matches exactly', () => {
+    expect(ids('tirzepatid')).toEqual([4]) // exact match (prefix of the name)
+    expect(ids('tirzepetide')).toEqual([4]) // typo: no exact match, so the fuzzy fallback finds it
+    expect(ids('semaglutid')).toEqual([])
+  })
+
+  it('a blank query leaves the list as it was', () => {
+    expect(ids('   ')).toEqual(shop.map((x) => x.id))
+  })
+
+  it('does not change the products or the list it was given', () => {
+    const copy = shop.map((x) => ({ ...x }))
+    rankProducts(shop, 'bpc')
+    expect(shop).toEqual(copy)
   })
 })

@@ -4,7 +4,7 @@ import { gateRestrictedPath } from "@/lib/access/restrictedProducts"
 
 export default withAuth(
   function middleware(req) {
-    // Nasal-spray product pages are for logged-in customers only. This runs BEFORE a page is served, so the
+    // Members-only product pages (nasal sprays, GLP-3RTA, Tirzepatide, Semaglutide) are for logged-in customers only. This runs BEFORE a page is served, so the
     // cached copy of a spray page can never reach a logged-out visitor: they are sent to the login page and
     // brought back to the product afterwards.
     const decision = gateRestrictedPath({
@@ -35,7 +35,7 @@ export default withAuth(
           return !!token
         }
 
-        // Everything else goes through to the function above (which gates the nasal-spray product pages).
+        // Everything else goes through to the function above (which gates the members-only product pages).
         return true
       },
     },

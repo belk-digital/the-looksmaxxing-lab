@@ -183,7 +183,8 @@ describe('subscription emails', () => {
   it('Zelle invoice: instructions, QR, order number, and a card alternative', () => {
     const { html } = buildInvoiceEmail({ order: invoice({ paymentMethod: 'zelle' }), subscriptionId: 9, reason: 'scheduled' })
     expect(html).toContain('Pay with Zelle')
-    expect(html).toContain('Zelle QR Code')
+    expect(html).toContain('Zelle QR code - scan with your banking app to pay')
+    expect(html).toContain('LR_Zelle.webp')
     expect(html).toContain('#1007')
     expect(html).toContain('Pay by card instead')
     expect(html).toContain('/pay/7/secrettoken123456789')

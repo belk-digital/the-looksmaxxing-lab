@@ -16,7 +16,7 @@ export async function getMegaMenuData() {
     overrideAccess: true,
   })
 
-  // Nasal sprays are for logged-in customers only: leave them out of the menu for everyone else.
+  // Members-only products are for logged-in customers only: leave them out of the menu for everyone else.
   const showRestricted = await isLoggedIn()
   const publicOnly = showRestricted ? null : await publicProductsClause(payload)
 

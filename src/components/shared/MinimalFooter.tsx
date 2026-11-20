@@ -4,7 +4,7 @@ import { Container } from '@/components/ui/container'
 
 export function MinimalFooter() {
   return (
-    <footer className="w-full border-t border-border-subtle bg-cream py-8">
+    <footer data-site-footer className="w-full border-t border-border-subtle bg-cream py-8">
       <Container size="wide" className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
         <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-body-sm text-ink-muted">
           <div>© {new Date().getFullYear()} Longevia Research. All rights reserved.</div>

@@ -9,8 +9,8 @@ import { cartHasRestricted } from '@/lib/access/restrictedProducts'
 import { withNext } from '@/lib/auth/safeRedirect'
 
 /**
- * Shown on the cart and checkout pages to a logged-out visitor whose basket holds a nasal-spray product
- * (added before they logged out, or from a saved basket). Nasal sprays can only be ordered by a logged-in
+ * Shown on the cart and checkout pages to a logged-out visitor whose basket holds a members-only product
+ * (added before they logged out, or from a saved basket). Those can only be ordered by a logged-in
  * customer: the server refuses the order otherwise, so this explains why and gives them the way forward.
  */
 export function RestrictedCartNotice({ returnTo }: { returnTo: '/cart' | '/checkout' }) {
@@ -29,7 +29,7 @@ export function RestrictedCartNotice({ returnTo }: { returnTo: '/cart' | '/check
           <Lock size={16} aria-hidden="true" />
         </span>
         <div>
-          <p className="text-sm font-bold text-ink">Your basket has nasal spray products</p>
+          <p className="text-sm font-bold text-ink">Your basket has members-only products</p>
           <p className="mt-1 text-sm leading-relaxed text-ink/70">
             These can only be ordered by logged-in customers. Log in or create a free account to check out.
           </p>

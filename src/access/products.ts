@@ -8,8 +8,8 @@ export const productsAccess: any = {
 
     const activeOnly = { status: { equals: 'active' } }
 
-    // Nasal sprays are for logged-in customers only. This rule covers Payload's own public REST and GraphQL
-    // API (/api/products, /api/graphql); without it anyone could list the sprays there even though the pages
+    // Members-only products are for logged-in customers only. This rule covers Payload's own public REST and GraphQL
+    // API (/api/products, /api/graphql); without it anyone could list them there even though the pages
     // are hidden. Customers log in through the site's own login, which Payload does not see, so for this API
     // everyone who is not signed in to the admin is treated as logged out. (The site's own pages do not use
     // this rule: they use the Local API, which skips access rules and applies the restriction itself.)

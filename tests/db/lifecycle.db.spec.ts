@@ -140,7 +140,7 @@ describe('subscription lifecycle - an order every 3 months, Zelle first order, c
     expect(mail?.html).toContain('/pay/' + inv.id + '/' + inv.invoiceToken)
     expect(mail?.html).toContain('$43.40')
     expect(mail?.html).toContain('every 3 months') // the why-line names the plan's interval
-    expect(mail?.html).toContain('Zelle QR Code') // Zelle subscriber
+    expect(mail?.html).toContain('LR_Zelle.webp') // Zelle subscriber
 
     const run2 = await processSubscriptions(payload, new Date(sub.nextInvoiceDate))
     expect(run2.invoicesCreated).toBe(0) // idempotent: one open invoice per order

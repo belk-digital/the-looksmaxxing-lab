@@ -17,7 +17,7 @@ const FAQS: FaqItem[] = [
   },
   {
     question: "What are your shipping and fulfillment times?",
-    answer: <>All orders are fulfilled from our US-based facilities. We offer standard shipping (3–5 business days) and expedited 2-day shipping on orders over $300. Orders placed before 2 PM EST typically ship same day. All peptides are dispatched using validated cold-chain packaging to maintain molecular integrity in transit — see our <Link href="/journal/how-long-do-peptides-last-after-reconstitution" className="underline hover:text-gold transition-colors">reconstitution and storage guide</Link> for handling once your order arrives.</>
+    answer: <>All orders are fulfilled from our US-based facilities. Every order ships by Express Shipping for a flat $20, with delivery in 2–3 business days. Orders placed before 2 PM EST typically ship same day. All peptides are dispatched using validated cold-chain packaging to maintain molecular integrity in transit — see our <Link href="/journal/how-long-do-peptides-last-after-reconstitution" className="underline hover:text-gold transition-colors">reconstitution and storage guide</Link> for handling once your order arrives.</>
   },
   {
     question: "Why choose Longevia Research for laboratory peptides?",

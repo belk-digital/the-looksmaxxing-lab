@@ -18,7 +18,7 @@ export default async function ProductsPage() {
   const payload = await getPayload({ config: configPromise })
   
   // This page is cached and shared by everyone, so it lists the PUBLIC products only:
-  // nasal sprays are for logged-in customers and never appear here.
+  // members-only products are for logged-in customers and never appear here.
   const publicOnly = await publicProductsClause(payload)
   const found = await payload.find({
     collection: 'products',

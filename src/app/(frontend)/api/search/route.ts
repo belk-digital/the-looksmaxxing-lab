@@ -6,7 +6,7 @@ import { isLoggedIn } from '@/lib/access/viewer'
 import { publicProductsClause } from '@/lib/access/restrictedQuery'
 import { withoutRestricted } from '@/lib/access/restrictedProducts'
 
-// The answer depends on who is asking (nasal sprays are only searchable when logged in), so it must be built
+// The answer depends on who is asking (members-only products are only searchable when logged in), so it must be built
 // fresh for each request and never stored and reused for someone else. (It was already uncached in practice:
 // reading request.url makes a route dynamic, which is what the old "Dynamic server usage" build message was.)
 export const dynamic = 'force-dynamic'
