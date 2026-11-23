@@ -678,8 +678,8 @@ describe('the dialog', () => {
     expect(dialog.getAttribute('aria-modal')).toBe('true')
     expect(screen.getByRole('dialog', { name: 'Unlock the full catalogue.' })).toBe(dialog)
     // advertises the member discount, and never names the GLP-1 compounds
-    expect(dialog.textContent).toContain('20% member discount')
-    expect(dialog.textContent).toContain('20% off every order')
+    expect(dialog.textContent).toContain('15% member discount')
+    expect(dialog.textContent).toContain('15% off every order')
     // and says plainly that it is not combinable
     expect(dialog.textContent).toContain("can't be combined with other discounts")
     expect(dialog.textContent).not.toMatch(/glp/i)

@@ -1,8 +1,8 @@
 /**
  * Where customers SEE the member discount, in a simulated browser:
- * - The cart summary: a logged-in customer sees "Member discount (20%)" and the total follows; a visitor who is not
+ * - The cart summary: a logged-in customer sees "Member discount (15%)" and the total follows; a visitor who is not
  *   logged in sees what logging in would save (with a link that brings them back); a subscription cart sees neither.
- * - The order confirmation page and the account order page: "Member discount (20%)" on its own line, the coupon on
+ * - The order confirmation page and the account order page: "Member discount (15%)" on its own line, the coupon on
  *   another, and an order from before the member discount existed looks exactly as it did.
  * - The two small building blocks (the discount line and the "log in to save" nudge).
  *
@@ -84,11 +84,11 @@ const text = (el: Element | null) => (el?.textContent ?? '').replace(/\s+/g, ' '
 describe('the discount line', () => {
   afterEach(cleanup)
 
-  it('reads "Member discount (20%)" with the amount taken off', () => {
-    render(React.createElement(MemberDiscountRow, { amount: 8 }))
+  it('reads "Member discount (15%)" with the amount taken off', () => {
+    render(React.createElement(MemberDiscountRow, { amount: 6 }))
     const row = screen.getByTestId('member-discount-row')
-    expect(text(row)).toContain('Member discount (20%)')
-    expect(text(row)).toContain('-$8.00')
+    expect(text(row)).toContain('Member discount (15%)')
+    expect(text(row)).toContain('-$6.00')
   })
 
   it('shows nothing when there is no discount', () => {
@@ -101,15 +101,15 @@ describe('the "log in to save" nudge', () => {
   afterEach(cleanup)
 
   it('says what members save and what that is on this order, and brings the visitor back to where they were', () => {
-    render(React.createElement(MemberDiscountNudge, { savings: 8, returnTo: '/checkout' }))
+    render(React.createElement(MemberDiscountNudge, { savings: 6, returnTo: '/checkout' }))
     const nudge = screen.getByTestId('member-discount-nudge')
-    expect(text(nudge)).toContain('Members save 20% on every order')
-    expect(text(nudge)).toContain('$8.00 on this one')
+    expect(text(nudge)).toContain('Members save 15% on every order')
+    expect(text(nudge)).toContain('$6.00 on this one')
     expect(screen.getByRole('link', { name: 'Log in' }).getAttribute('href')).toBe('/login?next=%2Fcheckout')
   })
 
   it('returns to the basket from the basket', () => {
-    render(React.createElement(MemberDiscountNudge, { savings: 8, returnTo: '/cart' }))
+    render(React.createElement(MemberDiscountNudge, { savings: 6, returnTo: '/cart' }))
     expect(screen.getByRole('link', { name: 'Log in' }).getAttribute('href')).toBe('/login?next=%2Fcart')
   })
 
@@ -119,7 +119,7 @@ describe('the "log in to save" nudge', () => {
   })
 
   it('never mentions GLP-1', () => {
-    render(React.createElement(MemberDiscountNudge, { savings: 8, returnTo: '/cart' }))
+    render(React.createElement(MemberDiscountNudge, { savings: 6, returnTo: '/cart' }))
     expect(text(screen.getByTestId('member-discount-nudge'))).not.toMatch(/glp/i)
   })
 })
@@ -165,13 +165,13 @@ describe('the cart page', () => {
   // "Total" appears twice on the page (a mobile bar and the summary): read both.
   const total = () => screen.getAllByText('Total').map((el) => text(el.parentElement)).join(' | ')
 
-  it('a logged-in customer sees the member discount and the total follows (subtotal 40 - 8 + 5 shipping = 37)', async () => {
+  it('a logged-in customer sees the member discount and the total follows (subtotal 40 - 6 + 5 shipping = 39)', async () => {
     h.status = 'authenticated'
     render(React.createElement(CartClient))
     const row = await screen.findByTestId('member-discount-row')
-    expect(text(row)).toContain('Member discount (20%)')
-    expect(text(row)).toContain('-$8.00')
-    await waitFor(() => expect(total()).toContain('$37.00'))
+    expect(text(row)).toContain('Member discount (15%)')
+    expect(text(row)).toContain('-$6.00')
+    await waitFor(() => expect(total()).toContain('$39.00'))
     expect(screen.queryByTestId('member-discount-nudge')).toBeNull()
   })
 
@@ -179,7 +179,7 @@ describe('the cart page', () => {
     h.status = 'unauthenticated'
     render(React.createElement(CartClient))
     const nudge = await screen.findByTestId('member-discount-nudge')
-    expect(text(nudge)).toContain('$8.00 on this one')
+    expect(text(nudge)).toContain('$6.00 on this one')
     expect(screen.getByRole('link', { name: 'Log in' }).getAttribute('href')).toBe('/login?next=%2Fcart')
     await waitFor(() => expect(total()).toContain('$45.00')) // 40 + 5 shipping, no discount
     expect(screen.queryByTestId('member-discount-row')).toBeNull()
@@ -190,8 +190,8 @@ describe('the cart page', () => {
     h.fees = [{ id: 1, name: 'Fee', type: 'percentage', amount: 10, isActive: true, isOptional: false }]
     render(React.createElement(CartClient))
     await screen.findByTestId('member-discount-row')
-    await waitFor(() => expect(text(screen.getByText('Processing Fee').parentElement)).toContain('$3.20')) // 10% of 32
-    expect(total()).toContain('$40.20') // 32 + 5 + 3.20
+    await waitFor(() => expect(text(screen.getByText('Processing Fee').parentElement)).toContain('$3.40')) // 10% of 34
+    expect(total()).toContain('$42.40') // 34 + 5 + 3.40
   })
 
   it('a subscription cart gets neither the discount nor the nudge (plans have their own discount)', async () => {
@@ -225,19 +225,19 @@ describe('the cart page', () => {
       useCartStore.setState({ couponCode: doc.code } as any)
     }
 
-    it('a code worth LESS (5% = $2 < $8): the member discount applies, the code is not used, and the customer is told', async () => {
+    it('a code worth LESS (5% = $2 < $6): the member discount applies, the code is not used, and the customer is told', async () => {
       h.status = 'authenticated'
       withCode(coupon(5, { code: 'SAVE5' }))
       render(React.createElement(CartClient))
       const row = await screen.findByTestId('member-discount-row')
-      expect(text(row)).toContain('-$8.00')
+      expect(text(row)).toContain('-$6.00')
       expect(await screen.findByTestId('coupon-not-used-note')).toBeTruthy()
       expect(screen.queryByTestId('member-not-used-note')).toBeNull()
-      await waitFor(() => expect(total()).toContain('$37.00')) // 40 - 8 + 5
+      await waitFor(() => expect(total()).toContain('$39.00')) // 40 - 6 + 5
       expect(text(document.body)).not.toContain('-$2.00') // the code's own discount is not shown
     })
 
-    it('a code worth MORE (50% = $20 > $8): the code applies alone, the member discount is not added, and the customer is told', async () => {
+    it('a code worth MORE (50% = $20 > $6): the code applies alone, the member discount is not added, and the customer is told', async () => {
       h.status = 'authenticated'
       withCode(coupon(50, { code: 'HALF' }))
       render(React.createElement(CartClient))
@@ -272,7 +272,7 @@ describe('the cart page', () => {
       withCode(coupon(0, { code: 'SHIPFREE', type: 'free_shipping', freeShipping: true }))
       render(React.createElement(CartClient))
       expect(await screen.findByTestId('coupon-not-used-note')).toBeTruthy()
-      await waitFor(() => expect(total()).toContain('$37.00')) // shipping is still charged: 40 - 8 + 5
+      await waitFor(() => expect(total()).toContain('$39.00')) // shipping is still charged: 40 - 6 + 5
     })
   })
 
@@ -312,18 +312,26 @@ describe('the order confirmation page', () => {
   afterEach(cleanup)
   const open = (over: Record<string, unknown>) => render(React.createElement(OrderConfirmationClient, { order: confirmationOrder(over) as any }))
 
-  it('shows "Member discount (20%)" with the amount', () => {
+  it('shows "Member discount (15%)" with the amount', () => {
+    open({ discountTotal: 6, memberDiscountTotal: 6, memberDiscountPercent: 15, total: 39 })
+    const row = screen.getByTestId('order-member-discount')
+    expect(text(row)).toContain('Member discount (15%)')
+    expect(text(row)).toContain('-$6.00')
+  })
+
+  it('an order placed while the offer was still 20% keeps saying 20%', () => {
     open({ discountTotal: 8, memberDiscountTotal: 8, memberDiscountPercent: 20, total: 37 })
     const row = screen.getByTestId('order-member-discount')
     expect(text(row)).toContain('Member discount (20%)')
     expect(text(row)).toContain('-$8.00')
+    expect(text(document.body)).not.toContain('(15%)')
   })
 
   it('shows the member discount and a coupon on separate lines', () => {
-    open({ discountTotal: 14, memberDiscountTotal: 8, memberDiscountPercent: 20, couponCode: 'SAVE', total: 31 })
-    expect(text(screen.getByTestId('order-member-discount'))).toContain('-$8.00')
+    open({ discountTotal: 11, memberDiscountTotal: 6, memberDiscountPercent: 15, couponCode: 'SAVE', total: 34 })
+    expect(text(screen.getByTestId('order-member-discount'))).toContain('-$6.00')
     expect(document.body.textContent).toContain('Discount (SAVE)')
-    expect(text(document.body)).toContain('-$6.00')
+    expect(text(document.body)).toContain('-$5.00')
   })
 
   it('an order from before the member discount existed looks exactly as it did', () => {
@@ -359,18 +367,18 @@ describe('the account order page', () => {
   })
   const open = (over: Record<string, unknown>) => render(React.createElement(OrderDetailClient, { order: accountOrder(over) }))
 
-  it('shows "Member discount (20%)" on its own line', () => {
-    open({ discountTotal: 8, memberDiscountTotal: 8, memberDiscountPercent: 20, total: 37 })
+  it('shows "Member discount (15%)" on its own line', () => {
+    open({ discountTotal: 6, memberDiscountTotal: 6, memberDiscountPercent: 15, total: 39 })
     const row = screen.getByTestId('order-member-discount')
-    expect(text(row)).toContain('Member discount (20%)')
-    expect(text(row)).toContain('-$8.00')
+    expect(text(row)).toContain('Member discount (15%)')
+    expect(text(row)).toContain('-$6.00')
   })
 
   it('shows the member discount and a coupon on separate lines', () => {
-    open({ discountTotal: 14, memberDiscountTotal: 8, memberDiscountPercent: 20, couponCode: 'SAVE', total: 31 })
-    expect(text(screen.getByTestId('order-member-discount'))).toContain('-$8.00')
+    open({ discountTotal: 11, memberDiscountTotal: 6, memberDiscountPercent: 15, couponCode: 'SAVE', total: 34 })
+    expect(text(screen.getByTestId('order-member-discount'))).toContain('-$6.00')
     expect(text(document.body)).toContain('Discount (SAVE)')
-    expect(text(document.body)).toContain('-$6.00')
+    expect(text(document.body)).toContain('-$5.00')
   })
 
   it('an order from before the member discount existed looks exactly as it did', () => {

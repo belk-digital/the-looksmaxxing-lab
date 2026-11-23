@@ -2,7 +2,7 @@
  * What checkout actually charges and writes down, end to end through the real pricing and the real order creation
  * (only the database, Stripe and the login session are faked):
  *
- * - Member discount: a logged-in customer is charged 20% less and the order record says so (discountTotal,
+ * - Member discount: a logged-in customer is charged 15% less and the order record says so (discountTotal,
  *   memberDiscountTotal, memberDiscountPercent); a logged-out visitor is charged in full and the order says "none".
  * - Shipping: every order ships by Express Shipping at $20; the order records the method that was actually charged,
  *   whatever name the browser sent (a page left open from before the shipping options changed).
@@ -91,31 +91,31 @@ beforeEach(() => {
 })
 
 describe('the order a logged-in member places', () => {
-  it('is charged 20% less, and the order record says so', async () => {
+  it('is charged 15% less, and the order record says so', async () => {
     h.state.loggedIn = true
     const res: any = await placeOrder()
     expect(res.error).toBeUndefined()
     expect(res.orderId).toBe('91')
     expect(savedOrder()).toMatchObject({
       subtotal: 40,
-      discountTotal: 8,
-      memberDiscountTotal: 8,
-      memberDiscountPercent: 20,
+      discountTotal: 6,
+      memberDiscountTotal: 6,
+      memberDiscountPercent: 15,
       shippingTotal: 20,
-      total: 52, // 40 - 8 + 20
+      total: 54, // 40 - 6 + 20
     })
   })
 
   it('a code that saves LESS than the member discount is not used: only the member discount is charged, and the code is not recorded', async () => {
     h.state.loggedIn = true
-    h.state.coupon = { valid: true, discount: 6, freeShipping: false, code: 'SAVE', description: '', type: 'percentage' }
+    h.state.coupon = { valid: true, discount: 4, freeShipping: false, code: 'SAVE', description: '', type: 'percentage' }
     await placeOrder('Express Shipping', 'SAVE')
     expect(savedOrder()).toMatchObject({
-      discountTotal: 8,
-      memberDiscountTotal: 8,
-      memberDiscountPercent: 20,
+      discountTotal: 6,
+      memberDiscountTotal: 6,
+      memberDiscountPercent: 15,
       couponCode: '', // it was not used, so it is not on the order (and will not be counted as used)
-      total: 52, // 40 - 8 + 20
+      total: 54, // 40 - 6 + 20
     })
   })
 
@@ -135,31 +135,31 @@ describe('the order a logged-in member places', () => {
 
   it('a gift card is paid on top of the member discount, and both are recorded', async () => {
     h.state.loggedIn = true
-    h.state.coupon = { valid: true, discount: 6, freeShipping: false, code: 'GIFT', description: '', type: 'store_credit' }
+    h.state.coupon = { valid: true, discount: 5, freeShipping: false, code: 'GIFT', description: '', type: 'store_credit' }
     await placeOrder('Express Shipping', 'GIFT')
     expect(savedOrder()).toMatchObject({
-      discountTotal: 14,
-      memberDiscountTotal: 8,
-      memberDiscountPercent: 20,
+      discountTotal: 11,
+      memberDiscountTotal: 6,
+      memberDiscountPercent: 15,
       couponCode: 'GIFT',
-      total: 46, // 40 - 14 + 20
+      total: 49, // 40 - 11 + 20
     })
   })
 
   it('the card payment is for the amount that applies when a code loses or wins', async () => {
     h.state.loggedIn = true
-    h.state.coupon = { valid: true, discount: 6, freeShipping: false, code: 'SAVE', description: '', type: 'percentage' }
+    h.state.coupon = { valid: true, discount: 4, freeShipping: false, code: 'SAVE', description: '', type: 'percentage' }
     await createPaymentIntent([line()], 'Express Shipping', 'SAVE', false)
     h.state.coupon = { valid: true, discount: 12, freeShipping: false, code: 'BIG', description: '', type: 'percentage' }
     await createPaymentIntent([line()], 'Express Shipping', 'BIG', false)
-    expect(h.state.stripeAmounts).toEqual([5200, 4800])
+    expect(h.state.stripeAmounts).toEqual([5400, 4800])
   })
 
   it('the card payment is for exactly the same amount as the order', async () => {
     h.state.loggedIn = true
     const intent: any = await createPaymentIntent([line()], 'Express Shipping', undefined, false)
     expect(intent.error).toBeUndefined()
-    expect(h.state.stripeAmounts).toEqual([5200])
+    expect(h.state.stripeAmounts).toEqual([5400])
     await placeOrder()
     expect(savedOrder().total * 100).toBe(h.state.stripeAmounts[0])
   })

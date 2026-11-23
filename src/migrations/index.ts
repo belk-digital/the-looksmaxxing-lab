@@ -19,6 +19,7 @@ import * as migration_20260913_010000_add_payment_methods_settings from './20260
 import * as migration_20261020_000000_add_subscriptions from './20261020_000000_add_subscriptions';
 import * as migration_20261021_000000_add_subscription_coupons from './20261021_000000_add_subscription_coupons';
 import * as migration_20261120_000000_add_member_discount_to_orders from './20261120_000000_add_member_discount_to_orders';
+import * as migration_20261123_120000_add_order_shipstation_fields from './20261123_120000_add_order_shipstation_fields';
 
 export const migrations = [
   {
@@ -125,5 +126,10 @@ export const migrations = [
     up: migration_20261120_000000_add_member_discount_to_orders.up,
     down: migration_20261120_000000_add_member_discount_to_orders.down,
     name: '20261120_000000_add_member_discount_to_orders',
+  },
+  {
+    up: migration_20261123_120000_add_order_shipstation_fields.up,
+    down: migration_20261123_120000_add_order_shipstation_fields.down,
+    name: '20261123_120000_add_order_shipstation_fields',
   },
 ];

@@ -241,6 +241,8 @@ export async function createCycleInvoice(
         status: 'pending',
         paymentStatus: 'unpaid',
         fulfillmentStatus: 'unfulfilled',
+        // Opts this renewal order into the ShipStation hand-off (sent once it is paid, see hooks/orders.ts).
+        shipstationSyncStatus: 'pending',
         subtotal: Math.round(pricing.subtotal * 100) / 100,
         discountTotal: Math.round(pricing.discountAmount * 100) / 100,
         redeemedPoints: 0,

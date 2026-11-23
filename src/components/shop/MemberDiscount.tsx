@@ -11,7 +11,7 @@ import { withNext } from '@/lib/auth/safeRedirect'
  * The amounts come from src/lib/membership/discount.ts (the same maths the server uses to charge the order).
  */
 
-/** "Member discount (20%)  -$12.00" - the line for a logged-in customer. Same look as the coupon line. */
+/** "Member discount (15%)  -$9.00" - the line for a logged-in customer. Same look as the coupon line. */
 export function MemberDiscountRow({ amount, className = '' }: { amount: number; className?: string }) {
   if (!(amount > 0)) return null
   return (

@@ -697,6 +697,33 @@ export interface Order {
     country?: string | null;
   };
   status: 'pending' | 'paid' | 'fulfilled' | 'shipped' | 'completed' | 'refunded' | 'cancelled';
+  /**
+   * Carrier that shipped the order (set automatically from ShipStation).
+   */
+  carrier?: string | null;
+  /**
+   * Set automatically from ShipStation. For an order shipped by hand, use "Tracking link".
+   */
+  trackingNumber?: string | null;
+  shippedAt?: string | null;
+  /**
+   * Where this order is in the ShipStation hand-off. To retry a failed or manual order after fixing it, tick "Send to ShipStation again" below and save.
+   */
+  shipstationSyncStatus?: ('pending' | 'synced' | 'failed' | 'manual' | 'skipped' | 'cancelled') | null;
+  /**
+   * Tick and save to send this order to ShipStation again right away (e.g. after fixing the address of a "Ship manually" order). Clears itself. Safe on an order that is already in ShipStation: no duplicate is made.
+   */
+  shipstationRetry?: boolean | null;
+  /**
+   * ShipStation order id.
+   */
+  shipstationOrderId?: string | null;
+  /**
+   * Why the last hand-off attempt failed, or why it needs manual shipping.
+   */
+  shipstationSyncError?: string | null;
+  shipstationSyncAttempts?: number | null;
+  shipstationSyncedAt?: string | null;
   paymentMethod: 'stripe' | 'stripe_link' | 'apple_pay' | 'zelle' | 'authnet_bridge';
   paymentStatus: 'unpaid' | 'authorized' | 'captured' | 'refunded';
   fulfillmentStatus: 'unfulfilled' | 'partial' | 'fulfilled';
@@ -1984,6 +2011,15 @@ export interface OrdersSelect<T extends boolean = true> {
         country?: T;
       };
   status?: T;
+  carrier?: T;
+  trackingNumber?: T;
+  shippedAt?: T;
+  shipstationSyncStatus?: T;
+  shipstationRetry?: T;
+  shipstationOrderId?: T;
+  shipstationSyncError?: T;
+  shipstationSyncAttempts?: T;
+  shipstationSyncedAt?: T;
   paymentMethod?: T;
   paymentStatus?: T;
   fulfillmentStatus?: T;

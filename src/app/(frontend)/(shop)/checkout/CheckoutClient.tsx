@@ -265,7 +265,7 @@ export function CheckoutClient() {
   const selectedMethodObj = visibleShippingMethods.find(m => m.method === shippingMethod) || visibleShippingMethods[0]
   const shippingCost = (selectedMethodObj?.price || 0) / 100
   const isExpressShipping = isExpressShippingName(shippingMethod)
-  // Member discount: a logged-in customer gets 20% off an ordinary order (a subscription plan has its own plan
+  // Member discount: a logged-in customer gets MEMBER_DISCOUNT_PERCENT % off an ordinary order (a subscription plan has its own plan
   // discount). It cannot be combined with a discount code: the order gets whichever saves more (a gift card is paid on
   // top). The server works out the same thing from the login session and is what is charged.
   const isMember = !!user && !isPlan

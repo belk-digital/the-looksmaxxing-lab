@@ -4,7 +4,7 @@
  *
  * What is proved here that unit tests cannot:
  * - The two new order columns really exist, are written, and are read back (the migration's shape).
- * - A logged-in member's order is charged 20% less AND the order row says so; a guest's order is not.
+ * - A logged-in member's order is charged 15% less AND the order row says so; a guest's order is not.
  * - A coupon next to the member discount: both stored, store credit loses only its own part of the balance.
  * - Subscriptions never get the member discount.
  * - Only Express Shipping ($20) is offered, and the order records the method actually charged.
@@ -93,25 +93,25 @@ async function place(opts: { loggedIn: boolean; items?: any[]; coupon?: string; 
 }
 
 describe('a logged-in member\'s order', () => {
-  it('is charged 20% less, and the order row in the database says so', async () => {
+  it('is charged 15% less, and the order row in the database says so', async () => {
     const res = await place({ loggedIn: true }) // 2 x $20 = $40
     expect(res.error).toBeUndefined()
     const order = await getOrder(res.orderId)
     expect(order).toMatchObject({
       subtotal: 40,
-      discountTotal: 8,
-      memberDiscountTotal: 8,
-      memberDiscountPercent: 20,
+      discountTotal: 6,
+      memberDiscountTotal: 6,
+      memberDiscountPercent: 15,
       shippingMethod: 'Express Shipping',
       shippingTotal: 20,
-      total: 52, // 40 - 8 + 20
+      total: 54, // 40 - 6 + 20
     })
     expect(order.owner).toBeTruthy() // the order belongs to the customer's account
     // and the raw columns hold it (numeric values come back as text from the database)
     const raw = await rawRow(res.orderId)
-    expect(Number(raw.member_discount_total)).toBe(8)
-    expect(Number(raw.member_discount_percent)).toBe(20)
-    expect(Number(raw.discount_total)).toBe(8)
+    expect(Number(raw.member_discount_total)).toBe(6)
+    expect(Number(raw.member_discount_percent)).toBe(15)
+    expect(Number(raw.discount_total)).toBe(6)
     expect(raw.shipping_method).toBe('Express Shipping')
   })
 
@@ -120,7 +120,7 @@ describe('a logged-in member\'s order', () => {
       const res = await place({ loggedIn: true, items: [lineFor(store.product, null, qty)] })
       const o = await getOrder(res.orderId)
       expect(o.subtotal - o.discountTotal + o.shippingTotal).toBeCloseTo(o.total, 6)
-      expect(o.memberDiscountTotal).toBeCloseTo(o.subtotal * 0.2, 2)
+      expect(o.memberDiscountTotal).toBeCloseTo(o.subtotal * 0.15, 2)
     }
   })
 
@@ -130,11 +130,11 @@ describe('a logged-in member\'s order', () => {
     const email = sent.find((m) => m.html.includes(`#${order.orderNumber}`) || m.html.includes(String(order.orderNumber ?? order.id)))
     expect(email).toBeTruthy()
     const text = email!.html.replace(/<wbr>/g, '').replace(/&middot;/g, '·').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
-    expect(text).toContain('Member discount (20%) -$8.00')
-    expect(text).toContain('You saved $8.00 with your member discount.')
+    expect(text).toContain('Member discount (15%) -$6.00')
+    expect(text).toContain('You saved $6.00 with your member discount.')
     expect(text).toContain('Shipping (Express Shipping · 2-3 business days) $20.00')
-    expect(text).toContain('Total $52.00')
-    expect(text).toContain('please send $52.00 via Zelle')
+    expect(text).toContain('Total $54.00')
+    expect(text).toContain('please send $54.00 via Zelle')
     expect(email!.html).toContain(`src="${QR}"`)
     expect(email!.html).not.toContain('longevia-zelle-qr')
   })
@@ -142,7 +142,7 @@ describe('a logged-in member\'s order', () => {
   it('also gets the discount on a card (bridge) order', async () => {
     const res = await place({ loggedIn: true, method: 'authnet_bridge' })
     expect(res.error).toBeUndefined()
-    expect(await getOrder(res.orderId)).toMatchObject({ memberDiscountTotal: 8, total: 52, paymentMethod: 'authnet_bridge' })
+    expect(await getOrder(res.orderId)).toMatchObject({ memberDiscountTotal: 6, total: 54, paymentMethod: 'authnet_bridge' })
   })
 })
 
@@ -178,21 +178,21 @@ describe('the member discount cannot be combined with a discount code: whichever
       .replace(/<[^>]+>/g, ' ')
       .replace(/\s+/g, ' ')
 
-  it('a code worth LESS (10% = $4 < $8): the member discount applies, the code is NOT used, recorded or counted', async () => {
+  it('a code worth LESS (10% = $4 < $6): the member discount applies, the code is NOT used, recorded or counted', async () => {
     await makeCoupon({ code: 'TEN', type: 'percentage', value: 10 }) // 10% of $40 = $4 (coupon rules round down to whole dollars)
     const res = await place({ loggedIn: true, coupon: 'TEN' })
     expect(res.error).toBeUndefined()
     const o = await getOrder(res.orderId)
-    expect(o).toMatchObject({ discountTotal: 8, memberDiscountTotal: 8, memberDiscountPercent: 20, couponCode: '', total: 52 }) // 40 - 8 + 20
+    expect(o).toMatchObject({ discountTotal: 6, memberDiscountTotal: 6, memberDiscountPercent: 15, couponCode: '', total: 54 }) // 40 - 6 + 20
     // the code was not used up
     expect((await getCoupon('TEN')).usageCount ?? 0).toBe(0)
     // the email has the member line and no code line
     const text = emailText(o)
-    expect(text).toContain('Member discount (20%) -$8.00')
+    expect(text).toContain('Member discount (15%) -$6.00')
     expect(text).not.toContain('Discount (TEN)')
   })
 
-  it('a code worth MORE (50% = $20 > $8): the code applies alone, is recorded and counted, and the order says no member discount', async () => {
+  it('a code worth MORE (50% = $20 > $6): the code applies alone, is recorded and counted, and the order says no member discount', async () => {
     await makeCoupon({ code: 'HALF', type: 'percentage', value: 50 })
     const res = await place({ loggedIn: true, coupon: 'HALF' })
     expect(res.error).toBeUndefined()
@@ -216,11 +216,11 @@ describe('the member discount cannot be combined with a discount code: whichever
     const res = await place({ loggedIn: true, coupon: 'CREDIT50' })
     expect(res.error).toBeUndefined()
     const o = await getOrder(res.orderId)
-    // $40 order: member $8, store credit takes the other $32 (never more than the subtotal) -> only shipping is left to pay
-    expect(o).toMatchObject({ subtotal: 40, memberDiscountTotal: 8, discountTotal: 40, total: 20 })
-    // finalizing (the Zelle path does it straight away) deducts only the $32 the credit actually paid
+    // $40 order: member $6, store credit takes the other $34 (never more than the subtotal) -> only shipping is left to pay
+    expect(o).toMatchObject({ subtotal: 40, memberDiscountTotal: 6, discountTotal: 40, total: 20 })
+    // finalizing (the Zelle path does it straight away) deducts only the $34 the credit actually paid
     const coupon = await getCoupon('CREDIT50')
-    expect(coupon.remainingBalance).toBe(1800) // 5000 - 3200 cents
+    expect(coupon.remainingBalance).toBe(1600) // 5000 - 3400 cents
     expect(coupon.usageCount).toBe(1)
   })
 })

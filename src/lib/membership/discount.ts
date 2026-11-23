@@ -6,7 +6,8 @@
  * checkout) always agree to the cent.
  *
  * The rule, and why:
- *  - It is 20% of the merchandise subtotal (what the items cost before shipping and fees), rounded to the nearest cent.
+ *  - It is MEMBER_DISCOUNT_PERCENT % of the merchandise subtotal (what the items cost before shipping and fees), rounded to the
+ *    nearest cent.
  *  - It applies to ordinary one-time orders placed while logged in. It does not apply to subscription plans: those have
  *    their own plan discount (15-25%), and a plan's invoices are created without a customer present.
  *  - It CANNOT BE COMBINED with any other discount. If the customer also enters a discount code (a percentage, a fixed
@@ -20,7 +21,7 @@
  */
 
 /** Percent off for logged-in customers. Change it here and everything (checkout, emails, popup) follows. */
-export const MEMBER_DISCOUNT_PERCENT = 20
+export const MEMBER_DISCOUNT_PERCENT = 15
 
 /** What the discount is called wherever it is shown to the customer. */
 export const MEMBER_DISCOUNT_LABEL = 'Member discount'
@@ -28,7 +29,7 @@ export const MEMBER_DISCOUNT_LABEL = 'Member discount'
 /** Gift cards / store credit are paid on top of the member discount (see the rule above). */
 export const MEMBER_DISCOUNT_STACKS_WITH_STORE_CREDIT = true
 
-/** "Member discount (20%)" - the label for a discount line. */
+/** "Member discount (15%)" - the label for a discount line. */
 export function memberDiscountLabel(percent: number | null | undefined = MEMBER_DISCOUNT_PERCENT): string {
   return percent && percent > 0 ? `${MEMBER_DISCOUNT_LABEL} (${percent}%)` : MEMBER_DISCOUNT_LABEL
 }

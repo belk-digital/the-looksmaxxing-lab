@@ -151,10 +151,10 @@ describe('checkout (the server is the final judge)', () => {
     const res: any = await createPayloadOrder([lineFor(store.product, null, 1)], 'Standard Shipping', 'PLAIN-ONETIME', false, { ...FORM, email }, 'manual', undefined, 'zelle')
     expect(res.error).toBeUndefined()
     const order = await getOrder(res.orderId)
-    // the customer is logged in, so their 20% member discount ($4) saves more than the 10% coupon ($2): discounts cannot be
+    // the customer is logged in, so their 15% member discount ($3) saves more than the 10% coupon ($2): discounts cannot be
     // combined, so the member discount applies and the coupon is not used (and not recorded)
-    expect(order.discountTotal).toBeCloseTo(4, 2)
-    expect(order.memberDiscountTotal).toBeCloseTo(4, 2)
+    expect(order.discountTotal).toBeCloseTo(3, 2)
+    expect(order.memberDiscountTotal).toBeCloseTo(3, 2)
     expect(order.couponCode).toBe('')
     expect(order.orderType).toBe('one_time')
     void user

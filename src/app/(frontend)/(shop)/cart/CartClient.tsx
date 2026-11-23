@@ -298,7 +298,7 @@ export function CartClient() {
     }
   }
 
-  // Member discount: a logged-in customer gets 20% off an ordinary order, taken before any coupon (a subscription plan
+  // Member discount: a logged-in customer gets MEMBER_DISCOUNT_PERCENT % off an ordinary order, taken before any coupon (a subscription plan
   // has its own plan discount). The server works out the same amount from the login session when the order is placed.
   const isMember = !!session?.user && !items.some((item) => item.planMonths)
   // It cannot be combined with a discount code: the order gets whichever saves more (a gift card is paid on top).

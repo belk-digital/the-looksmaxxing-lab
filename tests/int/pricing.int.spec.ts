@@ -241,22 +241,22 @@ describe('computeOrderPricing - subscription plans', () => {
 
 // ─── Member discount ──────────────────────────────────────────────────────────
 
-describe('computeOrderPricing - member discount (logged-in customers get 20% off)', () => {
+describe('computeOrderPricing - member discount (logged-in customers get 15% off)', () => {
   const price = (over: any = {}, input: any = {}, options?: any) =>
     computeOrderPricing(payload, { items: [line(over)], shippingMethodName: 'Standard Shipping', ...input }, options)
 
-  it('takes 20% off the subtotal for a logged-in customer, and the total follows', async () => {
+  it('takes 15% off the subtotal for a logged-in customer, and the total follows', async () => {
     h.loggedIn = true
     const r = ok(await price())
-    // subtotal 40 -> 8.00 off; shipping 5
+    // subtotal 40 -> 6.00 off; shipping 5
     expect(r).toMatchObject({
       subtotal: 40,
-      discountAmount: 8,
-      memberDiscountAmount: 8,
-      memberDiscountPercent: 20,
+      discountAmount: 6,
+      memberDiscountAmount: 6,
+      memberDiscountPercent: 15,
       couponDiscountAmount: 0,
       finalShipping: 5,
-      total: 37,
+      total: 39,
     })
   })
 
@@ -268,7 +268,7 @@ describe('computeOrderPricing - member discount (logged-in customers get 20% off
 
   it('is decided on the server: nothing the browser sends can switch it on', async () => {
     h.loggedIn = false
-    const r = ok(await price({}, { isMember: true, memberDiscount: 20, memberDiscountPercent: 99 }))
+    const r = ok(await price({}, { isMember: true, memberDiscount: 15, memberDiscountPercent: 99 }))
     expect(r.memberDiscountAmount).toBe(0)
     expect(r.total).toBe(45)
     // and it asked the login session, once
@@ -277,10 +277,11 @@ describe('computeOrderPricing - member discount (logged-in customers get 20% off
 
   it('rounds to the nearest cent', async () => {
     h.loggedIn = true
-    // 33.33 x 20% = 6.666 -> 6.67 ; 0.07 x 20% = 0.014 -> 0.01
-    expect(ok(await price({ quantity: 1, priceSnapshot: 33.33 })).memberDiscountAmount).toBe(6.67)
+    // 33.33 x 15% = 4.9995 -> 5.00 ; 0.07 x 15% = 0.0105 -> 0.01 ; 10.01 x 15% = 1.5015 -> 1.50
+    expect(ok(await price({ quantity: 1, priceSnapshot: 33.33 })).memberDiscountAmount).toBe(5)
     expect(ok(await price({ quantity: 1, priceSnapshot: 0.07 })).memberDiscountAmount).toBe(0.01)
-    expect(ok(await price({ quantity: 3, priceSnapshot: 19.99 })).memberDiscountAmount).toBe(11.99) // 59.97 x 20% = 11.994
+    expect(ok(await price({ quantity: 1, priceSnapshot: 10.01 })).memberDiscountAmount).toBe(1.5)
+    expect(ok(await price({ quantity: 3, priceSnapshot: 19.99 })).memberDiscountAmount).toBe(9) // 59.97 x 15% = 8.9955
   })
 
   it('applies to the whole subtotal of a multi-line cart', async () => {
@@ -293,22 +294,22 @@ describe('computeOrderPricing - member discount (logged-in customers get 20% off
       }),
     )
     expect(r.subtotal).toBe(100)
-    expect(r.memberDiscountAmount).toBe(20)
+    expect(r.memberDiscountAmount).toBe(15)
   })
 
   it('the processing fee is charged on the subtotal AFTER the member discount', async () => {
     h.loggedIn = true
     h.fees = [{ id: 1, name: 'Fee', type: 'percentage', amount: 10, isActive: true }]
     const r = ok(await price())
-    expect(r.feeTotal).toBeCloseTo(3.2, 5) // 10% of (40 - 8)
-    expect(r.total).toBeCloseTo(32 + 5 + 3.2, 5)
+    expect(r.feeTotal).toBeCloseTo(3.4, 5) // 10% of (40 - 6)
+    expect(r.total).toBeCloseTo(34 + 5 + 3.4, 5)
   })
 
   it('points come off after the discount', async () => {
     h.loggedIn = true
     h.points = 10
     const r = ok(await price({}, { isRedeemingPoints: true }))
-    expect(r).toMatchObject({ memberDiscountAmount: 8, pointsToRedeem: 10, total: 27 }) // 32 + 5 - 10
+    expect(r).toMatchObject({ memberDiscountAmount: 6, pointsToRedeem: 10, total: 29 }) // 34 + 5 - 10
   })
 
   it('always satisfies subtotal - discount + shipping + fees - points = total', async () => {
@@ -319,34 +320,34 @@ describe('computeOrderPricing - member discount (logged-in customers get 20% off
     ]
     h.points = 7
     // a gift card is the one thing that is paid ON TOP of the member discount, so both parts are non-zero here
-    h.coupon = { valid: true, discount: 6, freeShipping: false, code: 'GIFT', description: '', type: 'store_credit' }
+    h.coupon = { valid: true, discount: 5, freeShipping: false, code: 'GIFT', description: '', type: 'store_credit' }
     const r = ok(await price({}, { couponCode: 'GIFT', isRedeemingPoints: true }))
     expect(r.subtotal - r.discountAmount + r.finalShipping + r.feeTotal - r.pointsToRedeem).toBeCloseTo(r.total, 8)
     expect(r.discountAmount).toBeCloseTo(r.memberDiscountAmount + r.couponDiscountAmount, 8)
-    expect(r.memberDiscountAmount).toBe(8)
-    expect(r.couponDiscountAmount).toBe(6)
+    expect(r.memberDiscountAmount).toBe(6)
+    expect(r.couponDiscountAmount).toBe(5)
   })
 
   describe('the member discount cannot be combined with another discount: whichever saves more applies', () => {
     const code = (discount: number, over: Record<string, unknown> = {}) => ({ valid: true, discount, freeShipping: false, code: 'SAVE', description: '', type: 'percentage', ...over })
 
-    it('a code that saves LESS (6 < 8): the member discount applies alone and the code is not used', async () => {
+    it('a code that saves LESS (4 < 6): the member discount applies alone and the code is not used', async () => {
       h.loggedIn = true
-      h.coupon = code(6)
+      h.coupon = code(4)
       const r = ok(await price({}, { couponCode: 'SAVE' }))
       expect(r).toMatchObject({
-        memberDiscountAmount: 8,
-        memberDiscountPercent: 20,
+        memberDiscountAmount: 6,
+        memberDiscountPercent: 15,
         couponDiscountAmount: 0,
-        discountAmount: 8, // (what the order stores as discountTotal)
+        discountAmount: 6, // (what the order stores as discountTotal)
         couponApplied: false,
         appliedCouponCode: null,
         couponDisplacedByMember: true,
-        total: 37, // 40 - 8 + 5
+        total: 39, // 40 - 6 + 5
       })
     })
 
-    it('a code that saves MORE (12 > 8): the code applies alone and the member discount does not', async () => {
+    it('a code that saves MORE (12 > 6): the code applies alone and the member discount does not', async () => {
       h.loggedIn = true
       h.coupon = code(12)
       const r = ok(await price({}, { couponCode: 'SAVE' }))
@@ -362,19 +363,19 @@ describe('computeOrderPricing - member discount (logged-in customers get 20% off
       })
     })
 
-    it('an exact tie (8 = 8) goes to the member discount', async () => {
+    it('an exact tie (6 = 6) goes to the member discount', async () => {
       h.loggedIn = true
-      h.coupon = code(8)
+      h.coupon = code(6)
       const r = ok(await price({}, { couponCode: 'SAVE' }))
-      expect(r).toMatchObject({ memberDiscountAmount: 8, couponDiscountAmount: 0, couponApplied: false, couponDisplacedByMember: true, total: 37 })
+      expect(r).toMatchObject({ memberDiscountAmount: 6, couponDiscountAmount: 0, couponApplied: false, couponDisplacedByMember: true, total: 39 })
     })
 
     it('never both, whatever the code is worth', async () => {
       h.loggedIn = true
-      for (const discount of [1, 5, 7.99, 8, 8.01, 15, 30, 40]) {
+      for (const discount of [1, 5, 5.99, 6, 6.01, 15, 30, 40]) {
         h.coupon = code(discount)
         const r = ok(await price({}, { couponCode: 'SAVE' }))
-        expect(r.discountAmount).toBe(Math.max(8, discount))
+        expect(r.discountAmount).toBe(Math.max(6, discount))
         expect(r.memberDiscountAmount === 0 || r.couponDiscountAmount === 0).toBe(true)
       }
     })
@@ -383,7 +384,7 @@ describe('computeOrderPricing - member discount (logged-in customers get 20% off
       h.loggedIn = true
       h.coupon = code(0, { freeShipping: true, code: 'SHIPFREE', type: 'free_shipping' })
       const r = ok(await price({}, { couponCode: 'SHIPFREE' }))
-      expect(r).toMatchObject({ memberDiscountAmount: 8, couponApplied: false, couponDisplacedByMember: true, freeShipping: false, finalShipping: 5, total: 37 })
+      expect(r).toMatchObject({ memberDiscountAmount: 6, couponApplied: false, couponDisplacedByMember: true, freeShipping: false, finalShipping: 5, total: 39 })
     })
 
     it('a free-shipping code still works for a logged-out visitor, exactly as before', async () => {
@@ -395,7 +396,7 @@ describe('computeOrderPricing - member discount (logged-in customers get 20% off
 
     it('a code that lost is not recorded as used on the subscription either way: no subscription scope is kept', async () => {
       h.loggedIn = true
-      h.coupon = code(6, { subscriptionScope: 'every_month' })
+      h.coupon = code(4, { subscriptionScope: 'every_month' })
       const r = ok(await price({}, { couponCode: 'SAVE' }))
       expect(r.couponSubscriptionScope).toBeNull()
     })
@@ -404,7 +405,7 @@ describe('computeOrderPricing - member discount (logged-in customers get 20% off
       h.loggedIn = true
       h.coupon = { valid: false }
       const r = ok(await price({}, { couponCode: 'NOPE' }))
-      expect(r).toMatchObject({ memberDiscountAmount: 8, couponDiscountAmount: 0, couponApplied: false, couponDisplacedByMember: false, total: 37 })
+      expect(r).toMatchObject({ memberDiscountAmount: 6, couponDiscountAmount: 0, couponApplied: false, couponDisplacedByMember: false, total: 39 })
     })
 
     it('a logged-out visitor with a code is exactly as before (no member discount, the code applies)', async () => {
@@ -428,8 +429,8 @@ describe('computeOrderPricing - member discount (logged-in customers get 20% off
         h.coupon = code(40, { code: 'GIFT', type: 'store_credit' }) // a card worth at least the whole $40
         const r = ok(await price({}, { couponCode: 'GIFT' }))
         expect(r).toMatchObject({
-          memberDiscountAmount: 8,
-          couponDiscountAmount: 32, // 40 - 8: the card keeps the rest of its balance
+          memberDiscountAmount: 6,
+          couponDiscountAmount: 34, // 40 - 6: the card keeps the rest of its balance
           discountAmount: 40,
           couponApplied: true,
           appliedCouponCode: 'GIFT',
@@ -440,9 +441,9 @@ describe('computeOrderPricing - member discount (logged-in customers get 20% off
 
       it('a small card is added to the member discount', async () => {
         h.loggedIn = true
-        h.coupon = code(6, { code: 'GIFT', type: 'store_credit' })
+        h.coupon = code(5, { code: 'GIFT', type: 'store_credit' })
         const r = ok(await price({}, { couponCode: 'GIFT' }))
-        expect(r).toMatchObject({ memberDiscountAmount: 8, couponDiscountAmount: 6, discountAmount: 14, couponApplied: true, total: 31 })
+        expect(r).toMatchObject({ memberDiscountAmount: 6, couponDiscountAmount: 5, discountAmount: 11, couponApplied: true, total: 34 })
       })
 
       it('a logged-out visitor just uses the card', async () => {
@@ -483,7 +484,7 @@ describe('computeOrderPricing - member discount (logged-in customers get 20% off
     it('isMember: true applies it without asking the session', async () => {
       h.loggedIn = false
       const r = ok(await price({}, {}, { isMember: true }))
-      expect(r.memberDiscountAmount).toBe(8)
+      expect(r.memberDiscountAmount).toBe(6)
       expect(h.viewerCalls).toBe(0)
     })
 
@@ -505,6 +506,6 @@ describe('computeOrderPricing - member discount (logged-in customers get 20% off
     h.loggedIn = true
     h.methods = [{ method: 'Free Shipping', price: 0, minOrderAmount: 40 }]
     const r = ok(await price({}, { shippingMethodName: 'Free Shipping' }))
-    expect(r).toMatchObject({ subtotal: 40, memberDiscountAmount: 8, finalShipping: 0, total: 32 })
+    expect(r).toMatchObject({ subtotal: 40, memberDiscountAmount: 6, finalShipping: 0, total: 34 })
   })
 })

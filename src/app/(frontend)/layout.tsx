@@ -184,7 +184,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
             </LayoutClientWrapper>
             {/* "Log in to see the full catalogue" popup: renders nothing until a logged-out visitor has interacted. */}
             <LoginPrompt />
-            {/* The small fixed "Members: save 20%" button (bottom-left) that opens the same popup on demand. */}
+            {/* The small fixed "Members: save N%" button (bottom-left) that opens the same popup on demand. */}
             <LoginShortcut />
           </NextAuthProvider>
           <Toaster />

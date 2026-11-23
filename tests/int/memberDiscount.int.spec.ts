@@ -1,10 +1,10 @@
 /**
- * The member discount: logged-in customers get 20% off an ordinary order.
+ * The member discount: logged-in customers get 15% off an ordinary order.
  *
  * What is tested (pure code, no database, no network):
  * - The maths (src/lib/membership/discount.ts): rounding to the cent, the member discount NOT combining with any other
  *   discount (whichever saves more applies; a gift card is paid on top), nothing for a non-member, labels.
- * - The order email: a "Member discount (20%)" line, the coupon on its own line, a thank-you under the total, and an
+ * - The order email: a "Member discount (15%)" line, the coupon on its own line, a thank-you under the total, and an
  *   order from before the member discount existed reads EXACTLY as it always did.
  * - Affiliate commission: only the coupon's part of the discount reduces it, never the member discount.
  *
@@ -26,18 +26,19 @@ import { generateOrderInvoiceHtml } from '../../src/lib/emails/generateOrderEmai
 // ─── The maths ────────────────────────────────────────────────────────────────
 
 describe('memberDiscountAmount', () => {
-  it('is 20% of the subtotal', () => {
-    expect(MEMBER_DISCOUNT_PERCENT).toBe(20)
-    expect(memberDiscountAmount(40)).toBe(8)
-    expect(memberDiscountAmount(100)).toBe(20)
-    expect(memberDiscountAmount(1234.5)).toBe(246.9)
+  it('is 15% of the subtotal', () => {
+    expect(MEMBER_DISCOUNT_PERCENT).toBe(15)
+    expect(memberDiscountAmount(40)).toBe(6)
+    expect(memberDiscountAmount(100)).toBe(15)
+    expect(memberDiscountAmount(1234.5)).toBe(185.18) // 185.175, half a cent rounds up
   })
 
   it('rounds to the nearest cent', () => {
-    expect(memberDiscountAmount(33.33)).toBe(6.67) // 6.666
-    expect(memberDiscountAmount(0.07)).toBe(0.01) // 0.014
-    expect(memberDiscountAmount(59.97)).toBe(11.99) // 11.994
-    expect(memberDiscountAmount(0.02)).toBe(0) // 0.004
+    expect(memberDiscountAmount(33.33)).toBe(5) // 4.9995 rounds up
+    expect(memberDiscountAmount(0.07)).toBe(0.01) // 0.0105 rounds down to a cent
+    expect(memberDiscountAmount(59.97)).toBe(9) // 8.9955 rounds up
+    expect(memberDiscountAmount(10.01)).toBe(1.5) // 1.5015 rounds down
+    expect(memberDiscountAmount(0.02)).toBe(0) // 0.003
   })
 
   it('never goes below zero, above the subtotal, or NaN', () => {
@@ -68,13 +69,13 @@ describe('splitDiscounts (the member discount cannot be combined with another di
     expect(split(40, { discount: 6.123 }, false).couponDiscount).toBe(6.123)
   })
 
-  it('a member with no coupon gets 20%', () => {
-    expect(split(40, null)).toEqual({ memberDiscount: 8, couponDiscount: 0, totalDiscount: 8, couponDisplaced: false, memberDisplaced: false })
-    expect(split(40, undefined as any).memberDiscount).toBe(8)
+  it('a member with no coupon gets 15%', () => {
+    expect(split(40, null)).toEqual({ memberDiscount: 6, couponDiscount: 0, totalDiscount: 6, couponDisplaced: false, memberDisplaced: false })
+    expect(split(40, undefined as any).memberDiscount).toBe(6)
   })
 
   it('a code that saves LESS than the member discount is not used: the member discount applies alone', () => {
-    expect(split(40, { discount: 6 })).toEqual({ memberDiscount: 8, couponDiscount: 0, totalDiscount: 8, couponDisplaced: true, memberDisplaced: false })
+    expect(split(40, { discount: 4 })).toEqual({ memberDiscount: 6, couponDiscount: 0, totalDiscount: 6, couponDisplaced: true, memberDisplaced: false })
   })
 
   it('a code that saves MORE than the member discount replaces it: the code applies alone', () => {
@@ -82,36 +83,36 @@ describe('splitDiscounts (the member discount cannot be combined with another di
   })
 
   it('an exact tie goes to the member discount (the code is not used up for nothing)', () => {
-    expect(split(40, { discount: 8 })).toEqual({ memberDiscount: 8, couponDiscount: 0, totalDiscount: 8, couponDisplaced: true, memberDisplaced: false })
+    expect(split(40, { discount: 6 })).toEqual({ memberDiscount: 6, couponDiscount: 0, totalDiscount: 6, couponDisplaced: true, memberDisplaced: false })
   })
 
   it('never both: the two are never added together, whatever the amounts', () => {
-    for (const coupon of [1, 4, 7.99, 8, 8.01, 20, 39.99, 40]) {
+    for (const coupon of [1, 4, 5.99, 6, 6.01, 20, 39.99, 40]) {
       const r = split(40, { discount: coupon })
-      expect(r.totalDiscount).toBe(Math.max(8, coupon))
+      expect(r.totalDiscount).toBe(Math.max(6, coupon))
       expect(r.memberDiscount > 0 && r.couponDiscount > 0).toBe(false)
       expect(r.couponDisplaced !== r.memberDisplaced).toBe(true) // exactly one of them lost
     }
   })
 
   it('a free-shipping code (saves nothing on the items) does not combine either: the member discount applies and the code is not used', () => {
-    expect(split(40, { discount: 0 })).toEqual({ memberDiscount: 8, couponDiscount: 0, totalDiscount: 8, couponDisplaced: true, memberDisplaced: false })
+    expect(split(40, { discount: 0 })).toEqual({ memberDiscount: 6, couponDiscount: 0, totalDiscount: 6, couponDisplaced: true, memberDisplaced: false })
   })
 
   it('ignores a nonsense coupon amount (it saves nothing, so the member discount wins)', () => {
     for (const bad of [NaN, -3, Infinity * 0]) {
-      expect(split(40, { discount: bad })).toMatchObject({ memberDiscount: 8, couponDiscount: 0, totalDiscount: 8, couponDisplaced: true })
+      expect(split(40, { discount: bad })).toMatchObject({ memberDiscount: 6, couponDiscount: 0, totalDiscount: 6, couponDisplaced: true })
     }
   })
 
   describe('gift cards / store credit are the exception: money the customer already holds, paid on top', () => {
     it('the member discount comes off first and the credit covers the rest', () => {
-      expect(split(40, { discount: 6, isStoreCredit: true })).toEqual({ memberDiscount: 8, couponDiscount: 6, totalDiscount: 14, couponDisplaced: false, memberDisplaced: false })
+      expect(split(40, { discount: 5, isStoreCredit: true })).toEqual({ memberDiscount: 6, couponDiscount: 5, totalDiscount: 11, couponDisplaced: false, memberDisplaced: false })
     })
 
     it('the credit is limited so the two never take more than the subtotal (it keeps whatever it did not need)', () => {
-      expect(split(40, { discount: 40, isStoreCredit: true })).toEqual({ memberDiscount: 8, couponDiscount: 32, totalDiscount: 40, couponDisplaced: false, memberDisplaced: false })
-      expect(split(40, { discount: 500, isStoreCredit: true })).toMatchObject({ memberDiscount: 8, couponDiscount: 32, totalDiscount: 40 })
+      expect(split(40, { discount: 40, isStoreCredit: true })).toEqual({ memberDiscount: 6, couponDiscount: 34, totalDiscount: 40, couponDisplaced: false, memberDisplaced: false })
+      expect(split(40, { discount: 500, isStoreCredit: true })).toMatchObject({ memberDiscount: 6, couponDiscount: 34, totalDiscount: 40 })
     })
 
     it('can be switched to behave like any other code', () => {
@@ -125,7 +126,7 @@ describe('splitDiscounts (the member discount cannot be combined with another di
 
   it('an empty or tiny cart: the member discount is not in play, a code works as it always did', () => {
     expect(split(0, null)).toEqual({ memberDiscount: 0, couponDiscount: 0, totalDiscount: 0, couponDisplaced: false, memberDisplaced: false })
-    // 2 cents: 20% rounds to nothing, so there is nothing to compete with
+    // 2 cents: 15% rounds to nothing, so there is nothing to compete with
     expect(split(0.02, { discount: 0.01 })).toMatchObject({ memberDiscount: 0, couponDiscount: 0.01, totalDiscount: 0.01, couponDisplaced: false, memberDisplaced: false })
   })
 
@@ -174,9 +175,9 @@ describe('couponPartOfDiscount (what the coupon rules - store credit, affiliate 
 describe('labels', () => {
   it('names the discount "Member discount" with its percent', () => {
     expect(MEMBER_DISCOUNT_LABEL).toBe('Member discount')
-    expect(memberDiscountLabel()).toBe('Member discount (20%)')
-    expect(memberDiscountLabel(20)).toBe('Member discount (20%)')
-    expect(memberDiscountLabel(15)).toBe('Member discount (15%)') // an order keeps the percent it was placed at
+    expect(memberDiscountLabel()).toBe('Member discount (15%)')
+    expect(memberDiscountLabel(15)).toBe('Member discount (15%)')
+    expect(memberDiscountLabel(20)).toBe('Member discount (20%)') // an order keeps the percent it was placed at (20% before the offer became 15%)
   })
 
   it('falls back to the plain name when the percent is unknown', () => {
@@ -213,31 +214,33 @@ describe('the order email', () => {
   const text = (html: string) => html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
 
   it('shows the member discount on its own, labelled, with the amount', async () => {
-    const html = await render(baseOrder({ discountTotal: 8, memberDiscountTotal: 8, memberDiscountPercent: 20, total: 37 }))
-    expect(text(html)).toContain('Member discount (20%) -$8.00')
+    const html = await render(baseOrder({ discountTotal: 6, memberDiscountTotal: 6, memberDiscountPercent: 15, total: 39 }))
+    expect(text(html)).toContain('Member discount (15%) -$6.00')
     expect(html).not.toContain('Discount ()') // no empty coupon line
-    expect(text(html)).toContain('Total $37.00')
+    expect(text(html)).toContain('Total $39.00')
   })
 
   it('thanks the customer for the saving under the total', async () => {
-    const html = await render(baseOrder({ discountTotal: 8, memberDiscountTotal: 8, memberDiscountPercent: 20, total: 37 }))
-    expect(text(html)).toContain('You saved $8.00 with your member discount.')
+    const html = await render(baseOrder({ discountTotal: 6, memberDiscountTotal: 6, memberDiscountPercent: 15, total: 39 }))
+    expect(text(html)).toContain('You saved $6.00 with your member discount.')
   })
 
   it('shows the member discount and a coupon as two separate lines', async () => {
     const html = await render(
-      baseOrder({ discountTotal: 14, memberDiscountTotal: 8, memberDiscountPercent: 20, couponCode: 'SAVE', total: 31 }),
+      baseOrder({ discountTotal: 11, memberDiscountTotal: 6, memberDiscountPercent: 15, couponCode: 'SAVE', total: 34 }),
     )
     const t = text(html)
-    expect(t).toContain('Member discount (20%) -$8.00')
-    expect(t).toContain('Discount (SAVE) -$6.00')
-    expect(t).toContain('You saved $8.00 with your member discount.')
+    expect(t).toContain('Member discount (15%) -$6.00')
+    expect(t).toContain('Discount (SAVE) -$5.00')
+    expect(t).toContain('You saved $6.00 with your member discount.')
     expect(t.indexOf('Member discount')).toBeLessThan(t.indexOf('Discount (SAVE)')) // member first, like at checkout
   })
 
-  it('keeps the percent the order was placed at, even if the offer changes later', async () => {
-    const html = await render(baseOrder({ discountTotal: 6, memberDiscountTotal: 6, memberDiscountPercent: 15, total: 39 }))
-    expect(text(html)).toContain('Member discount (15%) -$6.00')
+  it('keeps the percent the order was placed at, even though the offer is 15% now (an order placed at 20% still says 20%)', async () => {
+    const html = await render(baseOrder({ discountTotal: 8, memberDiscountTotal: 8, memberDiscountPercent: 20, total: 37 }))
+    expect(text(html)).toContain('Member discount (20%) -$8.00')
+    expect(text(html)).not.toContain('(15%)')
+    expect(text(html)).toContain('Total $37.00')
   })
 
   it('an order from BEFORE the member discount existed reads exactly as it always did', async () => {
@@ -285,12 +288,12 @@ describe('affiliate commission', () => {
   })
 
   it('is NOT reduced by a member discount the customer also got (that discount is the store\'s own)', async () => {
-    // $100 order, member 20 + affiliate coupon 10 = 30 off: commission is on 100 - 10 (the coupon), not 100 - 30
-    expect(await commission({ subtotal: 100, discountTotal: 30, memberDiscountTotal: 20, couponCode: 'AFF10' })).toBe(900)
+    // $100 order, member 15 + affiliate coupon 10 = 25 off: commission is on 100 - 10 (the coupon), not 100 - 25
+    expect(await commission({ subtotal: 100, discountTotal: 25, memberDiscountTotal: 15, couponCode: 'AFF10' })).toBe(900)
   })
 
   it('a member order with no affiliate coupon earns on the full subtotal', async () => {
-    expect(await commission({ subtotal: 100, discountTotal: 20, memberDiscountTotal: 20, couponCode: '' })).toBe(1000)
-    expect(await commission({ subtotal: 100, discountTotal: 20, memberDiscountTotal: 20, couponCode: 'OTHERCODE' })).toBe(1000)
+    expect(await commission({ subtotal: 100, discountTotal: 15, memberDiscountTotal: 15, couponCode: '' })).toBe(1000)
+    expect(await commission({ subtotal: 100, discountTotal: 15, memberDiscountTotal: 15, couponCode: 'OTHERCODE' })).toBe(1000)
   })
 })

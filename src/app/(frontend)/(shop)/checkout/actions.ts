@@ -334,6 +334,9 @@ export async function createPayloadOrder(
         status: total <= 0 ? 'paid' : 'pending',
         paymentStatus: total <= 0 ? 'captured' : 'unpaid',
         fulfillmentStatus: 'unfulfilled',
+        // Opts this order into the ShipStation hand-off (sent once it is paid, see hooks/orders.ts).
+        // Orders from before the integration have no value here and are never sent.
+        shipstationSyncStatus: 'pending',
         subtotal: Math.round(subtotal * 100) / 100,
         // discountTotal is EVERYTHING taken off (member discount + coupon), so subtotal - discountTotal + ... = total always
         // holds. The member part is stored separately so pages and emails can show it as "Member discount".

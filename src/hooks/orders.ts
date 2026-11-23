@@ -16,10 +16,32 @@ export const afterOrderChange: CollectionAfterChangeHook = async ({ doc, previou
     }
   }
 
+  // A paid order goes to ShipStation (see src/lib/shipstation). Triggered here, when the payment becomes "captured", and
+  // not from finalizeOrder: in this app finalizeOrder also runs for UNPAID orders (to reserve stock), and an admin marking a
+  // manual order paid later never runs it again. Also runs when the admin ticks "Send to ShipStation again". Not awaited:
+  // reading or writing this order from inside its own save would wait on the row this transaction still holds, so the
+  // hand-off waits for the save to commit by itself. The 30-minute cron is the fallback if the function is cut short.
+  if ((becamePaid || req.context.retryShipStation) && doc.paymentStatus === 'captured') {
+    import('@/lib/shipstation/sync')
+      .then(({ pushOrderToShipStation }) => pushOrderToShipStation(req.payload, doc.id))
+      .catch((err) => req.payload.logger.error({ err }, `ShipStation hand-off failed for order ${doc.id}`))
+  }
+
   if (operation === 'update') {
     // If the order is refunded or cancelled, we must reverse any associated affiliate conversions
     const wasRefunded = doc.status === 'refunded' && previousDoc?.status !== 'refunded'
     const wasCancelled = doc.status === 'cancelled' && previousDoc?.status !== 'cancelled'
+
+    // Pull a refunded/cancelled order back out of the ShipStation shipping queue (or, if a label was already
+    // bought, tell support). Never throws; the order write joins this transaction through `req`.
+    if ((wasRefunded || wasCancelled) && doc.shipstationOrderId && doc.shipstationSyncStatus === 'synced') {
+      try {
+        const { cancelInShipStation } = await import('@/lib/shipstation/sync')
+        await cancelInShipStation(req.payload, doc, { req })
+      } catch (err) {
+        req.payload.logger.error({ err }, `Failed to cancel ShipStation order for order ${doc.id}`)
+      }
+    }
 
     if (wasRefunded || wasCancelled) {
       const conversions = await req.payload.find({

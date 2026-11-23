@@ -77,13 +77,13 @@ test('2. a logged-out visitor gets the corner shortcut, and it opens the popup w
   const vp = page.viewportSize()!
   expect(box.x).toBeLessThan(48)
   expect(box.y + box.height).toBeGreaterThan(vp.height - 48)
-  await expect(shortcut(page)).toContainText('Save 20% on every order')
+  await expect(shortcut(page)).toContainText('Save 15% on every order')
   await shot(page, 'm2-shortcut')
 
   await page.getByRole('button', { name: /member discount/i }).click()
   const dialog = popup(page)
   await expect(dialog).toBeVisible()
-  await expect(dialog).toContainText('20% member discount')
+  await expect(dialog).toContainText('15% member discount')
   await expect(dialog).not.toContainText(/glp/i)
   await expect(dialog.getByRole('button', { name: 'Continue with Google' })).toBeVisible()
   await expect(dialog.getByLabel('Email', { exact: true })).toBeVisible()
@@ -102,7 +102,7 @@ test('3. on a phone the popup is a bottom sheet with the whole login form on the
   const page = await context.newPage()
   await openShop(page)
   await expect(shortcut(page)).toBeVisible({ timeout: 30_000 })
-  await expect(shortcut(page)).toContainText('20% off') // the compact label on phones
+  await expect(shortcut(page)).toContainText('15% off') // the compact label on phones
   await shortcut(page).click()
   const dialog = popup(page)
   await expect(dialog).toBeVisible()
@@ -163,10 +163,10 @@ test('6. a member checks out: the member discount, only Express Shipping (2-3 bu
   await page.goto('/checkout')
   await fillAddress(page)
 
-  // the discount is named, and worked out on the subtotal: 2 x $20 = $40 -> $8.00 off
+  // the discount is named, and worked out on the subtotal: 2 x $20 = $40 -> $6.00 off
   const memberRow = page.getByTestId('member-discount-row').filter({ visible: true }).first()
-  await expect(memberRow).toContainText('Member discount (20%)')
-  await expect(memberRow).toContainText('-$8.00')
+  await expect(memberRow).toContainText('Member discount (15%)')
+  await expect(memberRow).toContainText('-$6.00')
   await expect(page.getByTestId('member-discount-nudge').filter({ visible: true })).toHaveCount(0) // already a member: no nudge
 
   // shipping: exactly one option, Express, with its delivery time and price
@@ -176,8 +176,8 @@ test('6. a member checks out: the member discount, only Express Shipping (2-3 bu
   await expect(shippingLabel.getByTestId('shipping-delivery-time')).toHaveText('2-3 business days')
   await expect(shippingLabel).toContainText('$20.00')
 
-  // the total follows: 40 - 8 + 20 = 52
-  await expect(page.locator('body')).toContainText('$52.00')
+  // the total follows: 40 - 6 + 20 = 54
+  await expect(page.locator('body')).toContainText('$54.00')
   await page.getByText('Zelle', { exact: true }).click()
   await shot(page, 'm6-checkout-member')
 
@@ -195,29 +195,29 @@ test('6. a member checks out: the member discount, only Express Shipping (2-3 bu
   const qrBox = (await qr.boundingBox())!
   expect(Math.round(qrBox.width)).toBe(200)
   expect(Math.round(qrBox.height)).toBe(200)
-  await expect(page.getByTestId('order-member-discount')).toContainText('Member discount (20%)')
-  await expect(page.getByTestId('order-member-discount')).toContainText('-$8.00')
+  await expect(page.getByTestId('order-member-discount')).toContainText('Member discount (15%)')
+  await expect(page.getByTestId('order-member-discount')).toContainText('-$6.00')
   await expect(page.locator('body')).toContainText('2-3 Business Days')
-  await expect(page.locator('body')).toContainText('$52.00')
+  await expect(page.locator('body')).toContainText('$54.00')
   await shot(page, 'm6-confirmation-zelle-qr')
 
   // the order in the database
   const [row] = await sql(`select subtotal, discount_total, member_discount_total, member_discount_percent, shipping_method, shipping_total, total from orders where id = $1`, [orderId])
   expect(Number(row.subtotal)).toBe(40)
-  expect(Number(row.discount_total)).toBe(8)
-  expect(Number(row.member_discount_total)).toBe(8)
-  expect(Number(row.member_discount_percent)).toBe(20)
+  expect(Number(row.discount_total)).toBe(6)
+  expect(Number(row.member_discount_total)).toBe(6)
+  expect(Number(row.member_discount_percent)).toBe(15)
   expect(row.shipping_method).toBe('Express Shipping')
   expect(Number(row.shipping_total)).toBe(20)
-  expect(Number(row.total)).toBe(52)
+  expect(Number(row.total)).toBe(54)
 
   // the email
   const mail = await waitForEmail({ to: ALICE, subject: /order|invoice|confirmation/i }, before)
   const text = mail.html.replace(/<wbr>/g, '').replace(/&middot;/g, '·').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
-  expect(text).toContain('Member discount (20%) -$8.00')
-  expect(text).toContain('You saved $8.00 with your member discount.')
+  expect(text).toContain('Member discount (15%) -$6.00')
+  expect(text).toContain('You saved $6.00 with your member discount.')
   expect(text).toContain('Express Shipping · 2-3 business days')
-  expect(text).toContain('Total $52.00')
+  expect(text).toContain('Total $54.00')
   expect(mail.html).toContain(`src="${QR}"`)
 })
 
@@ -226,13 +226,13 @@ test('7. the member sees the discount in the basket, and the order page of their
   await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 20, qty: 2 })])
   await go(page, '/cart')
   const row = page.getByTestId('member-discount-row').filter({ visible: true }).first()
-  await expect(row).toContainText('Member discount (20%)')
-  await expect(row).toContainText('-$8.00')
+  await expect(row).toContainText('Member discount (15%)')
+  await expect(row).toContainText('-$6.00')
   await shot(page, 'm7-cart-member')
 
   const [order] = await sql(`select id from orders where member_discount_total > 0 order by id desc limit 1`)
   await go(page, `/account/orders/${order.id}`)
-  await expect(page.getByTestId('order-member-discount')).toContainText('Member discount (20%)')
+  await expect(page.getByTestId('order-member-discount')).toContainText('Member discount (15%)')
   await expect(page.getByTestId('order-shipping-method')).toContainText('Express Shipping · 2-3 business days')
 })
 
@@ -240,13 +240,13 @@ test('8. a guest is charged in full and is shown what logging in would save', as
   await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 20, qty: 2 })])
   await go(page, '/cart')
   const nudge = page.getByTestId('member-discount-nudge').filter({ visible: true }).first()
-  await expect(nudge).toContainText('Members save 20% on every order')
-  await expect(nudge).toContainText('$8.00 on this one')
+  await expect(nudge).toContainText('Members save 15% on every order')
+  await expect(nudge).toContainText('$6.00 on this one')
   await expect(page.getByTestId('member-discount-row')).toHaveCount(0)
 
   await page.goto('/checkout')
   await page.getByRole('heading', { name: 'Shipping Method' }).waitFor()
-  await expect(page.getByTestId('member-discount-nudge').filter({ visible: true }).first()).toContainText('Members save 20%')
+  await expect(page.getByTestId('member-discount-nudge').filter({ visible: true }).first()).toContainText('Members save 15%')
   await expect(page.getByTestId('member-discount-row')).toHaveCount(0)
   await expect(page.locator('input[name="shipping"]')).toHaveCount(1)
   await expect(page.locator('body')).toContainText('$60.00') // 40 + 20 shipping, no discount
@@ -280,8 +280,8 @@ test.describe('10. member discount and a discount code', () => {
     try {
       const admin = await adminApi(api)
       await admin.replaceCoupons([
-        { code: 'SMALL10', type: 'percentage', value: 10, appliesTo: 'all', applicableProductTypes: 'all' }, // 10% of $40 = $4: less than the $8 member discount
-        { code: 'BIG50', type: 'percentage', value: 50, appliesTo: 'all', applicableProductTypes: 'all' }, // 50% of $40 = $20: more than the $8
+        { code: 'SMALL10', type: 'percentage', value: 10, appliesTo: 'all', applicableProductTypes: 'all' }, // 10% of $40 = $4: less than the $6 member discount
+        { code: 'BIG50', type: 'percentage', value: 50, appliesTo: 'all', applicableProductTypes: 'all' }, // 50% of $40 = $20: more than the $6
       ])
     } finally {
       await api.dispose()
@@ -293,14 +293,14 @@ test.describe('10. member discount and a discount code', () => {
     await seedCart(page, [cartLine({ id: bpc.id, name: bpc.name, slug: bpc.slug, price: 20, qty: 2 })])
     await page.goto('/checkout')
     await fillAddress(page)
-    await expect(page.getByTestId('member-discount-row').filter({ visible: true }).first()).toContainText('-$8.00')
+    await expect(page.getByTestId('member-discount-row').filter({ visible: true }).first()).toContainText('-$6.00')
 
     await applyCode(page, 'SMALL10')
     await expect(page.getByTestId('coupon-not-used-note').filter({ visible: true }).first()).toContainText("Discounts can't be combined")
     // the member discount is still what is taken off, and the code's own discount is not
-    await expect(page.getByTestId('member-discount-row').filter({ visible: true }).first()).toContainText('-$8.00')
+    await expect(page.getByTestId('member-discount-row').filter({ visible: true }).first()).toContainText('-$6.00')
     await expect(page.locator('body')).not.toContainText('Discount (SMALL10)')
-    await expect(page.locator('body')).toContainText('$52.00') // 40 - 8 + 20
+    await expect(page.locator('body')).toContainText('$54.00') // 40 - 6 + 20
     await shot(page, 'm10-small-code-checkout')
 
     await page.getByText('Zelle', { exact: true }).click()
@@ -309,9 +309,9 @@ test.describe('10. member discount and a discount code', () => {
     const orderId = Number(page.url().match(/order-confirmation\/(\d+)/)![1])
     const [row] = await sql(`select coupon_code, discount_total, member_discount_total, total from orders where id = $1`, [orderId])
     expect(row.coupon_code ?? '').toBe('')
-    expect(Number(row.discount_total)).toBe(8)
-    expect(Number(row.member_discount_total)).toBe(8)
-    expect(Number(row.total)).toBe(52)
+    expect(Number(row.discount_total)).toBe(6)
+    expect(Number(row.member_discount_total)).toBe(6)
+    expect(Number(row.total)).toBe(54)
     // the code was not used up
     const [coupon] = await sql(`select usage_count from coupons where code = 'SMALL10'`)
     expect(Number(coupon.usage_count ?? 0)).toBe(0)

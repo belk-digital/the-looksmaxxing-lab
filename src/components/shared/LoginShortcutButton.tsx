@@ -10,7 +10,7 @@ import { MEMBER_DISCOUNT_PERCENT } from '@/lib/membership/discount'
  *
  * Design: a floating ink pill in the site's own ink / cream / gold palette, matching the popup it opens.
  *  - a raised gold badge with a crown (a member perk, instantly readable even at a glance) and a slow pulse ring;
- *  - the offer in two lines, with the "20%" picked out in gold;
+ *  - the offer in two lines, with the percentage picked out in gold;
  *  - a gold-outlined "Log in" chip on the right, so it is obvious the pill is a button (on phones: a round arrow). It
  *    mirrors the solid gold badge on the left, is exactly as tall as the badge (so the gap is the same above, below and
  *    to the right) and fills with gold on hover;

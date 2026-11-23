@@ -19,7 +19,7 @@ import { isRestrictionEnabled } from '@/lib/access/restrictedProducts'
 import { readLargestContentfulPaintSize } from '@/components/shared/LoginPrompt'
 
 /**
- * The corner shortcut: a small fixed "Members: save 20%" button, bottom-left of every page where the login popup may
+ * The corner shortcut: a small fixed "Members: save N%" button, bottom-left of every page where the login popup may
  * appear, for logged-out visitors. Pressing it opens the same popup on demand (see LoginPrompt).
  *
  * Like the popup, it is kept clear of page speed:

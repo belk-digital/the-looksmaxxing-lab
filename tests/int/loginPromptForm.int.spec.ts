@@ -194,7 +194,7 @@ describe('logging in with email and password', () => {
     fillAndSubmit()
     await waitFor(() => expect(onClosed).toHaveBeenCalled())
     expect(screen.queryByRole('dialog')).toBeNull()
-    expect(h.toast).toHaveBeenCalledWith('Logged in. Your 20% member discount is active.')
+    expect(h.toast).toHaveBeenCalledWith('Logged in. Your 15% member discount is active.')
     expect(h.refresh).toHaveBeenCalledTimes(1)
     // finishing a login is not "closing the popup": no reminder pause is recorded
     expect(onDismiss).not.toHaveBeenCalled()

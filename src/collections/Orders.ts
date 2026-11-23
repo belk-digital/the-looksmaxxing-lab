@@ -55,11 +55,33 @@ export const Orders: CollectionConfig = {
           if (oldStatus && newStatus && oldStatus !== newStatus) {
             validateStatusTransition(oldStatus, newStatus)
           }
+
+          // A refunded/cancelled order that is reinstated goes back into the ShipStation queue. Its old ShipStation order
+          // was cancelled (or never sent) and cannot be revived, so it is re-sent by the cron / next push as a fresh one.
+          // Marked here, in the same write, rather than from afterChange (a second write to this row would deadlock).
+          const becomingLive =
+            ['refunded', 'cancelled'].includes(oldStatus) && newStatus && !['refunded', 'cancelled'].includes(newStatus)
+          if (becomingLive && ['cancelled', 'skipped'].includes(originalDoc.shipstationSyncStatus)) {
+            data.shipstationSyncStatus = 'pending'
+            data.shipstationSyncAttempts = 0
+            data.shipstationSyncError = null
+          }
         }
 
         // Remember when an order was actually paid (used by subscriptions to schedule the next order)
         if (data.paymentStatus === 'captured' && !data.paidAt && originalDoc?.paymentStatus !== 'captured') {
           data.paidAt = new Date().toISOString()
+        }
+
+        // "Send to ShipStation again" (one-shot tickbox): reset the hand-off to "waiting" and let afterChange send it right
+        // away. The sync status itself is system-owned (see the field access in collections/Orders.ts), so this is the only
+        // way for the admin to ask for a retry. Cleared here so it never repeats.
+        if (data.shipstationRetry) {
+          data.shipstationSyncStatus = 'pending'
+          data.shipstationSyncAttempts = 0
+          data.shipstationSyncError = null
+          data.shipstationRetry = null
+          req.context.retryShipStation = true
         }
 
         // Handle notes processing
@@ -207,6 +229,48 @@ export const Orders: CollectionConfig = {
       required: true,
       defaultValue: 'pending',
     },
+    // ---- ShipStation (see src/lib/shipstation) -------------------------------------------------
+    // SYSTEM-OWNED fields: written only by the integration (local API, which bypasses field access). They have
+    // `access.update: false` so the admin panel can never write them. That matters: when you press Save, the admin
+    // form sends back EVERY field on the page, read-only ones included, with the values it loaded. A page opened (or
+    // saved) before the background hand-off finished would otherwise overwrite "Sent to ShipStation" with the old
+    // "Waiting to send" on its next Save. Field-level update access makes Payload strip them from admin saves.
+    { name: 'carrier', type: 'text', access: { update: () => false }, admin: { position: 'sidebar', readOnly: true, description: 'Carrier that shipped the order (set automatically from ShipStation).' } },
+    { name: 'trackingNumber', type: 'text', access: { update: () => false }, admin: { position: 'sidebar', readOnly: true, description: 'Set automatically from ShipStation. For an order shipped by hand, use "Tracking link".' } },
+    { name: 'shippedAt', type: 'date', access: { update: () => false }, admin: { position: 'sidebar', readOnly: true } },
+    {
+      name: 'shipstationSyncStatus',
+      type: 'select',
+      access: { update: () => false },
+      // No defaultValue on purpose: orders from before the integration stay empty and are never pushed.
+      // New orders are stamped 'pending' by checkout (createPayloadOrder).
+      options: [
+        { label: 'Waiting to send', value: 'pending' },
+        { label: 'Sent to ShipStation', value: 'synced' },
+        { label: 'Failed (will retry)', value: 'failed' },
+        { label: 'Ship manually (international / address problem)', value: 'manual' },
+        { label: 'Not sent (already shipped or voided)', value: 'skipped' },
+        { label: 'Cancelled in ShipStation', value: 'cancelled' },
+      ],
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Where this order is in the ShipStation hand-off. To retry a failed or manual order after fixing it, tick "Send to ShipStation again" below and save.',
+      },
+    },
+    {
+      name: 'shipstationRetry',
+      type: 'checkbox',
+      label: 'Send to ShipStation again',
+      admin: {
+        position: 'sidebar',
+        description: 'Tick and save to send this order to ShipStation again right away (e.g. after fixing the address of a "Ship manually" order). Clears itself. Safe on an order that is already in ShipStation: no duplicate is made.',
+      },
+    },
+    { name: 'shipstationOrderId', type: 'text', access: { update: () => false }, admin: { position: 'sidebar', readOnly: true, description: 'ShipStation order id.' } },
+    { name: 'shipstationSyncError', type: 'text', access: { update: () => false }, admin: { position: 'sidebar', readOnly: true, description: 'Why the last hand-off attempt failed, or why it needs manual shipping.' } },
+    { name: 'shipstationSyncAttempts', type: 'number', access: { update: () => false }, admin: { position: 'sidebar', readOnly: true } },
+    { name: 'shipstationSyncedAt', type: 'date', access: { update: () => false }, admin: { position: 'sidebar', readOnly: true } },
     {
       name: 'paymentMethod',
       type: 'select',
@@ -312,6 +376,9 @@ export const Orders: CollectionConfig = {
       name: 'isFinalized',
       type: 'checkbox',
       defaultValue: false,
+      // System-owned (finalizeOrder sets it with a raw SQL claim). The admin form re-submits every field it loaded, so
+      // without this a page loaded before finalization would write the stale "false" back.
+      access: { update: () => false },
       admin: { position: 'sidebar', readOnly: true, description: 'Set automatically after order finalization to prevent double-processing.' },
     },
     { name: 'createdAt', type: 'date', admin: { position: 'sidebar', disabled: true } },

@@ -1,5 +1,5 @@
 /**
- * The corner shortcut: a small fixed "Members: save 20%" button that opens the login popup on demand.
+ * The corner shortcut: a small fixed "Members: save 15%" button that opens the login popup on demand.
  *
  * What is tested, in a simulated browser:
  * - When it appears: a moment after the page has loaded, only for logged-out visitors, only after the age gate has
@@ -165,12 +165,12 @@ describe('when it appears', () => {
   it('is a button that says what it is for, with the member discount in plain words', async () => {
     render(shortcutOnly())
     const el = await screen.findByRole('button', { name: /member discount/i })
-    expect(el.getAttribute('aria-label')).toBe('Member discount: 20% off every order. Log in or create a free account.')
+    expect(el.getAttribute('aria-label')).toBe('Member discount: 15% off every order. Log in or create a free account.')
     expect(el.getAttribute('aria-haspopup')).toBe('dialog')
     expect(el.getAttribute('type')).toBe('button')
     expect(el.textContent).toContain('Members')
-    expect(el.textContent).toContain('Save 20% on every order') // on larger screens
-    expect(el.textContent).toContain('20% off') // on phones
+    expect(el.textContent).toContain('Save 15% on every order') // on larger screens
+    expect(el.textContent).toContain('15% off') // on phones
   })
 
   it('never mentions GLP-1', async () => {
@@ -328,11 +328,11 @@ describe('as the visitor moves around', () => {
     expect(desktopChip.className).not.toMatch(/(^|\s)py-/)
   })
 
-  it('shows the offer with the 20% picked out, in one piece of text', async () => {
+  it('shows the offer with the 15% picked out, in one piece of text', async () => {
     render(shortcutOnly())
     const el = await screen.findByTestId('login-shortcut')
-    const highlighted = Array.from(el.querySelectorAll('span')).filter((s) => s.className.includes('text-gold-light') && s.textContent === '20%')
-    expect(highlighted.length).toBe(2) // one for phones ("20% off"), one for larger screens ("Save 20% on every order")
+    const highlighted = Array.from(el.querySelectorAll('span')).filter((s) => s.className.includes('text-gold-light') && s.textContent === '15%')
+    expect(highlighted.length).toBe(2) // one for phones ("15% off"), one for larger screens ("Save 15% on every order")
   })
 })
 
@@ -344,7 +344,7 @@ describe('pressing it', () => {
     fireEvent.click(await screen.findByRole('button', { name: /member discount/i }))
 
     const dialog = await screen.findByRole('dialog', { name: 'Unlock the full catalogue.' })
-    expect(dialog.textContent).toContain('20% member discount')
+    expect(dialog.textContent).toContain('15% member discount')
     expect(dialog.textContent).not.toMatch(/glp/i)
     expect(screen.getByRole('button', { name: 'Log in' })).toBeTruthy() // the login form is right there in the popup
     expect(screen.getByRole('button', { name: 'Continue with Google' })).toBeTruthy()

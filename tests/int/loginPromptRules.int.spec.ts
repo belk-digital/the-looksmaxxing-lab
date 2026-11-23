@@ -355,7 +355,7 @@ describe('blocked or missing storage (private browsing)', () => {
 
 // ─── The corner shortcut ──────────────────────────────────────────────────────
 
-describe('shouldShowLoginShortcut (the small "Members: save 20%" button in the corner)', () => {
+describe('shouldShowLoginShortcut (the small "Members: save 15%" button in the corner)', () => {
   const verified = store({ [AGE_VERIFIED_KEY]: 'true' })
   const base = { authStatus: 'unauthenticated' as const, pathname: '/shop', local: verified, enabled: true }
 

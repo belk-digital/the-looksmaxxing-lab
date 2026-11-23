@@ -32,7 +32,7 @@
 
 Nothing appears to customers until step 5 (the master switch is off by default; existing subscriptions keep billing if you turn it off later).
 
-## Member discount (20% for logged-in customers) - rollout, 2026-11-20
+## Member discount (15% for logged-in customers; it started at 20% and was lowered to 15% on 2026-11-24) - rollout, 2026-11-20
 
 **One more database migration, and it MUST be applied BEFORE the new code is deployed.** New code deployed first cannot place orders (the order record has two new columns). It is the same safe, additive process as the two above:
 
@@ -61,12 +61,12 @@ What the migration does (`20261120_000000_add_member_discount_to_orders`): adds 
 
 **The rule** (one place: `src/lib/membership/discount.ts`, `MEMBER_DISCOUNT_PERCENT = 20`):
 
-- A customer who is logged in when they place an ordinary (one-time) order gets 20% off the merchandise subtotal, to the nearest cent. It is decided on the server from the login session; nothing the browser sends can switch it on.
+- A customer who is logged in when they place an ordinary (one-time) order gets 15% off the merchandise subtotal, to the nearest cent. The percentage lives in ONE place, `MEMBER_DISCOUNT_PERCENT` in `src/lib/membership/discount.ts`; the cart, checkout, emails, login popup and corner button all read it, so changing it there changes everything. An order keeps the percent it was placed at (`orders.member_discount_percent`), so orders placed at 20% still read "Member discount (20%)" and nothing in the database needs to change when the percentage changes. It is decided on the server from the login session; nothing the browser sends can switch it on.
 - **It cannot be combined with any other discount.** If a customer also enters a discount code (percentage, fixed amount, free shipping...), the order gets WHICHEVER SAVES MORE, never both; an exact tie goes to the member discount. A code that loses is simply not used: it is not applied, not recorded on the order (`couponCode` stays empty), not counted as used (no `usageCount` change) and does not give free shipping; the cart and checkout tell the customer ("Not used: your Member discount saves more"). A code that wins replaces the member discount (the order records no member discount). **Gift cards / store credit are the one exception**: they are money the customer already holds, so they are paid on top (member discount first, the card covers the rest and keeps what it did not need). Flip `MEMBER_DISCOUNT_STACKS_WITH_STORE_CREDIT` in `src/lib/membership/discount.ts` to treat them like any other code. Everything is decided in `splitDiscounts` (the one place).
-- **Affiliates:** an affiliate's code is normally worth less than 20%, so for a logged-in customer it loses to the member discount and is not recorded on that order. The sale is still credited if the customer arrived through the affiliate's link (the `affiliate_ref` cookie); a code typed with no link is not credited for that order.
+- **Affiliates:** an affiliate's code is normally worth less than 15%, so for a logged-in customer it loses to the member discount and is not recorded on that order. The sale is still credited if the customer arrived through the affiliate's link (the `affiliate_ref` cookie); a code typed with no link is not credited for that order.
 - Subscription plans never get it (they have their own 15-25% plan discount), and neither do later invoices.
 - `orders.discount_total` is EVERYTHING taken off (member discount + coupon), so subtotal - discount + shipping + fees - points = total always holds; `member_discount_total` is the member part. Store-credit deduction and affiliate commission use only the coupon part (`couponPartOfDiscount`).
-- It is shown as "Member discount (20%)" in the cart, the checkout, the order confirmation page, the account order page and the order email. Logged-out visitors see what logging in would save, and the login popup advertises it.
+- It is shown as "Member discount (15%)" in the cart, the checkout, the order confirmation page, the account order page and the order email. Logged-out visitors see what logging in would save, and the login popup advertises it.
 
 **Shipping** is now one method, Express Shipping, $20, "2-3 business days" (wording in `src/lib/checkout/shipping.ts`; the price itself is in the admin under Shipping Zones, where the live site already has exactly one method). An order records the method that was actually charged, not the name the browser sent.
 

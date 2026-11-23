@@ -97,7 +97,7 @@ export function pickPromptDelay(random: () => number = Math.random): number {
 }
 
 /**
- * The corner shortcut (a small fixed "Members: save 20%" button that opens this popup on demand).
+ * The corner shortcut (a small fixed "Members: save N%" button that opens this popup on demand).
  * It is not a reminder, so none of the popup's caps or cooldowns apply to it: it simply sits in the corner of every
  * page the popup may appear on, for logged-out visitors, until they log in. It appears this long after the page has
  * loaded (so it never competes with the page's own content) and, like the popup, never before the age gate is passed.
